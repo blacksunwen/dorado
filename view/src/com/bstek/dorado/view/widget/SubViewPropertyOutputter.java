@@ -12,9 +12,12 @@
 
 package com.bstek.dorado.view.widget;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.event.DefaultClientEvent;
+import com.bstek.dorado.core.Context;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.util.StringAliasUtils;
 import com.bstek.dorado.view.View;
@@ -24,23 +27,35 @@ import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.ObjectOutputterDispatcher;
 import com.bstek.dorado.view.output.OutputContext;
+import com.bstek.dorado.view.output.VirtualPropertyOutputter;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-6-19
  */
-public class SubViewPropertyOutputter extends ObjectOutputterDispatcher {
+public class SubViewPropertyOutputter extends ObjectOutputterDispatcher
+		implements VirtualPropertyOutputter {
 	private ViewConfigManager viewConfigManager;
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
 		this.viewConfigManager = viewConfigManager;
 	}
 
-	@Override
-	protected void outputObject(Object object, OutputContext context)
+	public void output(Object object, String property, OutputContext context)
 			throws Exception {
-		String viewName = (String) object;
+		SubViewHolder subViewHolder = (SubViewHolder) object;
+		String viewName = subViewHolder.getSubView();
+		Map<String, Object> subContext = subViewHolder.getContext();
+
 		if (StringUtils.isNotEmpty(viewName)) {
+			if (subContext != null && !subContext.isEmpty()) {
+				Context doradoContext = Context.getCurrent();
+				for (Map.Entry<String, Object> entry : subContext.entrySet()) {
+					doradoContext
+							.setAttribute(entry.getKey(), entry.getValue());
+				}
+			}
+
 			ViewConfig viewConfig = viewConfigManager.getViewConfig(viewName);
 			View view = null;
 			JsonBuilder jsonBuilder = context.getJsonBuilder();
