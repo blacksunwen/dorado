@@ -199,11 +199,11 @@
 			var dropDown = this, box = $invokeSuper.call(this, arguments), rowList;
 			var config = {
 				style: "border: none",
-				onDataRowClick: function(rowList) {
-					rowList.set("highlightCurrentRow", dropDown._rowSelected = true);
+				onDataRowClick: function(self) {
+					self.set("highlightCurrentRow", dropDown._rowSelected = true);
 					dropDown.close(dropDown.getSelectedValue());
 				},
-				onFilterItem: function(rowList, arg) {
+				onFilterItem: function(self, arg) {
 					dropDown.fireEvent("onFilterItem", dropDown, arg);
 				}
 			};
