@@ -34,7 +34,7 @@ dorado.widget.list.ListBoxRowRenderer = $extend(dorado.Renderer, /** @scope dora
 				} else {
 					text = item[arg.property];
 				}
-			} else {
+			} else if (!item.isEmptyItem) {
 				text = item;
 			}
 		}
