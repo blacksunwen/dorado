@@ -578,6 +578,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				delete topView.onResizeTimerId;
 			}
 
+			rootViewport.updateBodySize();
+
 			topView.onResizeTimerId = setTimeout(function() {
 				delete topView.onResizeTimerId;
 				topView._children.each(function(child) {
@@ -624,7 +626,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					body = document.body;
 
 				document.addEventListener('touchstart', function() {
-					me.scrollTop();
+					me.scrollToTop();
 				}, true);
 
 				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
