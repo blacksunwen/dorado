@@ -363,7 +363,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			});
 			(dropdown._view || $topView).registerInnerControl(box);
 
-			box.render(win.document.body);
+			box.render(box._renderTo || win.document.body);
 			var boxDom = box.getDom(), containerDom = box.get("containerDom");
 			box._edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
 			box._edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
