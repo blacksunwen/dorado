@@ -578,9 +578,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				delete topView.onResizeTimerId;
 			}
 
-			rootViewport.updateBodySize();
-
 			topView.onResizeTimerId = setTimeout(function() {
+				rootViewport.updateBodySize();
 				delete topView.onResizeTimerId;
 				topView._children.each(function(child) {
 					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();

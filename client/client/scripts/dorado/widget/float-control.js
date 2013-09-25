@@ -60,7 +60,7 @@ dorado.dequeue = function(namespace) {
 
 	var layerModalPool = new dorado.util.ObjectPool({
 		makeObject: function() {
-			var dom = document.createElement("div"), width = $fly(document).width(), height = $fly(document).height();
+			var dom = document.createElement("div"), width = $fly(window).width(), height = $fly(window).height();
 			$fly(dom).css({
 				position: "absolute",
 				left: 0,
