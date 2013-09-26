@@ -660,7 +660,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}
 			},
 			updateBodySize: function() {
-				jQuery(document.body).height(window.innerHeight).width(window.innerWidth);
+				var width = jQuery(window).width(), height = jQuery(window).height();
+				//alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
+				jQuery(document.body).height(height).width(width);
 			}
 		};
 
