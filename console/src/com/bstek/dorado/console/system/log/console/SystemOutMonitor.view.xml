@@ -65,7 +65,7 @@
           <Property name="vAlign">innerbottom</Property>
           <Property name="content">&lt;xmp>${res.tipContent}
 &lt;listener>
-	   &lt;listener-class>com.bstek.dorado.console.ConsoleListener&lt;/listener-class>
+	   &lt;listener-class>com.bstek.dorado.console.ConsoleLoaderListener&lt;/listener-class>
 &lt;/listener>&lt;/xmp></Property>
           <Property name="caption">${res.prompt}</Property>
           <Property name="icon">url(>skin>common/icons.gif) -102px 0px</Property>
