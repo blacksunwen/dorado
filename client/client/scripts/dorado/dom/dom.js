@@ -290,7 +290,7 @@
 					el.innerHTML = content;
 				} else {
 					if (dorado.Browser.mozilla) {
-						el.textContent = content.replace(/\n/g, "<br>");
+						el.innerHTML = content.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/\n/g, "<br />\n");
 					}
 					else {
 						el.innerText = content;
