@@ -289,7 +289,12 @@
 				if (isText !== true && content.match(isHtml) != null && el.tagName.toUpperCase() != "TEXTAREA") {
 					el.innerHTML = content;
 				} else {
-					el.appendChild(document.createTextNode(content));
+					if (dorado.Browser.mozilla) {
+						el.textContent = content.replace(/\n/g, "<br>");
+					}
+					else {
+						el.innerText = content;
+					}
 				}
 				return el;
 			}
