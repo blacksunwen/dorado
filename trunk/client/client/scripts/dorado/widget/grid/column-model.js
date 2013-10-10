@@ -1458,11 +1458,13 @@
 			this._editorControl = editorControl;
 		},
 		
-		getEditorControl: function() {
+		getEditorControl: function(create) {
 			var editorControl = null;
 			if (this._editorControl) {
 				editorControl = this._editorControl;
 			} else {
+				if (create === false) return null;
+				
 				var column = this.column;
 				if (column._editor) {
 					editorControl = column._editor;
@@ -1606,7 +1608,7 @@
 		},
 		
 		hide: function(post) {
-			var control = this.getEditorControl();
+			var control = this.getEditorControl(false);
 			if (control) delete control._focusParent;
 			$invokeSuper.call(this, [post]);
 		}
@@ -1664,12 +1666,15 @@
 		},
 		
 		post: function() {
-			var editor = this.getEditorControl();
+			var editor = this.getEditorControl(false);
 			return (editor) ? editor.post() : false;
 		},
 		
 		onPost: function(arg) {
-			var entity = this.data, column = this.column, editor = this.getEditorControl(), property, value;
+			var editor = this.getEditorControl(false);
+			if (!editor) return;
+			
+			var entity = this.data, column = this.column, property, value;
 			if (column._propertyPath) {
 				property = column._subProperty;
 			}
