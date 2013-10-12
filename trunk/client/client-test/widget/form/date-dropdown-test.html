@@ -30,12 +30,34 @@
             }
         });
         view.addChild(dp);
+
+        var numberGridPicker = new dorado.widget.NumberGridPicker({
+            rowCount: 6,
+            columnCount: 2,
+            min: 0,
+            max: 11,
+            onCellClick: function(self, arg) {
+                console.log(arg);
+            }
+        });
+
+        view.addChild(numberGridPicker);
+
+        var yearPicker = new dorado.widget.YearPicker({
+            value: 2012
+        });
+        view.addChild(yearPicker);
+
+        var ymPicker = new dorado.widget.YearMonthPicker({
+        });
+
+        view.addChild(ymPicker);
         
 		$(document).ready(function(){
 			view.render(document.body);
 		});		
 		</script>
 	</head>
-	<body>
+	<body style="margin: 0;padding: 0;">
 	</body>
 </html>
