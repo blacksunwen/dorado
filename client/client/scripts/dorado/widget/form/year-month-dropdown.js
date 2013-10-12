@@ -11,6 +11,250 @@
  */
 
 (function() {
+	dorado.widget.NumberGridPicker = $extend(dorado.widget.Control, {
+		$className: "dorado.widget.NumberGridPicker",
+		focusable: true,
+
+		ATTRIBUTES: {
+			className: {},
+
+			formatter: {},
+
+			columnCount: {
+				writeBeforeReady: true
+			},
+
+			rowCount: {
+				writeBeforeReady: true
+			},
+
+			cellClassName: {
+				writeBeforeReady: true
+			},
+
+            selectedCellClassName: {
+                writeBeforeReady: true
+            },
+
+            rowClassName: {
+                writeBeforeReady: true
+            },
+
+			tableClassName: {
+				writeBeforeReady: true
+			},
+
+			min: {},
+
+			max: {},
+
+			step: {},
+
+			value: {}
+		},
+
+		EVENTS: {
+			onValueChange: {}
+		},
+
+		createDom: function() {
+			var picker = this, min = picker._min === undefined ? 1 : picker._min, max = picker._max, step = picker._step || 1,
+				columnCount = picker._columnCount || 1, rowCount = picker._rowCount || 1, doms = {};
+
+			var dom = $DomUtils.xCreate({
+				tagName: "table",
+				className: picker._tableClassName || "",
+				content: {
+					tagName: "tbody",
+					contextKey: "body"
+				}
+			}, null, doms);
+
+			picker._doms = doms;
+
+            var formatter = picker._formatter;
+
+			for (var i = 0; i < rowCount; i++) {
+				var tr = document.createElement("tr");
+				for (var j = 0; j < columnCount; j++) {
+					var td = document.createElement("td"), value = min + step * (i * columnCount + j);
+					td.className = picker._cellClassName || "";
+
+                    if (typeof formatter == "function") {
+                        td.innerText = formatter(value);
+                    } else {
+                        td.innerText = value;
+                    }
+					tr.appendChild(td);
+				}
+                tr.className = picker._rowClassName || "";
+				doms.body.appendChild(tr);
+			}
+
+			var lastOverCell;
+
+			if (dorado.Browser.msie && dorado.Browser.version == 6) {
+				$fly(dom).mousemove(function(event) {
+					var position = $DomUtils.getCellPosition(event);
+                    if (position.row > picker._rowCount) return;
+					if (position && position.element && (position.element != lastOverCell || !lastOverCell)) {
+						if (lastOverCell) {
+							$fly(lastOverCell).removeClass("hover");
+						}
+						$fly(position.element).addClass("hover");
+						lastOverCell = position.element;
+					}
+				}).mouseout(function(event) {
+                    var position = $DomUtils.getCellPosition(event);
+                    if (position.row > picker._rowCount) return;
+					if (lastOverCell) {
+						$fly(lastOverCell).removeClass("hover");
+					}
+					lastOverCell = null;
+				});
+			}
+
+			$fly(dom).click(function(event) {
+				var position = $DomUtils.getCellPosition(event), step = picker._step || 1;
+				if (position && position.element) {
+                    if (position.row >= picker._rowCount) return;
+                    var min = picker._min === undefined ? 1 : picker._min, step = step = picker._step || 1,
+                        value = min + step * (position.row * columnCount + position.column);
+
+                    picker._value = value;
+
+					picker.fireEvent("onValueChange", picker, {
+						value: value
+					});
+
+                    picker.refreshValue();
+				}
+			});
+
+			return dom;
+		},
+
+        refreshTable: function() {
+            var picker = this, dom = picker._doms.body, formatter = picker._formatter;
+
+            var step = picker._step || 1, min = picker._min === undefined ? 1 : picker._min, columnCount = picker._columnCount,
+                rowCount = picker._rowCount, row = Math.floor((value - min) / columnCount), column = (value - min) % columnCount;
+
+            for (var i = 0; i < rowCount; i++) {
+                var rows = dom.rows[i];
+                for (var j = 0; j < columnCount; j++) {
+                    var cell = rows.cells[j], value = min + step * (i * columnCount + j);
+                    cell.className = picker._cellClassName || "";
+
+                    if (typeof formatter == "function") {
+                        cell.innerText = formatter(value);
+                    } else {
+                        cell.innerText = value;
+                    }
+                }
+            }
+        },
+
+        refreshValue: function() {
+            var picker = this, dom = picker._doms.body, lastSelectedCell = picker._lastSelectedCell, value = picker._value;
+
+            if (isNaN(picker._value)) return;
+
+            var step = picker._step || 1, min = picker._min === undefined ? 1 : picker._min, columnCount = picker._columnCount,
+                rowCount = picker._rowCount, row = Math.floor((value - min) / columnCount), column = (value - min) % columnCount,
+                cell;
+
+            if (dom.rows[row]) {
+                cell = dom.rows[row].cells[column];
+            } else {
+                return;
+            }
+
+            if (lastSelectedCell) {
+                $fly(lastSelectedCell).removeClass(picker._selectedCellClassName || "selected");
+            }
+
+            if (cell) {
+                $fly(cell).addClass(picker._selectedCellClassName || "selected");
+            }
+
+            picker._lastSelectedCell = cell;
+        },
+
+		refreshDom: function(dom) {
+			$invokeSuper.call(this, arguments);
+
+            this.refreshTable();
+            this.refreshValue();
+		}
+	});
+
+    dorado.widget.YearPicker = $extend(dorado.widget.NumberGridPicker, {
+        ATTRIBUTES: {
+            rowCount: {
+                defaultValue: 5
+            },
+            columnCount: {
+                defaultValue: 2
+            },
+            tableClassName: {
+                defaultValue: "year-table"
+            },
+            rowClassName: {
+                defaultValue: "number-row"
+            },
+            value: {
+                setter: function(value) {
+                    var picker = this, oldValue = picker._value, startYear, remainder;
+                    remainder = value % 10;
+                    picker._min = value - (remainder == 0 ? 10 : remainder) + 1;
+
+                    picker._value = value;
+                }
+            }
+        },
+
+        createDom: function() {
+            var picker = this, dom = $invokeSuper.call(picker, arguments);
+
+            var preYearButton = new dorado.widget.SimpleIconButton({
+                iconClass: "prev-year-button",
+                listener: {
+                    onClick: function() {
+                        picker.set("value", picker._value - 10);
+                    }
+                }
+            });
+
+            var nextYearButton = new dorado.widget.SimpleIconButton({
+                iconClass: "next-year-button",
+                listener: {
+                    onClick: function() {
+                        picker.set("value", picker._value + 10);
+                    }
+                }
+            });
+
+            var buttonRow = document.createElement("tr"), prevYearCell = document.createElement("td"), nextYearCell = document.createElement("td");
+            buttonRow.className = "btn-row";
+            prevYearCell.align = "center";
+            nextYearCell.align = "center";
+
+            buttonRow.appendChild(prevYearCell);
+            buttonRow.appendChild(nextYearCell);
+
+            picker._doms.body.appendChild(buttonRow);
+
+            preYearButton.render(prevYearCell);
+            nextYearButton.render(nextYearCell);
+
+            picker.registerInnerControl(preYearButton);
+            picker.registerInnerControl(nextYearButton);
+
+            return dom;
+        }
+    });
+
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class YearMonthPicker
@@ -33,7 +277,8 @@
 			 * @type int
 			 */
 			year: {
-				defaultValue: (new Date).getFullYear()
+				defaultValue: (new Date).getFullYear(),
+                path: "_yearTablePicker.value"
 			},
 
 			/**
@@ -43,7 +288,8 @@
 			 * @type int
 			 */
 			month: {
-				defaultValue: 0
+				defaultValue: 0,
+                path: "_monthTablePicker.value"
 			}
 		},
 
@@ -67,66 +313,8 @@
 		},
 
 		/**
-		 * 刷新年份。
-		 * @param {int} year 新的年份
-		 * @private
-		 */
-		refreshYear: function(year) {
-			var picker = this, oldYear = picker._year, startYear, doms = picker._doms, yearTable = doms.yearTable, remainder;
-			
-			year = year ? year : oldYear;
-			remainder = year % 10;
-			startYear = year - (remainder == 0 ? 10 : remainder) + 1;
-			
-			for (var i = 0; i < 5; i++) {
-				for (var j = 0; j < 2; j++) {
-					var cell = yearTable.rows[i].cells[j];
-					cell.innerText = startYear + i * 2 + j;
-				}
-			}
-			
-			var lastSelectedCell = picker._lastSelectedYearCell, index = year - startYear, newSelectedCell = yearTable.rows[Math.floor(index / 2)].cells[index % 2];
-			
-			if (lastSelectedCell) {
-				$fly(lastSelectedCell).removeClass("selected");
-			}
-			
-			if (newSelectedCell) {
-				$fly(newSelectedCell).addClass("selected");
-			}
-			
-			picker._lastSelectedYearCell = newSelectedCell;
-		},
-
-		/**
-		 * 刷新月份。
-		 * @param {int} month 设置的月份。
-		 * @private
-		 */
-		refreshMonth: function(month) {
-			var picker = this, oldMonth = picker._month, doms = picker._doms, monthTable = doms.monthTable;
-			
-			if (isNaN(month)) {
-				month = oldMonth ? oldMonth : 0;
-			}
-			
-			var lastSelectedCell = picker._lastSelectedMonthCell, cell = monthTable.rows[Math.floor(month / 2)].cells[month % 2];
-			
-			if (lastSelectedCell) {
-				$fly(lastSelectedCell).removeClass("selected");
-			}
-			
-			if (cell) {
-				$fly(cell).addClass("selected");
-			}
-			
-			picker._lastSelectedMonthCell = cell;
-		},
-
-		/**
+         * @private
 		 * 更新日期。
-		 * @param date
-		 * @param month
 		 */
 		updateDate: function(date, month) {
 			var picker = this, year = date;
@@ -142,79 +330,18 @@
 			}
 		},
 
-		refreshDom: function() {
-			var picker = this;
-			picker.refreshYear(picker._year);
-			picker.refreshMonth(picker._month);
-			$invokeSuper.call(this, arguments);
-		},
-
 		createDom: function() {
-			var monthLabel = $resource("dorado.baseWidget.AllMonths") || "", month_label = monthLabel.split(",");
+			var monthLabel = $resource("dorado.baseWidget.AllMonths") || "", monthLabels = monthLabel.split(",");
 			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
 				content: [{
 					tagName: "table",
 					className: "year-table",
-					contextKey: "yearTable",
-					content: [
-						{ tagName: "tr", className: "number-row", content: [{ tagName: "td" }, { tagName: "td" }] },
-						{ tagName: "tr", className: "number-row", content: [{ tagName: "td" }, { tagName: "td" }] },
-						{ tagName: "tr", className: "number-row", content: [{ tagName: "td" }, { tagName: "td" }] },
-						{ tagName: "tr", className: "number-row", content: [{ tagName: "td" }, { tagName: "td" }] },
-						{ tagName: "tr", className: "number-row", content: [{ tagName: "td" }, { tagName: "td" }] },
-						{ tagName: "tr", className: "btn-row", content: [
-							{ tagName: "td", align: "center", contextKey: "preaYearCell" },
-							{ tagName: "td", align: "center", contextKey: "nextYearCell" }
-						]}
-					]
+					contextKey: "yearTable"
 				}, {
 					tagName: "table",
 					className: "month-table",
-					contextKey: "monthTable",
-					content: [{
-						tagName: "tr",
-						className: "number-row",
-						content: [
-							{ tagName: "td", content: month_label[0] },
-							{ tagName: "td", content: month_label[1] }
-						]
-					}, {
-						tagName: "tr",
-						className: "number-row",
-						content: [
-							{ tagName: "td", content: month_label[2] },
-							{ tagName: "td", content: month_label[3] }
-						]
-					}, {
-						tagName: "tr",
-						className: "number-row",
-						content: [
-							{ tagName: "td", content: month_label[4] },
-							{ tagName: "td", content: month_label[5] }
-						]
-					}, {
-						tagName: "tr",
-						className: "number-row",
-						content: [
-							{ tagName: "td", content: month_label[6] },
-							{ tagName: "td", content: month_label[7] }
-						]
-					}, {
-						tagName: "tr",
-						className: "number-row",
-						content: [
-							{ tagName: "td", content: month_label[8] },
-							{ tagName: "td", content: month_label[9] }
-						]
-					}, {
-						tagName: "tr",
-						className: "number-row",
-						content: [
-							{ tagName: "td", content: month_label[10] },
-							{ tagName: "td", content: month_label[11] }
-						]
-					}]
+					contextKey: "monthTable"
 				}, {
 					tagName: "div",
 					className: "btns-pane",
@@ -225,88 +352,37 @@
 			var monthLastOverCell, yearLastOverCell;
 			
 			picker._doms = doms;
-			
-			if (dorado.Browser.msie && dorado.Browser.version == 6) {
-				$fly(doms.monthTable).mousemove(function(event) {
-					var position = $DomUtils.getCellPosition(event);
-					
-					if (position && position.element && (position.element != monthLastOverCell || !monthLastOverCell)) {
-						if (monthLastOverCell) {
-							$fly(monthLastOverCell).removeClass("hover");
-						}
-						$fly(position.element).addClass("hover");
-						monthLastOverCell = position.element;
-					}
-				}).mouseout(function() {
-					if (monthLastOverCell) {
-						$fly(monthLastOverCell).removeClass("hover");
-					}
-					monthLastOverCell = null;
-				});
-			}
-			
-			$fly(doms.monthTable).click(function(event) {
-				var position = $DomUtils.getCellPosition(event);
-				if (position && position.element) {
-					picker.set("month", position.row * 2 + position.column);
-				}
-			});
-			
-			if (dorado.Browser.msie && dorado.Browser.version == 6) {
-				$fly(doms.yearTable).mousemove(function(event) {
-					var position = $DomUtils.getCellPosition(event);
-					
-					if (position && position.element && (position.element != yearLastOverCell || !yearLastOverCell)) {
-						if (position.row == 5) {
-							return;
-						}
-						if (yearLastOverCell) {
-							$fly(yearLastOverCell).removeClass("hover");
-						}
-						$fly(position.element).addClass("hover");
-						yearLastOverCell = position.element;
-					}
-				}).mouseout(function() {
-					if (yearLastOverCell) {
-						$fly(yearLastOverCell).removeClass("hover");
-					}
-					yearLastOverCell = null;
-				});
-			}
-			
-			$fly(doms.yearTable).click(function(event) {
-				var position = $DomUtils.getCellPosition(event);
-				if (position && position.element) {
-					if (position.row == 5) {
-						return;
-					}
-					picker.set("year", parseInt(position.element.innerHTML, 10));
-				}
-			});
-			
-			var preYearButton = new dorado.widget.SimpleIconButton({
-				iconClass: "prev-year-button",
-				listener: {
-					onClick: function() {
-						picker.set("year", picker._year - 10);
-					}
-				}
-			});
-			
-			var nextYearButton = new dorado.widget.SimpleIconButton({
-				iconClass: "next-year-button",
-				listener: {
-					onClick: function() {
-						picker.set("year", picker._year + 10);
-					}
-				}
-			});
-			
-			preYearButton.render(doms.preaYearCell);
-			nextYearButton.render(doms.nextYearCell);
-			
-			picker.registerInnerControl(preYearButton);
-			picker.registerInnerControl(nextYearButton);
+
+            var monthTablePicker = new dorado.widget.NumberGridPicker({
+                rowCount: 6,
+                columnCount: 2,
+                tableClassName: "month-table",
+                rowClassName: "number-row",
+                min: 0,
+                max: 11,
+                renderOn: doms.monthTable,
+                formatter: function(value) {
+                    return monthLabels[value];
+                },
+                value: picker._month || 0
+            });
+
+            monthTablePicker.render(doms.monthTable);
+
+            doms.monthTable = monthTablePicker._dom;
+
+            picker._monthTablePicker = monthTablePicker;
+            picker.registerInnerControl(monthTablePicker);
+
+            var yearTablePicker = new dorado.widget.YearPicker({
+                renderOn: doms.yearTable,
+                value: picker._year
+            });
+
+            yearTablePicker.render(doms.yearTable);
+            doms.yearTable = yearTablePicker._dom;
+            picker._yearTablePicker = yearTablePicker;
+            picker.registerInnerControl(yearTablePicker);
 			
 			var okButton = new dorado.widget.Button({
 				caption: $resource("dorado.baseWidget.YMPickerConfirm"),
@@ -331,13 +407,11 @@
 			picker.registerInnerControl(okButton);
 			picker.registerInnerControl(cancelButton);
 			
-			picker.refreshYear();
-			picker.refreshMonth();
-			
 			return dom;
 		},
+
 		doOnKeyDown: function(event) {
-			var picker = this, year = picker._year, month = picker._month;
+			var picker = this, year = picker.get("year"), month = picker.get("month");
 			switch (event.keyCode) {
 				case 37://left arrow
 					if (event.ctrlKey) {
@@ -396,9 +470,9 @@
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearMonthPicker({
 				listener: {
 					onPick: function(self) {
-						var retval = new Date(self._year, self._month);
-						retval.year = self._year;
-						retval.month = self._month;
+						var retval = new Date(self.get("year"), self.get("month"));
+						retval.year = self.get("year");
+						retval.month = self.get("month");
 						dropDown.close(retval);
 					},
 					onCancel: function() {
