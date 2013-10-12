@@ -197,7 +197,8 @@
 			delete frame._notifyResizeOnVisible;
             if (frame.isSameDomain()) {
 	            frame._replacedUrl = replacedUrl;
-                frame.getIFrameWindow().location.replace(replacedUrl);
+                if (frame.getIFrameWindow())
+                    frame.getIFrameWindow().location.replace(replacedUrl);
             } else {
                 $fly(doms.iframe).prop("src", replacedUrl);
             }
