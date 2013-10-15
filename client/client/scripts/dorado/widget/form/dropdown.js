@@ -486,16 +486,16 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			box.setActualVisible(false);
 		}
 
-		var containerDom = box.get("containerDom"), controlDom = box.get("control").getDom();
+		var containerDom = box.get("containerDom"), control = box.get("control"), controlDom = control ? control.getDom() : containerDom.firstChild;
 		if (!dropdown._width) {
 			var edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
-			boxWidth = controlDom.offsetWidth + edgeWidth;
+			if (controlDom) boxWidth = controlDom.offsetWidth + edgeWidth;
 			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
 		if (!dropdown._height) {
 			var edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
-			boxHeight =  controlDom.offsetHeight + edgeHeight;
+			if (controlDom) boxHeight =  controlDom.offsetHeight + edgeHeight;
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 		}
