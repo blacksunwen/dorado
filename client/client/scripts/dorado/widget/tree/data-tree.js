@@ -823,12 +823,10 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 					else {
 						this.set("currentNode", targetObject);
 					}
-					
-					return true;
 				}
 			}
 		}
-		return false;
+		return true;
 	},
 	
 	findNode: function(entity) {

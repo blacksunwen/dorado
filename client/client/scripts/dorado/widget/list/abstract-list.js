@@ -545,10 +545,9 @@
 					if (highlight != null) {
 						this.highlightItem(highlight);
 					}
-					return true;
 				}
 			}
-			return false;
+			return true;
 		},
 		
 		onDraggingSourceDrop: function(draggingInfo, evt) {
