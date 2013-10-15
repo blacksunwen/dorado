@@ -382,7 +382,7 @@
 		createDropDownBox: function() {
 			var dropdown = this, box = $invokeSuper.call(dropdown, arguments);
 			
-			var containerElement = box.getContainerElement(), doms = {};
+			var containerElement = box.get("containerDom"), doms = {};
 			$fly(containerElement).xCreate({
 				tagName: "DIV",
 				className: "i-criterion-panel d-criterion-panel",
