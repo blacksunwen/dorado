@@ -139,7 +139,7 @@ public class FormElement extends Control implements FormConfig,
 	}
 
 	@ComponentReference("Trigger")
-	@IdeProperty(enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,autoOpenMappingDropDown1,autoOpenMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown")
+	@IdeProperty(enumValues = "triggerClear,autoMappingDropDown1,autoMappingDropDown2,autoOpenMappingDropDown1,autoOpenMappingDropDown2,defaultDateDropDown,defaultDateTimeDropDown,defaultYearMonthDropDown,defaultYearDropDown,defaultMonthDropDown")
 	public String getTrigger() {
 		return trigger;
 	}
