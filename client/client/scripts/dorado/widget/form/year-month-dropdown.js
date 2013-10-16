@@ -525,7 +525,6 @@
         },
 
         doOnKeyPress: function(event) {
-            debugger;
             var picker = this, retValue = true, yearPicker = picker.get("box.control");
             switch (event.keyCode) {
                 case 27: // esc
@@ -592,7 +591,6 @@
         },
 
         doOnKeyPress: function(event) {
-            debugger;
             var picker = this, retValue = true, yearPicker = picker.get("box.control");
             switch (event.keyCode) {
                 case 27: // esc
