@@ -39,6 +39,35 @@
 	background-color: #FFFFFF;
 }
 
+/** year-picker */
+.d-year-picker, .d-month-picker {
+    background: #FFFFFF url(base/date-picker-bg.gif) 0 -200px repeat-x;
+}
+
+.d-year-picker .prev-year-button, .d-year-picker .next-year-button{
+    background: url(common/icons.gif) no-repeat -60px -280px;
+}
+
+.d-year-picker .prev-year-button{
+    background-position: -40px -280px;
+}
+
+.d-year-picker td.hover, .d-month-picker td.hover {
+    background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
+}
+
+.d-year-picker td:hover, .d-month-picker td:hover {
+    background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
+}
+
+.d-year-picker .btn-row td:hover{
+    background-image: none;
+}
+
+.d-year-picker  td.selected, .d-month-picker  td.selected {
+    background: url(base/ym-picker-current-cell.gif) no-repeat center center;
+}
+
 /* year-month-picker */
 .d-year-month-picker{
 	border: 0;
@@ -57,7 +86,7 @@
 	background-position: -40px -280px;
 }
 
-.d-year-month-picker .year-table td.hover, .d-year-month-picker .month-table td.hover,{
+.d-year-month-picker .year-table td.hover, .d-year-month-picker .month-table td.hover{
 	background: url(base/ym-picker-hover-cell.gif) no-repeat center center;
 }
 

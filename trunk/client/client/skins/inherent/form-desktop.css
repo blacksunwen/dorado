@@ -10,6 +10,23 @@
  * at http://www.bstek.com/contact.
  */
 
+/** year-picker */
+.i-year-picker, i-month-picker {
+    table-layout: fixed;
+}
+
+.i-year-picker .btn-row {
+    height: 20px;
+}
+
+.i-year-picker .number-row td, .i-month-picker .number-row td
+{
+    text-align: center;
+    cursor: pointer;
+    line-height: 20px;
+    padding: 1px;
+}
+
 /* year-month-picker */
 .i-year-month-picker {
 	width: 100%;

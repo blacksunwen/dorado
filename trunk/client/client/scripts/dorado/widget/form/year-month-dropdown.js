@@ -54,7 +54,7 @@
 		},
 
 		EVENTS: {
-			onValueChange: {}
+			onPick: {}
 		},
 
 		createDom: function() {
@@ -63,7 +63,7 @@
 
 			var dom = $DomUtils.xCreate({
 				tagName: "table",
-				className: picker._tableClassName || "",
+				className: (picker._className || "") + " " + (picker._tableClassName || ""),
 				content: {
 					tagName: "tbody",
 					contextKey: "body"
@@ -123,7 +123,7 @@
 
                     picker._value = value;
 
-					picker.fireEvent("onValueChange", picker, {
+					picker.fireEvent("onPick", picker, {
 						value: value
 					});
 
@@ -189,8 +189,65 @@
 		}
 	});
 
-    dorado.widget.YearPicker = $extend(dorado.widget.NumberGridPicker, {
-        ATTRIBUTES: {
+    /**
+     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+     * @class dorado.widget.MonthPicker
+     * @extends dorado.widget.NumberGridPicker
+     */
+    dorado.widget.MonthPicker = $extend(dorado.widget.NumberGridPicker, /** @scope dorado.widget.MonthPicker.prototype */{
+        _inherentClassName: "i-month-picker",
+        focusable: true,
+        ATTRIBUTES: /** @scope dorado.widget.MonthPicker.prototype */ {
+            className: {
+                defaultValue: "d-month-picker"
+            },
+            rowCount: {
+                defaultValue: 6
+            },
+            min: {
+                defaultValue: 0
+            },
+            max: {
+                defaultValue: 11
+            },
+            columnCount: {
+                defaultValue: 2
+            },
+            tableClassName: {
+                defaultValue: "month-table"
+            },
+            rowClassName: {
+                defaultValue: "number-row"
+            },
+            /**
+             * Picker的当前月份。
+             * @attribute
+             * @type int
+             */
+            value: {}
+        },
+
+        createDom: function() {
+            var monthLabel = $resource("dorado.baseWidget.AllMonths") || "", monthLabels = monthLabel.split(",");
+            this._formatter = function(value) {
+                return monthLabels[value];
+            };
+            return $invokeSuper.call(this, arguments);
+        }
+    });
+
+    /**
+     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+     * @class dorado.widget.YearPicker
+     * @extends dorado.widget.NumberGridPicker
+     */
+    dorado.widget.YearPicker = $extend(dorado.widget.NumberGridPicker, /** @scope dorado.widget.YearPicker.prototype */{
+        _inherentClassName: "i-year-picker",
+        focusable: true,
+        ATTRIBUTES: /** @scope dorado.widget.YearPicker.prototype */ {
+            className: {
+                defaultValue: "d-year-picker"
+            },
             rowCount: {
                 defaultValue: 5
             },
@@ -203,6 +260,11 @@
             rowClassName: {
                 defaultValue: "number-row"
             },
+            /**
+             * Picker的当前年份，Picker会根据当前年份来决定显示范围。
+             * @attribute
+             * @type int
+             */
             value: {
                 setter: function(value) {
                     var picker = this, oldValue = picker._value, startYear, remainder;
@@ -334,15 +396,8 @@
 			var monthLabel = $resource("dorado.baseWidget.AllMonths") || "", monthLabels = monthLabel.split(",");
 			var picker = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
+                className: picker._className,
 				content: [{
-					tagName: "table",
-					className: "year-table",
-					contextKey: "yearTable"
-				}, {
-					tagName: "table",
-					className: "month-table",
-					contextKey: "monthTable"
-				}, {
 					tagName: "div",
 					className: "btns-pane",
 					contextKey: "buttonPanel"
@@ -353,21 +408,11 @@
 			
 			picker._doms = doms;
 
-            var monthTablePicker = new dorado.widget.NumberGridPicker({
-                rowCount: 6,
-                columnCount: 2,
-                tableClassName: "month-table",
-                rowClassName: "number-row",
-                min: 0,
-                max: 11,
-                renderOn: doms.monthTable,
-                formatter: function(value) {
-                    return monthLabels[value];
-                },
+            var monthTablePicker = new dorado.widget.MonthPicker({
                 value: picker._month || 0
             });
 
-            monthTablePicker.render(doms.monthTable);
+            monthTablePicker.render(dom, doms.buttonPanel);
 
             doms.monthTable = monthTablePicker._dom;
 
@@ -375,11 +420,10 @@
             picker.registerInnerControl(monthTablePicker);
 
             var yearTablePicker = new dorado.widget.YearPicker({
-                renderOn: doms.yearTable,
                 value: picker._year
             });
 
-            yearTablePicker.render(doms.yearTable);
+            yearTablePicker.render(dom, doms.monthTable);
             doms.yearTable = yearTablePicker._dom;
             picker._yearTablePicker = yearTablePicker;
             picker.registerInnerControl(yearTablePicker);
@@ -406,7 +450,7 @@
 			
 			picker.registerInnerControl(okButton);
 			picker.registerInnerControl(cancelButton);
-			
+
 			return dom;
 		},
 
@@ -445,6 +489,141 @@
 			}
 		}
 	});
+
+
+    /**
+     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+     * @class YearDropDown
+     * @extends dorado.widget.DropDown
+     */
+    dorado.widget.YearDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.YearDropDown.prototype */{
+        $className: "dorado.widget.YearDropDown",
+        focusable: true,
+        ATTRIBUTES: {
+            width: {
+                defaultValue: 260
+            },
+            height: {
+                defaultValue: 190
+            },
+            iconClass: {
+                defaultValue: "d-trigger-icon-date"
+            }
+        },
+
+        createDropDownBox: function(editor) {
+            var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearPicker({
+                listener: {
+                    onPick: function(self) {
+                        dropDown.close(self.get("value"));
+                    }
+                }
+            });
+
+            box.set("control", picker);
+            return box;
+        },
+
+        doOnKeyPress: function(event) {
+            debugger;
+            var picker = this, retValue = true, yearPicker = picker.get("box.control");
+            switch (event.keyCode) {
+                case 27: // esc
+                    picker.close();
+                    retValue = false;
+                    break;
+                case 13: // enter
+                    yearPicker.fireEvent("onPick", picker);
+                    retValue = false;
+                    break;
+                default:
+                    retValue = yearPicker.onKeyDown(event);
+            }
+            return retValue;
+        },
+
+        initDropDownBox: function(box, editor) {
+            var dropDown = this, picker = dropDown.get("box.control");
+            if (picker) {
+                var value = parseInt(editor.get("value"), 10);
+                if (!isNaN(value))
+                    picker.set("value", value);
+                else
+                    picker.set("value", new Date().getFullYear());
+            }
+        }
+    });
+
+    dorado.widget.View.registerDefaultComponent("defaultYearDropDown", function() {
+        return new dorado.widget.YearDropDown();
+    });
+
+    /**
+     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+     * @class MonthDropDown
+     * @extends dorado.widget.DropDown
+     */
+    dorado.widget.MonthDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.MonthDropDown.prototype */{
+        $className: "dorado.widget.MonthDropDown",
+        focusable: true,
+        ATTRIBUTES: {
+            width: {
+                defaultValue: 260
+            },
+            height: {
+                defaultValue: 190
+            },
+            iconClass: {
+                defaultValue: "d-trigger-icon-date"
+            }
+        },
+
+        createDropDownBox: function(editor) {
+            var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.MonthPicker({
+                listener: {
+                    onPick: function(self) {
+                        dropDown.close(self.get("value"));
+                    }
+                }
+            });
+
+            box.set("control", picker);
+            return box;
+        },
+
+        doOnKeyPress: function(event) {
+            debugger;
+            var picker = this, retValue = true, yearPicker = picker.get("box.control");
+            switch (event.keyCode) {
+                case 27: // esc
+                    picker.close();
+                    retValue = false;
+                    break;
+                case 13: // enter
+                    yearPicker.fireEvent("onPick", picker);
+                    retValue = false;
+                    break;
+                default:
+                    retValue = yearPicker.onKeyDown(event);
+            }
+            return retValue;
+        },
+
+        initDropDownBox: function(box, editor) {
+            var dropDown = this, picker = dropDown.get("box.control");
+            if (picker) {
+                var value = parseInt(editor.get("value"), 10);
+                if (!isNaN(value))
+                    picker.set("value", value);
+                else
+                    picker.set("value", 0);
+            }
+        }
+    });
+
+    dorado.widget.View.registerDefaultComponent("defaultMonthDropDown", function() {
+        return new dorado.widget.MonthDropDown();
+    });
 	
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -485,7 +664,7 @@
 			return box;
 		},
 
-		doOnKeyPress: function(event) {
+        doOnKeyPress: function(event) {
 			var picker = this, retValue = true, ymPicker = picker.get("box.control");
 			switch (event.keyCode) {
 				case 27: // esc

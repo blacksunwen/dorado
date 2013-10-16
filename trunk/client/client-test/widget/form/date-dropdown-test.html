@@ -35,10 +35,7 @@
             rowCount: 6,
             columnCount: 2,
             min: 0,
-            max: 11,
-            onCellClick: function(self, arg) {
-                console.log(arg);
-            }
+            max: 11
         });
 
         view.addChild(numberGridPicker);
@@ -52,7 +49,29 @@
         });
 
         view.addChild(ymPicker);
-        
+
+        var editor4 = new dorado.widget.TextEditor({
+            width: "30%",
+            trigger: ["defaultYearDropDown"],
+            listener: {
+                onPost: function(self) {
+                    //dorado.MessageBox.alert(self.get("id") + " onPost:\n" + entity4.property1);
+                }
+            }
+        });
+        view.addChild(editor4);
+
+        var editor5 = new dorado.widget.TextEditor({
+            width: "30%",
+            trigger: ["defaultMonthDropDown"],
+            listener: {
+                onPost: function(self) {
+                    //dorado.MessageBox.alert(self.get("id") + " onPost:\n" + entity4.property1);
+                }
+            }
+        });
+        view.addChild(editor5);
+
 		$(document).ready(function(){
 			view.render(document.body);
 		});		
