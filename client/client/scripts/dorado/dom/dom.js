@@ -431,7 +431,7 @@
 				if (fn && fn(child) === false) continue;
 				toRemove.push(child);
 			}
-			$fly(toRemove).remove();
+			if (toRemove.length > 0) $fly(toRemove).remove();
 		},
 		
 		isDragging: function() {

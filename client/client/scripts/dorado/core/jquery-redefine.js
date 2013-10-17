@@ -67,8 +67,7 @@
 	 */
 	$fly = function(elems) {
 		if (elems instanceof Array) {
-			if (dorado.Browser.mozilla && dorado.Browser.version >= 2 ||
-			dorado.Browser.msie && dorado.Browser.version < 9) {
+			if ((dorado.Browser.mozilla && dorado.Browser.version >= 2) || dorado.Browser.msie) {
 				for (var i = flyableArray.length - 1; i >= 0; i--) {
 					delete flyableArray[i];
 				}
