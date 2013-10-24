@@ -587,6 +587,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}, 200);
 		};
 
+        var isInIFrame = !!(window.frameElement || top != window);
+
 		var doInitDorado = function() {
 			dorado.fireOnInit();
 
@@ -597,7 +599,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
-			}).bind("resize", function() {
+			});
+
+            var oldResize = window.onresize;
+
+            window.onresize = function() {
+                oldResize && oldResize.apply(window, arguments);
 				if (dorado.Browser.isTouch) {
 					var width = $fly(window).width(), height = $fly(window).height();
 					if ((oldWidth === undefined && oldHeight === undefined) || (width !== oldWidth && height !== oldHeight)) {
@@ -608,7 +615,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				} else {
 					resizeTopView();
 				}
-			});
+			};
 
 			if (dorado.Browser.isTouch) {
 				$fly(window).bind("orientationchange", function() {
@@ -651,6 +658,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}, 50);
 			},
 			scrollToTop: function() {
+                if (!dorado.Browser.isPhone) return;
 				if (dorado.Browser.iOS) {
 					if (dorado.Browser.isPhone) {
 						document.body.scrollTop = document.body.scrollHeight;
@@ -660,14 +668,23 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}
 			},
 			updateBodySize: function() {
-				var width = jQuery(window).width(), height = jQuery(window).height();
-				//alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
-				jQuery(document.body).height(height).width(width);
+                var $body = $fly(document.body);
+                if (isInIFrame) {
+                    return;
+                } else {
+                    var width = jQuery(window).width(), height = jQuery(window).height();
+                    //alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
+                    jQuery(document.body).height(height).width(width);
+                }
 			}
 		};
 
 		if (dorado.Browser.isTouch) {
-			rootViewport.init(function() { doInitDorado(); });
+            if (isInIFrame) {
+                doInitDorado();
+            } else {
+                rootViewport.init(function() { doInitDorado(); });
+            }
 			return;
 		}
 
