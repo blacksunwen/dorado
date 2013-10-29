@@ -27,6 +27,8 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
+import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.util.xml.DomUtils;
@@ -54,6 +56,7 @@ public class XmlDocumentPreprocessor {
 
 	private ViewConfigManager viewConfigManager;
 	private ComponentTypeRegistry componentTypeRegistry;
+	private ExpressionHandler expressionHandler;
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
 		this.viewConfigManager = viewConfigManager;
@@ -174,6 +177,13 @@ public class XmlDocumentPreprocessor {
 	private List<Element> getImportContent(Element importElement,
 			PreparseContext context) throws Exception {
 		String src = importElement.getAttribute("src");
+
+		if (StringUtils.isNotEmpty(src)) {
+			Expression expression = expressionHandler.compile(src);
+			if (expression != null) {
+				src = (String) expression.evaluate();
+			}
+		}
 
 		if (StringUtils.isEmpty(src)) {
 			throw new IllegalArgumentException("Import src undefined");
