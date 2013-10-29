@@ -23,10 +23,10 @@
 	 * </p>
 	 * @extends dorado.widget.AbstractButton
 	 */
-	dorado.widget.SimpleButton = $extend(dorado.widget.AbstractButton, {
+	dorado.widget.SimpleButton = $extend(dorado.widget.AbstractButton, /** @scope dorado.widget.SimpleButton.prototype */{
 		$className: "dorado.widget.SimpleButton",
 		
-		ATTRIBUTES: {
+		ATTRIBUTES: /** @scope dorado.widget.SimpleButton.prototype */ {
 			/**
 			 * 当用户点击该按钮以后使用的className，不设置则自动根据className后面加上-click。
 			 * @type String
