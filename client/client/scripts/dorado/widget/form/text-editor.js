@@ -1122,7 +1122,7 @@
 		},
 		
 		doValidate: function(text) {
-			var validationResults;
+			var validationResults = [];
 			try {
 				if (text.length) {
 					if (this._mapping && this.getMappedKey(text) === undefined) {
