@@ -460,7 +460,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			if (!element || !element.style || element.style.tabIndex < 0) return;
 
 			var nodeName = element.nodeName.toLowerCase();
-			var ignorePhyscialFocus = (nodeName == "input" || nodeName == "textarea")
+			var ignorePhyscialFocus = (nodeName == "input" || nodeName == "textarea" || nodeName == "select")
 
 			var control = getControlByElement(element);
 			if (control == null) {

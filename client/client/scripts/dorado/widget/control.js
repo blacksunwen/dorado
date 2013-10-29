@@ -908,7 +908,7 @@
 					if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 						if (dorado.Browser.msie) {
 							var nodeName = evt.srcElement && evt.srcElement.nodeName.toLowerCase();
-							if (nodeName != "input" && nodeName != "textarea") {
+							if (nodeName != "input" && nodeName != "textarea" && nodeName != "select") {
 								dorado.widget.setFocusedControl(self);
 							}
 						} else {
@@ -1239,7 +1239,7 @@
 		doSetFocus : function() {
 			var dom = this._dom;
 			if (dom) {
-				if (["input", "button"].indexOf(dom.nodeName.toLowerCase) >= 0) {
+				if (["input", "button", "textarea", "select"].indexOf(dom.nodeName.toLowerCase) >= 0) {
 					dom.focus();
 				}
 				else {
@@ -1406,7 +1406,7 @@
 			var activeControl = dorado.widget.Control.findParentControl(document.activeElement);
 			if (activeControl && !(activeControl instanceof dorado.widget.View)) {
 				var nodeName = document.activeElement.nodeName.toLowerCase();
-				if (nodeName == "input" || nodeName == "textarea") return;
+				if (nodeName == "input" || nodeName == "textarea" || nodeName == "select") return;
 			}
 		}
 			
