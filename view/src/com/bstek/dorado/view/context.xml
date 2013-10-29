@@ -29,6 +29,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 			<bean class="com.bstek.dorado.view.config.XmlDocumentPreprocessor">
 				<property name="viewConfigManager" ref="dorado.viewConfigManager" />
 				<property name="componentTypeRegistry" ref="dorado.componentTypeRegistry" />
+				<property name="expressionHandler" ref="dorado.expressionHandler" />
 			</bean>
 		</property>
 		<property name="cache" ref="dorado.viewConfigDefinitionCache" />
