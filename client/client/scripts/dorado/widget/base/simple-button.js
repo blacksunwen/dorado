@@ -176,7 +176,7 @@
 	 * </p>
 	 * @extends dorado.widget.SimpleButton
 	 */
-	dorado.widget.SimpleIconButton = $extend(dorado.widget.SimpleButton, {
+	dorado.widget.SimpleIconButton = $extend(dorado.widget.SimpleButton, /** @scope dorado.widget.SimpleIconButton.prototype */{
 		$className: "dorado.widget.SimpleIconButton",
 		_inherentClassName: "i-icon-button",
 		
