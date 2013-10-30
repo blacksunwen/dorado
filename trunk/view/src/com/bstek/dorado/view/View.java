@@ -37,6 +37,8 @@ import com.bstek.dorado.view.widget.Container;
 public abstract class View extends Container {
 	private ViewConfig viewConfig;
 	private Map<String, Component> componentMap = new HashMap<String, Component>();
+	private ViewCache cache;
+
 	private String packages;
 	private String pageTemplate;
 	private String pageUri;
@@ -97,6 +99,15 @@ public abstract class View extends Container {
 
 	public Collection<Component> getAllComponents() {
 		return componentMap.values();
+	}
+
+	@XmlProperty(composite = true)
+	public ViewCache getCache() {
+		return cache;
+	}
+
+	public void setCache(ViewCache cache) {
+		this.cache = cache;
 	}
 
 	@ClientProperty(ignored = true)

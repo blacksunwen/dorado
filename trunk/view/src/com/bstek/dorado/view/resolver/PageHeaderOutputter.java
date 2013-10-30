@@ -103,11 +103,7 @@ public class PageHeaderOutputter implements Outputter {
 
 		writer.append(
 				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")
-				.append(Constants.DEFAULT_CHARSET)
-				.append("\" />\n")
-				.append("<meta http-equiv=\"Pragma\" content=\"no-cache\" />\n")
-				.append("<meta http-equiv=\"Cache-Control\" content=\"no-cache, no-store\" />\n")
-				.append("<meta http-equiv=\"Expires\" content=\"0\" />\n");
+				.append(Constants.DEFAULT_CHARSET).append("\" />\n");
 
 		if (StringUtils.isNotEmpty(view.getTitle())) {
 			writer.append("<title>")
