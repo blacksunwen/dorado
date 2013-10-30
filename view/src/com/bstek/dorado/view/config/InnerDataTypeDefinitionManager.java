@@ -64,7 +64,7 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 		}
 		DataObjectDefinitionUtils.setDataTypeId(definition, dataObjectIdPrefix
 				+ id);
-		definition.setScope(Scope.request);
+		definition.setScope(Scope.thread);
 
 		super.registerDefinition(name, definition);
 	}

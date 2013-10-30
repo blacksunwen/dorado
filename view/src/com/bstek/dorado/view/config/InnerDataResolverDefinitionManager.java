@@ -64,7 +64,7 @@ public class InnerDataResolverDefinitionManager extends
 		}
 		DataObjectDefinitionUtils.setDataResolverId(definition,
 				dataObjectIdPrefix + id);
-		definition.setScope(Scope.request);
+		definition.setScope(Scope.thread);
 
 		super.registerDefinition(name, definition);
 	}
