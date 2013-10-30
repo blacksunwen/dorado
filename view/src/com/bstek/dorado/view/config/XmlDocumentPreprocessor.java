@@ -67,6 +67,10 @@ public class XmlDocumentPreprocessor {
 		this.componentTypeRegistry = componentTypeRegistry;
 	}
 
+	public void setExpressionHandler(ExpressionHandler expressionHandler) {
+		this.expressionHandler = expressionHandler;
+	}
+
 	private Element doFindElementById(Element element, String id) {
 		Element result = null;
 		Node child = element.getFirstChild();
