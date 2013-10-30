@@ -28,6 +28,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.config.ConfigurableDataConfigManager;
@@ -36,6 +37,8 @@ import com.bstek.dorado.data.config.ReloadableDataConfigManagerSupport;
 import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewCache;
+import com.bstek.dorado.view.ViewCacheMode;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.web.DoradoContext;
@@ -76,7 +79,6 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 
 	public HtmlViewResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_HTML);
-		setCacheControl(HttpConstants.NO_CACHE);
 	}
 
 	public void setDataConfigManager(DataConfigManager dataConfigManager) {
@@ -161,7 +163,9 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 			for (String mobile : touchUserAgentArray) {
 				if (StringUtils.containsIgnoreCase(userAgent, mobile)) {
 					Context context = Context.getCurrent();
-					context.setAttribute("com.bstek.dorado.view.resolver.HtmlViewResolver.isTouch", true);
+					context.setAttribute(
+							"com.bstek.dorado.view.resolver.HtmlViewResolver.isTouch",
+							true);
 					break;
 				}
 			}
@@ -207,6 +211,29 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		}
 
 		View view = viewConfig.getView();
+
+		ViewCacheMode cacheMode = ViewCacheMode.none;
+		ViewCache cache = view.getCache();
+		if (cache != null && cache.getMode() != null) {
+			cacheMode = cache.getMode();
+		}
+
+		if (ViewCacheMode.clientSide.equals(cacheMode)) {
+			long maxAge = cache.getMaxAge();
+			if (maxAge <= 0) {
+				maxAge = Configure.getLong(
+						"view.clientSideCache.defaultMaxAge", 300);
+			}
+
+			response.addHeader(HttpConstants.CACHE_CONTROL,
+					HttpConstants.MAX_AGE + maxAge);
+		} else {
+			response.addHeader(HttpConstants.CACHE_CONTROL,
+					HttpConstants.NO_CACHE);
+			response.addHeader("Pragma", "no-cache");
+			response.addHeader("Expires", "0");
+		}
+
 		String pageTemplate = view.getPageTemplate();
 		String pageUri = view.getPageUri();
 		if (StringUtils.isNotEmpty(pageTemplate)
