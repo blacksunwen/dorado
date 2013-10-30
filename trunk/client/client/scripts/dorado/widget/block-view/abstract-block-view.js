@@ -643,7 +643,7 @@
 		},
 		
 		_getVisibleBlockRange: function() {
-			var scroller = this._dom, blockSize, end;
+			var scroller = this._scroller, blockSize, end;
 			if (this._blockLayout == "vertical") {
 				blockSize = this._blockHeight + this._vertSpacing;
 				start = parseInt((scroller.scrollTop - this._vertPadding) / blockSize);
@@ -653,7 +653,7 @@
 				start = parseInt((scroller.scrollLeft - this._horiPadding) / blockSize);
 				end = start + Math.round((scroller.clientWidth - this._horiPadding) / blockSize + 0.5);
 			}
-			return [start * this._realLineSize, end * this._realLineSize];
+			return [start * this._realLineSize, (end+1) * this._realLineSize];
 		},
 		
 		refreshContent: function(container) {
@@ -670,7 +670,7 @@
 		},
 		
 		refreshViewPortContent: function(container) {
-			var itemModel = this._itemModel, itemCount = itemModel.getItemCount(), scroller = this._dom;
+			var itemModel = this._itemModel, itemCount = itemModel.getItemCount(), scroller = this._scroller;
 			var topOrLeft, bottomOrRight;
 			if (this._blockLayout == "vertical") {
 				topOrLeft = scroller.scrollTop;
@@ -940,7 +940,7 @@
 			}
 			
 			if (this._scrollMode == "viewport") {
-				var scroller = this._dom;
+				var scroller = this._scroller;
 				if (this._blockLayout == "vertical") {
 					if ((this._scrollTop || 0) != scroller.scrollTop) {
 						process.call(this, "scrollTop", "_scrollTop");
@@ -968,7 +968,7 @@
 		},
 		
 		doOnScroll: function() {
-			var scroller = this._dom;
+			var scroller = this._scroller;
 			if (scroller._scrollTimerId) {
 				clearTimeout(scroller._scrollTimerId);
 				scroller._scrollTimerId = undefined;
