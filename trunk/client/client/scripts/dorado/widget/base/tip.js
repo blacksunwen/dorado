@@ -225,7 +225,7 @@
 			}
 			
 			tip._doms = doms;
-			
+
 			$fly(dom).hover(function() {
 				if (tip._showDurationTimer) {
 					clearTimeout(tip._showDurationTimer);
@@ -303,8 +303,10 @@
 				if (typeof content == "string") {
 					$tipText.html(content);
 				} else if (content instanceof dorado.widget.Control) {
-					$tipText.empty();
-					content.render(doms.tipText);
+                    if (!content._rendered) {
+                        $tipText.empty();
+                        content.render(doms.tipText);
+                    }
 				} else if (content.nodeType && content.nodeName) {
 					$tipText.empty().append(content);
 				} else {

@@ -481,14 +481,14 @@ dorado.dequeue = function(namespace) {
 			}
 			var control = this;
 
-			var oldVisible = control._visible, oldActualVisible = control._actualVisible;
-			control._visible = true;
-			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
-			control.setActualVisible(true);
-			control.refresh();
-			control._visible = oldVisible;
-			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
-			control.setActualVisible(oldActualVisible);
+//			var oldVisible = control._visible, oldActualVisible = control._actualVisible;
+//			control._visible = true;
+//			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
+//			control.setActualVisible(true);
+//			control.refresh();
+//			control._visible = oldVisible;
+//			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
+//			control.setActualVisible(oldActualVisible);
 			
 			var attrs = ["center", "autoAdjustPosition", "handleOverflow", "gapX", "gapY", "offsetLeft", "offsetTop", "align", "vAlign", "handleOverflow", "anchorTarget"];
 			for (var i = 0; i < attrs.length; i++) {
