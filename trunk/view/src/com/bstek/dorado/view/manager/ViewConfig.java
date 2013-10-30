@@ -41,25 +41,16 @@ import com.bstek.dorado.view.ViewState;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-11
  */
-@XmlNode(
-		definitionType = "com.bstek.dorado.view.config.definition.ViewConfigDefinition",
-		properties = { @XmlProperty(propertyName = "template",
-				attributeOnly = true, ignored = true) }, subNodes = {
-				@XmlSubNode(nodeName = "Model",
-						parser = "spring:dorado.viewModelParser",
-						resultProcessed = true),
-				@XmlSubNode(nodeName = "Arguments",
-						parser = "spring:dorado.viewArgumentsParser",
-						resultProcessed = true),
-				@XmlSubNode(nodeName = "Context",
-						parser = "spring:dorado.viewContextParser",
-						resultProcessed = true) })
+@XmlNode(definitionType = "com.bstek.dorado.view.config.definition.ViewConfigDefinition", properties = { @XmlProperty(propertyName = "template", attributeOnly = true, ignored = true) }, subNodes = {
+		@XmlSubNode(nodeName = "Model", parser = "spring:dorado.viewModelParser", resultProcessed = true),
+		@XmlSubNode(nodeName = "Arguments", parser = "spring:dorado.viewArgumentsParser", resultProcessed = true),
+		@XmlSubNode(nodeName = "Context", parser = "spring:dorado.viewContextParser", resultProcessed = true) })
 public class ViewConfig implements Scopable, MetaDataSupport {
 	protected static final String VIEW_STATE_ATTRIBUTE_KEY = ViewState.class
 			.getName();
 
 	private String name;
-	private Scope scope = Scope.request;
+	private Scope scope = Scope.thread;
 	private Map<String, Object> metaData;
 	private Map<String, Object> arguments = new HashMap<String, Object>();
 	private InnerDataTypeManager innerDataTypeManager;

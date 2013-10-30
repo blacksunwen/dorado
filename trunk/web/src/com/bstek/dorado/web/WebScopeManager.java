@@ -31,9 +31,18 @@ import com.bstek.dorado.web.DoradoContext;
 public class WebScopeManager extends ScopeManager {
 	private static final String ATTRIBUTE = "$ScopeManager";
 
+	private HttpServletRequest getAttachedRequest() {
+		HttpServletRequest request = DoradoContext.getAttachedRequest();
+		if (request == null) {
+			throw new IllegalStateException(
+					"Can not get attached HttpServletRequest, current thread may not be a request thread.");
+		}
+		return request;
+	}
+
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getRequestContext() {
-		HttpServletRequest request = DoradoContext.getAttachedRequest();
+		HttpServletRequest request = getAttachedRequest();
 		Map<String, Object> map = (Map<String, Object>) request
 				.getAttribute(ATTRIBUTE);
 		if (map == null) {
@@ -45,7 +54,7 @@ public class WebScopeManager extends ScopeManager {
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getSessionContext() {
-		HttpServletRequest request = DoradoContext.getAttachedRequest();
+		HttpServletRequest request = getAttachedRequest();
 		HttpSession session = request.getSession();
 		Map<String, Object> map = (Map<String, Object>) session
 				.getAttribute(ATTRIBUTE);

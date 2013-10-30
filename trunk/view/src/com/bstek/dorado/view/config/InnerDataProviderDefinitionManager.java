@@ -65,7 +65,7 @@ public class InnerDataProviderDefinitionManager extends
 		}
 		DataObjectDefinitionUtils.setDataProviderId(definition,
 				dataObjectIdPrefix + id);
-		definition.setScope(Scope.request);
+		definition.setScope(Scope.thread);
 
 		super.registerDefinition(name, definition);
 	}

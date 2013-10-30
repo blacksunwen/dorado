@@ -68,7 +68,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private DataType cachedInstance;
 
 	public DataTypeDefinition() {
-		setScope(Scope.request);
+		setScope(Scope.thread);
 	}
 
 	@Override
