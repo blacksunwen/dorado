@@ -148,7 +148,7 @@
 				content: [ {
 					tagName: "iframe",
 					contextKey: "iframe",
-		            scrolling: "no",
+		            scrolling: dorado.Browser.isTouch ? "no" : null,
 					frameBorder: 0,
 					className: "hidden"
 				}, {
