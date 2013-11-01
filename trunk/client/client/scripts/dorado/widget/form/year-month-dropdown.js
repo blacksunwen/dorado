@@ -499,6 +499,7 @@
     dorado.widget.YearDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.YearDropDown.prototype */{
         $className: "dorado.widget.YearDropDown",
         focusable: true,
+        
         ATTRIBUTES: {
             width: {
                 defaultValue: 260
@@ -565,6 +566,7 @@
     dorado.widget.MonthDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.MonthDropDown.prototype */{
         $className: "dorado.widget.MonthDropDown",
         focusable: true,
+        
         ATTRIBUTES: {
             width: {
                 defaultValue: 260
