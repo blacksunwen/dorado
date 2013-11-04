@@ -21,7 +21,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "YearMonthDropDown", category = "Trigger",
+@Widget(name = "YearDropDown", category = "Trigger",
 		dependsPackage = "base-widget-desktop", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.YearDropDown",
 		shortTypeName = "YearDropDown")
