@@ -26,6 +26,7 @@ import com.bstek.dorado.config.xml.ObjectParser;
 import com.bstek.dorado.config.xml.ObjectParserInitializationAware;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
@@ -41,7 +42,6 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  */
 public class DataTypeParser extends GenericObjectParser implements
 		ObjectParserInitializationAware {
-	private static String DEFAULT_DATATYPE_PARENT = "Entity";
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -208,6 +208,8 @@ public class DataTypeParser extends GenericObjectParser implements
 		dataType.setName(name);
 		DataObjectDefinitionUtils.setDataTypeInner(dataType, isInner);
 
+		final String DEFAULT_DATATYPE_PARENT = Configure.getString(
+				"data.defaultEntityDataTypeParent", "Entity");
 		if (dataType.getParentReferences() == null
 				&& !DEFAULT_DATATYPE_PARENT.equals(name)) {
 			boolean useDefaultParent = false;
