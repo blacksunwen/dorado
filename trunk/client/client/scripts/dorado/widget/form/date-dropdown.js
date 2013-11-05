@@ -774,7 +774,23 @@
 						date: new Date(date.getTime())
 					});
 				}
-			});
+			}).dblclick(function(event) {
+                if (picker._showTimeSpinner == false) return;
+                var position = $DomUtils.getCellPosition(event), element = position.element, date = picker._date;
+
+                if (position && element) {
+                    var className = element.className;
+                    if (className.indexOf(CELL_UNSELECTABLE_CLASS) != -1) return;
+                    if (className.indexOf("next-month") != -1 || className.indexOf("pre-month") != -1) {
+                        return;
+                    }
+                    picker.setDate(parseInt(element.innerHTML, 10), true);
+
+                    picker.fireEvent("onConfirm", picker, {
+                        date: new Date(date.getTime())
+                    });
+                }
+            });
 			
 			var prevYearButton = new dorado.widget.SimpleIconButton({
 				iconClass: "pre-year-button",
