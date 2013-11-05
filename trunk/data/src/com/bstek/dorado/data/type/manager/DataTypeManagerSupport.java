@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.config.definition.DataCreationContext;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
@@ -140,7 +141,9 @@ public abstract class DataTypeManagerSupport implements DataTypeManager {
 	}
 
 	public DataType createDataType(String name) throws Exception {
-		return doCreateDataType(name, "Entity");
+		final String DEFAULT_DATATYPE_PARENT = Configure.getString(
+				"data.defaultEntityDataTypeParent", "Entity");
+		return doCreateDataType(name, DEFAULT_DATATYPE_PARENT);
 	}
 
 	public DataType createDataType(String name, String parents)

@@ -365,7 +365,6 @@ public class DoradoLoader {
 		}
 
 		// load packages
-
 		for (PackageInfo packageInfo : packageInfos) {
 			if (!packageInfo.isEnabled()) {
 				pushLocations(contextLocations,
