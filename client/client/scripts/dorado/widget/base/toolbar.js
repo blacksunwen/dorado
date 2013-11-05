@@ -133,6 +133,28 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		} else if (config instanceof dorado.widget.Control) {
 			item = config;
 		}
+        if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+            var oldRefreshItems = item.refreshItems;
+            item.refreshItems = function() {
+                oldRefreshItems.apply(this, arguments);
+
+                if (item._visibleByOverflow == false) {
+                    var menuItems = item._bindMenuItems || [];
+                    for (var i = 0, j = menuItems.length; i < j; i++) {
+                        var menuItem = menuItems[i], control = item._itemObjects[menuItem.itemCode.key];
+                        if (control) {
+                            menuItem.set({
+                                visible: control._visible,
+                                icon: control._icon,
+                                action: control._action,
+                                disabled: control._disabled,
+                                iconClass: control._iconClass
+                            });
+                        }
+                    }
+                }
+            };
+        }
 		if (item) this.registerInnerControl(item);
 		return item;
 	},
@@ -239,7 +261,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			});
 		} else if (item instanceof dorado.widget.toolbar.Separator) {
 			overflowMenu.addItem("-");
-		} else if (item instanceof dorado.widget.DataPilot) {
+		} else if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
 			var map = {
 				"|<": $resource("dorado.baseWidget.DataPilotFirstPage"),
 				"<": $resource("dorado.baseWidget.DataPilotPreviousPage"),
@@ -249,7 +271,25 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				"-": $resource("dorado.baseWidget.DataPilotDelete"),
 				"x": $resource("dorado.baseWidget.DataPilotCancel")
 			};
-			var compiledItemCodes = item._compiledItemCodes || [];
+			var compiledItemCodes = item._compiledItemCodes || [], bindMenuItems = [];
+            item._bindMenuItems = bindMenuItems;
+            function addItem(itemCode, innerControl) {
+                var menuItem = overflowMenu.addItem({
+                    caption: map[itemCode.code],
+                    visible: innerControl._visible,
+                    icon: innerControl._icon,
+                    action: innerControl._action,
+                    disabled: innerControl._disabled,
+                    iconClass: innerControl._iconClass,
+                    listener: {
+                        onClick: function() {
+                            innerControl.fireEvent("onClick", item);
+                        }
+                    }
+                });
+                menuItem.itemCode = itemCode;
+                bindMenuItems.push(menuItem);
+            }
 			for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
 				var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
 				switch (itemCode.code) {
@@ -260,25 +300,13 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 					case "+":
 					case "-":
 					case "x":
-						overflowMenu.addItem({
-							caption: map[itemCode.code],
-							visible: innerControl._visible,
-							icon: innerControl._icon,
-							action: innerControl._action,
-							disabled: innerControl._disabled,
-							iconClass: innerControl._iconClass,
-							listener: {
-								onClick: function() {
-									innerControl.fireEvent("onClick", item);
-								}
-							}
-						});
+						addItem(itemCode, innerControl);
 						break;
 					case "goto":
 					case "info":
 						break;
 					case "|":
-						overflowMenu.addItem("-");
+						//overflowMenu.addItem("-");
 						break;
 				}
 			}
@@ -298,6 +326,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	
 	showUnoverflowItem: function(item) {
 		item._visibleByOverflow = true;
+        if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+            item._bindMenuItems = [];
+        }
 		var visible = item._visible;
 		item._bindingMenuItem = null;
 		if (item._hideMode == "display") {
