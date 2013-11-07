@@ -14,6 +14,7 @@ package com.bstek.dorado.view.output;
 
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -22,10 +23,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.widget.Control;
+import com.bstek.dorado.web.DoradoContext;
 
 /**
  * 输出器上下文。
@@ -184,12 +188,31 @@ public class OutputContext {
 	 * 返回客户端依赖的资源包的集合。
 	 */
 	public Set<String> getDependsPackages() {
-		return dependsPackages;
+		return (Set<String>) Collections.unmodifiableSet(dependsPackages);
 	}
 
 	public void addDependsPackage(String packageName) {
 		if (dependsPackages == null) {
 			dependsPackages = new LinkedHashSet<String>();
+		}
+
+		if ("widget".equals(packageName)) {
+			return;
+		} else if ("base-widget".equals(packageName)) {
+			/*
+			 * 这里是一段临时代码，修复下面的BUG
+			 * AutoForm依赖base-widget，而事实上trigger特性必须依赖base-widget-desktop或base-
+			 * widget-touch才能正常工作。
+			 */
+			DoradoContext doradoContext = DoradoContext.getCurrent();
+			int currentClientType = VariantUtils.toInt(doradoContext
+					.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
+			if (currentClientType == 0) {
+				currentClientType = ClientType.DESKTOP;
+			}
+			String clientTypeName = ClientType.toString(currentClientType);
+
+			packageName += ('-' + clientTypeName);
 		}
 		dependsPackages.add(packageName);
 	}
