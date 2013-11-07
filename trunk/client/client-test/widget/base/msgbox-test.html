@@ -75,6 +75,13 @@
 		$(document).ready(function(){
 			view.render(document.body, document.body.firstChild);
 		});
+
+        jQuery(document).ready(function() {
+            var $document = jQuery(document);
+            $document.bind("keydown", "esc", function() {
+                dorado.MessageBox.onButtonClick("close");
+            });
+        });
 		</script>
 	</head>
 	<body>
