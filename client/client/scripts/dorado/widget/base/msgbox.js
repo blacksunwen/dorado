@@ -111,7 +111,7 @@
 
                 dorado.MessageBox._runStack.splice(0, 1);
             }
-            dorado.MessageBox._dialog.hide();
+            dorado.MessageBox._dialog && dorado.MessageBox._dialog.hide();
         },
 
         executeCallback: function() {
