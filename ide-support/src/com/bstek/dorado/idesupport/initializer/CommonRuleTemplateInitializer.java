@@ -526,15 +526,15 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			Method readMethod = propertyDescriptor.getReadMethod();
 			if (readMethod != null
 					&& propertyDescriptor.getWriteMethod() != null) {
-				// if (readMethod.getDeclaringClass() != type) {
-				// try {
-				// readMethod = type.getDeclaredMethod(
-				// readMethod.getName(),
-				// readMethod.getParameterTypes());
-				// } catch (NoSuchMethodException e) {
-				// continue;
-				// }
-				// }
+				if (readMethod.getDeclaringClass() != type) {
+					try {
+						readMethod = type.getDeclaredMethod(
+								readMethod.getName(),
+								readMethod.getParameterTypes());
+					} catch (NoSuchMethodException e) {
+						continue;
+					}
+				}
 
 				String propertyName = propertyDescriptor.getName();
 
@@ -630,7 +630,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 									ideProperty.enumValues(), ",;"));
 						}
 					}
-
+					
 					ClientProperty clientProperty = readMethod
 							.getAnnotation(ClientProperty.class);
 					if (clientProperty != null) {
