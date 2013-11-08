@@ -22,6 +22,11 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	$className: "dorado.widget.FieldSet",
     _inherentClassName: "i-field-set",
     ATTRIBUTES: /** @scope dorado.widget.FieldSet.prototype */ {
+
+        caption: {
+            skipRefresh: false
+        },
+
 		className: {
 			defaultValue: "d-field-set"
 		},
@@ -175,6 +180,10 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 		className: {
 			defaultValue: "d-group-box"
 		},
+
+        caption: {
+            skipRefresh: false
+        },
 
         /**
 		 * 是否可折叠
