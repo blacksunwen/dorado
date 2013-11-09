@@ -1282,6 +1282,17 @@
 				textDom.style.padding = 0;
 			}
 			return textDom;
-		}
-	});
+		},
+
+        doOnFocus: function() {
+            var maxLength = this._maxLength || 0;
+            if (maxLength) {
+                this._textDom.setAttribute("maxLength", maxLength);
+            } else {
+                this._textDom.removeAttribute("maxLength");
+            }
+
+            $invokeSuper.call(this);
+        }
+    });
 })();
