@@ -174,6 +174,12 @@
 		
 		doOnFocus: function() {
 			if (this._useBlankText) this.doSetText('');
+            var maxLength = this._maxLength || 0;
+            if (maxLength) {
+                this._textDom.setAttribute("maxLength", maxLength);
+            } else {
+                this._textDom.removeAttribute("maxLength");
+            }
 			$invokeSuper.call(this, arguments);
 		},
 		
