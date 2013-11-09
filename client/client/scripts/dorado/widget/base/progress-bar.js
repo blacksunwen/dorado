@@ -105,6 +105,8 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 
 		if (showText) {
 			$fly(doms.msg).text(pattern.replace("{percent}", parseInt(percent * 100, 10)));
-		}
+		} else {
+            $fly(doms.msg).empty();
+        }
 	}
 });
