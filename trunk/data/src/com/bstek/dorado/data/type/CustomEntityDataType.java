@@ -10,32 +10,28 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.util.proxy;
+package com.bstek.dorado.data.type;
 
 import java.util.Map;
 
 /**
- * 不可修改的Map集合。
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since Apr 10, 2008
+ * @since 2013-11-10
  */
-public class UnmutableMap<K, V> extends ChildrenMapSupport<K, V> {
+public interface CustomEntityDataType<T> extends EntityDataType {
 
 	/**
-	 * @param target
+	 * 尝试将一个Map转换成本DataType所描述的类型。
+	 * @param map 要转换的Map。
+	 * @return 转换后得到的数据。
 	 */
-	public UnmutableMap(Map<K, V> target) {
-		super(target);
-	}
+	T fromMap(Map<String, Object> map) throws Exception;
 
-	@Override
-	protected void childAdded(K key, V child) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected void childRemoved(K key, V child) {
-		throw new UnsupportedOperationException();
-	}
+	/**
+	 * 将一个数据对象转换成Map。
+	 * @param customEntity 数据对象。
+	 * @return 转换后得到的Map。
+	 */
+	Map<String, Object> toMap(T customEntity) throws Exception;
 
 }

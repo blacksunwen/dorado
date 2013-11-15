@@ -36,6 +36,7 @@ import com.bstek.dorado.data.type.DataType;
  * @since 2012-9-18
  */
 public class CriteriaDataType extends AbstractDataType implements JsonConvertor {
+
 	public Object fromText(String text) {
 		if (text == null) {
 			return null;

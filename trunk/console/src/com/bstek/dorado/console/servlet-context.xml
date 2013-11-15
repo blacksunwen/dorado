@@ -18,9 +18,9 @@
 			</props>
 		</property>
 	</bean>
+	
 	<bean id="dorado.console.accessPathResolver" class="com.bstek.dorado.console.resolver.AccessPathResolver" />
-    <bean id="dorado.console.DefaultExecuteLogOutputter" class="com.bstek.dorado.console.performance.DefaultExecuteLogOutputter"/>
-    <bean id="dorado.console.CreateViewLogOutputter" class="com.bstek.dorado.console.performance.CreateViewLogOutputter"/>
+    
 	<!-- View ResolverListener -->
 	<bean parent="dorado.viewResolverListenerRegister">
 		<property name="listener">
@@ -28,54 +28,6 @@
 				class="com.bstek.dorado.console.performance.listener.ViewResolverListener">
 				<property name="viewNamePattern" value="*.dorado.console.*"></property>
 				<property name="executeLogOutputter" ref="dorado.console.CreateViewLogOutputter"></property>
-			</bean>
-		</property>
-	</bean>
-
-	<!--RemoteService 拦截器 -->
-	<bean parent="dorado.viewServiceInterceptorRegister">
-		<property name="methodInterceptor">
-			<bean
-				class="com.bstek.dorado.console.performance.interceptor.RemoteServiceMethodInterceptor">
-				<property name="order" value="0" />
-				<property name="namePattern" value="dorado.console.*"></property>
-				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
-			</bean>
-		</property>
-	</bean>
-
-	<!--DataProviderGetResult 拦截器 -->
-	<bean parent="dorado.dataProviderInterceptorRegister">
-		<property name="methodInterceptor">
-			<bean
-				class="com.bstek.dorado.console.performance.interceptor.DataProviderGetResultMethodInterceptor">
-				<property name="order" value="0" />
-				<property name="namePattern" value="dorado.console.*"></property>
-				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
-			
-			</bean>
-		</property>
-	</bean>
-
-	<!--DataResolveMethodInterceptor 拦截器 -->
-	<bean parent="dorado.dataResolverInterceptorRegister">
-		<property name="methodInterceptor">
-			<bean
-				class="com.bstek.dorado.console.performance.interceptor.DataResolveMethodInterceptor">
-				<property name="order" value="0" />
-				<property name="namePattern" value="dorado.console.*"></property>
-				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
-			</bean>
-		</property>
-	</bean>
-
-	<!-- Dorado Console View Service 访问安全拦截器 -->
-	<bean parent="dorado.viewServiceInterceptorRegister">
-		<property name="methodInterceptor">
-			<bean
-				class="com.bstek.dorado.console.security.ViewServiceSecurityInterceptor">
-				<property name="order" value="1" />
-				<property name="serviceNamePattern" value="dorado.console.*" />
 			</bean>
 		</property>
 	</bean>

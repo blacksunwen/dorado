@@ -48,6 +48,7 @@ import com.bstek.dorado.data.entity.EntityUtils;
 import com.bstek.dorado.data.entity.EntityWrapper;
 import com.bstek.dorado.data.entity.NullWrapper;
 import com.bstek.dorado.data.type.AggregationDataType;
+import com.bstek.dorado.data.type.CustomEntityDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
@@ -244,8 +245,11 @@ public final class JsonUtils {
 		}
 
 		Class<?> creationType = null;
-		if (dataType != null) {
+		if (dataType != null && !(dataType instanceof CustomEntityDataType)) {
 			creationType = dataType.getCreationType();
+			if (creationType == null) {
+				creationType = dataType.getMatchType();
+			}
 		}
 		if (creationType == null) {
 			creationType = Record.class;
@@ -355,8 +359,8 @@ public final class JsonUtils {
 					String property = entry.getKey();
 					PropertyDef propertyDef = null;
 					DataType propertyDataType = null;
-					Object value;					
-					
+					Object value;
+
 					if (dataType != null) {
 						propertyDef = dataType.getPropertyDef(property);
 						if (propertyDef != null) {

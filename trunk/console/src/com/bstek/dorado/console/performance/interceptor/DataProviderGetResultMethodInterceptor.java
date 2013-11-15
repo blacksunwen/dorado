@@ -24,7 +24,6 @@ import com.bstek.dorado.data.provider.AbstractDataProviderGetResultMethodInterce
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.util.PathUtils;
 
 /**
@@ -69,22 +68,15 @@ public class DataProviderGetResultMethodInterceptor extends
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected Object invokeGetResult(MethodInvocation methodinvocation,
-			DataProvider dataprovider, Object obj, DataType datatype)
+			DataProvider dataProvider, Object parameter, DataType datatype)
 			throws Throwable {
-		String providerName = dataprovider.getName();
+		String providerName = dataProvider.getName();
 		if (PathUtils.match(namePattern, providerName)) {
 			return methodinvocation.proceed();
 		}
 		long startTime = System.currentTimeMillis();
 		int logLevel = Logger.getLogLevel();
 		if (logLevel < 4) {
-			Object parameter = null;
-			for (Object arg : methodinvocation.getArguments()) {
-				if (arg instanceof Record) {
-					parameter = (Record) arg;
-					break;
-				}
-			}
 			executeLogOutputter.outStartLog(TYPE, providerName,
 					String.format("parameter={ %s }", parameter));
 
@@ -112,9 +104,9 @@ public class DataProviderGetResultMethodInterceptor extends
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected Object invokeGetPagingResult(MethodInvocation methodinvocation,
-			DataProvider dataprovider, Object obj, Page page, DataType datatype)
-			throws Throwable {
-		String providerName = dataprovider.getName();
+			DataProvider dataProvider, Object parameter, Page page,
+			DataType datatype) throws Throwable {
+		String providerName = dataProvider.getName();
 		int logLevel = Logger.getLogLevel();
 		if (PathUtils.match(namePattern, providerName)) {
 			return methodinvocation.proceed();
@@ -122,12 +114,6 @@ public class DataProviderGetResultMethodInterceptor extends
 		long startTime = System.currentTimeMillis();
 		String message;
 		if (logLevel < 4) {
-			Object parameter = null;
-			for (Object arg : methodinvocation.getArguments()) {
-				if (arg instanceof Record) {
-					parameter = (Record) arg;
-				}
-			}
 			message = String.format(
 					"parameter= %s ,page={ pageNo = %s , pageSize = %s}",
 					parameter, page.getPageNo(), page.getPageSize());

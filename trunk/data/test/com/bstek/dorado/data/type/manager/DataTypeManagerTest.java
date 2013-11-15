@@ -17,8 +17,6 @@ import com.bstek.dorado.data.model.Department;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
-import com.bstek.dorado.data.type.MapDataType;
-import com.bstek.dorado.data.type.manager.DataTypeManager;
 import com.bstek.dorado.data.type.property.PropertyDef;
 
 public class DataTypeManagerTest extends ConfigManagerTestSupport {
@@ -95,25 +93,6 @@ public class DataTypeManagerTest extends ConfigManagerTestSupport {
 		assertNotSame(dataType1, dataType2);
 	}
 
-	public void testComplexDataTypeName() throws Exception {
-		DataTypeManager dataTypeManager = getDataTypeManager();
-
-		String NAME = "Map[map.Employee,map.Department]";
-		MapDataType dataType1 = (MapDataType) dataTypeManager.getDataType(NAME);
-		assertNotNull(dataType1);
-
-		MapDataType dataType2 = (MapDataType) dataTypeManager.getDataType(NAME);
-		assertSame(dataType1, dataType2);
-
-		DataType keyDataType = dataType1.getKeyDataType();
-		assertNotNull(keyDataType);
-		assertEquals("map.Employee", keyDataType.getName());
-
-		DataType valueDataType = dataType1.getValueDataType();
-		assertNotNull(valueDataType);
-		assertEquals("map.Department", valueDataType.getName());
-	}
-
 	public void testPropertyDefs() throws Exception {
 		DataTypeManager dataTypeManager = getDataTypeManager();
 
@@ -142,39 +121,6 @@ public class DataTypeManagerTest extends ConfigManagerTestSupport {
 		String NAME = "test.Category";
 		DataType dataType = dataTypeManager.getDataType(NAME);
 		assertNotNull(dataType);
-	}
-
-	public void testELProperties1() throws Exception {
-		DataTypeManager dataTypeManager = getDataTypeManager();
-
-		MapDataType dataType = (MapDataType) dataTypeManager
-				.getDataType("map.Employee");
-		assertNotNull(dataType);
-
-		PropertyDef property = dataType.getPropertyDef("name");
-		assertNotNull(property);
-		assertNotNull(property.getLabel());
-		assertTrue(property.getLabel().indexOf("6") > 0);
-	}
-
-	public void testELProperties2() throws Exception {
-		DataTypeManager dataTypeManager = getDataTypeManager();
-
-		MapDataType dataType = (MapDataType) dataTypeManager
-				.getDataType("map.Employee");
-		assertNotNull(dataType);
-
-		PropertyDef property = dataType.getPropertyDef("comment");
-		assertNotNull(property);
-		assertNull(property.getLabel());
-
-		String value = "Yeah!";
-		System.setProperty("testProperty", value);
-		assertEquals(value, property.getLabel());
-
-		value = "Woooooo!";
-		property.setLabel(value);
-		assertEquals(value, property.getLabel());
 	}
 
 	public void testInheritedPropertyDefs() throws Exception {

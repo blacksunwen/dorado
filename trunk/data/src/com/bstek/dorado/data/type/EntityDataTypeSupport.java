@@ -25,7 +25,6 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.common.ParentAware;
 import com.bstek.dorado.common.event.ClientEvent;
 import com.bstek.dorado.common.event.ClientEventHolder;
@@ -33,7 +32,6 @@ import com.bstek.dorado.data.type.property.BasePropertyDef;
 import com.bstek.dorado.data.type.property.PropertyDef;
 import com.bstek.dorado.data.type.validator.MessageState;
 import com.bstek.dorado.data.util.DataUtils;
-import com.bstek.dorado.data.variant.Record;
 import com.bstek.dorado.util.clazz.BeanPropertyUtils;
 import com.bstek.dorado.util.proxy.ChildrenMapSupport;
 
@@ -86,15 +84,6 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 	private Map<String, PropertyDef> propertyDefs = new PropertyDefMap<String, PropertyDef>(
 			new LinkedHashMap<String, PropertyDef>(), this);
 	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
-
-	@Override
-	public Class<?> getCreationType() {
-		Class<?> creationType = super.getCreationType();
-		if (creationType == null || creationType.equals(Object.class)) {
-			creationType = Record.class;
-		}
-		return creationType;
-	}
 
 	public boolean isAcceptUnknownProperty() {
 		return acceptUnknownProperty;
@@ -206,8 +195,7 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 
 			if (propertyDef == null) {
 				if (dataType != null) {
-					propertyDef = new BasePropertyDef();
-					((Namable) propertyDef).setName(name);
+					propertyDef = new BasePropertyDef(name);
 					propertyDef.setDataType(dataType);
 					addPropertyDef(propertyDef);
 

@@ -35,10 +35,8 @@ import com.bstek.dorado.data.type.DataType;
  * </p>
  * <p>
  * 上面提到的通过运算完成的匹配操作是指并非直接通过DataTypeDefinitionManager提取到的匹配结果。
- * 例如：我们在DataTypeDefinitionManager中注册了java.util.Map的相应DataType是
- * {@link com.bstek.dorado.data.type.MapDataType}，
- * 那么在为java.util.HashMap进行匹配时，系统必须通过一些运算才能同样映射到
- * {@link com.bstek.dorado.data.type.MapDataType}上。
+ * 例如：我们在DataTypeDefinitionManager中注册了java.util.Map的相应DataType是MapDataType，
+ * 那么在为java.util.HashMap进行匹配时，系统必须通过一些运算才能同样映射到MapDataType上。
  * </p>
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
