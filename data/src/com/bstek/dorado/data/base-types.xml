@@ -26,17 +26,17 @@
 	<DataType name="DateTime" parent="Date" />
 	<DataType name="Calendar" matchType="java.util.Calendar" impl="com.bstek.dorado.data.type.CalendarDataType" />
 
-	<!-- AggreagationDataTypes -->
+	<!-- AggregationDataTypes -->
 	<DataType name="Aggregation" impl="com.bstek.dorado.data.type.AggregationDataType" />
 	<DataType name="Array" matchType="[Ljava.lang.String;" parent="Aggregation" />
-	<DataType name="Collection" matchType="java.util.Collection" parent="Aggregation" />
+	<DataType name="Collection" matchType="java.util.Collection" creationType="java.util.ArrayList" parent="Aggregation" />
 	<DataType name="List" matchType="java.util.List" creationType="java.util.ArrayList" parent="Collection" />
 	<DataType name="Set" matchType="java.util.Set" creationType="java.util.HashSet" parent="Collection" />
 
 	<!-- EntityDataTypes -->
 	<DataType name="Entity" matchType="java.lang.Object" impl="com.bstek.dorado.data.type.DefaultEntityDataType" />
 	<DataType name="Bean" parent="Entity" />
-	<DataType name="Map" parent="Entity" matchType="java.util.Map" impl="com.bstek.dorado.data.type.DefaultMapDataType" />
+	<DataType name="Map" parent="Entity" matchType="java.util.Map" />
 	<DataType name="Record" matchType="com.bstek.dorado.data.variant.Record" parent="Map" />
 	
 	<!-- Others -->

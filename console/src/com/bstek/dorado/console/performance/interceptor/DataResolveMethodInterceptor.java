@@ -12,7 +12,7 @@
 package com.bstek.dorado.console.performance.interceptor;
 
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Map;
 
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -64,28 +64,29 @@ public class DataResolveMethodInterceptor extends
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	protected Object invokeResolve(MethodInvocation methodinvocation,
-			DataResolver dataresolver, DataItems dataitems, Object obj)
+	protected Object invokeResolve(MethodInvocation methodInvocation,
+			DataResolver dataResolver, DataItems dataItems, Object parameter)
 			throws Throwable {
-		if (PathUtils.match(namePattern, dataresolver.getName())) {
-			return methodinvocation.proceed();
+		if (PathUtils.match(namePattern, dataResolver.getName())) {
+			return methodInvocation.proceed();
 		}
+
 		long startTime = System.currentTimeMillis();
-		String resolverName=dataresolver.getName();
+		String resolverName = dataResolver.getName();
 		int logLevel = Logger.getLogLevel();
 		if (logLevel < 4) {
-			Iterator<String> iterator = dataitems.keySet().iterator();
 			StringBuffer buffer = null;
-			while (iterator.hasNext()) {
-				String key = (String) iterator.next();
-				Object object = dataitems.get(key);
+			for (Map.Entry<String, Object> entry : dataItems.entrySet()) {
+				String key = entry.getKey();
+				Object object = entry.getValue();
 				if (buffer == null) {
 					buffer = new StringBuffer();
 				} else {
 					buffer.append(",");
 				}
 				buffer.append(key).append(" = ");
-				if (object == null || EntityUtils.isSimpleType(object.getClass())) {
+				if (object == null
+						|| EntityUtils.isSimpleType(object.getClass())) {
 					buffer.append(object);
 				} else if (object instanceof Collection) {
 					Collection list = (Collection) object;
@@ -95,19 +96,19 @@ public class DataResolveMethodInterceptor extends
 					buffer.append(" { ").append(object).append(" } ");
 				}
 			}
-			executeLogOutputter.outStartLog(TYPE, resolverName,
-					String.format("dataitems=[ %s ], parameter={ %s }", buffer,
-							obj));
+			executeLogOutputter.outStartLog(TYPE, resolverName, String.format(
+					"dataItems=[ %s ], parameter={ %s }", buffer, parameter));
 		}
-		Object object = methodinvocation.proceed();
+		Object object = methodInvocation.proceed();
 
 		if (logLevel < 4)
 			executeLogOutputter.outEndLog(TYPE, resolverName, "");
 
 		long endTime = System.currentTimeMillis();
 		PerformanceMonitor.getInstance().monitoredProcess(
-				dataresolver.getName(), startTime, endTime, "DataResolve");
+				dataResolver.getName(), startTime, endTime, "DataResolve");
 		return object;
+
 	}
 
 }

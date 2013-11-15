@@ -28,7 +28,8 @@ public class DefaultFilterCriterionProcessor implements
 			FilterOperator.ge, FilterOperator.lt, FilterOperator.le,
 			FilterOperator.ne };
 
-	public void doProcess(SingleValueFilterCriterion criterion) {
+	public void doProcess(SingleValueFilterCriterion criterion)
+			throws Exception {
 		String expression = criterion.getExpression();
 		DataType dataType = criterion.getDataType();
 		FilterOperator filterOperator = null;

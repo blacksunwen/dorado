@@ -97,8 +97,10 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 			CreationInfo creationInfo, CreationContext context)
 			throws Exception {
 		MethodInterceptor[] interceptors;
+		
 		MethodInterceptor getResultMethodInterceptor = (MethodInterceptor) SingletonBeanFactory
 				.getInstance(DataProviderGetResultMethodInterceptor.class);
+		
 		MethodInterceptor[] customMethodInterceptors = dataProviderDefinitionManager
 				.getDataProviderMethodInterceptors();
 		if (customMethodInterceptors != null) {

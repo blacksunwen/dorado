@@ -33,15 +33,7 @@ import com.bstek.dorado.data.type.validator.MessageState;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 13, 2007
  */
-@XmlNode(
-		nodeName = "DataType",
-		parser = "spring:dorado.dataTypeParser",
-		definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition",
-		inheritable = true,
-		properties = @XmlProperty(propertyName = "overwrite",
-				propertyType = "boolean", attributeOnly = true, ignored = true),
-		subNodes = { @XmlSubNode(
-				propertyType = "com.bstek.dorado.data.type.property.PropertyDef[]") })
+@XmlNode(nodeName = "DataType", parser = "spring:dorado.dataTypeParser", definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition", inheritable = true, properties = @XmlProperty(propertyName = "overwrite", propertyType = "boolean", attributeOnly = true, ignored = true), subNodes = { @XmlSubNode(propertyType = "com.bstek.dorado.data.type.property.PropertyDef[]") })
 @ClientObject(prototype = "dorado.EntityDataType", shortTypeName = "Default")
 @ClientEvents({
 		@com.bstek.dorado.annotation.ClientEvent(name = "beforeCurrentChange"),

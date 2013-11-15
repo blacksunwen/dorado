@@ -32,6 +32,7 @@ import org.springframework.util.CollectionUtils;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.data.type.AggregationDataType;
+import com.bstek.dorado.data.type.CustomEntityDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.manager.DataTypeManager;
@@ -220,8 +221,9 @@ public abstract class EntityUtils {
 		}
 
 		boolean useProxy = true;
-		if (dataType == null)
+		if (dataType == null) {
 			dataType = getDataType(cl);
+		}
 
 		if (dataType != null) {
 			Class<?> matchType = dataType.getMatchType();
@@ -283,54 +285,58 @@ public abstract class EntityUtils {
 			// TODO 对Entity的是否需要动态代理的判断
 			// 如果是Entity则认为需要动态代理
 			EntityDataType entityDataType = (EntityDataType) dataType;
-			if (useProxy) {
-				// 对于那些本身的类型就与目标类型匹配的数据实体，创建一个新的动态代理实例。
-				if (object instanceof EnhanceableEntity) {
-					EnhanceableEntity enhanceableEntity = (EnhanceableEntity) object;
-					if (enhanceableEntity.getEntityEnhancer() == null) {
-						EntityEnhancer entityEnhancer;
-						if (object instanceof Map) {
-							entityEnhancer = new EnhanceableMapEntityEnhancer(
-									entityDataType);
-						} else {
-							entityEnhancer = new EnhanceableBeanEntityEnhancer(
-									entityDataType, object.getClass());
+			if (!(entityDataType instanceof CustomEntityDataType)) {
+				if (useProxy) {
+					// 对于那些本身的类型就与目标类型匹配的数据实体，创建一个新的动态代理实例。
+					if (object instanceof EnhanceableEntity) {
+						EnhanceableEntity enhanceableEntity = (EnhanceableEntity) object;
+						if (enhanceableEntity.getEntityEnhancer() == null) {
+							EntityEnhancer entityEnhancer;
+							if (object instanceof Map) {
+								entityEnhancer = new EnhanceableMapEntityEnhancer(
+										entityDataType);
+							} else {
+								entityEnhancer = new EnhanceableBeanEntityEnhancer(
+										entityDataType, object.getClass());
+							}
+							enhanceableEntity.setEntityEnhancer(entityEnhancer);
 						}
-						enhanceableEntity.setEntityEnhancer(entityEnhancer);
+						return (T) object;
+					} else {
+						MethodInterceptor[] mis = getMethodInterceptorFactory()
+								.createInterceptors(entityDataType,
+										object.getClass(), object);
+						object = ProxyBeanUtils.proxyBean(object, mis);
 					}
-					return (T) object;
 				} else {
-					MethodInterceptor[] mis = getMethodInterceptorFactory()
-							.createInterceptors(entityDataType,
-									object.getClass(), object);
-					object = ProxyBeanUtils.proxyBean(object, mis);
+					// 对于那些本身的类型与目标类型不匹配的数据实体，创建一个全新的实例并复制所有实体属性。
+					Class<?> creationType = entityDataType.getCreationType();
+					if (creationType == null) {
+						creationType = entityDataType.getMatchType();
+					}
+
+					Map map;
+					if (object instanceof Map) {
+						map = (Map) object;
+					} else {
+						map = BeanMap.create(object);
+					}
+
+					if (creationType == null) {
+						Record record = new Record(map);
+						record.setEntityEnhancer(new EnhanceableMapEntityEnhancer(
+								entityDataType));
+						object = record;
+					} else {
+						MethodInterceptor[] mis = getMethodInterceptorFactory()
+								.createInterceptors(entityDataType,
+										creationType, null);
+						object = ProxyBeanUtils.createBean(creationType, mis);
+						setValues(object, map);
+					}
 				}
 			} else {
-				// 对于那些本身的类型与目标类型不匹配的数据实体，创建一个全新的实例并复制所有实体属性。
-				Class<?> creationType = entityDataType.getCreationType();
-				if (creationType == null) {
-					creationType = entityDataType.getMatchType();
-				}
-
-				Map map;
-				if (object instanceof Map) {
-					map = (Map) object;
-				} else {
-					map = BeanMap.create(object);
-				}
-
-				if (creationType == null) {
-					Record record = new Record(map);
-					record.setEntityEnhancer(new EnhanceableMapEntityEnhancer(
-							entityDataType));
-					object = record;
-				} else {
-					MethodInterceptor[] mis = getMethodInterceptorFactory()
-							.createInterceptors(entityDataType, creationType,
-									null);
-					object = ProxyBeanUtils.createBean(creationType, mis);
-					setValues(object, map);
-				}
+				object = ((CustomEntityDataType) entityDataType).toMap(object);
 			}
 		}
 		return (T) object;

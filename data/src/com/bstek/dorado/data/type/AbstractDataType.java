@@ -111,6 +111,21 @@ public abstract class AbstractDataType implements RudeDataType {
 		throw new DataConvertException(value.getClass(), getMatchType());
 	}
 
+	public Object toObject(Object value) {
+		if (value == null) {
+			return null;
+		}
+
+		Class<?> targetType = this.getMatchType();
+		if (targetType != null
+				&& !targetType.isAssignableFrom(value.getClass())) {
+			throw new IllegalArgumentException("Type error! "
+					+ targetType.getName() + " expected but "
+					+ value.getClass().getName() + " found.");
+		}
+		return value;
+	}
+
 	@Override
 	public String toString() {
 		return ObjectUtils.identityToString(this) + " [" + "name=" + getName()

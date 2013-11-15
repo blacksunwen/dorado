@@ -10,24 +10,21 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.core.el;
-
-import java.util.Collections;
-
-import com.bstek.dorado.util.proxy.UnmutableMap;
+package com.bstek.dorado.data.entity;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since Jun 24, 2009
+ * @since 2013-11-9
  */
-public abstract class VarMap extends UnmutableMap<String, Object> {
-	@SuppressWarnings("unchecked")
-	public VarMap() {
-		super(Collections.EMPTY_MAP);
+public class CustomEntityMapException extends RuntimeException {
+	private static final long serialVersionUID = -1194969252136814261L;
+
+	public CustomEntityMapException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
-	@Override
-	public boolean containsKey(Object key) {
-		return true;
+	public CustomEntityMapException(Throwable cause) {
+		super(cause);
 	}
+
 }

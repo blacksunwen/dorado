@@ -34,8 +34,7 @@ import com.bstek.dorado.data.DataModelObject;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 12, 2007
  */
-@ClientEvents(@com.bstek.dorado.annotation.ClientEvent(
-		name = "onAttributeChange"))
+@ClientEvents(@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChange"))
 public interface DataType extends DataModelObject, TagSupport {
 	/**
 	 * 返回DataType的名称。
@@ -90,5 +89,4 @@ public interface DataType extends DataModelObject, TagSupport {
 	 * @return 文本型的值。
 	 */
 	String toText(Object value);
-
 }

@@ -34,8 +34,7 @@ import com.bstek.dorado.annotation.XmlProperty;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 13, 2007
  */
-@ClientObject(prototype = "dorado.AggregationDataType",
-		shortTypeName = "Aggregation")
+@ClientObject(prototype = "dorado.AggregationDataType", shortTypeName = "Aggregation")
 public class AggregationDataType extends AbstractDataType implements
 		MutableDataType {
 	private DataType elementDataType;

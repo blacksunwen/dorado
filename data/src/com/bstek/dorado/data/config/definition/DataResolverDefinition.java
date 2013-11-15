@@ -24,7 +24,9 @@ import com.bstek.dorado.config.definition.DefinitionManagerAware;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.DataModelObject;
 import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.data.resolver.DataResolverMethodInterceptor;
 import com.bstek.dorado.data.resolver.manager.DataResolverInterceptorInvoker;
+import com.bstek.dorado.util.SingletonBeanFactory;
 import com.bstek.dorado.util.proxy.BaseMethodInterceptorDispatcher;
 import com.bstek.dorado.util.proxy.MethodInterceptorFilter;
 
@@ -82,6 +84,10 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 			CreationInfo creationInfo, CreationContext context)
 			throws Exception {
 		MethodInterceptor[] interceptors;
+
+		MethodInterceptor defaultResolverMethodInterceptor = (MethodInterceptor) SingletonBeanFactory
+				.getInstance(DataResolverMethodInterceptor.class);
+
 		MethodInterceptor[] customMethodInterceptors = dataResolverDefinitionManager
 				.getDataResolverMethodInterceptors();
 		MethodInterceptor[] superInterceptors = super.getMethodInterceptors(
@@ -90,15 +96,23 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 			MethodInterceptor rootCustomMethodInterceptor = new RootCustomDataResolverInterceptor(
 					customMethodInterceptors);
 			if (superInterceptors != null) {
-				interceptors = new MethodInterceptor[superInterceptors.length + 1];
-				interceptors[0] = rootCustomMethodInterceptor;
-				System.arraycopy(superInterceptors, 0, interceptors, 1,
+				interceptors = new MethodInterceptor[superInterceptors.length + 2];
+				interceptors[0] = defaultResolverMethodInterceptor;
+				interceptors[1] = rootCustomMethodInterceptor;
+				System.arraycopy(superInterceptors, 0, interceptors, 2,
 						superInterceptors.length);
 			} else {
-				interceptors = new MethodInterceptor[] { rootCustomMethodInterceptor };
+				interceptors = new MethodInterceptor[] {
+						defaultResolverMethodInterceptor,
+						rootCustomMethodInterceptor };
 			}
+		} else if (superInterceptors == null) {
+			interceptors = new MethodInterceptor[] { defaultResolverMethodInterceptor };
 		} else {
-			interceptors = superInterceptors;
+			interceptors = new MethodInterceptor[superInterceptors.length + 1];
+			interceptors[0] = defaultResolverMethodInterceptor;
+			System.arraycopy(superInterceptors, 0, interceptors, 1,
+					superInterceptors.length);
 		}
 		return interceptors;
 	}

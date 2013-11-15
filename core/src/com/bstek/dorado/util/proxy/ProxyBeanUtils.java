@@ -107,7 +107,19 @@ public abstract class ProxyBeanUtils {
 	}
 
 	/**
+	 * 根据给定的Class类型（可以是Interface）创建Bean。
+	 * 
+	 * @throws Exception
+	 */
+	public static Object createBean(Class<?> cl) throws Exception {
+		return createBean(cl, (MethodInterceptor) null);
+	}
+
+	/**
 	 * 根据给定的Class类型和一个方法拦截器创建动态代理。
+	 * <p>
+	 * 如果没有指定任何方法拦截器，则会直接创建一个Bean。
+	 * </p>
 	 * 
 	 * @throws Exception
 	 */
@@ -118,6 +130,9 @@ public abstract class ProxyBeanUtils {
 
 	/**
 	 * 根据给定的Class类型和一组方法拦截器创建动态代理。
+	 * <p>
+	 * 如果没有指定任何方法拦截器，则会直接创建一个Bean。
+	 * </p>
 	 * 
 	 * @throws Exception
 	 */
