@@ -252,6 +252,8 @@
 				});
 			}
 			
+			$invokeSuper.call(this, arguments);
+			
 			var frame = this, window = frame.getIFrameWindow(), actualVisible = frame.isActualVisible();
 			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
 			if (frame._ready && frame.isSameDomain()) {
