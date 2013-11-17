@@ -118,6 +118,7 @@
 			var overflowed = false, padding = parseInt(this._padding) || 0;
 			var width = this._maxRagionRight;
 			if (width < dom.scrollWidth) width = dom.scrollWidth;
+			
 			if (width > 0 && (width > this._containerWidth || (width == dom.offsetWidth && dom.style.width == ""))) {
 				dom.style.width = (width + padding) + "px";
 				overflowed = true;
@@ -188,12 +189,6 @@
 				var realignArg = this.adjustRegion(region);
 				if (realignArg) this.realignRegion(region, realignArg);
 			}, this);
-					
-			if (dorado.Browser.msie && dorado.Browser.version < 8) {
-				var containerDom = this._dom.parentNode;
-				$fly(containerDom).toggleClass("d-ie-scrollbar-fix",
-					containerDom.scrollHeight > containerDom.clientHeight || containerDom.scrollWidth > containerDom.clientWidth);
-			}
 		},
 		
 		adjustRegion: function(region) {
@@ -218,11 +213,12 @@
 			left = right = width = top = bottom = height = -1;
 			var lp, rp, tp, bp, wp, hp;
 			lp = rp = tp = bp = wp = hp = 0;
-			
+	
 			var padding = (parseInt(this._padding) || 0);
 			var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
-			var clientWidth = this._containerWidth = containerDom.clientWidth;
-			var clientHeight = this._containerHeight = containerDom.clientHeight;
+			// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
+			var clientWidth = this._containerWidth = containerDom.clientWidth || containerDom.offsetWidth;
+			var clientHeight = this._containerHeight = containerDom.clientHeight || containerDom.offsetHeight;
 			if (clientWidth > 10000) clientWidth = 0;
 			if (clientHeight > 10000) clientHeight = 0;
 			
