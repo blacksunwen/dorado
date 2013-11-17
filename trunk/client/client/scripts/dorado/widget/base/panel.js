@@ -175,8 +175,9 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 				button.setActualVisible(collapsed);
 			}
 		}
-		if (doms && dorado.Browser.msie && dorado.Browser.version == 6)
+		if (doms && dorado.Browser.msie && dorado.Browser.version == 6) {
 			$fly(doms.body).css("zoom", "1");
+		}
 		$invokeSuper.call(this, arguments);
 	},
 	
