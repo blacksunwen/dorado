@@ -897,7 +897,7 @@
 					},
 					listener: {
 						onPick: function() {
-							var ymPicker = picker._yearMonthPicker, year = ymPicker._year, month = ymPicker._month;
+							var ymPicker = picker._yearMonthPicker, year = ymPicker.get("year"), month = ymPicker.get("month");
 							picker.setYear(year, false, false);
 							picker.setMonth(month, true, false);
 							
