@@ -65,7 +65,8 @@ public class DataResolverDefinitionReference implements
 	public DataResolverDefinition getDefinition() {
 		Context current = Context.getCurrent();
 		DataResolverDefinitionManager dtfm = (DataResolverDefinitionManager) current
-				.getAttribute("privateDataResolverDefinitionManager");
+				.getAttribute(Context.THREAD,
+						"privateDataResolverDefinitionManager");
 		if (dtfm == null) {
 			dtfm = getDataResolverDefinitionManager();
 		}

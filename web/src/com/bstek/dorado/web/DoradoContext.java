@@ -275,19 +275,29 @@ public class DoradoContext extends SpringContextSupport {
 						}
 					}
 				}
+				return null;
 			}
+		} else {
+			return super.getAttribute(key);
 		}
-		return null;
 	}
 
 	@Override
 	public void removeAttribute(String key) {
-		removeAttribute(REQUEST, key);
+		if (request != null) {
+			removeAttribute(REQUEST, key);
+		} else {
+			super.removeAttribute(key);
+		}
 	}
 
 	@Override
 	public void setAttribute(String key, Object value) {
-		setAttribute(REQUEST, key, value);
+		if (request != null) {
+			setAttribute(REQUEST, key, value);
+		} else {
+			super.setAttribute(key, value);
+		}
 	}
 
 	protected void throwsViewContextNotAvailable() {
@@ -295,17 +305,12 @@ public class DoradoContext extends SpringContextSupport {
 				"The ViewContext is currently not available.");
 	}
 
-	private Object throwsInvalidScope(String scope)
-			throws IllegalArgumentException {
-		throw new IllegalArgumentException("Invalid scope [" + scope + "].");
-	}
-
 	/**
 	 * 返回指定范围内某属性的值。
 	 * 
 	 * @param scope
-	 *            范围。可使用的值包括{@link #REQUEST}、{@link #VIEW}、{@link #SESSION}、
-	 *            {@link #APPLICATION}
+	 *            范围。可使用的值包括{@link #THREAD}、{@link #REQUEST}、{@link #VIEW}、
+	 *            {@link #SESSION}、 {@link #APPLICATION}
 	 * @param key
 	 *            属性名。
 	 * @return 值。
@@ -335,7 +340,7 @@ public class DoradoContext extends SpringContextSupport {
 			}
 			return null;
 		} else {
-			return throwsInvalidScope(scope);
+			return super.getAttribute(scope, key);
 		}
 	}
 
@@ -343,8 +348,8 @@ public class DoradoContext extends SpringContextSupport {
 	 * 删除指定范围内某属性。
 	 * 
 	 * @param scope
-	 *            范围。可使用的值包括{@link #REQUEST}、{@link #VIEW}、{@link #SESSION}、
-	 *            {@link #APPLICATION}
+	 *            范围。可使用的值包括{@link #THREAD}、{@link #REQUEST}、{@link #VIEW}、
+	 *            {@link #SESSION}、 {@link #APPLICATION}
 	 * @param key
 	 *            属性名。
 	 */
@@ -364,7 +369,7 @@ public class DoradoContext extends SpringContextSupport {
 		} else if (APPLICATION.equals(scope)) {
 			servletContext.removeAttribute(key);
 		} else {
-			throwsInvalidScope(scope);
+			super.removeAttribute(scope, key);
 		}
 	}
 
@@ -372,8 +377,8 @@ public class DoradoContext extends SpringContextSupport {
 	 * 设置指定范围内某属性的值。
 	 * 
 	 * @param scope
-	 *            范围。可使用的值包括{@link #REQUEST}、{@link #VIEW}、{@link #SESSION}、
-	 *            {@link #APPLICATION}
+	 *            范围。可使用的值包括{@link #THREAD}、{@link #REQUEST}、{@link #VIEW}、
+	 *            {@link #SESSION}、 {@link #APPLICATION}
 	 * @param key
 	 *            属性名。
 	 * @param value
@@ -392,7 +397,7 @@ public class DoradoContext extends SpringContextSupport {
 		} else if (APPLICATION.equals(scope)) {
 			servletContext.setAttribute(key, value);
 		} else {
-			throwsInvalidScope(scope);
+			super.setAttribute(scope, key, value);
 		}
 	}
 

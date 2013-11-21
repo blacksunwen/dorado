@@ -64,14 +64,17 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 	public List<ContextVarsInitializer> getContextInitializers() {
 		return contextInitializers;
 	}
-	
+
 	public Expression compile(String text) {
-		List<Object> sections = new ExpressionCompiler(this).compileSections(text);
+		List<Object> sections = new ExpressionCompiler(this)
+				.compileSections(text);
 		if (sections != null && sections.size() > 0) {
-			for (Object section: sections) {
+			for (Object section : sections) {
 				if (section instanceof org.apache.commons.jexl2.Expression) {
-					EvaluateMode evaluateMode = text.startsWith("$${") ? EvaluateMode.onRead : EvaluateMode.onInstantiate;
-					Expression expression = this.createExpression(sections, evaluateMode);
+					EvaluateMode evaluateMode = text.startsWith("$${") ? EvaluateMode.onRead
+							: EvaluateMode.onInstantiate;
+					Expression expression = this.createExpression(sections,
+							evaluateMode);
 					if (expression instanceof ExpressionHandlerAware) {
 						((ExpressionHandlerAware) expression)
 								.setExpressionHandler(this);
@@ -117,8 +120,8 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 
 	public JexlContext getJexlContext() {
 		Context context = Context.getCurrent();
-		JexlContext ctx = (JexlContext) context
-				.getAttribute(CONTEXT_ATTRIBUTE_KEY);
+		JexlContext ctx = (JexlContext) context.getAttribute(Context.THREAD,
+				CONTEXT_ATTRIBUTE_KEY);
 		if (ctx == null) {
 			ctx = new MapContext();
 			if (contextInitializers != null) {
@@ -149,7 +152,7 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 			}
 
 			try {
-				context.setAttribute(CONTEXT_ATTRIBUTE_KEY, ctx);
+				context.setAttribute(Context.THREAD, CONTEXT_ATTRIBUTE_KEY, ctx);
 			} catch (NullPointerException e) {
 				// do nothing
 			}

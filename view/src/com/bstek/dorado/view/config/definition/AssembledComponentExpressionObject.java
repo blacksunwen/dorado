@@ -45,14 +45,15 @@ public class AssembledComponentExpressionObject {
 		}
 
 		Context context = Context.getCurrent();
-		Integer maxId = (Integer) context.getAttribute(MAX_ID_KEY);
+		Integer maxId = (Integer) context.getAttribute(Context.THREAD,
+				MAX_ID_KEY);
 		int sn = 0;
 		if (maxId != null) {
 			sn = maxId.intValue();
 		}
 		sn++;
 		realId = id + '_' + sn;
-		context.setAttribute(MAX_ID_KEY, new Integer(sn));
+		context.setAttribute(Context.THREAD, MAX_ID_KEY, new Integer(sn));
 		idMap.put(id, realId);
 		return realId;
 	}

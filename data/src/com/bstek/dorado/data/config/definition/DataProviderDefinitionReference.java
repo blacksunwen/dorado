@@ -65,7 +65,8 @@ public class DataProviderDefinitionReference implements
 	public DataProviderDefinition getDefinition() {
 		Context current = Context.getCurrent();
 		DataProviderDefinitionManager dtfm = (DataProviderDefinitionManager) current
-				.getAttribute("privateDataProviderDefinitionManager");
+				.getAttribute(Context.THREAD,
+						"privateDataProviderDefinitionManager");
 		if (dtfm == null) {
 			dtfm = getDataProviderDefinitionManager();
 		}
