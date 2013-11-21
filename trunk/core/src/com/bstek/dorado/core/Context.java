@@ -13,6 +13,8 @@
 package com.bstek.dorado.core;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceLoader;
@@ -34,11 +36,18 @@ import com.bstek.dorado.core.io.ResourceLoader;
 public abstract class Context implements ResourceLoader {
 
 	/**
+	 * 表示当前线程的范围。
+	 */
+	public static final String THREAD = "thread";
+
+	/**
 	 * 用于实现与当前线程绑定的ThreadLocal对象，在具体的Context实现类中应该将Context的实例注入到ThreadLocal中。
 	 */
 	private static ThreadLocal<Context> threadLocal = new ThreadLocal<Context>();
 
 	private static Context failSafeContext;
+
+	private Map<String, Object> attributes = new HashMap<String, Object>();
 
 	/**
 	 * 获得当前线程相关的Context实例。<br>
@@ -88,7 +97,9 @@ public abstract class Context implements ResourceLoader {
 	 * @param key
 	 *            属性的键值
 	 */
-	public abstract Object getAttribute(String key);
+	public Object getAttribute(String key) {
+		return getAttribute(THREAD, key);
+	}
 
 	/**
 	 * 设置某个与当前上下文相关的属性值。
@@ -98,7 +109,9 @@ public abstract class Context implements ResourceLoader {
 	 * @param value
 	 *            属性值
 	 */
-	public abstract void setAttribute(String key, Object value);
+	public void setAttribute(String key, Object value) {
+		setAttribute(THREAD, key, value);
+	}
 
 	/**
 	 * 删除某个与当前上下文相关的属性。
@@ -106,7 +119,68 @@ public abstract class Context implements ResourceLoader {
 	 * @param key
 	 *            属性的键值
 	 */
-	public abstract void removeAttribute(String key);
+	public void removeAttribute(String key) {
+		removeAttribute(THREAD, key);
+	}
+
+	private Object throwsInvalidScope(String scope)
+			throws IllegalArgumentException {
+		throw new IllegalArgumentException("Invalid scope [" + scope + "].");
+	}
+
+	/**
+	 * 返回指定范围内某属性的值。
+	 * 
+	 * @param scope
+	 *            范围。可使用的值包括{@link #THREAD}。 注意，在Context的具体实现类中可以支持更多的范围，例如
+	 *            {@link com.bstek.dorado.web.DoradoContext#getAttribute}。
+	 * @param key
+	 *            属性名。
+	 * @return 值。
+	 */
+	public Object getAttribute(String scope, String key) {
+		if (THREAD.equals(scope)) {
+			return attributes.get(key);
+		} else {
+			return throwsInvalidScope(scope);
+		}
+	}
+
+	/**
+	 * 删除指定范围内某属性。
+	 * 
+	 * @param scope
+	 *            范围。可使用的值包括{@link #THREAD}。 注意，在Context的具体实现类中可以支持更多的范围，例如
+	 *            {@link com.bstek.dorado.web.DoradoContext#getAttribute}。
+	 * @param key
+	 *            属性名。
+	 */
+	public void removeAttribute(String scope, String key) {
+		if (THREAD.equals(scope)) {
+			attributes.remove(key);
+		} else {
+			throwsInvalidScope(scope);
+		}
+	}
+
+	/**
+	 * 设置指定范围内某属性的值。
+	 * 
+	 * @param scope
+	 *            范围。可使用的值包括{@link #THREAD}。 注意，在Context的具体实现类中可以支持更多的范围，例如
+	 *            {@link com.bstek.dorado.web.DoradoContext#getAttribute}。
+	 * @param key
+	 *            属性名。
+	 * @param value
+	 *            值。
+	 */
+	public void setAttribute(String scope, String key, Object value) {
+		if (THREAD.equals(scope)) {
+			attributes.put(key, value);
+		} else {
+			throwsInvalidScope(scope);
+		}
+	}
 
 	/**
 	 * 根据资源路径获取相应的资源描述对象。

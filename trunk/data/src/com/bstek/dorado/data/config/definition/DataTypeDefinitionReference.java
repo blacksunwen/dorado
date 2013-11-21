@@ -65,7 +65,8 @@ public class DataTypeDefinitionReference implements
 	public DataTypeDefinition getDefinition() {
 		Context current = Context.getCurrent();
 		DataTypeDefinitionManager dtfm = (DataTypeDefinitionManager) current
-				.getAttribute("privateDataTypeDefinitionManager");
+				.getAttribute(Context.THREAD,
+						"privateDataTypeDefinitionManager");
 		if (dtfm == null) {
 			dtfm = getDataTypeDefinitionManager();
 		}

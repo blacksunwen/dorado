@@ -46,7 +46,7 @@ public class ScopeManager {
 
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>) context
-					.getAttribute(CONTEXT_KEY);
+					.getAttribute(Context.THREAD, CONTEXT_KEY);
 
 			return (map != null) ? map.get(key) : null;
 		} else if (Scope.instant.equals(scope)) {
@@ -75,11 +75,11 @@ public class ScopeManager {
 
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>) context
-					.getAttribute(CONTEXT_KEY);
+					.getAttribute(Context.THREAD, CONTEXT_KEY);
 
 			if (map == null) {
 				map = new HashMap<String, Object>();
-				context.setAttribute(CONTEXT_KEY, map);
+				context.setAttribute(Context.THREAD, CONTEXT_KEY, map);
 			}
 			map.put(key, bean);
 		} else if (!Scope.instant.equals(scope)) {
@@ -105,7 +105,7 @@ public class ScopeManager {
 
 			@SuppressWarnings("unchecked")
 			Map<String, Object> map = (Map<String, Object>) context
-					.getAttribute(CONTEXT_KEY);
+					.getAttribute(Context.THREAD, CONTEXT_KEY);
 
 			return (map != null) ? map.remove(key) : null;
 		} else if (Scope.instant.equals(scope)) {
@@ -127,7 +127,7 @@ public class ScopeManager {
 			singletonContext.clear();
 		} else if (Scope.singleton.equals(scope)) {
 			Context context = Context.getCurrent();
-			context.removeAttribute(CONTEXT_KEY);
+			context.removeAttribute(Context.THREAD, CONTEXT_KEY);
 		} else if (!Scope.instant.equals(scope)) {
 			throw new IllegalArgumentException("Unsupport scope [" + scope
 					+ "].");

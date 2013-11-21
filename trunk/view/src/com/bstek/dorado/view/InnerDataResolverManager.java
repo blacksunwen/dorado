@@ -67,18 +67,21 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 		jexlContext.set(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
 				viewConfigDefinition);
 
-		Object oldDtdm = context
-				.getAttribute("privateDataTypeDefinitionManager");
-		Object oldDpdm = context
-				.getAttribute("privateDataProviderDefinitionManager");
-		Object oldDrdm = context
-				.getAttribute("privateDataResolverDefinitionManager");
+		Object oldDtdm = context.getAttribute(Context.THREAD,
+				"privateDataTypeDefinitionManager");
+		Object oldDpdm = context.getAttribute(Context.THREAD,
+				"privateDataProviderDefinitionManager");
+		Object oldDrdm = context.getAttribute(Context.THREAD,
+				"privateDataResolverDefinitionManager");
 
-		context.setAttribute("privateDataTypeDefinitionManager",
+		context.setAttribute(Context.THREAD,
+				"privateDataTypeDefinitionManager",
 				innerDataTypeDefinitionManager);
-		context.setAttribute("privateDataProviderDefinitionManager",
+		context.setAttribute(Context.THREAD,
+				"privateDataProviderDefinitionManager",
 				innerDataProviderDefinitionManager);
-		context.setAttribute("privateDataResolverDefinitionManager",
+		context.setAttribute(Context.THREAD,
+				"privateDataResolverDefinitionManager",
 				innerDataResolverDefinitionManager);
 		try {
 			DataResolver dataResolver = super.getDataResolver(name);
@@ -91,11 +94,12 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 			jexlContext.set(ViewConfigDefinition.RESOURCE_RELATIVE_DEFINITION,
 					resourceRelativeDefinition);
 
-			context.setAttribute("privateDataTypeDefinitionManager", oldDtdm);
-			context.setAttribute("privateDataProviderDefinitionManager",
-					oldDpdm);
-			context.setAttribute("privateDataResolverDefinitionManager",
-					oldDrdm);
+			context.setAttribute(Context.THREAD,
+					"privateDataTypeDefinitionManager", oldDtdm);
+			context.setAttribute(Context.THREAD,
+					"privateDataProviderDefinitionManager", oldDpdm);
+			context.setAttribute(Context.THREAD,
+					"privateDataResolverDefinitionManager", oldDrdm);
 		}
 	}
 }

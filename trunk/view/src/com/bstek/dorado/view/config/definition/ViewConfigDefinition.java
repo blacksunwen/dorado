@@ -235,18 +235,21 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 				.get(RESOURCE_RELATIVE_DEFINITION);
 		jexlContext.set(RESOURCE_RELATIVE_DEFINITION, this);
 
-		Object oldDtdm = doradoContext
-				.getAttribute("privateDataTypeDefinitionManager");
-		Object oldDpdm = doradoContext
-				.getAttribute("privateDataProviderDefinitionManager");
-		Object oldDrdm = doradoContext
-				.getAttribute("privateDataResolverDefinitionManager");
+		Object oldDtdm = doradoContext.getAttribute(Context.THREAD,
+				"privateDataTypeDefinitionManager");
+		Object oldDpdm = doradoContext.getAttribute(Context.THREAD,
+				"privateDataProviderDefinitionManager");
+		Object oldDrdm = doradoContext.getAttribute(Context.THREAD,
+				"privateDataResolverDefinitionManager");
 
-		doradoContext.setAttribute("privateDataTypeDefinitionManager",
+		doradoContext.setAttribute(Context.THREAD,
+				"privateDataTypeDefinitionManager",
 				dataTypeDefinitionManager.duplicate());
-		doradoContext.setAttribute("privateDataProviderDefinitionManager",
+		doradoContext.setAttribute(Context.THREAD,
+				"privateDataProviderDefinitionManager",
 				dataProviderDefinitionManager.duplicate());
-		doradoContext.setAttribute("privateDataResolverDefinitionManager",
+		doradoContext.setAttribute(Context.THREAD,
+				"privateDataResolverDefinitionManager",
 				dataResolverDefinitionManager.duplicate());
 		try {
 			ViewConfig viewConfig = (ViewConfig) super.doCreate(context,
@@ -273,12 +276,12 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 			jexlContext.set(RESOURCE_RELATIVE_DEFINITION,
 					resourceRelativeDefinition);
 
-			doradoContext.setAttribute("privateDataTypeDefinitionManager",
-					oldDtdm);
-			doradoContext.setAttribute("privateDataProviderDefinitionManager",
-					oldDpdm);
-			doradoContext.setAttribute("privateDataResolverDefinitionManager",
-					oldDrdm);
+			doradoContext.setAttribute(Context.THREAD,
+					"privateDataTypeDefinitionManager", oldDtdm);
+			doradoContext.setAttribute(Context.THREAD,
+					"privateDataProviderDefinitionManager", oldDpdm);
+			doradoContext.setAttribute(Context.THREAD,
+					"privateDataResolverDefinitionManager", oldDrdm);
 		}
 	}
 
@@ -337,11 +340,11 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 
 			Context doradoContext = Context.getCurrent();
 			InnerDataTypeDefinitionManager innerDataTypeDefinitionManager = (InnerDataTypeDefinitionManager) doradoContext
-					.getAttribute("privateDataTypeDefinitionManager");
+					.getAttribute(Context.THREAD, "privateDataTypeDefinitionManager");
 			InnerDataProviderDefinitionManager innerDataProviderDefinitionManager = (InnerDataProviderDefinitionManager) doradoContext
-					.getAttribute("privateDataProviderDefinitionManager");
+					.getAttribute(Context.THREAD, "privateDataProviderDefinitionManager");
 			InnerDataResolverDefinitionManager innerDataResolverDefinitionManager = (InnerDataResolverDefinitionManager) doradoContext
-					.getAttribute("privateDataResolverDefinitionManager");
+					.getAttribute(Context.THREAD, "privateDataResolverDefinitionManager");
 
 			InnerDataTypeManager dataTypeManager = new InnerDataTypeManager(
 					(DataTypeManager) doradoContext
