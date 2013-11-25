@@ -393,9 +393,11 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 				
 				if (bindingInfo.propertyDef) {
-					if (!group._radioButtons || !group._radioButtons.length) {
-						var radioButtons = [], mapping = bindingInfo.propertyDef._mapping;
+                    var oldMapping = group._propertyDefMapping, mapping = bindingInfo.propertyDef._mapping;
+					if ((oldMapping || mapping) && (oldMapping != mapping)) {
+						var radioButtons = [];
 						if (mapping) {
+                            group._propertyDefMapping = mapping;
 							for (var i = 0; i < mapping.length; i++) {
 								var item = mapping[i];
 								radioButtons.push({
