@@ -884,7 +884,7 @@
 			 * <ul>
 			 * <li>none - 不支持选择模式。</li>
 			 * <li>singleRow - 单行选择。</li>
-			 * <li>multiRows - 多汗选择。</li>
+			 * <li>multiRows - 多行选择。</li>
 			 * </ul>
 			 * </p>
 			 * @type String
