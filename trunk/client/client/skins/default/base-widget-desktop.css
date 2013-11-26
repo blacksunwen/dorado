@@ -426,6 +426,119 @@
     background-position: right 0;
 }
 
+.d-tabcolumn-vtext.d-tabcolumn-left .tab,
+.d-tabcolumn-vtext-left .tab {
+    background-image: url(base/vtabcolumn.png);
+    background-position: 0 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab .tab-left,
+.d-tabcolumn-vtext-left .tab .tab-left {
+    background-image: url(base/vtabcolumn.png);
+    background-position: -78px 0;
+    background-repeat: repeat-y;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab .caption,
+.d-tabcolumn-vtext-left .tab .caption {
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab .tab-right,
+.d-tabcolumn-vtext-left .tab .tab-right {
+    background-image: url(base/vtabcolumn.png);
+    background-position: 0 bottom;
+    background-repeat: no-repeat;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab,
+.d-tabcolumn-vtext-left .tab {
+    background: transparent url(base/vtabcolumn.png) no-repeat -26px 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab .tab-left,
+.d-tabcolumn-vtext-left .tab .tab-left {
+    background: url(base/vtabcolumn.png) repeat-y -104px 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab .tab-right,
+.d-tabcolumn-vtext-left .tab .tab-right {
+    background: url(base/vtabcolumn.png) no-repeat -26px bottom;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab,
+.d-tabcolumn-vtext-right .tab {
+    background-image: url(base/vtabcolumn-right.png);
+    background-position: 0 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab .tab-left,
+.d-tabcolumn-vtext-right .tab .tab-left {
+    background-image: url(base/vtabcolumn-right.png);
+    background-position: -78px 0;
+    background-repeat: repeat-y;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab .caption,
+.d-tabcolumn-vtext-right .tab .caption {
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab .tab-right,
+.d-tabcolumn-vtext-right .tab .tab-right {
+    background-image: url(base/vtabcolumn-right.png);
+    background-position: 0 bottom;
+    background-repeat: no-repeat;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab,
+.d-tabcolumn-vtext-right .tab {
+    background: transparent url(base/vtabcolumn-right.png) no-repeat -26px 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab .tab-left,
+.d-tabcolumn-vtext-right .tab .tab-left {
+    background: url(base/vtabcolumn-right.png) repeat-y -104px 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-right .tab .tab-right,
+.d-tabcolumn-vtext-right .tab .tab-right {
+    background: url(base/vtabcolumn-right.png) no-repeat -26px bottom;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab-hover, .d-tabcolumn-vtext.d-tabcolumn-right .tab-hover,
+.d-tabcolumn-vtext-left .tab-hover, .d-tabcolumn-vtext-right .tab-hover {
+    background-position: -52px 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab-selected, .d-tabcolumn-vtext.d-tabcolumn-right .tab-selected,
+.d-tabcolumn-vtext-left .tab-selected, .d-tabcolumn-vtext-right .tab-selected {
+    background-position: 0 0;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab-hover .tab-left, .d-tabcolumn-vtext.d-tabcolumn-right .tab-hover .tab-left,
+.d-tabcolumn-vtext-left .tab-hover .tab-left, .d-tabcolumn-vtext-right .tab-hover .tab-left {
+    background-position: -130px 0 ;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab-hover .tab-right, .d-tabcolumn-vtext.d-tabcolumn-right .tab-hover .tab-right,
+.d-tabcolumn-vtext-left .tab-hover .tab-right, .d-tabcolumn-vtext-right .tab-hover .tab-right{
+    background-position: -52px bottom;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab-selected .tab-left, .d-tabcolumn-vtext.d-tabcolumn-right .tab-selected .tab-left,
+.d-tabcolumn-vtext-left .tab-selected .tab-left, .d-tabcolumn-vtext-right .tab-selected .tab-left {
+    background-position: -78px 0 ;
+}
+
+.d-tabcolumn-vtext.d-tabcolumn-left .tab-selected .tab-right, .d-tabcolumn-vtext.d-tabcolumn-right .tab-selected .tab-right,
+.d-tabcolumn-vtext-left .tab-selected .tab-right, .d-tabcolumn-vtext-right .tab-selected .tab-right {
+    background-position: 0 bottom;
+}
+
+.d-ie6 .d-tabcolumn-vtext .tab .tab-left, .d-ie7 .d-tabcolumn-vtext .tab .tab-left {
+    margin-bottom: -4px;
+    padding-bottom: 2px;
+}
+
 /* caption-bar */
 .d-caption-bar {
 	background: #F8F8F8 url(base/caption-bar-bg.gif) bottom repeat-x;
