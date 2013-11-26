@@ -587,6 +587,13 @@
 
             tabcolumn._doms = doms;
 
+            if (tabcolumn._verticalText) {
+                jDom.addClass("i-tabcolumn-vtext " + tabcolumn._className + "-vtext");
+                if (dorado.Browser.msie && dorado.Browser.version == 6) {
+                    jDom.addClass("i-tabcolumn-vtext-"  + tabcolumn._tabPlacement + " " + tabcolumn._className + "-vtext-" + tabcolumn._tabPlacement);
+                }
+            }
+
             jDom.addClass(tabcolumn._tabPlacement == "left" ? "i-tabcolumn-left " + tabcolumn._className + "-left" : "i-tabcolumn-right " + tabcolumn._className + "-right");
 
             if (tabcolumn._alwaysShowNavButtons) {
@@ -621,10 +628,6 @@
                     }
                 }
             });
-
-	        if (tabcolumn._verticalText) {
-		        $fly(dom).addClass("i-tabcolumn-vtext " + tabcolumn._className + "-vtext");
-	        }
 
             return dom;
         },
