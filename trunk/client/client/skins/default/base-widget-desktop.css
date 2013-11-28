@@ -426,6 +426,12 @@
     background-position: right 0;
 }
 
+.d-ie6 .d-tabcolumn .tab, .d-ie7 .d-tabcolumn .tab {
+    height: 26px;
+    margin-bottom: -2px;
+    overflow: hidden;
+}
+
 .d-tabcolumn-vtext.d-tabcolumn-left .tab,
 .d-tabcolumn-vtext-left .tab {
     background-image: url(base/vtabcolumn.png);
@@ -532,6 +538,11 @@
 .d-tabcolumn-vtext.d-tabcolumn-left .tab-selected .tab-right, .d-tabcolumn-vtext.d-tabcolumn-right .tab-selected .tab-right,
 .d-tabcolumn-vtext-left .tab-selected .tab-right, .d-tabcolumn-vtext-right .tab-selected .tab-right {
     background-position: 0 bottom;
+}
+
+.d-ie6 .d-tabcolumn-vtext .tab, .d-ie7 .d-tabcolumn-vtext .tab {
+    height: auto;
+    margin-bottom: 0;
 }
 
 .d-ie6 .d-tabcolumn-vtext .tab .tab-left, .d-ie7 .d-tabcolumn-vtext .tab .tab-left {
