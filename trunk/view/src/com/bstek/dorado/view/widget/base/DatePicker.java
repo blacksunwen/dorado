@@ -40,6 +40,7 @@ public class DatePicker extends Control {
 	private boolean showTodayButton = true;
 	private boolean showClearButton = true;
 	private String yearMonthFormat;
+	private SelectionMode selectionMode = SelectionMode.singleDate;
 	
 	public Date getDate() {
 		return date;
@@ -91,6 +92,25 @@ public class DatePicker extends Control {
 
 	public void setYearMonthFormat(String yearMonthFormat) {
 		this.yearMonthFormat = yearMonthFormat;
+	}		
+	
+	/**
+	 * @return the selectionMode
+	 */
+	@ClientProperty(escapeValue = "singleDate")
+	public SelectionMode getSelectionMode() {
+		return selectionMode;
+	}
+
+	/**
+	 * @param selectionMode the selectionMode to set
+	 */
+	public void setSelectionMode(SelectionMode selectionMode) {
+		this.selectionMode = selectionMode;
+	}
+
+	public static enum SelectionMode {
+		singleDate, multiDate
 	}
 		
 }
