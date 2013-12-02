@@ -30,6 +30,7 @@ import com.bstek.dorado.view.widget.Control;
 @ClientEvents({ @ClientEvent(name = "onLoad") })
 public class IFrame extends Control {
 	private String path;
+	private String name;
 
 	public String getPath() {
 		return path;
@@ -38,4 +39,18 @@ public class IFrame extends Control {
 	public void setPath(String path) {
 		this.path = path;
 	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}	
 }
