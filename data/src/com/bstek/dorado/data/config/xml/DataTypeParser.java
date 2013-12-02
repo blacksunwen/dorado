@@ -75,13 +75,12 @@ public class DataTypeParser extends GenericObjectParser implements
 		super.initDefinition(dataType, element, context);
 
 		DataParseContext dataContext = (DataParseContext) context;
-		Map<String, Object> properties = dataType.getProperties();
 		DefinitionReference<DataTypeDefinition> dataTypeRef;
 		dataTypeRef = dataObjectParseHelper.getReferencedDataType(
 				DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
 				DataXmlConstants.ELEMENT_DATA_TYPE, element, dataContext);
 		if (dataTypeRef != null) {
-			properties.put(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
+			dataType.setProperty(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
 					dataTypeRef);
 		}
 
@@ -89,7 +88,7 @@ public class DataTypeParser extends GenericObjectParser implements
 				DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
 				DataXmlConstants.KEY_DATA_TYPE, element, dataContext);
 		if (dataTypeRef != null) {
-			properties.put(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
+			dataType.setProperty(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
 					dataTypeRef);
 		}
 
@@ -97,7 +96,7 @@ public class DataTypeParser extends GenericObjectParser implements
 				DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
 				DataXmlConstants.VALUE_DATA_TYPE, element, dataContext);
 		if (dataTypeRef != null) {
-			properties.put(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
+			dataType.setProperty(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
 					dataTypeRef);
 		}
 	}
@@ -142,12 +141,12 @@ public class DataTypeParser extends GenericObjectParser implements
 			dataType = (DataTypeDefinition) super.internalParse(node,
 					dataContext);
 
-			Class<?> matchType = (Class<?>) dataType.getProperties().remove(
-					DataXmlConstants.ATTRIBUTE_MATCH_TYPE);
+			Class<?> matchType = (Class<?>) dataType
+					.removeProperty(DataXmlConstants.ATTRIBUTE_MATCH_TYPE);
 			dataType.setMatchType(matchType);
 
-			Class<?> creationType = (Class<?>) dataType.getProperties().remove(
-					DataXmlConstants.ATTRIBUTE_CREATION_TYPE);
+			Class<?> creationType = (Class<?>) dataType
+					.removeProperty(DataXmlConstants.ATTRIBUTE_CREATION_TYPE);
 			if (creationType != null) {
 				if (matchType != null
 						&& !matchType.isAssignableFrom(creationType)) {
@@ -198,7 +197,7 @@ public class DataTypeParser extends GenericObjectParser implements
 					DefinitionReference<?> dataTypeRef = dataContext
 							.getDataTypeReference(dataTypeName.getDataType());
 					dataType.setParentReferences(new DefinitionReference[] { dataTypeRef });
-					dataType.getProperties().put(
+					dataType.setProperty(
 							DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
 							elementDataType);
 				}

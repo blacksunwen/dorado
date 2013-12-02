@@ -16,6 +16,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +44,10 @@ public abstract class Definition implements Cloneable {
 	private Resource resource;
 	private Resource[] dependentResources;
 
-	// TODO: 此处可优化
-	private Map<String, Object> properties = new HashMap<String, Object>();
-	private List<Operation> initOperations = new ArrayList<Operation>();
+	private Map<String, Object> properties;
+	private Map<String, Object> unmodifiableProperties;
+	private List<Operation> initOperations;
+	private List<Operation> unmodifiableInitOperations;
 
 	/**
 	 * 返回对象归属的文件资源。<br>
@@ -78,6 +80,14 @@ public abstract class Definition implements Cloneable {
 		this.dependentResources = dependentResources;
 	}
 
+	private Map<String, Object> getOrCreateProperties() {
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+			unmodifiableProperties = Collections.unmodifiableMap(properties);
+		}
+		return properties;
+	}
+
 	/**
 	 * 返回最终对象的一组属性值。这些属性值将在创建对象时被初始化到新生成的对象中。<br>
 	 * 此方法返回值为Map集合，其中Map的键为属性名，值为相应的属性值。<br>
@@ -92,26 +102,26 @@ public abstract class Definition implements Cloneable {
 	 * ，在最终初始化对象时将被转换成具体的数据或对象。</li>
 	 * </ul>
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getProperties() {
-		return properties;
+		return (unmodifiableProperties != null) ? unmodifiableProperties
+				: Collections.EMPTY_MAP;
 	}
 
-	/**
-	 * @param property
-	 * @return
-	 */
 	public Object getProperty(String property) {
-		return properties.get(property);
+		return (properties != null) ? properties.get(property) : null;
 	}
 
-	/**
-	 * @param property
-	 * @param value
-	 * @return
-	 */
-	public Definition setProperty(String property, Object value) {
-		properties.put(property, value);
-		return this;
+	public void setProperty(String property, Object value) {
+		getOrCreateProperties().put(property, value);
+	}
+
+	public Object removeProperty(String property) {
+		return (properties != null) ? properties.remove(property) : null;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		getOrCreateProperties().putAll(properties);
 	}
 
 	/**
@@ -252,6 +262,11 @@ public abstract class Definition implements Cloneable {
 	 *            初始化操作
 	 */
 	public void addInitOperation(Operation operation) {
+		if (initOperations == null) {
+			initOperations = new ArrayList<Operation>();
+			unmodifiableInitOperations = Collections
+					.unmodifiableList(initOperations);
+		}
 		initOperations.add(operation);
 	}
 
@@ -260,8 +275,10 @@ public abstract class Definition implements Cloneable {
 	 * 
 	 * @see #addInitOperation(Operation)
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Operation> getInitOperations() {
-		return initOperations;
+		return (unmodifiableInitOperations != null) ? unmodifiableInitOperations
+				: Collections.EMPTY_LIST;
 	}
 
 	/**

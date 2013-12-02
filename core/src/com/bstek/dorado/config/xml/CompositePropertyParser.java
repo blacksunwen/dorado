@@ -96,7 +96,7 @@ public class CompositePropertyParser extends ObjectParser {
 	protected void initDefinition(ObjectDefinition definition,
 			Map<String, Object> properties) throws ClassNotFoundException {
 		definition.setImpl(getImpl());
-		definition.getProperties().putAll(properties);
+		definition.setProperties(properties);
 	}
 
 	@Override

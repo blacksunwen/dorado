@@ -47,8 +47,8 @@ public class DataResolverParser extends GenericObjectParser {
 
 		DataResolverDefinition dataResolver = (DataResolverDefinition) definition;
 
-		String interceptor = (String) dataResolver.getProperties().remove(
-				XmlConstants.ATTRIBUTE_INTERCEPTOR);
+		String interceptor = (String) dataResolver
+				.removeProperty(XmlConstants.ATTRIBUTE_INTERCEPTOR);
 		if (StringUtils.isNotEmpty(interceptor)) {
 			dataResolver.setInterceptor(interceptor);
 		}

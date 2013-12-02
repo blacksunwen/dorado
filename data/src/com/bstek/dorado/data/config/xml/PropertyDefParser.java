@@ -54,7 +54,7 @@ public class PropertyDefParser extends GenericObjectParser {
 				.getReferencedDataType(DataXmlConstants.ATTRIBUTE_DATA_TYPE,
 						DataXmlConstants.DATA_TYPE, element, dataContext);
 		if (dataTypeRef != null) {
-			definition.getProperties().put(
+			definition.setProperty(
 					DataXmlConstants.ATTRIBUTE_DATA_TYPE, dataTypeRef);
 		}
 		super.initDefinition(definition, element, context);

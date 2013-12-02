@@ -50,8 +50,8 @@ public class DataProviderParser extends GenericObjectParser {
 
 		DataProviderDefinition dataProvider = (DataProviderDefinition) definition;
 
-		String interceptor = (String) dataProvider.getProperties().remove(
-				XmlConstants.ATTRIBUTE_INTERCEPTOR);
+		String interceptor = (String) dataProvider
+				.removeProperty(XmlConstants.ATTRIBUTE_INTERCEPTOR);
 		if (StringUtils.isNotEmpty(interceptor)) {
 			dataProvider.setInterceptor(interceptor);
 		}
@@ -62,8 +62,8 @@ public class DataProviderParser extends GenericObjectParser {
 						DataXmlConstants.RESULT_TYPE, element,
 						(DataParseContext) context);
 		if (dataTypeRef != null) {
-			definition.getProperties().put(
-					DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE, dataTypeRef);
+			definition.setProperty(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE,
+					dataTypeRef);
 		}
 	}
 }
