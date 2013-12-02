@@ -23,7 +23,7 @@ import com.bstek.dorado.config.xml.ConfigurableDispatchableXmlParser;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 13, 2008
  */
-public class GenericParser extends ConfigurableDispatchableXmlParser {
+public abstract class GenericParser extends ConfigurableDispatchableXmlParser {
 	protected DataObjectParseHelper dataObjectParseHelper;
 
 	public void setDataObjectParseHelper(

@@ -343,8 +343,16 @@ public abstract class Definition implements Cloneable {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		Definition definition = (Definition) super.clone();
-		definition.properties = CloneUtils.clone(properties);
-		definition.initOperations = CloneUtils.clone(initOperations);
+		if (properties != null) {
+			definition.properties = CloneUtils.clone(properties);
+			definition.unmodifiableProperties = Collections
+					.unmodifiableMap(definition.properties);
+		}
+		if (initOperations != null) {
+			definition.initOperations = CloneUtils.clone(initOperations);
+			definition.unmodifiableInitOperations = Collections
+					.unmodifiableList(definition.unmodifiableInitOperations);
+		}
 		return definition;
 	}
 
