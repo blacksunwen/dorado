@@ -45,7 +45,7 @@ dorado.TagManager = {
 	_unregister: function(tag, object) {
 		var info = this._map[tag];
 		if (info) {
-			if (!info.idMap[object._id]) {
+			if (info.idMap[object._id]) {
 				delete info.idMap[object._id];
 				info.list.remove(object);
 			}
