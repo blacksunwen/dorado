@@ -39,8 +39,8 @@ public class UpdateActionParser extends ComponentParser {
 						DataXmlConstants.DATA_RESOLVER, element,
 						(ViewParseContext) context);
 		if (dataResolverRef != null) {
-			definition.getProperties().put(
-					DataXmlConstants.ATTRIBUTE_DATA_RESOLVER, dataResolverRef);
+			definition.setProperty(DataXmlConstants.ATTRIBUTE_DATA_RESOLVER,
+					dataResolverRef);
 		}
 		super.initDefinition(definition, element, context);
 	}

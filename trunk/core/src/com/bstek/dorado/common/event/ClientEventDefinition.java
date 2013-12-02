@@ -30,36 +30,36 @@ public class ClientEventDefinition extends ObjectDefinition {
 	 * 返回事件名
 	 */
 	public String getName() {
-		return (String) getProperties().get("name");
+		return (String) getProperty("name");
 	}
 
 	/**
 	 * 设置事件名
 	 */
 	public void setName(String name) {
-		getProperties().put("name", name);
+		setProperty("name", name);
 	}
 
 	public String getSignature() {
-		return (String) getProperties().get("signature");
+		return (String) getProperty("signature");
 	}
 
 	public void setSignature(String signature) {
-		getProperties().put("signature", signature);
+		setProperty("signature", signature);
 	}
 
 	/**
 	 * 返回事件体的脚本。
 	 */
 	public Object getScript() {
-		return getProperties().get("script");
+		return getProperty("script");
 	}
 
 	/**
 	 * 设置事件体的脚本。
 	 */
 	public void setScript(Object script) {
-		getProperties().put("script", script);
+		setProperty("script", script);
 	}
 
 }

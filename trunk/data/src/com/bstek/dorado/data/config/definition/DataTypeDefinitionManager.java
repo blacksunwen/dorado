@@ -166,11 +166,11 @@ public class DataTypeDefinitionManager extends
 				.setParentReferences(new DefinitionReference<?>[] { dataTypeRef });
 
 		String[] subDataTypeNames = dataTypeName.getSubDataTypes();
-		Map<String, Object> properties = definition.getProperties();
 		if (subDataTypeNames.length == 1) {
 			DefinitionReference<?> elementDataType = new DataTypeDefinitionReference(
 					subDataTypeNames[0]);
-			properties.put(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
+			definition.setProperty(
+					DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
 					elementDataType);
 		} else if (subDataTypeNames.length == 2) {
 			DefinitionReference<?> keyDataType = new DataTypeDefinitionReference(
@@ -178,9 +178,9 @@ public class DataTypeDefinitionManager extends
 			DefinitionReference<?> valueDataType = new DataTypeDefinitionReference(
 					subDataTypeNames[1]);
 
-			properties.put(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
+			definition.setProperty(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
 					keyDataType);
-			properties.put(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
+			definition.setProperty(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
 					valueDataType);
 		} else {
 			throw new IllegalArgumentException("Illegal DataType name [" + name

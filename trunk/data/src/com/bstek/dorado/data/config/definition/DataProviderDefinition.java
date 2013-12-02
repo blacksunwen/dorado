@@ -97,10 +97,10 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 			CreationInfo creationInfo, CreationContext context)
 			throws Exception {
 		MethodInterceptor[] interceptors;
-		
+
 		MethodInterceptor getResultMethodInterceptor = (MethodInterceptor) SingletonBeanFactory
 				.getInstance(DataProviderGetResultMethodInterceptor.class);
-		
+
 		MethodInterceptor[] customMethodInterceptors = dataProviderDefinitionManager
 				.getDataProviderMethodInterceptors();
 		if (customMethodInterceptors != null) {
@@ -137,8 +137,7 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 		// 当DataProvider继承自另一个DataProvider时，指定其中的ResultDataType也从父DataProvider的ResultDataType继承。
 		if (!resultDataTypeParentAssigned) {
 			DataTypeDefinition resultDataType = (DataTypeDefinition) DefinitionUtils
-					.getDefinition(getProperties().get(
-							DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
+					.getDefinition(getProperty(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
 			if (resultDataType != null && resultDataType.isInner()) {
 				DefinitionReference<? extends Definition>[] parentReferences = getParentReferences();
 				if (parentReferences != null) {
@@ -150,8 +149,7 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 
 						DataTypeDefinition parentResultDataType = (DataTypeDefinition) DefinitionUtils
 								.getDefinition(parent
-										.getProperties()
-										.get(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
+										.getProperty(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
 						if (parentResultDataType != null) {
 							Definition[] originParents = resultDataType
 									.getParents();

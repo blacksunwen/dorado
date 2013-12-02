@@ -44,8 +44,7 @@ public class LayoutTextParserDispatcher extends DispatchableTextParser {
 		this.layoutTypeRegistry = layoutTypeRegistry;
 	}
 
-	public void setTextParserHelper(
-			TextParserHelper textParserHelper) {
+	public void setTextParserHelper(TextParserHelper textParserHelper) {
 		this.textParserHelper = textParserHelper;
 	}
 
@@ -65,19 +64,18 @@ public class LayoutTextParserDispatcher extends DispatchableTextParser {
 			layout.setType(info.getType());
 			Class<? extends Layout> classType = info.getClassType();
 			layout.setImpl(classType.getName());
-			TextParser layoutParser = textParserHelper
-					.getTextParser(info.getClassType());
+			TextParser layoutParser = textParserHelper.getTextParser(info
+					.getClassType());
 
 			Map<String, Object> attributes = (Map<String, Object>) layoutParser
 					.parse(charArray, context);
 
-			Map<String, Object> properties = layout.getProperties();
 			Map<String, Object> style = null;
 
 			for (Map.Entry<String, Object> entry : attributes.entrySet()) {
 				String key = entry.getKey();
 				if (BeanUtils.getPropertyDescriptor(classType, key) != null) {
-					properties.put(key, entry.getValue());
+					layout.setProperty(key, entry.getValue());
 				} else {
 					if (style == null) {
 						style = new HashMap<String, Object>();
@@ -87,7 +85,7 @@ public class LayoutTextParserDispatcher extends DispatchableTextParser {
 			}
 
 			if (style != null) {
-				properties.put("style", style);
+				layout.setProperty("style", style);
 			}
 		} else {
 			throw new TextParseException("Unrecognized layout definition ["

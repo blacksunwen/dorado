@@ -12,8 +12,6 @@
 
 package com.bstek.dorado.view.widget;
 
-import java.util.Map;
-
 import org.w3c.dom.Element;
 
 import com.bstek.dorado.config.ParseContext;
@@ -35,11 +33,10 @@ public class ControlParser extends ComponentParser {
 		super.initDefinition(definition, element, context);
 
 		ControlDefinition controlDefinition = (ControlDefinition) definition;
-		Map<String, Object> properties = controlDefinition.getProperties();
-		if (properties
+		if (controlDefinition.getProperties()
 				.containsKey(ViewXmlConstants.ATTRIBUTE_LAYOUT_CONSTRAINT)) {
-			Object layoutConstraint = properties
-					.remove(ViewXmlConstants.ATTRIBUTE_LAYOUT_CONSTRAINT);
+			Object layoutConstraint = controlDefinition
+					.removeProperty(ViewXmlConstants.ATTRIBUTE_LAYOUT_CONSTRAINT);
 			controlDefinition.setLayoutConstraint(layoutConstraint);
 		}
 	}

@@ -101,8 +101,9 @@ class SetElementOperation implements DefinitionInitOperation {
 				if (element instanceof DefinitionInitOperation) {
 					((DefinitionInitOperation) element)
 							.execute(object, context);
-				} else {
-					((Definition) object).addInitOperation((Operation) element);
+				} else if (object instanceof ObjectDefinition) {
+					((ObjectDefinition) object)
+							.addInitOperation((Operation) element);
 				}
 			} else {
 				PropertyDescriptor propertyDescriptor = PropertyUtils
@@ -111,8 +112,8 @@ class SetElementOperation implements DefinitionInitOperation {
 						&& propertyDescriptor.getWriteMethod() != null
 						&& !NATIVE_DEFINITION_PROPERTIES.contains(property)) {
 					PropertyUtils.setSimpleProperty(object, property, element);
-				} else {
-					((Definition) object).setProperty(property, element);
+				} else if (object instanceof ObjectDefinition) {
+					((ObjectDefinition) object).setProperty(property, element);
 				}
 			}
 		} else {

@@ -70,8 +70,8 @@ public class GenericObjectParser extends ObjectParser {
 		super.initDefinition(definition, element, context);
 
 		if (definition instanceof ListenableObjectDefinition) {
-			String listener = (String) definition.getProperties().remove(
-					DataXmlConstants.ATTRIBUTE_LISTENER);
+			String listener = (String) definition
+					.removeProperty(DataXmlConstants.ATTRIBUTE_LISTENER);
 			if (StringUtils.isNotEmpty(listener)) {
 				((ListenableObjectDefinition) definition).setListener(listener);
 			}

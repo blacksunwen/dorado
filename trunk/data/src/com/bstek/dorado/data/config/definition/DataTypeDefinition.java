@@ -370,11 +370,8 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 					EntityDataType entityDataType = (EntityDataType) dataType;
 					for (PropertyDefDefinition definition : propertyDefs
 							.values()) {
-						Map<String, Object> properties = definition
-								.getProperties();
-
-						Object tempDataType = properties
-								.get(DataXmlConstants.ATTRIBUTE_DATA_TYPE);
+						Object tempDataType = definition
+								.getProperty(DataXmlConstants.ATTRIBUTE_DATA_TYPE);
 						if (tempDataType != null
 								&& tempDataType instanceof DataTypeDefinitionReference) {
 							DataTypeDefinitionReference dataTypeRef = (DataTypeDefinitionReference) tempDataType;

@@ -196,7 +196,7 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser {
 		}
 
 		Map<String, Object> properties = parseProperties(element, context);
-		definition.getProperties().putAll(properties);
+		definition.setProperties(properties);
 
 		List<?> results = dispatchChildElements(element, context);
 		if (results != null) {

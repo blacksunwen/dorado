@@ -38,8 +38,8 @@ public class ReferenceParser extends PropertyDefParser {
 						DataXmlConstants.DATA_PROVIDER, element,
 						(DataParseContext) context);
 		if (dataProviderRef != null) {
-			definition.getProperties().put(
-					DataXmlConstants.ATTRIBUTE_DATA_PROVIDER, dataProviderRef);
+			definition.setProperty(DataXmlConstants.ATTRIBUTE_DATA_PROVIDER,
+					dataProviderRef);
 		}
 	}
 }
