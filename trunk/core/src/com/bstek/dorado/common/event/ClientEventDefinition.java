@@ -12,11 +12,7 @@
 
 package com.bstek.dorado.common.event;
 
-import com.bstek.dorado.config.definition.CreationContext;
-import com.bstek.dorado.config.definition.Definition;
-import com.bstek.dorado.config.definition.DefinitionUtils;
-import com.bstek.dorado.core.el.EvaluateMode;
-import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.config.definition.ObjectDefinition;
 
 /**
  * 客户端事件的配置声明对象。
@@ -24,59 +20,46 @@ import com.bstek.dorado.core.el.Expression;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
-public class ClientEventDefinition extends Definition {
-	private String name;
-	private String signature;
-	private Object script;
+public class ClientEventDefinition extends ObjectDefinition {
+
+	public ClientEventDefinition() {
+		setImplType(DefaultClientEvent.class);
+	}
 
 	/**
 	 * 返回事件名
 	 */
 	public String getName() {
-		return name;
+		return (String) getProperties().get("name");
 	}
 
 	/**
 	 * 设置事件名
 	 */
 	public void setName(String name) {
-		this.name = name;
+		getProperties().put("name", name);
 	}
 
 	public String getSignature() {
-		return signature;
+		return (String) getProperties().get("signature");
 	}
 
 	public void setSignature(String signature) {
-		this.signature = signature;
+		getProperties().put("signature", signature);
 	}
 
 	/**
 	 * 返回事件体的脚本。
 	 */
 	public Object getScript() {
-		return script;
+		return getProperties().get("script");
 	}
 
 	/**
 	 * 设置事件体的脚本。
 	 */
 	public void setScript(Object script) {
-		this.script = script;
-	}
-
-	@Override
-	protected Object doCreate(CreationContext context, Object[] constructorArgs)
-			throws Exception {
-		DefaultClientEvent event = new DefaultClientEvent();
-		Object script = DefinitionUtils.getRealValue(this.script, context);
-		if (script instanceof Expression
-				&& ((Expression) script).getEvaluateMode() == EvaluateMode.onInstantiate) {
-			script = ((Expression) script).evaluate();
-		}
-		event.setSignature(signature);
-		event.setScript((String) script);
-		return event;
+		getProperties().put("script", script);
 	}
 
 }
