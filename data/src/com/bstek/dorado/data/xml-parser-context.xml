@@ -39,14 +39,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		parent="dorado.genericObjectParser" />
 
 	<!-- Data Parser -->
-	<!-- 
-	<bean id="dorado.preloadDataParser"
-		class="com.bstek.dorado.data.config.xml.PreloadDataElementParser"
-		parent="dorado.genericParser">
-		<property name="dataParser" ref="dorado.dataParser" />
-		<d:property-parser key="dataType" value-ref="dorado.ignoreParser" />
-	</bean>
-	-->
 	<bean id="dorado.dataParser" class="com.bstek.dorado.data.config.xml.DataElementParser"
 		parent="dorado.genericParser">
 		<d:sub-parser key="List,Collection" value-ref="dorado.listParser" />
@@ -61,10 +53,10 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<d:property-parser key="dataType" value-ref="dorado.ignoreParser" />
 	</bean>
 	<bean id="dorado.listParser" parent="dorado.dataCollectionParser">
-		<property name="collectionType" value="java.util.ArrayList" />
+		<property name="defaultCollectionType" value="java.util.ArrayList" />
 	</bean>
 	<bean id="dorado.setParser" parent="dorado.dataCollectionParser">
-		<property name="collectionType" value="java.util.HashSet" />
+		<property name="defaultCollectionType" value="java.util.HashSet" />
 	</bean>
 	<bean id="dorado.entityParser" class="com.bstek.dorado.data.config.xml.EntityParser"
 		parent="dorado.genericParser">

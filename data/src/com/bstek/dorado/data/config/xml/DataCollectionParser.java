@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.data.config.definition.EntityCollectionDefinition;
 import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
@@ -29,7 +30,7 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  * @since Mar 31, 2007
  */
 public class DataCollectionParser extends DataElementParserSupport {
-	private Class<Collection<Object>> collectionType;
+	private Class<Collection<Object>> defaultCollectionType;
 
 	/**
 	 * 设置具体的集合类实现类型。
@@ -39,18 +40,9 @@ public class DataCollectionParser extends DataElementParserSupport {
 	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public void setCollectionType(String collectionType)
+	public void setDefaultCollectionType(String defaultCollectionType)
 			throws ClassNotFoundException {
-		this.collectionType = ClassUtils.forName(collectionType);
-	}
-
-	/**
-	 * 创建具体的集合对象。
-	 * 
-	 * @throws Exception
-	 */
-	protected Collection<Object> createCollection() throws Exception {
-		return collectionType.newInstance();
+		this.defaultCollectionType = ClassUtils.forName(defaultCollectionType);
 	}
 
 	@Override
@@ -59,6 +51,7 @@ public class DataCollectionParser extends DataElementParserSupport {
 			throws Exception {
 		Element element = (Element) node;
 
+		Class<?> collectionType = null;
 		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
 				.getReferencedDataType(DataXmlConstants.ATTRIBUTE_DATA_TYPE,
 						null, element, context);
@@ -66,14 +59,26 @@ public class DataCollectionParser extends DataElementParserSupport {
 			DataTypeDefinition dataTypeDefinition = dataTypeRef.getDefinition();
 			dataTypeRef = (DefinitionReference<DataTypeDefinition>) dataTypeDefinition
 					.getProperty(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE);
+
+			collectionType = dataTypeDefinition.getCreationType();
+			if (collectionType == null) {
+				collectionType = dataTypeDefinition.getMatchType();
+			}
 		}
 		context.setCurrentDataType(dataTypeRef);
 
-		Collection<Object> collection = createCollection();
-		List<?> elements = super.dispatchChildElements(element, context);
-		collection.addAll(elements);
+		EntityCollectionDefinition collectionDefinition = new EntityCollectionDefinition();
+
+		if (collectionType == null) {
+			collectionType = defaultCollectionType;
+		}
+		collectionDefinition.setCollectionType(collectionType);
+
+		List<Object> entities = (List<Object>) super.dispatchChildElements(
+				element, context);
+		collectionDefinition.setEntities(entities);
 
 		context.restoreCurrentDataType();
-		return collection;
+		return collectionDefinition;
 	}
 }
