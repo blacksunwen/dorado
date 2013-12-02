@@ -111,36 +111,50 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	@Override
 	public int size() {
 		if (entityEnhancer != null) {
-			return keySet().size();
-		} else {
-			return super.size();
+			Map<String, Object> exProperties = entityEnhancer.getExProperties();
+			if (exProperties != null) {
+				return super.size() + exProperties.size();
+			}
 		}
+		return super.size();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		if (entityEnhancer != null) {
-			return keySet().isEmpty();
-		} else {
-			return super.isEmpty();
+		boolean isEmpty = super.isEmpty();
+		if (!isEmpty) {
+			return false;
 		}
+
+		if (entityEnhancer != null) {
+			Map<String, Object> exProperties = entityEnhancer.getExProperties();
+			if (exProperties != null) {
+				return exProperties.isEmpty();
+			}
+		}
+		return true;
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
+		boolean contains = super.containsKey(key);
+		if (contains) {
+			return true;
+		}
+
 		if (entityEnhancer != null) {
 			Map<String, Object> exProperties = entityEnhancer.getExProperties();
 			if (exProperties != null) {
-				return keySet().contains(key);
+				return exProperties.containsKey(key);
 			}
 		}
-		return super.containsKey(key);
+		return false;
 	}
 
 	@Override
 	public Object remove(Object key) {
 		if (entityEnhancer != null) {
-			return put((String) key, null);
+			throw new UnsupportedOperationException();
 		} else {
 			return super.remove(key);
 		}
@@ -149,9 +163,7 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	@Override
 	public void clear() {
 		if (entityEnhancer != null) {
-			for (String property : keySet()) {
-				put(property, null);
-			}
+			throw new UnsupportedOperationException();
 		} else {
 			super.clear();
 		}
@@ -191,9 +203,9 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 			if (exProperties != null) {
 				Set<String> keySet = new HashSet<String>(super.keySet());
 				keySet.addAll(exProperties.keySet());
-				return Collections.unmodifiableSet(keySet);
+				return keySet;
 			} else {
-				return Collections.unmodifiableSet(super.keySet());
+				return super.keySet();
 			}
 		} else {
 			return super.keySet();
@@ -206,7 +218,7 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 		for (Entry<String, Object> entry : doGetEntrySet()) {
 			values.add(entry.getValue());
 		}
-		return Collections.unmodifiableList(values);
+		return values;
 	}
 
 	@Override
