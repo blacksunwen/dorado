@@ -34,6 +34,15 @@
 				defaultValue: "d-iframe"
 			},
 
+            /**
+             * <iframe>的name属性，用于部分需要设置该属性的场景，该属性需要在IFrame ready之前设置。
+             * @type String
+             * @attribute[writeBeforeReady]
+             */
+            name: {
+                writeBeforeReady: true
+            },
+
 			/**
 			 * IFrame对应的路径。
 			 * 
@@ -162,6 +171,9 @@
 					}
 				} ]
 			}, null, doms);
+
+            if (frame._name != undefined)
+                doms.iframe.name = frame._name || "";
 
 			frame._doms = doms;
 
