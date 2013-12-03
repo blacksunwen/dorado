@@ -49,6 +49,7 @@ public class ConfigurableDataConfigManager extends
 		ReloadableDataConfigManagerSupport {
 	private static final String[] EMPTY_LOCATION_ARRAY = new String[0];
 	private static final String XML_SUFFIX = ".xml";
+	private static final String MODEL_XML_SUFFIX = ".model" + XML_SUFFIX;
 	private static final long ONE_SECOND = 1000L;
 	private static final char WILDCARD = '*';
 
@@ -252,7 +253,21 @@ public class ConfigurableDataConfigManager extends
 
 		// 预解析，目的是挖掘出所有的全局DataType和DataProvider
 		for (DocumentWrapper wrapper : documents) {
-			parseContext.setResource(wrapper.getResource());
+			Resource resource = wrapper.getResource();
+			parseContext.setResource(resource);
+
+			String path = resource.getPath(), resourceName = null;
+			if (StringUtils.isNotEmpty(path)) {
+				if (path.endsWith(MODEL_XML_SUFFIX)) {
+					resourceName = path.substring(0, path.length()
+							- MODEL_XML_SUFFIX.length());
+				} else if (path.endsWith(XML_SUFFIX)) {
+					resourceName = path.substring(0,
+							path.length() - XML_SUFFIX.length());
+				}
+			}
+			parseContext.setResourceName(resourceName);
+
 			Object documentObject = wrapper.getDocumentObject();
 			if (documentObject instanceof Document) {
 				preloadConfig((Document) documentObject, parseContext);

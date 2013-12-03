@@ -45,6 +45,7 @@ import com.bstek.dorado.web.resolver.HttpConstants;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-11-8
  */
+@Deprecated
 public class RobotResolver extends AbstractTextualResolver {
 	private static Log logger = LogFactory.getLog(RobotResolver.class);
 

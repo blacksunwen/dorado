@@ -74,6 +74,7 @@ import com.bstek.dorado.view.widget.datacontrol.DataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-20
  */
+@SuppressWarnings("deprecation")
 public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 	private RobotRegistry robotRegistry;
 
@@ -630,7 +631,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 									ideProperty.enumValues(), ",;"));
 						}
 					}
-					
+
 					ClientProperty clientProperty = readMethod
 							.getAnnotation(ClientProperty.class);
 					if (clientProperty != null) {

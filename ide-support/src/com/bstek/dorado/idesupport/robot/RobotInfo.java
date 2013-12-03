@@ -16,6 +16,7 @@ package com.bstek.dorado.idesupport.robot;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-11-17
  */
+@Deprecated
 public class RobotInfo {
 	private String name;
 	private String label;

@@ -212,7 +212,7 @@ public class DataObjectParseHelper {
 			name = XmlParserUtils.getSimpleValue(node);
 		}
 		if (StringUtils.isNotEmpty(name)) {
-			definitionReference = context.getDataProviderReference(name);
+			definitionReference = context.getDataProviderReference(name, context);
 		} else {
 			Element dataProviderElement = null;
 			if (node != null) {
@@ -264,7 +264,7 @@ public class DataObjectParseHelper {
 			name = XmlParserUtils.getSimpleValue(node);
 		}
 		if (StringUtils.isNotEmpty(name)) {
-			definitionReference = context.getDataResolverReference(name);
+			definitionReference = context.getDataResolverReference(name, context);
 		} else {
 			Element dataResolverElement = null;
 			if (node != null) {

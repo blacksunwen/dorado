@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-11-9
  */
+@Deprecated
 public interface Robot {
 	/**
 	 * @param node
