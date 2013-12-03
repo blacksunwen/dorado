@@ -131,7 +131,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 		var fieldset = this;
 	    $fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
 
-		$fly(fieldset._doms.caption).text(fieldset._caption);
+		$fly(fieldset._doms.caption).html(fieldset._caption || "&nbsp;");
 	},
 
 	_doOnResize: function(collapsed) {
