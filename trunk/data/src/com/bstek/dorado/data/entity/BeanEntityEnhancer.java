@@ -113,7 +113,7 @@ public abstract class BeanEntityEnhancer extends EntityEnhancer {
 		} else {
 			Set<String> propertySet = new HashSet<String>(properties.keySet());
 			propertySet.addAll(exProperties.keySet());
-			return Collections.unmodifiableSet(propertySet);
+			return propertySet;
 		}
 	}
 

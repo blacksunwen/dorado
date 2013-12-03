@@ -12,7 +12,6 @@
 
 package com.bstek.dorado.data.entity;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +40,7 @@ public abstract class MapEntityEnhancer extends EntityEnhancer {
 			Set<String> propertySet = new HashSet<String>(
 					((Map) entity).keySet());
 			propertySet.addAll(exProperties.keySet());
-			return Collections.unmodifiableSet(propertySet);
+			return propertySet;
 		}
 	}
 
