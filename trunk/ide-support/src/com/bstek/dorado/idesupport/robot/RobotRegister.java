@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-9-23
  */
+@Deprecated
 public class RobotRegister implements InitializingBean {
 	private RobotRegistry robotRegistry;
 

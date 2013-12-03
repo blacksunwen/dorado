@@ -41,7 +41,8 @@ public abstract class ViewContextTestCase extends DataContextTestCase {
 
 		Resource resource = context.getResource(path);
 
-		ViewParseContext parseContext = new ViewParseContext("TestView");
+		ViewParseContext parseContext = new ViewParseContext();
+		parseContext.setResourceName("TestView");
 		parseContext.setResource(resource);
 
 		Document document = xmlDocumentBuilder.loadDocument(resource);

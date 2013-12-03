@@ -15,6 +15,7 @@ package com.bstek.dorado.view.widget.action;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.view.annotation.Widget;
 
 /**
@@ -22,6 +23,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2010-8-10
  */
 @Widget(name = "AjaxAction", category = "Action", dependsPackage = "base-widget", autoGenerateId = true)
+@XmlNode(parser = "spring:dorado.ajaxActionParser")
 @ClientObject(prototype = "dorado.widget.AjaxAction", shortTypeName = "AjaxAction")
 public class AjaxAction extends Action {
 	private long timeout;

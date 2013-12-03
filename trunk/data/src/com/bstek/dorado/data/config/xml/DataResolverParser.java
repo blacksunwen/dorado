@@ -32,7 +32,8 @@ public class DataResolverParser extends GenericObjectParser {
 	protected DefinitionReference<DataResolverDefinition>[] getParentDefinitionReferences(
 			String parentNameText, ParseContext context) throws Exception {
 		DefinitionReference<DataResolverDefinition> parentReference = ((DataParseContext) context)
-				.getDataResolverReference(parentNameText);
+				.getDataResolverReference(parentNameText,
+						(DataParseContext) context);
 		if (parentReference != null) {
 			return new DefinitionReference[] { parentReference };
 		} else {

@@ -41,6 +41,7 @@ import com.bstek.dorado.data.config.definition.DataTypeDefinitionReference;
  * @since Feb 21, 2007
  */
 public class DataParseContext extends ParseContext {
+	private String resourceName;
 	private String dataObjectIdPrefix = "";
 
 	private Map<String, NodeWrapper> configuredDataTypes = new HashMap<String, NodeWrapper>();
@@ -58,6 +59,14 @@ public class DataParseContext extends ParseContext {
 	private boolean duringParsingDataElement;
 	private Stack<String> privateObjectNameStack = new Stack<String>();
 	private Stack<DefinitionReference<DataTypeDefinition>> currentDataTypeStack = new Stack<DefinitionReference<DataTypeDefinition>>();
+
+	public String getResourceName() {
+		return resourceName;
+	}
+
+	public void setResourceName(String resourceName) {
+		this.resourceName = resourceName;
+	}
 
 	public String getDataObjectIdPrefix() {
 		return dataObjectIdPrefix;
@@ -173,6 +182,25 @@ public class DataParseContext extends ParseContext {
 		return new DataTypeDefinitionReference(name);
 	}
 
+	private String getFinalDataObjectName(String name, DataParseContext context) {
+		if (name.charAt(0) == '#') {
+			String resourceName = context.getResourceName();
+			if (StringUtils.isNotEmpty(resourceName)) {
+				String prefix;
+				int i1 = resourceName.lastIndexOf('/');
+				int i2 = resourceName.lastIndexOf('.');
+				int i = (i1 > i2) ? i1 : i2;
+				if (i > 0 && i < (resourceName.length() - 1)) {
+					prefix = resourceName.substring(i + 1);
+				} else {
+					prefix = resourceName;
+				}
+				name = StringUtils.uncapitalize(prefix) + name;
+			}
+		}
+		return name;
+	}
+
 	/**
 	 * 根据DataProvider的名称生成一个指向某DataProvider配置声明对象的引用。
 	 * 
@@ -181,7 +209,8 @@ public class DataParseContext extends ParseContext {
 	 * @return 配置声明对象的引用
 	 */
 	public DefinitionReference<DataProviderDefinition> getDataProviderReference(
-			String name) {
+			String name, DataParseContext context) {
+		name = getFinalDataObjectName(name, context);
 		return new DefaultDefinitionReference<DataProviderDefinition>(
 				dataProviderDefinitionManager, name);
 	}
@@ -194,7 +223,8 @@ public class DataParseContext extends ParseContext {
 	 * @return 配置声明对象的引用
 	 */
 	public DefinitionReference<DataResolverDefinition> getDataResolverReference(
-			String name) {
+			String name, DataParseContext context) {
+		name = getFinalDataObjectName(name, context);
 		return new DefaultDefinitionReference<DataResolverDefinition>(
 				dataResolverDefinitionManager, name);
 	}

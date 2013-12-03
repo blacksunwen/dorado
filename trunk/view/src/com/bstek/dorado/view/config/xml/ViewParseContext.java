@@ -48,28 +48,16 @@ public class ViewParseContext extends DataParseContext {
 		}
 	}
 
-	private String viewName;
 	private String currentPath;
 	private ViewConfigDefinition viewConfigDefinition;
 	private ComponentTypeRegisterInfo currentComponentTypeRegisterInfo;
 	private Stack<LayoutInfo> currentLayoutStack = new Stack<LayoutInfo>();
 
-	/**
-	 * @param viewName
-	 *            当前正被解析的视图的名称。
-	 */
-	public ViewParseContext(String viewName) {
-		this.viewName = viewName;
-
-		int i = viewName.lastIndexOf('/');
-		currentPath = (i > 0) ? viewName.substring(0, i + 1) : "";
-	}
-
-	/**
-	 * 返回当前正被解析的视图的名称。
-	 */
-	public String getViewName() {
-		return viewName;
+	@Override
+	public void setResourceName(String resourceName) {
+		super.setResourceName(resourceName);
+		int i = resourceName.lastIndexOf('/');
+		currentPath = (i > 0) ? resourceName.substring(0, i + 1) : "";
 	}
 
 	public String getCurrentPath() {

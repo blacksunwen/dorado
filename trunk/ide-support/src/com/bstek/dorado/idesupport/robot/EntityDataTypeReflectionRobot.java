@@ -47,6 +47,7 @@ import com.bstek.dorado.util.xml.DomUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-11-2
  */
+@Deprecated
 public class EntityDataTypeReflectionRobot implements Robot {
 	private final static String CONFIG_LOCATIONS = "com/bstek/dorado/core/context.xml,"
 			+ "com/bstek/dorado/config/context.xml,"

@@ -21,6 +21,7 @@ import com.bstek.dorado.web.DoradoContext;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-9-23
  */
+@Deprecated
 public class RobotRegistry {
 	private Map<String, RobotInfo> robotMap = new HashMap<String, RobotInfo>();
 
