@@ -27,10 +27,8 @@ import com.bstek.dorado.view.widget.datacontrol.PropertyDataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "DataSetDropDown", category = "Trigger", 
-		dependsPackage = "base-widget-desktop,grid", autoGenerateId = true)
-@ClientObject(prototype = "dorado.widget.DataSetDropDown",
-		shortTypeName = "DataSetDropDown")
+@Widget(name = "DataSetDropDown", category = "Trigger", dependsPackage = "base-widget-desktop,grid", autoGenerateId = true)
+@ClientObject(prototype = "dorado.widget.DataSetDropDown", shortTypeName = "DataSetDropDown")
 @ClientEvents({ @ClientEvent(name = "onSetFilterParameter") })
 @XmlNode(clientTypes = ClientType.DESKTOP)
 public class DataSetDropDown extends RowListDropDown implements
@@ -40,6 +38,15 @@ public class DataSetDropDown extends RowListDropDown implements
 	private boolean useDataBinding = true;
 	private FilterMode filterMode = FilterMode.serverSide;
 	private boolean reloadDataOnOpen;
+
+	public DataSetDropDown() {
+		setFilterOnTyping(false);
+	}
+
+	@ClientProperty(escapeValue = "false")
+	public boolean isFilterOnTyping() {
+		return super.isFilterOnTyping();
+	}
 
 	@ComponentReference("DataSet")
 	@IdeProperty(highlight = 1)
