@@ -233,6 +233,7 @@ public class ObjectDefinition extends Definition {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected Object doCreate(CreationContext context, Object[] constuctorArgs)
 			throws Exception {
@@ -272,8 +273,9 @@ public class ObjectDefinition extends Definition {
 
 		MethodInterceptor[] methodInterceptors = getMethodInterceptors(
 				creationInfo, context);
+		ExpressionMethodInterceptor expressionInterceptor = null;
 		if (expressionProperties != null && !expressionProperties.isEmpty()) {
-			MethodInterceptor expressionInterceptor = createExpressionMethodInterceptor(expressionProperties);
+			expressionInterceptor = createExpressionMethodInterceptor(expressionProperties);
 			methodInterceptors = ProxyBeanUtils.appendMethodInterceptor(
 					methodInterceptors, expressionInterceptor);
 		}
@@ -283,6 +285,14 @@ public class ObjectDefinition extends Definition {
 		object = wrapper.getBean();
 		if (creationInfo.getScope() == null && isCacheCreatedObject()) {
 			objectCache = object;
+		}
+
+		if (object instanceof Map<?, ?> && expressionInterceptor != null) {
+			expressionInterceptor.setDisabled(true);
+			for (String property : expressionProperties.keySet()) {
+				((Map) object).put(property, null);
+			}
+			expressionInterceptor.setDisabled(false);
 		}
 
 		if (wrapper.isNewInstance()) {
