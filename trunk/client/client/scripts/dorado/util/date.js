@@ -384,12 +384,12 @@ Date.formatCodeToRegex = function(character, currentGroup) {
 };
 
 Date.prototype.getTimezone = function() {
-	return this.toString().replace(/^.*? ([A-Z]{3}) [0-9]{4}.*$/, "$1").replace(/^.*?\(([A-Z])[a-z]+ ([A-Z])[a-z]+ ([A-Z])[a-z]+\)$/, "$1$2$3");
+	return this.toString().replace(/^.*? ([A-Z]{3}) [0-9]{4}.*$/, "$1").replace(/^.*? [0-9]{4}.* \(([A-Z]{3})\)$/g, "$1").replace(/^.*?\(([A-Z])[a-z]+ ([A-Z])[a-z]+ ([A-Z])[a-z]+\)$/, "$1$2$3");
 };
 
 Date.prototype.getGMTOffset = function() {
 	return (this.getTimezoneOffset() > 0 ? "-" : "+") +
-	String.leftPad(Math.floor(this.getTimezoneOffset() / 60), 2, "0") +
+	String.leftPad(Math.floor(Math.abs(this.getTimezoneOffset() / 60)), 2, "0") +
 	String.leftPad(this.getTimezoneOffset() % 60, 2, "0");
 };
 
