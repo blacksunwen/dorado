@@ -22,6 +22,8 @@ import com.bstek.dorado.config.definition.ObjectDefinition;
  */
 public class ClientEventDefinition extends ObjectDefinition {
 
+	private String name;
+
 	public ClientEventDefinition() {
 		setImplType(DefaultClientEvent.class);
 	}
@@ -30,14 +32,14 @@ public class ClientEventDefinition extends ObjectDefinition {
 	 * 返回事件名
 	 */
 	public String getName() {
-		return (String) getProperty("name");
+		return name;
 	}
 
 	/**
 	 * 设置事件名
 	 */
 	public void setName(String name) {
-		setProperty("name", name);
+		this.name = name;
 	}
 
 	public String getSignature() {
