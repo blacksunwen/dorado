@@ -36,8 +36,6 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * @type String
 		 */
 		caption: {
-			skipRefresh: true,
-			path: "_captionBar.caption"
 		},
 		
 		/**
@@ -370,7 +368,12 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		className: {
 			defaultValue: "d-panel"
 		},
-		
+
+        caption: {
+            skipRefresh: true,
+            path: "_captionBar.caption"
+        },
+
 		width: {
 			defaultValue: 300
 		},
