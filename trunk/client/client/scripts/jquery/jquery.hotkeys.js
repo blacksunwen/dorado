@@ -87,12 +87,17 @@
 	};
 
 	jQuery.fn.bind = function(type, data, fn) {
+		/*
+		 * added by Benny 2013/12/4
+		 * reason: conflict with spectrum
+		 * old: var handle = type.match(hotkeys.override);
+		 */
 		// grab keyup,keydown,keypress
-		var handle = type.match(hotkeys.override);
+		var handle = (typeof type === "string") ? type.match(hotkeys.override) : null;
 
 		/*
 		 * fixed by Benny 2010/11/16
-		 * reson: conflict with jquery 1.4.4
+		 * reason: conflict with jquery 1.4.4
 		 * old: if (jQuery.isFunction(data) || !handle){
 		 */
 		if (!data || jQuery.isFunction(data) || !handle) {
