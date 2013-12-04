@@ -43,8 +43,9 @@
 .i-button .button-left .icon {
 	background-repeat: no-repeat;
 	display: inline-block;
-	padding-left: 20px;
-	width: 0;
+	padding-left: 0;
+	width: 20px;
+    font-size: 0%;
 	height: 22px;
 	line-height: 22px;
 	margin: 0 1px;
