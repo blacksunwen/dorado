@@ -12,32 +12,48 @@
 
 package com.bstek.dorado.util;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-6-8
  */
 public final class DateUtils {
+	private static final TimeZone GMT = TimeZone.getTimeZone("GMT");
+
 	private DateUtils() {
 	}
 
-	public static Date parse(String dateText) throws ParseException {
-		return new SimpleDateFormat().parse(dateText);
+	public static TimeZone getGMTTimeZone() {
+		return GMT;
 	}
 
-	public static Date parse(String format, String dateText)
+	public static Date parse(TimeZone timeZone, String dateText)
 			throws ParseException {
-		return new SimpleDateFormat(format).parse(dateText);
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.setTimeZone(timeZone);
+		return sdf.parse(dateText);
 	}
 
-	public static String format(Date date) {
-		return new SimpleDateFormat().format(date);
+	public static Date parse(TimeZone timeZone, String format, String dateText)
+			throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		sdf.setTimeZone(timeZone);
+		return sdf.parse(dateText);
 	}
 
-	public static String format(String format, Date date) {
-		return new SimpleDateFormat(format).format(date);
+	public static String format(TimeZone timeZone, Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat();
+		sdf.setTimeZone(timeZone);
+		return sdf.format(date);
+	}
+
+	public static String format(TimeZone timeZone, String format, Date date) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		sdf.setTimeZone(timeZone);
+		return sdf.format(date);
 	}
 }
