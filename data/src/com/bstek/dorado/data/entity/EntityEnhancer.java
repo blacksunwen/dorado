@@ -30,6 +30,7 @@ import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.provider.DataProvider;
+import com.bstek.dorado.data.type.CustomEntityDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.data.type.property.BasePropertyDef;
@@ -320,50 +321,54 @@ public abstract class EntityEnhancer {
 		if (dataType != null) {
 			PropertyDef propertyDef = dataType.getPropertyDef(property);
 			if (propertyDef != null) {
-				LazyPropertyDef lazyPropertyDef = null;
-				String propertyPath = null;
-				if (propertyDef instanceof LazyPropertyDef) {
-					lazyPropertyDef = (LazyPropertyDef) propertyDef;
-					if (result == null
-							&& !isPropertyHasRead(property)
-							|| lazyPropertyDef != null
-							&& !CacheMode
-									.isCacheableAtServerSide(lazyPropertyDef
-											.getCacheMode())) {
-						result = readPropertyDef(entity, propertyDef,
-								originResult);
+				DataType propertyDataType = propertyDef.getDataType();
+				if (entity instanceof Map || propertyDataType == null
+						|| !(propertyDataType instanceof CustomEntityDataType)) {
+					LazyPropertyDef lazyPropertyDef = null;
+					String propertyPath = null;
+					if (propertyDef instanceof LazyPropertyDef) {
+						lazyPropertyDef = (LazyPropertyDef) propertyDef;
+						if (result == null
+								&& !isPropertyHasRead(property)
+								|| lazyPropertyDef != null
+								&& !CacheMode
+										.isCacheableAtServerSide(lazyPropertyDef
+												.getCacheMode())) {
+							result = readPropertyDef(entity, propertyDef,
+									originResult);
+						}
+					} else {
+						BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
+						propertyPath = basePropertyDef.getPropertyPath();
+						if (StringUtils.isNotEmpty(propertyPath)) {
+							validatePropertyPath(basePropertyDef);
+							result = PropertyPathUtils.getValueByPath(dataType,
+									entity, propertyPath);
+						}
 					}
-				} else {
-					BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
-					propertyPath = basePropertyDef.getPropertyPath();
-					if (StringUtils.isNotEmpty(propertyPath)) {
-						validatePropertyPath(basePropertyDef);
-						result = PropertyPathUtils.getValueByPath(dataType,
-								entity, propertyPath);
-					}
-				}
 
-				if (!isGetterInterceptionDisabled()) {
-					if (result != null) {
-						Object proxy = EntityUtils.toEntity(result,
-								propertyDef.getDataType());
-						if ((originResult == null || proxy != result)
-								&& StringUtils.isEmpty(propertyPath)) {
-							synchronized (this) {
-								boolean originLocked = isStateLocked();
-								setStateLocked(true);
-								try {
-									internalWriteProperty(entity, property,
-											proxy, isExProp);
-								} finally {
-									setStateLocked(originLocked);
+					if (!isGetterInterceptionDisabled()) {
+						if (result != null) {
+							Object proxy = EntityUtils.toEntity(result,
+									propertyDataType);
+							if ((originResult == null || proxy != result)
+									&& StringUtils.isEmpty(propertyPath)) {
+								synchronized (this) {
+									boolean originLocked = isStateLocked();
+									setStateLocked(true);
+									try {
+										internalWriteProperty(entity, property,
+												proxy, isExProp);
+									} finally {
+										setStateLocked(originLocked);
+									}
 								}
 							}
+							result = proxy;
 						}
-						result = proxy;
-					}
 
-					markPropertyHasRead(property);
+						markPropertyHasRead(property);
+					}
 				}
 			}
 		}

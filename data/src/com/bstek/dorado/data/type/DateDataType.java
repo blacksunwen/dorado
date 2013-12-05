@@ -80,27 +80,32 @@ public class DateDataType extends SimpleDataType {
 				try {
 					if (len == DATE_FORMAT_1_LEN) {
 						date = DateUtils
-								.parse(com.bstek.dorado.core.Constants.ISO_DATE_FORMAT,
+								.parse(DateUtils.getGMTTimeZone(),
+										com.bstek.dorado.core.Constants.ISO_DATE_FORMAT,
 										text);
 					} else if (len == DATE_FORMAT_2_LEN) {
 						date = DateUtils
-								.parse(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
+								.parse(DateUtils.getGMTTimeZone(),
+										com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
 										text);
 					} else if (len == DATE_FORMAT_3_LEN) {
 						date = DateUtils
-								.parse(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT2,
+								.parse(DateUtils.getGMTTimeZone(),
+										com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT2,
 										text);
 					} else if (len == DATE_FORMAT_4_LEN) {
-						date = DateUtils.parse(DATE_FORMAT_4, text);
+						date = DateUtils.parse(DateUtils.getGMTTimeZone(),
+								DATE_FORMAT_4, text);
 					} else if (len == DATE_FORMAT_5_LEN) {
-						date = DateUtils.parse(DATE_FORMAT_5, text);
+						date = DateUtils.parse(DateUtils.getGMTTimeZone(),
+								DATE_FORMAT_5, text);
 					}
 				} catch (ParseException ex) {
 					// do nothing
 				}
 
 				if (date == null) {
-					date = DateUtils.parse(text);
+					date = DateUtils.parse(DateUtils.getGMTTimeZone(), text);
 				}
 				return date;
 			} catch (ParseException ex) {
