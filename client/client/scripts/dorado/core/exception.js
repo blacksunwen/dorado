@@ -290,7 +290,12 @@ dorado.Exception.processException = function(e) {
 		if (!dorado.Exception.alertException || !document.body) {
 			alert(dorado.Exception.getExceptionMessage(e));
 		} else {
-			dorado.Exception.alertException(e);
+			try {
+				dorado.Exception.alertException(e);
+			}
+			catch(e2) {
+				alert(dorado.Exception.getExceptionMessage(e));
+			}
 		}
 	}
 };
