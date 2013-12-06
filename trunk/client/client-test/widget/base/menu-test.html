@@ -47,7 +47,7 @@
                         onClick: function(self, arg) {
                             var menu = self._parent._focusParent;
                             var focusItem = menu._focusItem;
-                            console.log(focusItem._caption);
+                            //console.log(focusItem._caption);
                         }
                     }
                 }, {
@@ -109,7 +109,8 @@
 
             var testMenu = new dorado.widget.Menu({
                 onClick: function(self, arg) {
-                    if (arg.item) console.log(arg.item.get("caption"));
+                    if (arg.item)
+                        console.log("Menu Click:" + arg.item.get("caption"));
                 },
                 floating: false,
                 width: 200,
@@ -148,7 +149,10 @@
             	}, "-", {
             		$type: "Control",
             		caption: "Control Menu Item",
-            		control: new dorado.widget.FloatContainer({ children: [grid1] })
+                    onClick: function() {
+                        alert(123);
+                    },
+            		control: new dorado.widget.FloatContainer({ children: [grid1], height: 500 })
             	}, {
             		items: [{
             			caption: "菜单项31",
