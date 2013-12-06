@@ -331,7 +331,11 @@
 		},
 
 		onClick: function() {
-			//do nothing
+            var item = this, action = item._action || {}, disabled = item._disabled || action._disabled;
+            if (!disabled) {
+                action.execute && action.execute();
+                item.fireEvent("onClick", item);
+            }
 		},
 
 		onFocus: function() {
