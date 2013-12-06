@@ -431,8 +431,18 @@
 			 */
 			blockDecoratorSize: {
 				defaultValue: 4
-			}
-		},
+			},
+
+            /**
+             * 高亮显示多选选中的行。
+             * @type boolean
+             * @attribute
+             * @default true
+             */
+            highlightSelectedBlock: {
+                defaultValue: true
+            }
+        },
 		
 		EVENTS: /** @scope dorado.widget.AbstractBlockView.prototype */ {
 		
@@ -985,14 +995,58 @@
 		},
 		
 		onMouseDown: function(evt) {
-			var blockDom = this._findBlockDom(evt);
-			if (blockDom || this._allowNoCurrent) {
-				var data = blockDom ? $fly(blockDom).data("item") : null;
-				this.fireEvent("onBlockMouseDown", this, {
-					data: data
-				});
-				this.setCurrentItemDom(blockDom);
-			}
+            var blockDom = this._findBlockDom(evt);
+            if (blockDom || this._allowNoCurrent) {
+                if (blockDom && evt.shiftKey) $DomUtils.disableUserSelection(blockDom);
+
+                var data = blockDom ? $fly(blockDom).data("item") : null;
+                this.fireEvent("onBlockMouseDown", this, {data:data});
+
+                var oldCurrentItem = this.getCurrentItem();
+                if (this.setCurrentItemDom(blockDom)) {
+                    var clickedItem = (blockDom ? $fly(blockDom).data("item") : null), selection = this.getSelection();
+                    if (this._selectionMode == "singleRow") {
+                        if (evt.ctrlKey || evt.shiftKey) this.replaceSelection(null, clickedItem);
+                    } else if (this._selectionMode == "multiRows") {
+                        var removed = [], added = [];
+                        if (evt.altKey || evt.ctrlKey && evt.shiftKey) {
+                            removed = selection;
+                        } else if (evt.ctrlKey) {
+                            this.addOrRemoveSelection(selection, clickedItem, removed, added);
+                        } else if (evt.shiftKey) {
+                            var si = -1, ei, itemModel = this._itemModel;
+                            if (oldCurrentItem) {
+                                si = itemModel.getItemIndex(oldCurrentItem);
+                            }
+
+                            if (oldCurrentItem) {
+                                if (si < 0) si = itemModel.getItemIndex(oldCurrentItem);
+                                ei = itemModel.getItemIndex(clickedItem);
+                                if (si > ei) {
+                                    var i = si;
+                                    si = ei, ei = i;
+                                }
+
+                                removed = selection.slice(0);
+                                removed.remove(oldCurrentItem);
+                                removed.remove(clickedItem);
+
+                                selection = [];
+
+                                var c = ei - si + 1, i = 0;
+                                var it = itemModel.iterator(si);
+                                while (it.hasNext() && i < c) {
+                                    added.push(it.next());
+                                    i++;
+                                }
+                            } else {
+                                this.addOrRemoveSelection(selection, clickedItem, removed, added);
+                            }
+                        }
+                        this.replaceSelection(removed, added);
+                    }
+                }
+            }
 		},
 		
 		onMouseUp: function(evt) {
@@ -1006,8 +1060,106 @@
 				}
 			}
 		},
-		
-		onClick: function(evt) {
+
+        getSelection: function() {
+            var selection = this._selection;
+            if (this._selectionMode == "multiRows") {
+                if (!selection) selection = [];
+            }
+            return selection;
+        },
+
+        setSelection: function(selection) {
+            this._selection = selection;
+        },
+
+        replaceSelection: function(removed, added, silence) {
+            if (removed == added) return;
+
+            switch (this._selectionMode) {
+                case "singleRow":{
+                    removed = this.get("selection");
+                    break;
+                }
+                case "multiRows":{
+                    if (removed instanceof Array && removed.length == 0) removed = null;
+                    if (added instanceof Array && added.length == 0) added = null;
+                    if (removed == added) return;
+
+                    if (removed && !(removed instanceof Array)) {
+                        removed = [removed];
+                    }
+                    if (added && !(added instanceof Array)) {
+                        added = [added];
+                    }
+                    break;
+                }
+            }
+
+            var eventArg = {
+                removed: removed,
+                added: added
+            };
+            if (!silence) {
+                this.fireEvent("beforeSelectionChange", this, eventArg);
+                removed = eventArg.removed;
+                added = eventArg.added;
+            }
+
+            switch (this._selectionMode) {
+                case "singleRow":{
+                    if (removed) this.toggleItemSelection(removed, false);
+                    if (added) this.toggleItemSelection(added, true);
+                    this.setSelection(added);
+                    break;
+                }
+                case "multiRows":{
+                    var selection = this.get("selection");
+                    if (removed && selection) {
+                        if (removed == selection) {
+                            removed = selection.slice(0);
+                            for (var i = 0; i < selection.length; i++) {
+                                this.toggleItemSelection(selection[i], false);
+                            }
+                            selection = null;
+                        } else {
+                            for (var i = 0; i < removed.length; i++) {
+                                selection.remove(removed[i]);
+                                this.toggleItemSelection(removed[i], false);
+                            }
+                        }
+                    }
+                    if (selection == null) this.setSelection(selection = []);
+                    if (added) {
+                        for (var i = 0; i < added.length; i++) {
+                            if (selection.indexOf(added[i]) >= 0) continue;
+                            selection.push(added[i]);
+                            this.toggleItemSelection(added[i], true);
+                        }
+                    }
+                    this.setSelection(selection);
+                    break;
+                }
+            }
+            if (!silence) {
+                eventArg.removed = removed;
+                eventArg.added = added;
+                this.fireEvent("onSelectionChange", this, eventArg);
+            }
+        },
+
+        addOrRemoveSelection: function(selection, clickedObj, removed, added) {
+            if (!selection || selection.indexOf(clickedObj) < 0) added.push(clickedObj);
+            else removed.push(clickedObj);
+        },
+
+        toggleItemSelection: function(item, selected) {
+            if (!this._highlightSelectedBlock || !this._itemDomMap) return;
+            var blockDom = this._itemDomMap[this._itemModel.getItemId(item)];
+            if (blockDom) $fly(blockDom).toggleClass("selected-block", selected);
+        },
+
+        onClick: function(evt) {
 			var blockDom = this._findBlockDom(evt);
 			if (blockDom) {
 				var data = $fly(blockDom).data("item");

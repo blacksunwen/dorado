@@ -28,6 +28,12 @@
 	margin: 1px;
 }
 
+.d-block-view .selected-block {
+    border: 1;
+    margin: 1px;
+    background: #A3F1B2;
+}
+
 .d-block-view .block-current {
 	border: 0;
 	margin: 1px;
