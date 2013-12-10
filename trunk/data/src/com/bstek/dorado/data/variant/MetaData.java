@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.data.entity.EnhanceableEntity;
 import com.bstek.dorado.data.entity.EntityEnhancer;
+import com.bstek.dorado.data.type.EntityDataType;
 
 /**
  * 元数据对象。
@@ -154,7 +155,19 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	@Override
 	public Object remove(Object key) {
 		if (entityEnhancer != null) {
-			throw new UnsupportedOperationException();
+			Map<String, Object> exProperties = entityEnhancer.getExProperties();
+			if (exProperties != null && exProperties.containsKey(key)) {
+				Object result = null;
+				try {
+					result = entityEnhancer.readProperty(this, (String) key, false);
+				} catch (Throwable e) {
+					logger.warn(e, e);
+				}
+				exProperties.remove(key);
+				return result;
+			} else {
+				throw new UnsupportedOperationException();
+			}
 		} else {
 			return super.remove(key);
 		}
@@ -163,7 +176,15 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 	@Override
 	public void clear() {
 		if (entityEnhancer != null) {
-			throw new UnsupportedOperationException();
+			EntityDataType dataType = entityEnhancer.getDataType();
+			if (dataType != null && !dataType.getPropertyDefs().isEmpty()) {
+				throw new UnsupportedOperationException();
+			}
+
+			Map<String, Object> exProperties = entityEnhancer.getExProperties();
+			if (exProperties != null) {
+				exProperties.clear();
+			}
 		} else {
 			super.clear();
 		}
