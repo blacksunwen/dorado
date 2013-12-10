@@ -189,7 +189,14 @@
 			 * @attribute
 			 * @type String
 			 */
-			iconClass: {}
+			iconClass: {},
+			
+			action: {
+				setter: function(value) {
+					var action = dorado.widget.Component.getComponentReference(this, "action", value);
+					this._action = (action instanceof dorado.widget.Action) ? action : null;
+				}
+			}
 		},
 
 		EVENTS: /** @scope dorado.widget.menu.TextMenuItem.prototype */ {
