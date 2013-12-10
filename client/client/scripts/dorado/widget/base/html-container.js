@@ -77,6 +77,18 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		}
 	},
 	
+	assignDom: function(dom) {
+		this._dom = dom;
+		if (dom) {
+			try {
+				dom.style.display = "";
+			}
+			catch (e) {
+				// do nothing
+			}
+		}
+	},
+	
 	createDom: function() {
 		var dom;
 		var content = this._content;
