@@ -754,9 +754,15 @@
 			var flag = prepend ? -1 : 1;
 			if (index < 0) flag = -flag;
 			index = (this._itemModel.getStartIndex() || 0) + index * flag;
-			var itemId = this._itemModel.getItemId(item, index);
-			
-			var itemDom = this._itemDomMap[itemId];
+            var itemDom, itemId;
+            var oldItem = this._itemModel.getItemAt(index);
+            if (oldItem){
+                itemId = this._itemModel.getItemId(oldItem, index);
+                itemDom = this._itemDomMap[itemId];
+            }else{
+                itemId = this._itemModel.getItemId(item, index);
+                itemDom = this._itemDomMap[itemId];
+            }
 			if (!itemDom) {
 				itemDom = this.createItemDom(item);
 				itemDomContainer.appendChild(itemDom);
