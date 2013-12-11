@@ -759,7 +759,7 @@
             if (oldItem){
                 itemId = this._itemModel.getItemId(oldItem, index);
                 itemDom = this._itemDomMap[itemId];
-            }else{
+            } else {
                 itemId = this._itemModel.getItemId(item, index);
                 itemDom = this._itemDomMap[itemId];
             }
