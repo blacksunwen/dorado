@@ -412,8 +412,8 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 					}
 					finally {
 						if (tree) {
-                            tree._skipScrollCurrentIntoView = true;
 							tree.enableAutoRefresh();
+                            tree._skipScrollCurrentIntoView = true;
 							tree.refresh(true);
 						}
 					}
