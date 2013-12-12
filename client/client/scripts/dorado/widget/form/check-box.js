@@ -177,7 +177,27 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		checkBox.refresh();
 		checkBox.fireEvent("onValueChange", checkBox);
 	},
-	
+
+    post: function() {
+        try {
+            var modified = (this._lastPost != this._checked);
+            if (modified) {
+                this._lastPost = this._checked;
+                var eventArg = {
+                    processDefault: true
+                };
+                this.fireEvent("beforePost", this, eventArg);
+                if (eventArg.processDefault === false) return false;
+                if (this.doPost) this.doPost();
+                this.fireEvent("onPost", this);
+            }
+            return true;
+        }
+        catch (e) {
+            dorado.Exception.processException(e);
+        }
+    },
+
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		
