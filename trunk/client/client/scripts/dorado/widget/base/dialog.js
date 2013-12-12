@@ -171,7 +171,17 @@
 			 * @default false
 			 * @type boolean
 			 */
-			minimized: {},
+			minimized: {
+                setter: function(value) {
+                    this._minimized = value;
+                    if (this._minimizeable) {
+                        if (value)
+                            this.minimize();
+                        else
+                            this.show();
+                    }
+                }
+            },
 
             closeable: {
 			    defaultValue: true
@@ -254,7 +264,7 @@
 			if (dom) {
 				$fly(doms.contentPanel).css("display", "");
 
-				if (dialog._maximized) {
+				if (dialog._maximizedDirty || dialog._maximized) {
 					dialog._maximized = false;
 					dialog._width = dialog._originalWidth;
 					dialog._height = dialog._originalHeight;

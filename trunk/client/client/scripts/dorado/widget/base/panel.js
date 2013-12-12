@@ -478,7 +478,21 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @default false
 		 * @type boolean
 		 */
-		maximized: {},
+		maximized: {
+            setter: function(value) {
+                this._maximized = value;
+                if (this._maximizeable && this._rendered) {
+                    if (this.isActualVisible()) {
+                        if (value)
+                            this.maximize();
+                        else
+                            this.maximizeRestore();
+                    } else {
+                        this._maximizedDirty = true;
+                    }
+                }
+            }
+        },
 		
 		/**
 		 * 是否显示关闭按钮.
@@ -579,6 +593,18 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
             this.maximize();
         }
         $invokeSuper.call(this, arguments);
+    },
+
+    onActualVisibleChange: function() {
+        $invokeSuper.call(this, arguments);
+        if (this.isActualVisible() && this._maximizeable && this._maximizedDirty) {
+            if (this._maximized) {
+                this.maximize();
+            } else {
+                this.maximizeRestore();
+            }
+            this._maximizedDirty = false;
+        }
     },
 
 	createDom: function() {
@@ -819,7 +845,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		if (dom) {
 			$fly(doms.contentPanel).css("display", "");
 			
-			if (panel._maximized) {
+			if (panel._maximizedDirty || panel._maximized) {
 			
 				$fly(dom).unfullWindow({
 					callback: function() {
