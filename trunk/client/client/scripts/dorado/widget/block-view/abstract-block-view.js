@@ -755,20 +755,23 @@
 			if (index < 0) flag = -flag;
 			index = (this._itemModel.getStartIndex() || 0) + index * flag;
             var itemDom, itemId;
-            var oldItem = this._itemModel.getItemAt(index);
-            if (oldItem){
-                itemId = this._itemModel.getItemId(oldItem, index);
-                itemDom = this._itemDomMap[itemId];
+            var itemDom, itemId;
+            if (index >= 0 && index < itemDomContainer.childNodes.length) {
+                var i = index;
+                if (prepend) i = itemDomContainer.childNodes.length - i - 1;
+                itemDom = itemDomContainer.childNodes[i];
+                if (this._itemDomMap[itemDom._itemId] == itemDom) delete this._itemDomMap[itemDom._itemId];
+                itemId = this._itemModel.getItemId(item, index);
             } else {
                 itemId = this._itemModel.getItemId(item, index);
                 itemDom = this._itemDomMap[itemId];
             }
-			if (!itemDom) {
-				itemDom = this.createItemDom(item);
-				itemDomContainer.appendChild(itemDom);
-				this._itemDomMap[itemId] = itemDom;
-				itemDom._itemId = itemId;
-			}
+            if (!itemDom) {
+                itemDom = this.createItemDom(item);
+                itemDomContainer.appendChild(itemDom);
+            }
+            this._itemDomMap[itemId] = itemDom;
+            itemDom._itemId = itemId;
 			itemDom.itemIndex = index;
 			
 			var pos = this._getBlockPos(index);
