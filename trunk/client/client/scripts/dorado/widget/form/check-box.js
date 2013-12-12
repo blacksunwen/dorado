@@ -180,7 +180,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 
     post: function() {
         try {
-            var modified = (this._lastPost != this._checked);
+            var modified = (this._lastPost !== this._checked);
             if (modified) {
                 this._lastPost = this._checked;
                 var eventArg = {
@@ -259,6 +259,8 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				checked = false;
 			}
 			checkBox._checked = checked;
+            if (!dirty)
+                checkBox._lastPost = checked;
 			checkBox.setDirty(dirty);
 		}
 		

@@ -431,6 +431,8 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 			}
 			group.setValue(value);
+            if (!dirty)
+                group._lastPost = value;
 			group.setDirty(dirty);
 		}
 		
