@@ -289,7 +289,11 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				height: "100%"
 			}
 		});
-		
+        var ie7 = (dorado.Browser.msie && dorado.Browser.version <= 7);
+        if (ie7){
+            container.get("style").height="auto";
+        }
+
 		var notifySizeChange = container.notifySizeChange;
 		container.notifySizeChange = function() {
 			notifySizeChange.apply(container, arguments);
