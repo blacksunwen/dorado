@@ -171,7 +171,7 @@
 			if (this.minHeight && this.minHeight > h) h = this.minHeight;
 			$fly(dom).css({
 				left: lp,
-				top: t
+				top: (t-h)
 			}).outerWidth(w - (lp - l)).outerHeight(h).bringToFront();
 			
 			if (control) {
