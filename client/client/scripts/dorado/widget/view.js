@@ -485,26 +485,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
                     evt.cancelBubble = true;
                     return false;
                 } else {
-                    switch (evt.keyCode || evt.which) {
-                        case 8:
-                            var doPrevent = false;
-                            var d = evt.srcElement || evt.target;
-                            if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD' || d.type.toUpperCase() === 'FILE'))
-                                || d.tagName.toUpperCase() === 'TEXTAREA') {
-                                doPrevent = d.readOnly || d.disabled;
-                            }
-                            else {
-                                doPrevent = true;
-                            }
-
-                            if (doPrevent) {
-                                evt.preventDefault();
-                                evt.cancelBubble = true;
-                                return false;
-                            }
-                            break;
-                    }
-
                     if (b === true) {
                         switch (evt.keyCode || evt.which) {
                             case 8: {	// Backspace
