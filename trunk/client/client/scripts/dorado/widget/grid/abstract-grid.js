@@ -3069,7 +3069,13 @@
 						}
 						cell.align = col._headerAlign;
 
-						var label = cell.firstChild;
+                        var $cell = $fly(cell);
+                        if ($cell.data("selectionMenuBinded")){
+                            $cell.removeData("selectionMenuBinded");
+                            $cell.unbind("click");
+                        }
+
+                        var label = cell.firstChild;
 						if (col instanceof dorado.widget.grid.DataColumn) {
 							if (col.get("sortState")) $fly(cell).addClass("sorted-header");
 							label.style.width = col._realWidth + "px";
