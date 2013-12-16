@@ -485,6 +485,28 @@ var AUTO_APPEND_TO_TOPVIEW = true;
                     evt.cancelBubble = true;
                     return false;
                 } else {
+                    if ($setting["common.preventBackspace"])  {
+                        switch (evt.keyCode || evt.which) {
+                            case 8:
+                                var doPrevent = false;
+                                var d = evt.srcElement || evt.target;
+                                if ((d.tagName.toLowerCase() === 'input' && (d.type.toLowerCase() === 'text' || d.type.toLowerCase() === 'password' || d.type.toLowerCase() === 'file'))
+                                    || d.tagName.toLowerCase() === 'textarea') {
+                                    doPrevent = d.readOnly || d.disabled;
+                                }
+                                else {
+                                    doPrevent = true;
+                                }
+
+                                if (doPrevent) {
+                                    evt.preventDefault();
+                                    evt.cancelBubble = true;
+                                    return false;
+                                }
+                                break;
+                        }
+                    }
+
                     if (b === true) {
                         switch (evt.keyCode || evt.which) {
                             case 8: {	// Backspace
