@@ -34,6 +34,8 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 				Configure.getBoolean("view.showExceptionStackTrace"), false);
 		writeSetting(writer, "common.enterAsTab",
 				Configure.getBoolean("view.enterAsTab"), false);
+		writeSetting(writer, "common.preventBackspace",
+				Configure.getBoolean("view.preventBackspace"), true);
 		String contextPath = DoradoContext.getAttachedRequest()
 				.getContextPath();
 		writeSetting(writer, "common.contextPath", contextPath, true);
