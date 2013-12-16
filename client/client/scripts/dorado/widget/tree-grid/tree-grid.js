@@ -192,7 +192,7 @@
 	 * @extends dorado.widget.AbstractTree
 	 */
 	dorado.widget.TreeGrid = $extend([dorado.widget.AbstractGrid, dorado.widget.AbstractTree], /** @scope dorado.widget.TreeGrid.prototype */ {
-		$className: "dorado.widget.AbstractTreeGrid",
+		$className: "dorado.widget.TreeGrid",
 		
 		ATTRIBUTES: /** @scope dorado.widget.TreeGrid.prototype */ {
 			rowHeight: {
