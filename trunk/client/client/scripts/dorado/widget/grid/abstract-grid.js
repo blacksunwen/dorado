@@ -1196,6 +1196,7 @@
 					}
 					if (scrollTop != divScroll.scrollTop) {
 						divScroll.scrollTop = scrollTop;
+                        //this.hideCellEditor();
 						this.setFocus();
 						return false;
 					}
@@ -1210,6 +1211,7 @@
 					}
 					if (scrollLeft != divScroll.scrollLeft) {
 						divScroll.scrollLeft = scrollLeft;
+                        //this.hideCellEditor();
 						this.setFocus();
 						return false;
 					}
