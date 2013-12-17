@@ -803,7 +803,12 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		}
 	},
 
-	initDraggingIndicator: function(indicator, draggingInfo, evt) {
+    findItemDomByPosition: function(pos) {
+        pos.y += this._container.scrollTop;
+        return $invokeSuper.call(this, [pos]);
+    },
+
+    initDraggingIndicator: function(indicator, draggingInfo, evt) {
 		if (this._dragMode != "control") {
 			var itemDom = draggingInfo.get("element");
 			if (itemDom) {
