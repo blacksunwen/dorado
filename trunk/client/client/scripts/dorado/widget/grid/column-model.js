@@ -2302,11 +2302,13 @@
 			}
 		}
 	});
-	
-	RowSelectorCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {
-	
-		checkboxMap: {},
-		
+
+    dorado.widget.grid.RowSelectorCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {
+
+        ATTRIBUTES:{
+            checkboxMap: {}
+        },
+
 		cellMouseDownListener: function(arg) {
 			if (arg.grid._selectionMode == "multiRows") return false;
 		},
@@ -2318,23 +2320,23 @@
 			if (selectionMode == "multiRows") {
 				if (removed) {
 					for (var i = 0; i < removed.length; i++) {
-						checkbox = this.checkboxMap[itemModel.getItemId(removed[i])];
+						checkbox = this._checkboxMap[itemModel.getItemId(removed[i])];
 						if (checkbox) checkbox.set("checked", false);
 					}
 				}
 				if (added) {
 					for (var i = 0; i < added.length; i++) {
-						checkbox = this.checkboxMap[itemModel.getItemId(added[i])];
+						checkbox = this._checkboxMap[itemModel.getItemId(added[i])];
 						if (checkbox) checkbox.set("checked", true);
 					}
 				}
 			} else if (selectionMode == "singleRow") {
 				if (removed) {
-					checkbox = this.checkboxMap[itemModel.getItemId(removed)];
+					checkbox = this._checkboxMap[itemModel.getItemId(removed)];
 					if (checkbox) checkbox.set("checked", false);
 				}
 				if (added) {
-					checkbox = this.checkboxMap[itemModel.getItemId(added)];
+					checkbox = this._checkboxMap[itemModel.getItemId(added)];
 					if (checkbox) checkbox.set("checked", true);
 				}
 			}
@@ -2371,7 +2373,7 @@
 				},
 				onDestroy: function() {
 					var id = checkbox._selectDataId;
-					if (id != null) delete self.checkboxMap[id];
+					if (id != null) delete self._checkboxMap[id];
 				}
 			});
 			$fly(checkbox.getDom()).mousedown(function() {
@@ -2399,7 +2401,10 @@
 			checkbox.set(config);
 			checkbox.refresh();
 			checkbox._selectDataId = grid._itemModel.getItemId(data);
-			this.checkboxMap[checkbox._selectDataId] = checkbox;
+            if (!this._checkboxMap) {
+                this._checkboxMap = {};
+            }
+			this._checkboxMap[checkbox._selectDataId] = checkbox;
 		}
 	});
 	
