@@ -2490,7 +2490,7 @@
 			},
 			renderer: {
 				defaultValue: function() {
-					return new RowSelectorCellRenderer();
+					return new dorado.widget.grid.RowSelectorCellRenderer();
 				}
 			}
 		}
