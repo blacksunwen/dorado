@@ -353,7 +353,7 @@
 								if (list instanceof dorado.EntityList && list.pageSize != arg.pageSize) {
 									var parent = list.parent;
 									if (parent && parent instanceof dorado.Entity && list.parentProperty) {
-										var pd = pilot.getBindingPropertyDef();
+										var pd = parent.dataType.getPropertyDef(list.parentProperty);
 										if (pd) {
 											item.set("disabled", true);
 											pd.set("pageSize", arg.pageSize);
