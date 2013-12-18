@@ -1193,7 +1193,7 @@
 					if (this._previous) this._previousPage = this._previous.pageNo;
 				} else {
 					this._next = result;
-					if (this._next) this._nextPage = this._next.pageNo;
+					if (this._next && this._next.pageNo) this._nextPage = this._next.pageNo;
 				}
 			}
 		},
