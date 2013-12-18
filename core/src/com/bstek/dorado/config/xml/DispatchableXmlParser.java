@@ -153,6 +153,17 @@ public class DispatchableXmlParser implements XmlParser {
 		}
 	}
 
+	private boolean isTagElement(Element element) {
+		String nodeName = element.getNodeName();
+		return (XmlConstants.PROPERTY.equals(nodeName)
+				|| XmlConstants.GROUP_START.equals(nodeName)
+				|| XmlConstants.GROUP_END.equals(nodeName)
+				|| XmlConstants.IMPORT.equals(nodeName)
+				|| XmlConstants.PLACE_HOLDER.equals(nodeName)
+				|| XmlConstants.PLACE_HOLDER_START.equals(nodeName) || XmlConstants.PLACE_HOLDER_END
+					.equals(nodeName));
+	}
+	
 	/**
 	 * 遍历所有子节点并将解析任务分派给各个已注册的子解析器，并将所有子解析器返回的解析结果以List的方式返回。
 	 * 
@@ -167,14 +178,7 @@ public class DispatchableXmlParser implements XmlParser {
 			ParseContext context) throws Exception {
 		List<Object> results = new ArrayList<Object>();
 		for (Element childElement : DomUtils.getChildElements(element)) {
-			String nodeName = childElement.getNodeName();
-			if (!XmlConstants.PROPERTY.equals(nodeName)
-					&& !XmlConstants.GROUP_START.equals(nodeName)
-					&& !XmlConstants.GROUP_END.equals(nodeName)
-					&& !XmlConstants.IMPORT.equals(nodeName)
-					&& !XmlConstants.PLACE_HOLDER.equals(nodeName)
-					&& !XmlConstants.PLACE_HOLDER_START.equals(nodeName)
-					&& !XmlConstants.PLACE_HOLDER_END.equals(nodeName)) {
+			if (!isTagElement(childElement)) {
 				Object value = dispatchElement(null, childElement, context);
 				if (value != ConfigUtils.IGNORE_VALUE) {
 					results.add(value);
@@ -232,10 +236,12 @@ public class DispatchableXmlParser implements XmlParser {
 			}
 		} else {
 			for (Element childElement : DomUtils.getChildElements(element)) {
-				Object value = dispatchElement(pathPrefix, childElement,
-						context);
-				if (value != ConfigUtils.IGNORE_VALUE) {
-					results.add(value);
+				if (!isTagElement(childElement)) {
+					Object value = dispatchElement(pathPrefix, childElement,
+							context);
+					if (value != ConfigUtils.IGNORE_VALUE) {
+						results.add(value);
+					}
 				}
 			}
 		}
