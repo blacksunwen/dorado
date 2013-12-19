@@ -844,7 +844,7 @@
 		doRender: function(dom, arg) {
 			var text = this.getText(arg.data, arg.column);
 			dom.innerText = text;
-			if (text.length > 5) dom.title = text;
+            dom.title = text.length > 5 ? text : "";
 			$fly(dom.parentNode).toggleClass("wrappable", !!arg.column._wrappable);
 			this.renderFlag(dom, arg);
 		}
