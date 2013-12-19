@@ -863,16 +863,17 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					entity: entity
 				}, oldData = this._oldData;
 				
+				var valueForValidator = entity.get(property, "never");
 				propertyInfo.validating = propertyInfo.validating || 0;
 				for (var i = 0; i < propertyDef._validators.length; i++) {
 					var validator = propertyDef._validators[i];
-					if (!validator._revalidateOldValue && oldData && value == oldData[property]) {
+					if (!validator._revalidateOldValue && oldData && currentValue == oldData[property]) {
 						continue;
 					}
 					
 					if (validator instanceof dorado.validator.RemoteValidator && validator._async && preformAsyncValidator) {
 						propertyInfo.validating++;
-						validator.validate(value, validateArg, {
+						validator.validate(valueForValidator, validateArg, {
 							callback: function(success, result) {
 								if (propertyInfo.validating <= 0) return;
 								
@@ -902,7 +903,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							}
 						});
 					} else {
-						var msgs = validator.validate(value, validateArg);
+						var msgs = validator.validate(valueForValidator, validateArg);
 						if (msgs) {
 							messages = messages.concat(msgs);
 							var state = dorado.Toolkits.getTopMessageState(msgs);
