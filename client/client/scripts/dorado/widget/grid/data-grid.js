@@ -366,20 +366,21 @@
 					this._itemModel.setItems(entityList);
 					if (!this._rowSelectionProperty) {
 						this.set("selection", null);
-					} else {
-						var selection = [];
-						if (entityList) {
-							var it = entityList.iterator(true);
-							while (it.hasNext()) {
-								var entity = it.next();
-								if (entity.get(this._rowSelectionProperty)) selection.push(entity);
-							}
-						}
-						this.set("selection", selection);
 					}
 				}
 			}
-			
+            if (this._rowSelectionProperty) {
+                var selection = [];
+                if (entityList) {
+                    var it = entityList.iterator(true);
+                    while (it.hasNext()) {
+                        var entity = it.next();
+                        if (entity.get(this._rowSelectionProperty)) selection.push(entity);
+                    }
+                }
+                this.set("selection", selection);
+            }
+
 			if (!columnsInited) this.initColumns();
 			$invokeSuper.call(this, arguments);
 			
