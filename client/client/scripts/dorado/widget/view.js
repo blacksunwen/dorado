@@ -609,7 +609,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}, 200);
 		};
 
-        var isInIFrame = !!(window.frameElement || top != window);
+        var isInIFrame = false;
+        try {
+            isInIFrame = !!(top != window || window.frameElement);
+        } catch(e) {
+            isInIFrame = true;
+        }
 
 		var doInitDorado = function() {
 			dorado.fireOnInit();
