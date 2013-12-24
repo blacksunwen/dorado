@@ -198,8 +198,10 @@
 		update: function() {
 			if (this.dragging) return;
 			
-			var scroller = this, dom = scroller.dom, doms = scroller.doms;
-			var container = scroller.container, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
+			var scroller = this, container = scroller.container;
+			if (!container) return;
+			
+			var dom = scroller.dom, doms = scroller.doms, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
 			
 			if (scroller.direction == "h") {
 				if (container.scrollWidth > (container.clientWidth + MIN_SPILLAGE) && container.clientWidth > 0) {
