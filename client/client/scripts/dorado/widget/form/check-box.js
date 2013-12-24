@@ -259,8 +259,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				checked = false;
 			}
 			checkBox._checked = checked;
-            if (!dirty)
-                checkBox._lastPost = checked;
+            checkBox._lastPost = checked;
 			checkBox.setDirty(dirty);
 		}
 		
