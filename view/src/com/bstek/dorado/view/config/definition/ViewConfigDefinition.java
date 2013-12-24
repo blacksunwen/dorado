@@ -332,12 +332,6 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 		try {
 			super.doInitObject(object, creationInfo, context);
 
-			ViewState viewState = (ViewState) Context.getCurrent()
-					.getAttribute(ViewState.class.getName());
-			if (viewState == null || ViewState.rendering.equals(viewState)) {
-				viewDefinition.create(context, new Object[] { viewConfig });
-			}
-
 			Context doradoContext = Context.getCurrent();
 			InnerDataTypeDefinitionManager innerDataTypeDefinitionManager = (InnerDataTypeDefinitionManager) doradoContext
 					.getAttribute(Context.THREAD, "privateDataTypeDefinitionManager");
@@ -370,6 +364,12 @@ public class ViewConfigDefinition extends ListenableObjectDefinition {
 			viewConfig.setDataTypeManager(dataTypeManager);
 			viewConfig.setDataProviderManager(dataProviderManager);
 			viewConfig.setDataResolverManager(dataResolverManager);
+
+			ViewState viewState = (ViewState) Context.getCurrent()
+					.getAttribute(ViewState.class.getName());
+			if (viewState == null || ViewState.rendering.equals(viewState)) {
+				viewDefinition.create(context, new Object[] { viewConfig });
+			}
 		} finally {
 			viewCreationContext.setViewConfig(null);
 		}
