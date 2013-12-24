@@ -15,11 +15,13 @@ package com.bstek.dorado.view.config.attachment;
 import java.io.Writer;
 import java.util.Map;
 
+import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.type.DataType;
+import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
@@ -63,53 +65,69 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 	@Override
 	public void outputContent(OutputContext context, Object content)
 			throws Exception {
-		JavaScriptContent javaScriptContent = (JavaScriptContent) content;
-		if (javaScriptContent.getIsController()) {
-			Writer writer = context.getWriter();
-			JsonBuilder jsonBuilder = context.getJsonBuilder();
-			writer.append("\n\n(function(view){\n");
+		Map<String, Object> arguments = null;
+		View view = context.getCurrentView();
+		if (view != null) {
+			ViewConfig viewConfig = view.getViewConfig();
+			arguments = viewConfig.getArguments();
+		}
 
-			super.outputContent(context, javaScriptContent.getContent());
+		JexlContext jexlContext = getExpressionHandler().getJexlContext();
+		final String ARGUMENT = "argument";
+		Object originArgumentsVar = jexlContext.get(ARGUMENT);
+		jexlContext.set(ARGUMENT, arguments);
+		try {
+			JavaScriptContent javaScriptContent = (JavaScriptContent) content;
+			if (javaScriptContent.getIsController()) {
+				Writer writer = context.getWriter();
+				JsonBuilder jsonBuilder = context.getJsonBuilder();
+				writer.append("\n\n(function(view){\n");
 
-			if (javaScriptContent.getFunctionInfos() != null) {
-				writer.append("\ndorado.widget.Controller.registerFunctions(view,");
-				jsonBuilder.array();
-				for (FunctionInfo functionInfo : javaScriptContent
-						.getFunctionInfos()) {
-					jsonBuilder.object();
-					jsonBuilder.key("name").value(
-							functionInfo.getFunctionName());
+				super.outputContent(context, javaScriptContent.getContent());
 
-					jsonBuilder.key("func").beginValue();
-					writer.append(functionInfo.getFunctionName());
-					jsonBuilder.endValue();
+				if (javaScriptContent.getFunctionInfos() != null) {
+					writer.append("\ndorado.widget.Controller.registerFunctions(view,");
+					jsonBuilder.array();
+					for (FunctionInfo functionInfo : javaScriptContent
+							.getFunctionInfos()) {
+						jsonBuilder.object();
+						jsonBuilder.key("name").value(
+								functionInfo.getFunctionName());
 
-					if (functionInfo.getShouldRegisterToGlobal()) {
-						jsonBuilder.key("global").value(true);
-					}
-					if (functionInfo.getShouldRegisterToView()) {
-						jsonBuilder.key("view").value(true);
-					}
+						jsonBuilder.key("func").beginValue();
+						writer.append(functionInfo.getFunctionName());
+						jsonBuilder.endValue();
 
-					BindingInfo bindingInfo = functionInfo.getBindingInfo();
-					if (bindingInfo != null) {
-						jsonBuilder.key("bindingInfos").array();
-						for (String expression : bindingInfo.getExpressions()) {
-							if (expression.charAt(0) == '@') {
-								registerIncludeDataType(context, expression);
-							}
-							jsonBuilder.value(expression);
+						if (functionInfo.getShouldRegisterToGlobal()) {
+							jsonBuilder.key("global").value(true);
 						}
-						jsonBuilder.endArray();
+						if (functionInfo.getShouldRegisterToView()) {
+							jsonBuilder.key("view").value(true);
+						}
+
+						BindingInfo bindingInfo = functionInfo.getBindingInfo();
+						if (bindingInfo != null) {
+							jsonBuilder.key("bindingInfos").array();
+							for (String expression : bindingInfo
+									.getExpressions()) {
+								if (expression.charAt(0) == '@') {
+									registerIncludeDataType(context, expression);
+								}
+								jsonBuilder.value(expression);
+							}
+							jsonBuilder.endArray();
+						}
+						jsonBuilder.endObject();
 					}
-					jsonBuilder.endObject();
+					jsonBuilder.endArray();
+					writer.append(");\n");
 				}
-				jsonBuilder.endArray();
-				writer.append(");\n");
+				writer.append("})(view);\n");
+			} else {
+				super.outputContent(context, javaScriptContent.getContent());
 			}
-			writer.append("})(view);\n");
-		} else {
-			super.outputContent(context, javaScriptContent.getContent());
+		} finally {
+			jexlContext.set(ARGUMENT, originArgumentsVar);
 		}
 	}
 
