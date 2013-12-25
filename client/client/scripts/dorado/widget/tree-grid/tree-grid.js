@@ -163,17 +163,22 @@
 			if (control) {
 				if (ie6) control.getDom().style.display = "none";
 			}
-			
-			var cell = this.cell, label = $fly(cell).find(".node-label");
-			var offset = $fly(cell).offset(), lp = label.offset().left;
-			var l = offset.left, t = offset.top, w = cell.offsetWidth, h = cell.offsetHeight;
-			if (this.minWidth && this.minWidth > w) w = this.minWidth;
-			if (this.minHeight && this.minHeight > h) h = this.minHeight;
-			$fly(dom).css({
-				left: lp,
-				top: (t-h)
-			}).outerWidth(w - (lp - l)).outerHeight(h).bringToFront();
-			
+
+            var cell = this.cell, $gridDom = jQuery(this.grid.getDom());
+            if (!dom ||!cell) return;
+
+            var $cellDom = $fly(cell);
+            var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();
+            var lp = $cellDom.find(".node-label").offset().left;
+            var l = lp - offsetGrid.left - $gridDom.edgeLeft(), t = offsetCell.top - offsetGrid.top - $gridDom.edgeTop() + $cellDom.edgeTop(),
+                w = cell.offsetWidth, h = cell.offsetHeight;
+            if (this.minWidth && this.minWidth > w) w = this.minWidth;
+            if (this.minHeight && this.minHeight > h) h = this.minHeight;
+            $fly(dom).css({
+                left:l,
+                top:t
+            }).outerWidth(w - (lp - offsetCell.left)).outerHeight(h).bringToFront();
+
 			if (control) {
 				var w = dom.clientWidth, h = dom.clientHeight;
 				if (ie6) control.getDom().style.display = '';
