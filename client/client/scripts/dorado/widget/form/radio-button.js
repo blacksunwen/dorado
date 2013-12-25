@@ -65,8 +65,9 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 		return radioButton._readOnly || radioGroup._readOnly || radioGroup._readOnly2;
 	},
 	
-	onClick: function() {
+	onClick: function(event) {
 		var radioButton = this;
+        if (event.target == radioButton._dom) return;
 		if (!radioButton._isReadOnly()) {
 			if (!radioButton._checked) {
 				radioButton._checked = true;
@@ -93,26 +94,39 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	},
 	
 	createDom: function() {
-		var radioButton = this, dom;
+		var radioButton = this, dom, doms = {};
 		
 		dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: radioButton._className,
 			content: [{
 				tagName: "span",
-				className: "icon"
+				className: "icon",
+                contextKey: "icon"
 			}, {
 				tagName: "span",
 				className: "text",
+                contextKey: "text",
 				content: radioButton._text
 			}]
-		});
-		
-		jQuery(dom).addClassOnHover(radioButton._className + "-hover", null, function() {
-			return !radioButton._isReadOnly();
-		}).addClassOnClick(radioButton._className + "-click", null, function() {
-			return !radioButton._isReadOnly();
-		});
+		}, null, doms);
+
+        radioButton._doms = doms;
+
+		$fly([doms.icon, doms.text]).hover(function() {
+            if (!radioButton._isReadOnly())
+                $fly(dom).addClass(radioButton._className + "-hover");
+        }, function() {
+            if (!radioButton._isReadOnly())
+                $fly(dom).removeClass(radioButton._className + "-hover");
+		}).mousedown(function(event) {
+            if (!radioButton._isReadOnly())
+                $fly(dom).addClass(radioButton._className + "-click");
+            $(document).one("mouseup", function() {
+                if (!radioButton._isReadOnly())
+                    $fly(dom).removeClass(radioButton._className + "-click");
+            });
+        });
 		
 		return dom;
 	},

@@ -147,13 +147,15 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		onValueChange: {}
 	},
 	
-	onClick: function() {
+	onClick: function(event) {
 		var checkBox = this;
 		
 		if (checkBox._readOnly || this._readOnly2) {
 			return;
 		}
-		
+
+        if (event.target == checkBox._dom) return;
+
 		var checked = checkBox._checked;
 		if (checkBox._triState) {
 			if (checkBox._checked === null || checkBox._checked === undefined) {
@@ -294,7 +296,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 	},
 	
 	createDom: function() {
-		var checkBox = this, dom;
+		var checkBox = this, dom, doms = {};
 		if (checkBox._iconOnly) {
 			checkBox._className = checkBox._className + "-icononly";
 			dom = $DomUtils.xCreate({
@@ -327,19 +329,34 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				className: checkBox._className,
 				content: [{
 					tagName: "SPAN",
-					className: "icon"
+					className: "icon",
+                    contextKey: "icon"
 				}, {
 					tagName: "SPAN",
 					className: "caption",
+                    contextKey: "caption",
 					content: checkBox._caption || ''
 				}]
-			});
-			
-			jQuery(dom).addClassOnHover(checkBox._className + "-hover", null, function() {
-				return !(checkBox._readOnly || checkBox._readOnly2);
-			}).addClassOnClick(checkBox._className + "-click", null, function() {
-				return !(checkBox._readOnly || checkBox._readOnly2);
-			});
+			}, null, doms);
+
+            checkBox._doms = doms;
+
+            $fly([doms.icon, doms.caption]).hover(function() {
+                if (!(checkBox._readOnly || checkBox._readOnly2)) {
+                    $fly(dom).addClass(checkBox._className + "-hover");
+                }
+            }, function() {
+                if (!(checkBox._readOnly || checkBox._readOnly2)) {
+                    $fly(dom).removeClass(checkBox._className + "-hover");
+                }
+            }).mousedown(function() {
+                if (!(checkBox._readOnly || checkBox._readOnly2))
+                    $fly(dom).addClass(checkBox._className + "-click");
+                $(document).one("mouseup", function() {
+                    if (!(checkBox._readOnly || checkBox._readOnly2))
+                        $fly(dom).removeClass(checkBox._className + "-click");
+                });
+            });
 		}
 		
 		return dom;
