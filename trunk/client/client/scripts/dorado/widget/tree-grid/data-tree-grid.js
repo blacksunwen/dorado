@@ -74,7 +74,7 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 				firstResultOnly: true,
 				acceptAggregation: true
 			});
-			if (data && data.dataType) dataType = data.dataType.getElementDataType("auto");
+			if (data && data.dataType && data.dataType instanceof dorado.AggregationDataType) dataType = data.dataType.getElementDataType("auto");
 			if (!dataType) dataType = this.getBindingDataType("auto");
 			if (dataType) {
 				this.initColumns(dataType);
