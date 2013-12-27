@@ -66,7 +66,9 @@
 			 * @type Date
 			 */
 			date: {
-				defaultValue: new Date(),
+				defaultValue: function() {
+                    return new Date();
+                },
 				setter: function(value) {
 					this._date = value;
 					this.refreshButtonOnFilterDate();
