@@ -14,7 +14,6 @@ package com.bstek.dorado.core.el;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -36,7 +35,7 @@ public class ExpressionUtilsObject {
 	}
 
 	public String formatDate(java.util.Date date, String format) {
-		return DateUtils.format(TimeZone.getDefault(), format, date);
+		return DateUtils.format(format, date);
 	}
 
 	public java.util.Date getToday() {
@@ -181,8 +180,7 @@ class Date extends java.util.Date {
 
 	@Override
 	public String toString() {
-		return DateUtils.format(DateUtils.getGMTTimeZone(),
-				Constants.ISO_DATETIME_FORMAT1, this);
+		return DateUtils.format(Constants.ISO_DATETIME_FORMAT1, this);
 	}
 
 }

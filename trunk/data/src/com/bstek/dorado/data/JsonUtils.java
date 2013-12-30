@@ -327,8 +327,7 @@ public final class JsonUtils {
 						if (str.length() == DEFAULT_DATE_PATTERN_LEN
 								&& DEFAULT_DATE_PATTERN.matcher(str).matches()) {
 							value = DateUtils
-									.parse(DateUtils.getGMTTimeZone(),
-											com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
+									.parse(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
 											str);
 						}
 					}
