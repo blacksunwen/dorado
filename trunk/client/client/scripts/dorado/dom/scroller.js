@@ -378,7 +378,7 @@
 							if (Math.abs(gap) > MIN_SPILLAGE) return false;
 						}
 					}
-	
+	                /*
 					if (container.scrollWidth > container.clientWidth) {
 						var scrollLeft = container.scrollLeft - delta * 25;
 						if (scrollLeft <= 0) {
@@ -392,6 +392,7 @@
 							if (Math.abs(gap) > MIN_SPILLAGE) return false;
 						}
 					}
+					*/
 				});
 			}
 			$container.bind("scroll", function(evt) {
