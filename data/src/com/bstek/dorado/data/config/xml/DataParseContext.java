@@ -211,6 +211,7 @@ public class DataParseContext extends ParseContext {
 	public DefinitionReference<DataProviderDefinition> getDataProviderReference(
 			String name, DataParseContext context) {
 		name = getFinalDataObjectName(name, context);
+		name = name.trim();
 		return new DefaultDefinitionReference<DataProviderDefinition>(
 				dataProviderDefinitionManager, name);
 	}
@@ -225,6 +226,7 @@ public class DataParseContext extends ParseContext {
 	public DefinitionReference<DataResolverDefinition> getDataResolverReference(
 			String name, DataParseContext context) {
 		name = getFinalDataObjectName(name, context);
+		name = name.trim();
 		return new DefaultDefinitionReference<DataResolverDefinition>(
 				dataResolverDefinitionManager, name);
 	}
