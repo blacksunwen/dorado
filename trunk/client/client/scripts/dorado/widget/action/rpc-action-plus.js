@@ -66,6 +66,15 @@
 						exceptionDialog.hide();
 					}
 				}],
+                afterShow: function(dialog){
+                    var buttons = dialog._buttons, button;
+                    if(buttons){
+                        button = buttons[0];
+                        if(button && button._dom.style.display != "none") {
+                            button.setFocus();
+                        }
+                    }
+                },
 				beforeShow: function(dialog) {
 					getDetailLink().render(dialog._textDom);
 					
