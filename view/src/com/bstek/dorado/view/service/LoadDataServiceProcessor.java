@@ -189,6 +189,7 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 			DoradoContext context) throws Exception {
 		String dataProviderName = JsonUtils.getString(objectNode,
 				"dataProvider");
+		dataProviderName = dataProviderName.trim();
 		String resultDataTypeName = null;
 		if (objectNode.has("resultDataType")) {
 			resultDataTypeName = JsonUtils.getString(objectNode,

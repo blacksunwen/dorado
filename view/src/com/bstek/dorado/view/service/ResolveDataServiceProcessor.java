@@ -97,6 +97,7 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 
 		String dataResolverName = JsonUtils.getString(objectNode,
 				"dataResolver");
+		dataResolverName = dataResolverName.trim();
 		DataResolver dataResolver = getDataResolver(dataResolverName);
 		if (dataResolver == null) {
 			throw new IllegalArgumentException("Unknown DataResolver ["
