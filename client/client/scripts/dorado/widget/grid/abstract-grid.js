@@ -1201,7 +1201,7 @@
 						return false;
 					}
 				}
-
+                /*
 				if (divScroll.scrollWidth > divScroll.clientWidth) {
 					var scrollLeft = divScroll.scrollLeft - delta * this._rowHeight * 2;
 					if (scrollLeft <= 0) {
@@ -1216,6 +1216,7 @@
 						return false;
 					}
 				}
+				*/
 			}));
 			return dom;
 		},
