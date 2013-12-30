@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.bstek.dorado.core.Configure;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-6-8
@@ -31,29 +33,44 @@ public final class DateUtils {
 		return GMT;
 	}
 
-	public static Date parse(TimeZone timeZone, String dateText)
-			throws ParseException {
+	private static TimeZone getDefaultTimeZone() {
+		return (Configure.getBoolean("core.useGMTTimeZone")) ? GMT : null;
+	}
+
+	public static Date parse(String dateText) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat();
-		sdf.setTimeZone(timeZone);
+		TimeZone timeZone = getDefaultTimeZone();
+		if (timeZone != null) {
+			sdf.setTimeZone(timeZone);
+		}
 		return sdf.parse(dateText);
 	}
 
-	public static Date parse(TimeZone timeZone, String format, String dateText)
+	public static Date parse(String format, String dateText)
 			throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		sdf.setTimeZone(timeZone);
+		TimeZone timeZone = getDefaultTimeZone();
+		if (timeZone != null) {
+			sdf.setTimeZone(timeZone);
+		}
 		return sdf.parse(dateText);
 	}
 
-	public static String format(TimeZone timeZone, Date date) {
+	public static String format(Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat();
-		sdf.setTimeZone(timeZone);
+		TimeZone timeZone = getDefaultTimeZone();
+		if (timeZone != null) {
+			sdf.setTimeZone(timeZone);
+		}
 		return sdf.format(date);
 	}
 
-	public static String format(TimeZone timeZone, String format, Date date) {
+	public static String format(String format, Date date) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		sdf.setTimeZone(timeZone);
+		TimeZone timeZone = getDefaultTimeZone();
+		if (timeZone != null) {
+			sdf.setTimeZone(timeZone);
+		}
 		return sdf.format(date);
 	}
 }
