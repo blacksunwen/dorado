@@ -10,17 +10,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-	<bean class="com.bstek.dorado.console.resolver.URLResolverMapping">
-		<property name="order" value="1" />
-		<property name="mappings">
-			<props>
-				<prop key="/console">dorado.console.accessPathResolver</prop>
-			</props>
-		</property>
-	</bean>
-	
-	<bean id="dorado.console.accessPathResolver" class="com.bstek.dorado.console.resolver.AccessPathResolver" />
-    
+
 	<!-- View ResolverListener -->
 	<bean parent="dorado.viewResolverListenerRegister">
 		<property name="listener">
@@ -39,45 +29,5 @@
 		</bean>
 	</mvc:interceptors>
 
-	<!-- 资源文件URL映射 -->
-	<bean parent="dorado.resolverRegister">
-		<property name="url" value="/dorado/console" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.SimpleUrlResolver">
-				<property name="url"
-					value="forward:/com.bstek.dorado.console.main.Main.d" />
-			</bean>
-		</property>
-	</bean>
-	<bean parent="dorado.resolverRegister">
-		<property name="order" value="41" />
-		<property name="url" value="/dorado/console/scripts/**" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
-				<property name="baseUri" value="/dorado/console/scripts" />
-				<property name="resourcePrefix" value="classpath:/dorado/console/scripts" />
-			</bean>
-		</property>
-	</bean>
-	<bean parent="dorado.resolverRegister">
-		<property name="order" value="42" />
-		<property name="url" value="/dorado/console/styles/**" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
-				<property name="baseUri" value="/dorado/console/styles" />
-				<property name="resourcePrefix" value="classpath:/dorado/console/styles" />
-			</bean>
-		</property>
-	</bean>
-	<bean parent="dorado.resolverRegister">
-		<property name="order" value="43" />
-		<property name="url" value="/dorado/console/images/**" />
-		<property name="resolver">
-			<bean class="com.bstek.dorado.web.resolver.WebFileResolver">
-				<property name="baseUri" value="/dorado/console/images" />
-				<property name="resourcePrefix" value="classpath:/dorado/console/images" />
-			</bean>
-		</property>
-	</bean>
-
+	
 </beans>

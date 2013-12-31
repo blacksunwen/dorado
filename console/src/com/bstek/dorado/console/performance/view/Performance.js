@@ -102,10 +102,11 @@ var OperationCellRenderer = $extend(
 											name : name
 										});
 										action.execute();
-										var container=view.get('#historyProcessListContainer');
+										var container = view
+												.get('#historyProcessListContainer');
 										container.set('visible', status);
 										container.refresh();
-										
+
 										view.get('#processDetailDialog').show();
 										view.get('#processNameLabel').set(
 												'text', name);
@@ -123,7 +124,7 @@ var OperationCellRenderer = $extend(
 // =========================================================================================
 
 var SelectCellRenderer = $extend(
-		RowSelectorCellRenderer,
+		dorado.widget.grid.RowSelectorCellRenderer,
 		{
 			refreshSubControl : function(checkbox, arg) {
 				if (arg.data.rowType) {
@@ -147,9 +148,11 @@ var SelectCellRenderer = $extend(
 
 					visible : !arg.data.get('status')
 				});
-
+				if (!this._checkboxMap) {
+					this._checkboxMap = {};
+				}
 				checkbox._selectDataId = grid._itemModel.getItemId(data);
-				this.checkboxMap[checkbox._selectDataId] = checkbox;
+				this._checkboxMap[checkbox._selectDataId] = checkbox;
 			}
 
 		});
