@@ -621,7 +621,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 			topView.onReady();
 
-			var oldWidth, oldHeight;
+			var oldWidth = $fly(window).width(), oldHeight = $fly(window).height();
 
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
