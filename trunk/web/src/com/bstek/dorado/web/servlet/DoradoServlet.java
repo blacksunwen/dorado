@@ -14,11 +14,13 @@ package com.bstek.dorado.web.servlet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.bstek.dorado.core.Configure;
@@ -64,5 +66,14 @@ public class DoradoServlet extends DispatcherServlet {
 			logger.error(e, e);
 		}
 	}
-
+	
+	@Override
+	protected HttpServletRequest checkMultipart(HttpServletRequest request) throws MultipartException {
+		String servletName = request.getServletPath();
+		if (!"/dorado".equals(servletName)) {
+			return super.checkMultipart(request);
+		}else{
+			return request;
+		}
+	}
 }
