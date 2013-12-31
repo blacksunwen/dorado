@@ -290,7 +290,7 @@
                 if (eventCaptureSupported) {
                     activeDocHandlers["touchstart"] = (activeDocHandlers["touchstart"] || 0) + 1;
                     if (activeDocHandlers["touchstart"] === 1) {
-                        $document.bind("touchstart", handleTouchStart).bind("touchend", handleTouchEnd).bind("touchmove", handleTouchMove).bind("scroll", handleScroll);
+                        $document.bind("touchstart", handleTouchStart).bind("touchend", handleTouchEnd).bind("touchmove", handleTouchMove);/** .bind("scroll", handleScroll) */
                     }
                 }
             },
@@ -302,7 +302,7 @@
                 if (eventCaptureSupported) {
                     --activeDocHandlers["touchstart"];
                     if (!activeDocHandlers["touchstart"]) {
-                        $document.unbind("touchstart", handleTouchStart).unbind("touchmove", handleTouchMove).unbind("touchend", handleTouchEnd).unbind("scroll", handleScroll);
+                        $document.unbind("touchstart", handleTouchStart).unbind("touchmove", handleTouchMove).unbind("touchend", handleTouchEnd)/**.unbind("scroll", handleScroll)*/;
                     }
                 }
                 var $this = $(this), bindings = $.data(this, dataPropertyName);
