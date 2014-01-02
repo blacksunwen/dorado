@@ -1239,12 +1239,7 @@
 		doSetFocus : function() {
 			var dom = this._dom;
 			if (dom) {
-				if (["input", "button", "textarea", "select"].indexOf(dom.nodeName.toLowerCase) >= 0) {
-					dom.focus();
-				}
-				else {
-					dorado.widget.onControlGainedFocus(this);
-				}
+				dom.focus();
 			}
 		},
 		
