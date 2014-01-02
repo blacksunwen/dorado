@@ -146,7 +146,8 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		 */
 		onValueChange: {}
 	},
-	
+
+    //event: 传入true强制执行onClick，用来响应键盘事件。
 	onClick: function(event) {
 		var checkBox = this;
 		
@@ -154,7 +155,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			return;
 		}
 
-        if (event.target == checkBox._dom) return;
+        if (event !== true && event.target == checkBox._dom) return;
 
 		var checked = checkBox._checked;
 		if (checkBox._triState) {
@@ -367,7 +368,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		switch (evt.keyCode) {
 			case 32:
 				// space
-				this.onClick();
+				this.onClick(true);
 				retValue = false;
 				break;
 		}
