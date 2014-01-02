@@ -4,6 +4,7 @@
   <Context/>
   <Model/>
   <View layout="anchor">
+    <Property name="title">Dorado Console</Property>
     <HtmlContainer layoutConstraint="left:0;top:0">
       <ClientEvent name="onCreate">var dom=$DomUtils.xCreate({&#xD;
 	tagName: &quot;img&quot;,&#xD;
