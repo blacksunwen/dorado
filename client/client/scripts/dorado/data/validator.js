@@ -762,8 +762,8 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 		try {
 			var eventArg = {
 				data : data,
-				property: arg.property,
-				entity: arg.entity
+				property: arg ? arg.property : null,
+				entity: arg ? arg.entity : null
 			};
 			this.fireEvent("onValidate", this, eventArg);
 			result = eventArg.result;
