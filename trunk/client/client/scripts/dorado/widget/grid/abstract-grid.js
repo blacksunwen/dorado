@@ -1948,7 +1948,7 @@
 		},
 
 		doOnFocus: function() {
-			if (this._currentColumn) {
+			if (this._currentColumn && !this._currentCellEditor) {
 				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
 					if (this._currentColumn) this.showCellEditor(this._currentColumn);
 				}, 300);
