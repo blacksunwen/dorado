@@ -45,7 +45,8 @@ public abstract class AbstractPanel extends Container {
 		buttons.add(button);
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Buttons",
+	@XmlSubNode(nodeName = "*", parser = "spring:dorado.childComponentParser",
+			wrapper = @XmlNodeWrapper(nodeName = "Buttons",
 			icon = "/com/bstek/dorado/view/widget/base/Buttons.png"))
 	@ClientProperty
 	public List<Button> getButtons() {
