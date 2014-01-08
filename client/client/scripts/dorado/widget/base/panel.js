@@ -808,7 +808,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 					captionBarHeight = $fly(doms.captionBar).outerHeight(true);
 				}
 				if (border == "curve") {
-					var bodyHeight = height - jQuery(doms.header).outerHeight() - jQuery(doms.footer).outerHeight() - captionBarHeight;
+                    var headerHeight = doms.header ? jQuery(doms.header).outerHeight() : 0;
+                    var footerHeight = dom.footer ? jQuery(doms.footer).outerHeight() : 0;
+                    var bodyHeight = height - headerHeight - footerHeight - captionBarHeight;
 					$fly(doms.body).outerHeight(bodyHeight);
 					$fly(doms.contentPanel).outerHeight(bodyHeight - buttonPanelHeight);
 				} else {

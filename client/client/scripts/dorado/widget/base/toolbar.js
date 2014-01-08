@@ -178,10 +178,10 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			var refDom = null, doms = toolbar._doms;
 			if (typeof index == "number") {
 				var refItem = items.get(index);
-				refDom = refItem._dom;
+				refDom = refItem ? refItem._dom : null;
 			}
 			items.insert(item, index);
-			item.render(doms.toolbarLeft);
+			item.render(doms.toolbarLeft, refDom);
 			$fly(item._dom).addClass("i-toolbar-item");
 		} else {
 			items.insert(item, index);
