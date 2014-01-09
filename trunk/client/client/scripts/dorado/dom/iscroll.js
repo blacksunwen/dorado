@@ -417,7 +417,7 @@
 
 			if (this.options.notMoveElement && this.vertBar.wrapper) {
 				this.vertBar.wrapper.style["height"] = this.element.clientHeight + "px";
-				this.vertBar.wrapper.style["top"] = this.element.scrollTop + "px";
+				//this.vertBar.wrapper.style["top"] = this.element.scrollTop + "px";
 				this.vertBar.wrapper.style["bottom"] = "";
 			}
 		},
