@@ -549,12 +549,42 @@
 			var blockView = this;
 			var scroller = blockView._scroller = dom.firstChild;
 			var container = blockView._container = scroller.firstChild;
-			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller);			
+			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller, {
+                notMoveElement: true,
+                useTransform: false,
+                fadeScrollbar: false,
+                fixedScrollbar: true,
+                bounce: false,
+                momentum: true,
+                desktopCompatibility: true,
+                scrollSize: function(dir) {
+                    var result = dir == "h" ? blockView._scroller.scrollWidth : blockView._scroller.scrollHeight;
+                    return result;
+                },
+                viewportSize: function(dir) {
+                    return dir == "h" ? blockView._scroller.clientWidth : blockView._scroller.clientHeight;
+                },
+                resumeHelper: function() {
+                    return {
+                        x: blockView._scroller.scrollLeft * -1,
+                        y: blockView._scroller.scrollTop * -1
+                    }
+                },
+                onScrolling: function() {
+                    blockView._scroller.scrollLeft = this.x * -1;
+                    blockView._scroller.scrollTop = this.y * -1;
+                },
+                onScrollMove: function() {
+                    blockView._scroller.scrollLeft = this.x * -1;
+                    blockView._scroller.scrollTop = this.y * -1;
+                }
+            });
 			
 			var $scroller = $(scroller);
 			$scroller.bind("scroll", $scopify(blockView, blockView.onScroll));
 			
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
+                $fly(blockView._container).css("position", "relative");
 				$fly(dom).bind("tap", function(evt) {
 					var blockDom = blockView._findBlockDom(evt);
 					if (blockDom) {
