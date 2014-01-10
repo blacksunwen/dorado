@@ -38,7 +38,7 @@ import com.bstek.dorado.view.widget.RenderableElement;
  */
 @XmlNode(isPublic = false)
 @ClientObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
-@ClientEvents({ @ClientEvent(name = "beforeClose"), @ClientEvent(name = "onClose") })
+@ClientEvents({ @ClientEvent(name = "beforeClose"), @ClientEvent(name = "onClose"), @ClientEvent(name = "onClick") })
 public class Tab extends ClientEventSupportedObject implements RenderableElement, Ignorable, TagSupport,
 		MetaDataSupport, ViewElement {
 	private ViewElement parent;
