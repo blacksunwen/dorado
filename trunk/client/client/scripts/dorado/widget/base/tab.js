@@ -151,7 +151,16 @@
 		     * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		     * @event
 		     */
-		    onClose: {}
+		    onClose: {},
+
+            /**
+             * 当Tab被点击时触发的事件，一般情况下不推荐使用此事件，建议使用TabBar或者TabControl的onTabChange代替此事件。
+             * @param {Object} self 事件的发起者，即组件本身。
+             * @param {Object} arg 事件参数。
+             * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+             * @event
+             */
+            onClick: {}
 	    },
 
         constructor: function(config) {
@@ -344,6 +353,7 @@
                 var tabbar = tab._parent, disabled = tab._disabled;
                 if (tabbar) {
                     if (!disabled) {
+                        tab.fireEvent("onClick", tab);
                         tabbar.doChangeCurrentTab(tab);
                     }
                 }
@@ -356,18 +366,18 @@
             jQuery(dom).addClassOnHover(tab._className + "-hover", null, function() {
                 return !tab._disabled;
             }).bind("contextmenu", function(event) {
-                    event = jQuery.event.fix(event || window.event);
-                    event.preventDefault();
-                    event.returnValue = false;
-                    var tabbar = tab._parent, arg = {
-                        tab: tab,
-                        event: event
-                    };
-                    tabbar._contextMenuTab = tab;
-                    tabbar.fireEvent("onTabContextMenu", tabbar, arg);
+                event = jQuery.event.fix(event || window.event);
+                event.preventDefault();
+                event.returnValue = false;
+                var tabbar = tab._parent, arg = {
+                    tab: tab,
+                    event: event
+                };
+                tabbar._contextMenuTab = tab;
+                tabbar.fireEvent("onTabContextMenu", tabbar, arg);
 
-                    return false;
-                });
+                return false;
+            });
 
             if (tab._icon || tab._iconClass) {
                 tab._createIconSpan();

@@ -58,7 +58,10 @@
                     icon: "del.gif",
                     exClassName: "test",
                     width: 100,
-                    closeable: true
+                    closeable: true,
+                    onClick: function() {
+                        alert(2);
+                    }
                 },
                 {
                     caption: "测试2",
@@ -67,7 +70,10 @@
                 {
                     caption: "测试3",
                     closeable: true,
-                    disabled: true
+                    disabled: true,
+                    onClick: function() {
+                        alert(3);
+                    }
                 }
             ],
 			width: 500,
