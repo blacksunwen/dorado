@@ -204,6 +204,9 @@
 					dropDown.close(dropDown.getSelectedValue());
 				},
 				onFilterItem: function(self, arg) {
+                    if (arg && arg.criterions && arg.criterions.length > 0){
+                        arg.filterValue = arg.criterions[0].value;
+                    }
 					dropDown.fireEvent("onFilterItem", dropDown, arg);
 				}
 			};
