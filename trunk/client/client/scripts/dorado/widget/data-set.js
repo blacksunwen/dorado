@@ -161,6 +161,7 @@
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
 			 * @param {int} arg.pageNo 当前装载的页号。
+			 * @param {Object} #arg.processDefault = true 用于通知系统是否要继续完成后续动作。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
@@ -392,6 +393,7 @@
 				};
 				
 				this.fireEvent("beforeLoadData", this, arg);
+				if (eventArg.processDefault === false) return;
 				
 				var pipe = data;
 				if (callback) {
