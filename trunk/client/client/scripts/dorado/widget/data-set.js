@@ -393,7 +393,7 @@
 				};
 				
 				this.fireEvent("beforeLoadData", this, arg);
-				if (eventArg.processDefault === false) return;
+				if (arg.processDefault === false) return;
 				
 				var pipe = data;
 				if (callback) {
