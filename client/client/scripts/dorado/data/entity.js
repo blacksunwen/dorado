@@ -422,78 +422,74 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 								pageNo: 1
 							};
 							propertyDef.fireEvent("beforeLoadData", propertyDef, eventArg);
-							if (eventArg.value !== undefined) {
-								this._data[property] = value;
-							} else {
-								if (callback || loadMode == "auto") {
-									var isNewPipe = (pipe.runningProcNum == 0);
-									pipe.getAsync({
-										scope : this,
-										callback: function(success, result) {
-											var dummyData = this._data[property], dummyValue;
-											if (dummyData.isDataPipeWrapper) {
-												dummyValue = dummyData.value;
-											}
-											this._data[property] = dummyValue || null;
+							if (eventArg.processDefault !== false && (callback || loadMode == "auto")) {
+								var isNewPipe = (pipe.runningProcNum == 0);
+								pipe.getAsync({
+									scope : this,
+									callback: function(success, result) {
+										var dummyData = this._data[property], dummyValue;
+										if (dummyData.isDataPipeWrapper) {
+											dummyValue = dummyData.value;
+										}
+										this._data[property] = dummyValue || null;
+
+										if (isNewPipe) {
+											this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
+										}
+												
+										if (success) {
+											eventArg.data = result;
 
 											if (isNewPipe) {
-												this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
-											}
-													
-											if (success) {
-												eventArg.data = result;
-
-												if (isNewPipe) {
-													if (result === null &&
-														(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
-														dummyValue.isNull) {
-														if (dummyData.isDataPipeWrapper) {
-															result =  this._data[property];
-														}
+												if (result === null &&
+													(dummyValue instanceof dorado.EntityList || dummyValue instanceof dorado.Entity) &&
+													dummyValue.isNull) {
+													if (dummyData.isDataPipeWrapper) {
+														result =  this._data[property];
 													}
-													else {
-														result = transferAndReplaceIf(this, propertyDef, result, true);
-													}
-
-													propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
+												}
+												else {
+													result = transferAndReplaceIf(this, propertyDef, result, true);
 												}
 
-												this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
-													entity: this,
-													property: property,
-													newValue: result
-												});
+												propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
+											}
 
-												if (propertyDef.getListenerCount("onGet")) {
-													eventArg = {
-														entity : this,
-														value : result
-													};
-													propertyDef.fireEvent("onGet", propertyDef, eventArg);
-													result = eventArg.value;
-												}
+											this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
+												entity: this,
+												property: property,
+												newValue: result
+											});
+
+											if (propertyDef.getListenerCount("onGet")) {
+												eventArg = {
+													entity : this,
+													value : result
+												};
+												propertyDef.fireEvent("onGet", propertyDef, eventArg);
+												result = eventArg.value;
 											}
-											else if (isNewPipe) {
-												this._data[property] = null;
-											}
-											if (callback) $callback(callback, success, result);
 										}
-									});
-									
-									this._data[property] = dataPipeWrapper = {
-										isDataPipeWrapper : true,
-										pipe : pipe
-									};	
-									if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
-									invokeCallback = false;
-								} else {
-									value = pipe.get();
+										else if (isNewPipe) {
+											this._data[property] = null;
+										}
+										if (callback) $callback(callback, success, result);
+									}
+								});
+								
+								this._data[property] = dataPipeWrapper = {
+									isDataPipeWrapper : true,
+									pipe : pipe
+								};	
+								if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
+								invokeCallback = false;
+							} else {
+								value = pipe.get();
 
-									eventArg.data = value;
-									propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
+								eventArg.data = value;
+								propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
 
-									value = transferAndReplaceIf(this, propertyDef, value, true);
-								}
+								value = transferAndReplaceIf(this, propertyDef, value, true);
 							}
 						}
 					}

@@ -708,7 +708,6 @@ dorado.dequeue = function(namespace) {
 		 * 如无特殊需要请不要复写此方法，而应该复写doHide方法。
 		 * </p>
 		 * @param {Object} options Json类型的参数
-		 * @param {boolean} options.atOnce 是否立即关闭，忽略hideDelay参数。
 		 */
 		hide: function(options) {
 			var control = this, args = arguments;
@@ -741,7 +740,6 @@ dorado.dequeue = function(namespace) {
 				}
 				
 				if (focused && dorado.Browser.msie) dorado.widget.Control.IGNORE_FOCUSIN_EVENT = true;
-				options = options || {};
 				if (control.doHide) {
 					control.doHide.apply(control, args);
 				}

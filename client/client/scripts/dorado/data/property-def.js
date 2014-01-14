@@ -472,7 +472,7 @@
 			 * @param {Object} arg 事件参数。
 			 * @param {dorado.Entity} arg.entity 当前处理的数据实体。
 			 * @param {int} arg.pageNo 当前装载的页号。
-			 * @param {Object} #arg.data 如果您为此子属性设置了一个非undefined的值，那么系统将跳过默认的数据装载动作并直接将此处的值视作装载到的数据。
+			 * @param {Object} #arg.processDefault = true 用于通知系统是否要继续完成后续动作。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
