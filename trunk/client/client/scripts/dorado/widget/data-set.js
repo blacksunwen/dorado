@@ -393,7 +393,11 @@
 				};
 				
 				this.fireEvent("beforeLoadData", this, arg);
-				if (arg.processDefault === false) return;
+				if (arg.processDefault === false) {
+                    delete this._dataPipe;
+                    if (callback) $callback(callback, false);
+                    return;
+                }
 				
 				var pipe = data;
 				if (callback) {
