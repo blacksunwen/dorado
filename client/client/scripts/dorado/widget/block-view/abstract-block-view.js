@@ -951,7 +951,12 @@
 			if (this._currentBlock) $fly(this._currentBlock).removeClass("block-current");
 			this._currentBlock = itemDom;
 			if (itemDom) $fly(itemDom).addClass("block-current");
-			
+
+            var hoverBlockDecorator = this.getHoverBlockDecorator();
+            hoverBlockDecorator.set("style", {
+                display: "none"
+            });
+
 			var decorator = this.getCurrentBlockDecorator();
 			if (itemDom) {
 				decorator.set({
