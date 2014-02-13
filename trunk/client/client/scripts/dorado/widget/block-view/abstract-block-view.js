@@ -785,11 +785,20 @@
 			if (index < 0) flag = -flag;
 			index = (this._itemModel.getStartIndex() || 0) + index * flag;
             var itemDom, itemId;
-            var itemDom, itemId;
-            if (index >= 0 && index < itemDomContainer.childNodes.length) {
+
+            var currentDecorator = this._currentDecorator, hoverDecorator = this._hoverDecorator;
+            var itemDoms = new Array();
+            for (var i=0; i < itemDomContainer.childNodes.length; i++){
+                var subItemDom = itemDomContainer.childNodes[i];
+                if (currentDecorator && subItemDom === currentDecorator.getDom()) continue;
+                if (hoverDecorator && subItemDom === hoverDecorator.getDom()) continue;
+                itemDoms.push(subItemDom);
+            }
+
+            if (index >= 0 && index < itemDoms.length) {
                 var i = index;
-                if (prepend) i = itemDomContainer.childNodes.length - i - 1;
-                itemDom = itemDomContainer.childNodes[i];
+                if (prepend) i = itemDoms.length - i - 1;
+                itemDom = itemDoms[i];
                 if (this._itemDomMap[itemDom._itemId] == itemDom) delete this._itemDomMap[itemDom._itemId];
                 itemId = this._itemModel.getItemId(item, index);
             } else {
