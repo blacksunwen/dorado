@@ -13,6 +13,7 @@
 package com.bstek.dorado.view.type.property.validator;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
@@ -33,6 +34,7 @@ public class RangeValidator extends BaseValidator {
 	private float maxValue;
 	private RangeValidateMode maxValueValidateMode = RangeValidateMode.ignore;
 
+    @ClientProperty(escapeValue = "-1")
 	public float getMinValue() {
 		return minValue;
 	}
@@ -49,6 +51,7 @@ public class RangeValidator extends BaseValidator {
 		this.minValueValidateMode = minValueValidateMode;
 	}
 
+    @ClientProperty(escapeValue = "-1")
 	public float getMaxValue() {
 		return maxValue;
 	}
