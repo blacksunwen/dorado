@@ -1848,7 +1848,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (value instanceof dorado.Entity) {
 						if (context) options.context = {};
 						result = value.validate(options);
-						if (context) mergeValidationContexts(context, options.context);
+						if (context) {
+                            mergeValidationContexts(context, options.context);
+                            options.context = context;
+                        }
 						resultCode = VALIDATION_RESULT_CODE[result];
 						if (resultCode > topResultCode) {
 							topResultCode = resultCode;
@@ -1859,7 +1862,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						while (it.hasNext()) {
 							if (context) options.context = {};
 							result = it.next().validate(options);
-							if (context) mergeValidationContexts(context, options.context);
+							if (context) {
+                                mergeValidationContexts(context, options.context);
+                                options.context = context;
+                            }
 							resultCode = VALIDATION_RESULT_CODE[result];
 							if (resultCode > topResultCode) {
 								topResultCode = resultCode;
