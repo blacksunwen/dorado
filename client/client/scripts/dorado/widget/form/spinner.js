@@ -157,7 +157,8 @@
 	 * @extends dorado.widget.Spinner
 	 */
 	dorado.widget.NumberSpinner = $extend(dorado.widget.Spinner, /** @scope dorado.widget.NumberSpinner.prototype */ {
-	
+        $className: "dorado.widget.NumberSpinner",
+
 		ATTRIBUTES: /** @scope dorado.widget.NumberSpinner.prototype */ {
 		
 			/**
