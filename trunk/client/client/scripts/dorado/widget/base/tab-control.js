@@ -18,7 +18,9 @@
  */
 dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widget.TabControl.prototype **/ {
 	$className: "dorado.widget.TabControl",
-	
+
+    _inherentClassName: "",
+
 	ATTRIBUTES: /** @scope dorado.widget.TabControl.prototype **/ {
 		height: {
 			defaultValue: 200,
@@ -159,6 +161,8 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
  */
 dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope dorado.widget.VerticalTabControl.prototype **/ {
     $className: "dorado.widget.VerticalTabControl",
+
+    _inherentClassName: "",
 
     ATTRIBUTES: /** @scope dorado.widget.VerticalTabControl.prototype **/ {
         height: {
