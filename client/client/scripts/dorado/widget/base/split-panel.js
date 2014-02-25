@@ -377,9 +377,10 @@
 			panel._doms = doms;
 
 			$DomUtils.disableUserSelection(doms.splitter);
+            var splitterPosition, containment;
 			$fly(doms.splitter).addClass("splitter-" + panel._direction).draggable({
 				addClasses: false,
-				containment: "parent",
+				//containment: "parent",
 				axis: axis,
 				helper: "clone",
                 iframeFix: true,
@@ -388,7 +389,43 @@
 					if(helper){
 						helper.addClass("splitter-dragging").bringToFront().find("> .button").css("display", "none");
 					}
+                    splitterPosition = $fly(doms.splitter).position();
+                    if (panel._direction == "left" || panel._direction == "right") {
+                        containment = [0, $fly(dom).width() - $fly(doms.splitter).outerWidth()];
+                    } else {
+                        containment = [0, $fly(dom).height() - $fly(doms.splitter).outerHeight()];
+                    }
 				},
+                drag: function(event, ui) {
+                    var inst = jQuery.data(this, "draggable"), horiChange = event.pageX - inst.originalPageX, vertChange = event.pageY - inst.originalPageY;
+
+                    ui.position = {
+                        left: splitterPosition.left,
+                        top: splitterPosition.top
+                    };
+
+                    var left, top;
+
+                    if (panel._direction == "left" || panel._direction == "right") {
+                        left = splitterPosition.left + horiChange;
+                        if (left < containment[0]) {
+                            left = containment[0];
+                        } else if (left > containment[1]) {
+                            left = containment[1];
+                        }
+                        ui.position.left = left;
+                    } else {
+                        top = splitterPosition.top + vertChange;
+                        if (top < containment[0]) {
+                            top = containment[0];
+                        } else if (top > containment[1]) {
+                            top = containment[1];
+                        }
+                        ui.position.top = top;
+                    }
+
+                    ui.helper.css(ui.position);
+                },
 				stop: function(event, ui) {
 					var position = ui.position;
 					switch (panel._direction) {
