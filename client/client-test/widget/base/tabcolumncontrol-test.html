@@ -156,7 +156,7 @@
                 }
             ],
             tabMinWidth: 100,
-            verticalText: true,
+            //verticalText: true,
             listener: {
                 onTabContextMenu: function(self, arg) {
                     var tab = arg.tab;
@@ -170,7 +170,22 @@
             }
         });
 
-        view.addChild(tabcontrol);
+        var tabcontrol2 = new dorado.widget.TabControl("tabcontrol2");
+        tabcontrol2.set({
+            width: 600,
+            height: 400,
+            tabs: [
+                {
+                    $type: "Control",
+                    name: "tab1",
+                    caption: "测试1",
+                    tip: "TEst",
+                    control: tabcontrol
+                }
+            ]
+        });
+
+        view.addChild(tabcontrol2);
 
         $(document).ready(function() {
             view.render(document.body);
