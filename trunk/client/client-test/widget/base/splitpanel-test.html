@@ -151,10 +151,35 @@
             	content: "<p></p>"
             }));
             view.addChild(splitPanel2);
-            
+
+            var dialog = new dorado.widget.Dialog({
+                width: 500,
+                height: 400,
+                children: [new dorado.widget.SplitPanel({
+                    sideControl: new dorado.widget.Panel({
+                        style: {
+                            border: "1px #000000 solid"
+                        }
+                    }),
+                    mainControl: new dorado.widget.Panel({
+                        style: {
+                            border: "1px #000000 solid"
+                        }
+                    }),
+                    maxPosition: 300,
+                    collpaseable: false,
+                    direction: "left"
+                })],
+                center: true,
+                visible: true
+            });
+
             view.addChild(new dorado.widget.HtmlContainer({
             	content: "<p></p>"
             }));
+
+
+
             view.addChild(splitPanel3);
             
             $(document).ready(function() {
