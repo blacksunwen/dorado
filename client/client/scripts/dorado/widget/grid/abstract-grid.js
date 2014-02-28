@@ -1155,6 +1155,11 @@
 			this._grid = this; // for ColumnModel
 			$invokeSuper.call(this, arguments);
 		},
+
+		destroy: function() {
+			this._columns.destroy();
+			$invokeSuper.call(this);
+		},
 		
 		doGet: function(attr) {
 			var c = attr.charAt(0);

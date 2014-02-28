@@ -64,7 +64,7 @@
 		
 		removeItemDom: function(row) {
 			if (this._scrollMode != "viewport") {
-				if (row.parentNode) row.parentNode.removeChild(row);
+				$fly(row).remove();
 			} else {
 				var item = $fly(row).data("item");
 				if (item) delete item._dom;

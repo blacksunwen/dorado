@@ -131,7 +131,7 @@
 		},
 		
 		refreshDom: function(dom) {
-		
+
 			function isSameGrid(oldGrid, newGrid) {
 				if (!oldGrid) {
 					return false;
@@ -171,11 +171,7 @@
 			if (structureChanged) {
 				this._domCache = {};
 				this._grid = grid;
-				dom.removeChild(tbody);
-				while (tbody.firstChild) {
-					tbody.removeChild(tbody.firstChild);
-				}
-				dom.appendChild(tbody);
+				$fly(tbody).empty();
 			} else {
 				grid = this._grid;
 			}
@@ -245,12 +241,11 @@
 					if (cls) {
 						$fly(td).addClass(cls);
 					}
-					
+
 					// real cell
 					if (region) {
 						index = region.regionIndex;
-						$fly(td).css(region.constraint);
-						
+
 						region.autoWidthAdjust = region.autoHeightAdjust = 0;
 						if ((col + region.colSpan) < cols.length) {
 							region.autoWidthAdjust = 0 - this._colPadding;
@@ -258,10 +253,10 @@
 						if ((row + region.rowSpan) < grid.length) {
 							region.autoHeightAdjust = 0 - this._rowPadding;
 						}
-						
+
 						td.colSpan = region.colSpan;
 						td.rowSpan = region.rowSpan;
-						
+
 						var w = 0;
 						if (region.colSpan > 1) {
 							var endIndex = region.colIndex + region.colSpan;
@@ -275,7 +270,7 @@
 						// td.style.width = w + "px";
 						if (dorado.Browser.msie && dorado.Browser.version < 8) td.style.paddingTop = "0px";
 						td.style.paddingBottom = (-region.autoHeightAdjust || 0) + "px";
-						
+
 						cellForRenders.push({
 							cell: td,
 							region: region
@@ -314,7 +309,7 @@
 				dom = document.createElement("TD");
 				if (region) this._domCache[region.id] = dom;
 			} else if (dom.firstChild) {
-				dom.removeChild(dom.firstChild);
+				$fly(dom).empty();
 			}
 			dom.className = this._regionClassName;
 			
@@ -378,12 +373,11 @@
 				}
 				
 				var previousRegion = this.getPreviousRegion(region);
-				var pRegionIndex = -1, pRowIndex = 0, pColIndex = -1, pRowSpan = pColSpan = 1;
+				var pRegionIndex = -1, pRowIndex = 0, pColIndex = -1, pColSpan = 1;
 				if (previousRegion) {
 					pRegionIndex = previousRegion.regionIndex;
 					pRowIndex = previousRegion.rowIndex;
 					pColIndex = previousRegion.colIndex;
-					pRowSpan = previousRegion.rowSpan;
 					pColSpan = previousRegion.colSpan;
 				}
 				

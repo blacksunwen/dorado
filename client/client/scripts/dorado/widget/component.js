@@ -244,7 +244,9 @@
 			if (this._destroyed) return;
 			this._destroyed = true;
 			this.fireEvent("onDestroy", this);
-			delete dorado.widget.Component.ALL[this._uniqueId];
+			if (!dorado.windowClosed) {
+				delete dorado.widget.Component.ALL[this._uniqueId];
+			}
 		},
 		
 		getListenerScope: function() {
