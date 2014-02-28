@@ -125,7 +125,7 @@
 			
 			/**
 			 * 是否显示今天按钮，仅在渲染前设置有效。
-			 * @attribute
+			 * @attribute writeBeforeReady
 			 * @default true
 			 * @type boolean
 			 */
@@ -144,8 +144,17 @@
 			},
 			
 			/**
+			 * 是否显示取消按钮，仅在渲染前设置有效。
+			 * @attribute writeBeforeReady
+			 * @type boolean
+			 */
+			showCancelButton: {
+				defaultValue: false
+			},
+			
+			/**
 			 * 是否显示确定按钮，仅在渲染前设置有效。
-			 * @attribute
+			 * @attribute writeBeforeReady
 			 * @default true
 			 * @type boolean
 			 */
@@ -195,7 +204,7 @@
 			onConfirm: {},
 
 			/**
-			 * 当用户不选择日期，点击关闭按钮后触发此事件
+			 * 当用户不选择日期，点击取消按钮后触发此事件
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
@@ -793,17 +802,31 @@
 				picker.registerInnerControl(clearButton);
 			}
 			
+			if (picker._showCancelButton) {
+				var cancelButton = new dorado.widget.Button({
+					caption: $resource("dorado.baseWidget.DatePickerCancel"),
+					listener: {
+						onClick: function() {
+							picker.fireEvent("onCancel", picker);
+						}
+					}
+				});
+				cancelButton.render(doms.buttonBlock);
+				picker._cancelButton = cancelButton;
+				picker.registerInnerControl(cancelButton);
+			}
+			
 			if (picker._showConfirmButton) {
 				var confirmButton = new dorado.widget.Button({
 					caption: $resource("dorado.baseWidget.DatePickerConfirm"),
 					listener: {
 						onClick: function() {
-							var date;
+							var date, pickerDate = picker._date;
 							if (picker._showTimeSpinner && picker._timeSpinner) {
-								var pickerDate = picker._date, spinner = picker._timeSpinner;
+								var spinner = picker._timeSpinner;
 								date = new Date(pickerDate.getFullYear(), pickerDate.getMonth(), pickerDate.getDate(), spinner.get("hours"), spinner.get("minutes"), spinner.get("seconds"))
 							} else {
-								date = new Date(picker._date.getTime());
+								date = new Date(pickerDate.getFullYear(), pickerDate.getMonth(), pickerDate.getDate());
 							}
 							picker.fireEvent("onConfirm", picker, {
 								date: date
@@ -1149,6 +1172,8 @@
 		
 		createDropDownBox: function() {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
+				showClearButton: false,
+				showCancelButton: true,
 				showTimeSpinner: this._showTimeSpinner,
 				listener: {
 					onPick: function(self, arg) {
