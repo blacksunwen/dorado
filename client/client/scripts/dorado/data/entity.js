@@ -768,7 +768,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						entity.getAsync(p1, {
 							callback: function(success, result) {
 								if (success && result && ( result instanceof Object)) {
-									_getAsync(result, p2, callback, loadMode);
+                                    _getTextAsync(result, p2, callback, loadMode);
 								} else {
 									$callback(callback, success, result);
 								}
