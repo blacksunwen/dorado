@@ -168,7 +168,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		var control = new dorado.widget.SimpleIconButton({
 			exClassName: (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
 			icon: trigger._icon,
-			iconClass: trigger._iconClass,
+			iconClass: (trigger._icon ? null : trigger._iconClass),
 			onMouseDown: function(self, arg) {
 				dorado.widget.setFocusedControl(self);
 				arg.returnValue = false;
