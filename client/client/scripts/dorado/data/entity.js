@@ -1216,7 +1216,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.timestamp = dorado.Core.getTimestamp();
 			} else {
 				this._propertyDefs.each(function(propertyDef) {
-					if (propertyDef instanceof dorado.Reference) delete data[prop];
+					if (propertyDef instanceof dorado.Reference) delete data[propertyDef._name];
 				});
 				
 				this._propertyInfoMap = {};
