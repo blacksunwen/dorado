@@ -746,7 +746,7 @@
 		 */
 		disableUserSelection: function(element) {
 			if (dorado.Browser.msie) {
-				$fly(element).bind("selectstart", onSelectStart);
+				$fly(element).bind("selectstart.disableUserSelection", onSelectStart);
 			} else {
 				element.style.MozUserSelect = "none";
 				element.style.KhtmlUserSelect = "none";
@@ -762,7 +762,7 @@
 		 */
 		enableUserSelection: function(element) {
 			if (dorado.Browser.msie) {
-				$fly(element).unbind("selectstart", onSelectStart);
+				$fly(element).unbind("selectstart.disableUserSelection");
 			} else {
 				element.style.MozUserSelect = "";
 				element.style.KhtmlUserSelect = "";

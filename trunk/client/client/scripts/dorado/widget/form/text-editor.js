@@ -252,8 +252,7 @@
 			if (triggerButtons) {
 				for (var i = 0; i < triggerButtons.length; i++) {
 					triggerButton = triggerButtons[i];
-					triggerButton.unrender();
-					this.unregisterInnerControl(triggerButton);
+					triggerButton.destroy();
 				}
 			}
 			

@@ -247,8 +247,7 @@
 		destroy: function() {
 			var children = this._children.toArray();
 			for (var i = 0; i < children.length; i++) {
-				var child = children[i];
-				if (!child._destroyed) child.destroy();
+				children[i].destroy();
 			}
 			$invokeSuper.call(this);
 		},

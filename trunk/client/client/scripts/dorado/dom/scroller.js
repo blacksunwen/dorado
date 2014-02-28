@@ -30,9 +30,15 @@
 			this.direction = direction;
 			if (options) dorado.Object.apply(this, options);
 		},
+
+		destroy: function() {
+			delete this.dom;
+			delete this.doms;
+			delete this.container;
+		},
 		
 		createDom: function() {
-			var scroller = this, doms = {}, dom = scroller.dom = $DomUtils.xCreate({
+			var scroller = this, doms = scroller.doms = {}, dom = scroller.dom = $DomUtils.xCreate({
 				tagName: "DIV",
 				className: "i-modern-scroller d-modern-scroller",
 				style: "position: absolute",
@@ -52,8 +58,8 @@
 				}]
 			}, null, doms);
 			
-			var $dom = scroller.$dom = $(dom), slider = doms.slider, $slider = $(slider), track = doms.track, $track = $(track);
-			
+			var $dom = $(dom), slider = doms.slider, $slider = $(slider), track = doms.track, $track = $(track);
+
 			var draggableOptions = {
 				containment: "parent",
 				start: function() {
@@ -72,31 +78,31 @@
 					}
 				}
 			}
-			
+
 			if (scroller.direction == "h") {
 				dom.style.height = SCROLLER_SIZE + "px";
-				
+
 				slider.style.height = "100%";
 				slider.style.top = "0px";
-				
+
 				draggableOptions.axis = "x";
 			} else {
 				dom.style.width = SCROLLER_SIZE + "px";
-				
+
 				slider.style.width = "100%";
 				slider.style.left = "0px";
-				
+
 				draggableOptions.axis = "y";
 			}
 			$slider.draggable(draggableOptions);
-			
+
 			$dom.hover(function() {
 				scroller.update();
 				scroller.doMouseEnter();
 			}, function() {
 				scroller.doMouseLeave();
 			});
-			
+
 			$track.click(function(evt) {
 				var container = scroller.container;
 				if (scroller.direction == "h") {
@@ -113,11 +119,9 @@
 					}
 				}
 			});
-			
+
 			$DomUtils.disableUserSelection(dom);
 			$DomUtils.disableUserSelection(doms.track);
-			
-			scroller.doms = doms;
 			return dom;
 		},
 		
@@ -125,8 +129,8 @@
 			var scroller = this;
 			scroller.hover = true;
 			if (scroller.dragging) return;
-			
-			scroller.$dom.addClass("d-modern-scroller-hover");
+
+			$fly(scroller.dom).addClass("d-modern-scroller-hover");
 			scroller.expand();
 		},
 		
@@ -134,8 +138,8 @@
 			var scroller = this;
 			scroller.hover = false;
 			if (scroller.dragging) return;
-			
-			scroller.$dom.removeClass("d-modern-scroller-hover");
+
+			$fly(scroller.dom).removeClass("d-modern-scroller-hover");
 			scroller.unexpand();
 		},
 		
@@ -156,12 +160,14 @@
 			}
 			
 			scroller.expanded = true;
-			scroller.$dom.addClass("d-modern-scroller-expand");
+
+			var $dom = $(scroller.dom);
+			$dom.addClass("d-modern-scroller-expand");
 			if (dorado.Browser.msie && dorado.Browser.version < 7) {
-				scroller.$dom.css(animOptions);
+				$dom.css(animOptions);
 			} else {
 				scroller.duringAnimation = true;
-				scroller.$dom.animate(animOptions, "fast", function() {
+				$dom.animate(animOptions, "fast", function() {
 					scroller.duringAnimation = false;
 				});
 			}
@@ -180,16 +186,17 @@
 						width: SCROLLER_SIZE
 					};
 				}
-				
+
+				var $dom = $(scroller.dom);
 				if (dorado.Browser.msie && dorado.Browser.version < 7) {
-					scroller.$dom.css(animOptions);
+					$dom.css(animOptions);
 					scroller.expanded = false;
 				} else {
 					scroller.duringAnimation = true;
-					scroller.$dom.animate(animOptions, "fast", function() {
+					$dom.animate(animOptions, "fast", function() {
 						scroller.expanded = false;
 						scroller.duringAnimation = false;
-						scroller.$dom.removeClass("d-modern-scroller-expand");
+						$dom.removeClass("d-modern-scroller-expand");
 					});
 				}
 			}, 700);
@@ -201,14 +208,13 @@
 			var scroller = this, container = scroller.container;
 			if (!container) return;
 			
-			var dom = scroller.dom, doms = scroller.doms, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
+			var dom = scroller.dom, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
 			
 			if (scroller.direction == "h") {
+				return;
 				if (container.scrollWidth > (container.clientWidth + MIN_SPILLAGE) && container.clientWidth > 0) {
 					if (!dom) {
 						dom = scroller.createDom();
-						doms = scroller.doms;
-						
 						dom.style.zIndex = 9999;
 						dom.style.bottom = 0;
 						dom.style.left = 0;
@@ -225,8 +231,8 @@
 					}
 					
 					var trackSize = container.offsetWidth - SCROLLER_PADDING * 2;
-					var slider = doms.slider;
-					var sliderSize = (trackSize * container.clientWidth / container.scrollWidth), sliderAdj = 0;
+					var slider = scroller.doms.slider;
+					var sliderSize = (trackSize * container.clientWidth / container.scrollWidth);
 					if (sliderSize < MIN_SLIDER_SIZE) {
 						trackSize -= (MIN_SLIDER_SIZE - sliderSize);
 						sliderSize = MIN_SLIDER_SIZE;
@@ -250,8 +256,6 @@
 				if (container.scrollHeight > (container.clientHeight + MIN_SPILLAGE) && container.clientHeight > 0) {
 					if (!dom) {
 						dom = scroller.createDom();
-						doms = scroller.doms;
-						
 						dom.style.zIndex = 9999;
 						dom.style.top = 0;
 						dom.style.right = 0;
@@ -262,19 +266,19 @@
 					} else {
 						dom.style.display = "";
 					}
-					
+
 					if (dorado.Browser.msie && dorado.Browser.version == 6) {
 						dom.style.height = container.offsetHeight + "px";
 					}
-					
+
 					var trackSize = container.offsetHeight - SCROLLER_PADDING * 2;
-					var slider = doms.slider;
-					var sliderSize = (trackSize * container.clientHeight / container.scrollHeight), sliderAdj = 0;
+					var slider = scroller.doms.slider;
+					var sliderSize = (trackSize * container.clientHeight / container.scrollHeight);
 					if (sliderSize < MIN_SLIDER_SIZE) {
 						trackSize -= (MIN_SLIDER_SIZE - sliderSize);
 						sliderSize = MIN_SLIDER_SIZE;
 					}
-					
+
 					scroller.positionRatio = container.scrollHeight / trackSize;
 					slider.style.top = Math.round(container.scrollTop / scroller.positionRatio) + "px";
 					slider.style.height = Math.round(sliderSize) + "px";
@@ -283,21 +287,13 @@
 						// IE9下有时无法在初始化是取到正确的clientWidth
 						setTimeout(function() {
 							scroller.update();
-						}, 0);						
+						}, 0);
 					}
 					if (dom) {
 						dom.style.display = "none";
 					}
 				}
 			}
-		},
-		
-		destroy: function() {
-			var dom = this.dom;
-			if (dom && dom.parentNode) dom.parentNode.removeChild(dom);
-			delete this.dom;
-			delete this.doms;
-			delete this.container;
 		}
 	});
 	
@@ -318,11 +314,12 @@
 			if (options.listenSize || options.listenContainerSize || options.listenContentSize) {
 				removeListenModernScrolled(this);
 			}
+			delete this.container;
 		}
 	});
 	
 	var DesktopModernScrolled = $extend(ModernScrolled, {
-		// container, xScroller, yScroller, originOverflowX, originOverflowY
+		// container, xScroller, yScroller
 		
 		constructor: function(container, options) {
 			$invokeSuper.call(this, arguments);
@@ -347,8 +344,6 @@
 			
 			this.xScroller = xScroller;
 			this.yScroller = yScroller;
-			this.originOverflowX = overflowX;
-			this.originOverflowY = overflowY;
 			
 			var position = $parentDom.css("position");
 			if (position != "relative" && position != "absolute") {

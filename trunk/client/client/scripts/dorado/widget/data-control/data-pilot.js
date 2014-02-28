@@ -215,8 +215,7 @@
 				if (itemObjects) {
 					for (var p in itemObjects) {
 						var item = itemObjects[p];
-						item.unrender();
-						this.unregisterInnerControl(item);
+						item.destroy();
 					}
 				}
 				this._itemObjects = itemObjects = {};

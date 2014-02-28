@@ -153,7 +153,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 		var iconDomIndex = buttonDomIndex + 1;
 		if (container.doradoHasIcon) {
 			if (!icon) {
-				container.removeChild(container.childNodes[iconDomIndex]);
+				$fly(container.childNodes[iconDomIndex]).remove();
 				container.doradoHasIcon = false;
 			}
 		} else if (icon || iconClass) {
@@ -173,8 +173,6 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 		if (container.subCheckboxId) {
 			checkbox = dorado.widget.Component.ALL[container.subCheckboxId];
 			if (!checkable) {
-				checkbox.unrender();
-				tree.unregisterInnerControl(checkbox);
 				checkbox.destroy();
 				container.subCheckboxId = null;
 			}

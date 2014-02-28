@@ -520,15 +520,14 @@
 		
 		destroy : function() {
 			if(this._innerControls) {
-				jQuery.each(this._innerControls.slice(0), function(i, control) {
-					if(!control._destroyed)
-						control.destroy();
-				});
+				var controls = this._innerControls.slice(0);
+				for (var i = 0, len = controls.length; i < len; i ++) {
+					controls[i].destroy();
+				}
 				delete this._innerControls;
 			}
 
-			var isClosed = (window.closed || dorado.windowClosed);
-			if(!isClosed && this._parent) {
+			if (!dorado.windowClosed && this._parent) {
 				if(this._isInnerControl) this._parent.unregisterInnerControl(this);
 				else this._parent.removeChild(this);
 			}
@@ -545,7 +544,13 @@
 				} catch (e) {
 					// do nothing
 				}
-				$fly(dom).unbind().remove();
+
+				if (dorado.windowClosed) {
+					$fly(dom).unbind();
+				}
+				else {
+					$fly(dom).unbind().remove();
+				}
 			}
 			$invokeSuper.call(this);
 		},
@@ -980,7 +985,7 @@
 				// else dorado.widget.setFocusedControl(null);
 				dorado.widget.setFocusedControl(focusParent);
 			}
-			$invokeSuper.call(this, []);
+			$invokeSuper.call(this);
 		},
 		
 		/**

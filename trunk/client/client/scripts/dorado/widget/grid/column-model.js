@@ -24,6 +24,13 @@
 			$invokeSuper.call(this, [dorado._GET_NAME]);
 			this.parent = parent;
 		},
+
+		destroy: function() {
+			var items = this.items;
+			for (var i = 0, len = items.length; i < len; i++) {
+				items[i].destroy();
+			}
+		},
 		
 		updateGridColumnModelTimestamp: function() {
 			var p = this.parent;
@@ -99,7 +106,11 @@
 				}
 			}
 		},
-		
+
+		destroy: function() {
+			this._columns.destroy();
+		},
+
 		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#' || c == '&') {
@@ -480,6 +491,8 @@
 			if (config) this.set(config);
 			if (!this._name) this._name = this._id;
 		},
+
+		destroy: function() {},
 		
 		doSet: function(attr, value) {
 			$invokeSuper.call(this, [attr, value]);
@@ -1281,6 +1294,8 @@
 		 * @default true
 		 */
 		hideCellContent: true,
+
+		destroy: function() {},
 		
 		bindColumn: function(column) {
 			this.grid = column._grid;
@@ -1437,6 +1452,13 @@
 		 * @return {dorado.widget.Control} 新创建的单元格编辑器。
 		 */
 		// ====
+
+		destroy: function() {
+			if (this._editorControl) {
+				this._editorControl.destroy();
+			}
+			$invokeSuper.call(this);
+		},
 		
 		shouldShow: function() {
 			var shouldShow = $invokeSuper.call(this);
@@ -1455,6 +1477,9 @@
 		 * @param {dorado.widget.Control} editorControl
 		 */
 		setEditorControl: function(editorControl) {
+			if (this._editorControl) {
+				this._editorControl.destroy();
+			}
 			this._editorControl = editorControl;
 		},
 		
@@ -2167,6 +2192,12 @@
 			 * @event
 			 */
 			onGetCellEditor: {}
+		},
+
+		destroy: function() {
+			if (this._cellEditor) {
+				this._cellEditor.destroy();
+			}
 		}
 	
 	});
