@@ -126,7 +126,16 @@
 			 * @type boolean
 			 */
 			resizeable: {
-				defaultValue: true
+				defaultValue: true,
+                setter: function(value) {
+                    this._resizeable = value;
+                    if (this._dom)
+                        if (this._resizeable) {
+                            $fly(this._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+                        } else {
+                            $fly(this._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+                        }
+                }
 			},
 
 			/**
@@ -373,11 +382,9 @@
 		minimize: function() {
 			var dialog = this, dom = dialog._dom;
 			if (dom) {
-				var eventArg = {};
+				var eventArg = { processDefault: true };
 				dialog.fireEvent("beforeMinimize", dialog, eventArg);
-				if (eventArg.processDefault) {
-					return;
-				}
+				if (!eventArg.processDefault) return;
 				dialog._minimized = true;
 				dialog.hide();
 				dialog.fireEvent("onMinimize", dialog);

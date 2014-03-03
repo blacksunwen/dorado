@@ -66,13 +66,14 @@
             width: 500,
             collapseable: true,
             collapsed: true,
-            children: [new dorado.widget.Button({
+            children: [new dorado.widget.Panel({
                 caption: "测试子组件",
                 listener: {
                     onClick: function() {
                         alert(123);
                     }
-                }
+                },
+                height: 400
             })],
             buttons: [new dorado.widget.Button({
                 caption: "确定",
