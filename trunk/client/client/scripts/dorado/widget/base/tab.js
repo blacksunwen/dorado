@@ -310,7 +310,6 @@
         },
 
         createDom: function() {
-	        debugger;
             var tab = this, doms = {}, dom = $DomUtils.xCreate({
                 tagName: "li",
                 className: tab._className,
