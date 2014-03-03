@@ -369,10 +369,10 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		radioGroup.fireEvent("onValueChange", radioGroup, {});
 	},
 
-    post: function() {
+    post: function(force, silent) {
         try {
             var modified = (this._lastPost != this._value);
-            if (modified) {
+            if (force || modified) {
                 this._lastPost = this._value;
                 var eventArg = {
                     processDefault: true
@@ -385,7 +385,18 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
             return true;
         }
         catch (e) {
-            dorado.Exception.processException(e);
+            var eventArg = {
+                exception: e,
+                processDefault: true
+            };
+            this.fireEvent("onPostFailed", this, eventArg);
+            if (eventArg.processDefault && !silent) {
+                dorado.Exception.processException(e);
+            } else {
+                dorado.Exception.removeException(e);
+            }
+
+            return false;
         }
     },
 	
