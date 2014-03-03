@@ -390,10 +390,35 @@
 						helper.addClass("splitter-dragging").bringToFront().find("> .button").css("display", "none");
 					}
                     splitterPosition = $fly(doms.splitter).position();
-                    if (panel._direction == "left" || panel._direction == "right") {
-                        containment = [0, $fly(dom).width() - $fly(doms.splitter).outerWidth()];
-                    } else {
-                        containment = [0, $fly(dom).height() - $fly(doms.splitter).outerHeight()];
+                    var vertical = direction == "top" || direction == "bottom";
+                    if (panel._maxPosition != null || panel._minPosition != null) {
+                        var width = $fly(dom).width(), height = $fly(dom).height(),
+                            min = panel._minPosition || 50, max, sideMin, sideMax, range;
+                        if (vertical) {
+                            max = panel._maxPosition || height - 50;
+                        } else {
+                            max = panel._maxPosition || width - 50;
+                        }
+
+                        if (panel._direction == "left") {
+                            sideMin = min;
+                            sideMax = max;
+                        } else if (panel._direction == "right") {
+                            sideMin = width - max;
+                            sideMax = width - min;
+                        } else if (panel._direction == "top") {
+                            sideMin = min;
+                            sideMax = max;
+                        } else if (panel._direction == "bottom") {
+                            sideMin = height - max;
+                            sideMax = height - min;
+                        }
+
+                        if (vertical) {
+                            containment = [0, sideMin, 0, sideMax];
+                        } else {
+                            containment = [sideMin, 0, sideMax, 0];
+                        }
                     }
 				},
                 drag: function(event, ui) {
@@ -410,16 +435,16 @@
                         left = splitterPosition.left + horiChange;
                         if (left < containment[0]) {
                             left = containment[0];
-                        } else if (left > containment[1]) {
-                            left = containment[1];
+                        } else if (left > containment[2]) {
+                            left = containment[2];
                         }
                         ui.position.left = left;
                     } else {
                         top = splitterPosition.top + vertChange;
-                        if (top < containment[0]) {
-                            top = containment[0];
-                        } else if (top > containment[1]) {
+                        if (top < containment[1]) {
                             top = containment[1];
+                        } else if (top > containment[3]) {
+                            top = containment[3];
                         }
                         ui.position.top = top;
                     }
@@ -946,40 +971,8 @@
 			}
 
 			//set draggable range
-			if (panel._resizeable) {
-				if (panel._maxPosition != null || panel._minPosition != null) {
-					var offset = $fly(dom).offset(), min = panel._minPosition || 50, max, sideMin, sideMax, range;
-					if (vertical) {
-						max = panel._maxPosition || height - 50;
-					} else {
-						max = panel._maxPosition || width - 50;
-					}
 
-					if (panel._direction == "left") {
-						sideMin = offset.left + min;
-						sideMax = offset.left + max;
-					} else if (panel._direction == "right") {
-						sideMin = offset.left + width - max;
-						sideMax = offset.left + width - min;
-					} else if (panel._direction == "top") {
-						sideMin = offset.top + min;
-						sideMax = offset.top + max;
-					} else if (panel._direction == "bottom") {
-						sideMin = offset.top + height - max;
-						sideMax = offset.top + height - min;
-					}
-
-					if (vertical) {
-						range = [0, sideMin, 0, sideMax];
-					} else {
-						range = [sideMin, 0, sideMax, 0];
-					}
-
-					$fly(doms.splitter).draggable('option', 'containment', range);
-				}
-			} else {
-				$fly(doms.splitter).draggable("disable");
-			}
+            $fly(doms.splitter).draggable(panel._resizeable ? "enable" : "disable");
 		},
 	
 		getFocusableSubControls: function() {
