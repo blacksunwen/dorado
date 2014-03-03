@@ -73,6 +73,28 @@
         });
         view.addChild(editor5);
 
+        var editor6 = new dorado.widget.TextEditor({
+            width: "30%",
+            trigger: ["defaultYearMonthDropDown"],
+            listener: {
+                onPost: function(self) {
+                    //dorado.MessageBox.alert(self.get("id") + " onPost:\n" + entity4.property1);
+                }
+            }
+        });
+        view.addChild(editor6);
+
+        var editor7 = new dorado.widget.TextEditor({
+            width: "30%",
+            trigger: ["defaultDateDropDown"],
+            listener: {
+                onPost: function(self) {
+                    //dorado.MessageBox.alert(self.get("id") + " onPost:\n" + entity4.property1);
+                }
+            }
+        });
+        view.addChild(editor7);
+
 		$(document).ready(function(){
 			view.render(document.body);
 		});		
