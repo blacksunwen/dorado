@@ -519,6 +519,9 @@
 		},
 		
 		destroy : function() {
+			if (this._destroyed) return;
+			dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
+
 			if(this._innerControls) {
 				var controls = this._innerControls.slice(0);
 				for (var i = 0, len = controls.length; i < len; i ++) {
@@ -552,6 +555,8 @@
 					$fly(dom).unbind().remove();
 				}
 			}
+
+			dorado.RenderableElement.prototype.destroy.call(this);
 			$invokeSuper.call(this);
 		},
 		
@@ -815,7 +820,8 @@
 		 * 返回控件对应的DOM对象。
 		 * @return {HTMLElement} 控件对应的DOM对象。
 		 */
-		getDom : function() {			
+		getDom : function() {
+			if (this._destroyed) return null;
 			if (!this._dom) {
 				var dom = this._dom = this.createDom(), $dom = $fly(this._dom);
 				

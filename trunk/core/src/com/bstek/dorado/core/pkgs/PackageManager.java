@@ -218,7 +218,8 @@ public final class PackageManager {
 				}
 
 				boolean versionMatch = true;
-				if (StringUtils.isNotEmpty(dependsVersion.getMinVersion())) {
+				if (StringUtils.isNotEmpty(dependsVersion.getMinVersion())
+						&& StringUtils.isNotEmpty(dependedPackageVersion)) {
 					int i = compareVersion(dependsVersion.getMinVersion(),
 							dependedPackageVersion);
 					if (i > 0 || i == 0
@@ -227,7 +228,8 @@ public final class PackageManager {
 					}
 				}
 
-				if (StringUtils.isNotEmpty(dependsVersion.getMaxVersion())) {
+				if (StringUtils.isNotEmpty(dependsVersion.getMaxVersion())
+						&& StringUtils.isNotEmpty(dependedPackageVersion)) {
 					int i = compareVersion(dependsVersion.getMaxVersion(),
 							dependedPackageVersion);
 					if (i < 0 || i == 0

@@ -107,6 +107,21 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			readOnly: true
 		}
 	},
+
+	destroy : function() {
+		var dom = this._dom;
+		if(dom) {
+			delete this._dom;
+			if (dorado.windowClosed) {
+				$fly(dom).unbind();
+			}
+			else {
+				$fly(dom).unbind().remove();
+			}
+		}
+		$invokeSuper.call(this);
+	},
+
 	
 	doSet: function(attr, value) {
 		$invokeSuper.call(this, [attr, value]);

@@ -85,7 +85,7 @@
             tabs: {
                 setter: function(value) {
                     var tabgroup = this, tabs = tabgroup._tabs;
-                    if (tabs) {
+                    if (tabs && tabs.size) {
                         tabgroup.clearTabs();
                     }
                     if (value && value instanceof Array) {
@@ -203,6 +203,15 @@
 
             $invokeSuper.call(this, arguments);
         },
+
+	    destroy : function() {
+		    var tabgroup = this, tabs = tabgroup._tabs;
+		    for (var i = tabs.size - 1; i >= 0; i--) {
+			    tabs.get(i).destroy();
+		    }
+		    tabs.clear();
+		    $invokeSuper.call(tabgroup);
+	    },
 
         doGet: function(attr) {
             var c = attr.charAt(0);
@@ -342,7 +351,7 @@
             }
             if (tabgroup._rendered) {
                 tab.render(doms.tabs, index);
-                tab.refreshDom(tab._dom);
+                tab.refresh();
                 tabgroup.doRefreshGap();
             }
             if (current) {
@@ -370,21 +379,21 @@
 
         /**
          * 移除指定的tab。
-         * @param {int|String|dorado.widget.tab.Tab} tab 要移除的tab，可以为index、tab的name或者tab本身。
+         * @param {dorado.widget.tab.Tab} tab 要移除的tab。
          * @protected
          */
         doRemoveTab: function(tab) {
             var tabgroup = this, tabs = tabgroup._tabs;
             if (tab != tabgroup._currentTab) {
                 tabs.remove(tab);
-                tab.destroy();
             } else {
                 var avialableTab = tabgroup.getAvialableTab(tab);
                 tabs.removeAt(tabs.indexOf(tab));
-                tab.destroy();
 
                 tabgroup.doChangeCurrentTab(avialableTab);
             }
+	        tab.destroy();
+
             tabgroup.doRefreshGap();
             tabgroup.refreshNavButtons();
         },
@@ -424,9 +433,7 @@
             for (var i = 0, j = tabs.size; i < j; i++) {
                 tabgroup.removeTab(tabs.get(0));
             }
-            if (tabgroup._rendered) {
-                tabgroup._currentTab = null;
-            }
+            tabgroup._currentTab = null;
         },
 
         /**
@@ -1177,7 +1184,7 @@
             if (tabs) {
                 for (var i = 0, j = tabs.size; i < j; i++) {
                     var tab = tabs.get(i);
-                    tab.refreshDom(tab._dom);
+                    tab.refresh();
                 }
             }
 
@@ -1197,40 +1204,40 @@
 		},
 
 		doRefreshGap: function() {
-			var tabbar = this, tabs = tabbar.doFilterTabs(tabbar._tabs);
-			if (tabs && tabbar._rendered) {
-				var currentTab = tabbar._currentTab, curIndex = -1;
-				if (currentTab) {
-					curIndex = tabs.indexOf(currentTab);
-				}
-				for (var i = 0, j = tabs.size; i < j; i++) {
-					var tab = tabs.get(i), refresh = false;
-					if ($fly(tab._dom).hasClass("last-tab") || $fly(tab._dom).hasClass("first-tab")) {
-						refresh = true;
-					}
-					$fly(tab._dom).removeClass("first-tab").removeClass("last-tab").removeClass("current-prev-tab").removeClass("current-next-tab");
-					if (i == 0) {
-						$fly(tab._dom).addClass("first-tab");
-						refresh = true;
-					}
-					if (i == j - 1) {
-						$fly(tab._dom).addClass("last-tab");
-						refresh = true;
-					}
-					if (refresh) {
-						tab.refresh();
-					}
-					if (curIndex != -1) {
-						if (i == curIndex - 1) {
-							$fly(tab._dom).addClass("current-prev-tab");
-						} else {
-							if (i == curIndex + 1) {
-								$fly(tab._dom).addClass("current-next-tab");
-							}
-						}
-					}
-				}
-			}
+//			var tabbar = this, tabs = tabbar.doFilterTabs(tabbar._tabs);
+//			if (tabs && tabbar._rendered) {
+//				var currentTab = tabbar._currentTab, curIndex = -1;
+//				if (currentTab) {
+//					curIndex = tabs.indexOf(currentTab);
+//				}
+//				for (var i = 0, j = tabs.size; i < j; i++) {
+//					var tab = tabs.get(i), refresh = false;
+//					if ($fly(tab._dom).hasClass("last-tab") || $fly(tab._dom).hasClass("first-tab")) {
+//						refresh = true;
+//					}
+//					$fly(tab._dom).removeClass("first-tab").removeClass("last-tab").removeClass("current-prev-tab").removeClass("current-next-tab");
+//					if (i == 0) {
+//						$fly(tab._dom).addClass("first-tab");
+//						refresh = true;
+//					}
+//					if (i == j - 1) {
+//						$fly(tab._dom).addClass("last-tab");
+//						refresh = true;
+//					}
+//					if (refresh) {
+//						tab.refresh();
+//					}
+//					if (curIndex != -1) {
+//						if (i == curIndex - 1) {
+//							$fly(tab._dom).addClass("current-prev-tab");
+//						} else {
+//							if (i == curIndex + 1) {
+//								$fly(tab._dom).addClass("current-next-tab");
+//							}
+//						}
+//					}
+//				}
+//			}
 		},
 		
 		/**
@@ -1243,9 +1250,9 @@
 			if (!dom) {
 				return;
 			}
-			
+
 			var doms = tabbar._doms, tabbarDom = doms.tabbar, leftBtn, rightBtn;
-			
+
 			leftBtn = tabbar._leftButton = new dorado.widget.SimpleButton({
 				className: LEFT_BUTTON_CLASS,
 				listener: {
@@ -1254,7 +1261,7 @@
 					}
 				}
 			});
-			
+
 			rightBtn = tabbar._rightButton = new dorado.widget.SimpleButton({
 				className: RIGHT_BUTTON_CLASS,
 				listener: {
@@ -1263,23 +1270,23 @@
 					}
 				}
 			});
-			
+
 			tabbar.registerInnerControl(leftBtn);
 			tabbar.registerInnerControl(rightBtn);
-			
+
 			leftBtn.render(tabbarDom);
 			tabbarDom.insertBefore(leftBtn._dom, tabbarDom.firstChild);
-			
+
 			rightBtn.render(tabbarDom);
 			tabbarDom.insertBefore(rightBtn._dom, doms.tabsWrap);
-			
+
 			doms.leftButton = leftBtn._dom;
 			doms.rightButton = rightBtn._dom;
-			
+
 			$fly(doms.leftButton).repeatOnClick(function() {
 				tabbar.doScrollLeft(false, 12);
 			}, 30);
-			
+
 			$fly(doms.rightButton).repeatOnClick(function() {
 				tabbar.doScrollRight(false, 12);
 			}, 30);
@@ -1340,12 +1347,12 @@
 			if (!dom) {
 				return;
 			}
-			
+
 			var wrapEl = dom.lastChild, doms = tabbar._doms, rightButtonEl = doms.rightButton, refEl = wrapEl;
 			if (rightButtonEl) {
 				refEl = rightButtonEl;
 			}
-			
+
 			var navmenu = tabbar._navmenu = new dorado.widget.Menu({
 				listener: {
 					beforeShow: function(self, configs) {
@@ -1365,20 +1372,20 @@
 					}
 				}
 			}), tabs = tabbar._tabs, tab;
-			
+
 			for (var i = 0, j = tabs.size; i < j; i++) {
 				tab = tabs.get(i);
 				tabbar.insertNavMenuItem(tab);
 			}
-			
+
 			var menuBtn = tabbar._menuButton = new dorado.widget.SimpleButton({
 				className: MENU_BUTTON_CLASS,
 				menu: navmenu
 			});
-			
+
 			menuBtn.render(dom);
 			dom.insertBefore(menuBtn._dom, refEl);
-			
+
 			doms.menuButton = menuBtn._dom;
 		},
 		
@@ -1433,7 +1440,7 @@
 			if (tabbar._rendered) {
 				tabbar.registerInnerControl(button);
 				button.render(tabbar._dom);
-				
+
 				tabbar.onToolButtonVisibleChange();
 			}
 		},
