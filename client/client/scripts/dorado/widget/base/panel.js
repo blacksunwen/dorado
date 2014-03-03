@@ -773,11 +773,15 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		var panel = this, eventArg = {};
 		panel.fireEvent("beforeClose", panel, eventArg);
 		if (eventArg.processDefault === false) return;
-		panel.hide && panel.hide();
+        if (panel.hide) {
+            panel.hide();
+        } else {
+            panel.set("visible", false);
+        }
+        if (panel._closeAction == "close") {
+            panel.destroy();
+        }
 		panel.fireEvent("onClose", panel);
-		if (panel._closeAction == "close") {
-			panel.destroy();
-		}
 	},
 	
 	_doOnResize: function(collapsed) {
