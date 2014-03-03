@@ -58,18 +58,14 @@
 
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
-                        try {
-							doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
-                            doms.iframe.contentWindow.document.write('');
-                            if(dorado.Browser.msie){
-                                CollectGarbage();
-                            }
-                        } catch(e) {}
+
+						frame.releaseCurrentPage();
+
                         $fly(doms.iframe).addClass("hidden");
                         if (oldPath != value) {
                             frame._loaded = false;
                         }
-						this.replaceUrl(value);
+						frame.replaceUrl(value);
 						centerCover(dom, doms);
 					}
 				}
@@ -126,28 +122,37 @@
             return true;
         },
 
-		destroy: function() {
+		releaseCurrentPage: function() {
 			var frame = this, doms = frame._doms;
 			if (doms) {
-                try {
-                    if (frame.isSameDomain()) {
-                        if (doms.iframe.contentWindow.dorado) {
+				try {
+					if (frame.isSameDomain()) {
+						if (doms.iframe.contentWindow.dorado) {
 							doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
 						}
-                        doms.iframe.contentWindow.document.write('');
-                        if(dorado.Browser.msie){
-                            CollectGarbage();
-                        } else {
-                            doms.iframe.contentWindow.close();
-                        }
-                    } else {
-						this.replaceUrl(null);
-                    }
-                } catch(e) {
-                    //console.log(e);
-                }
-            }
-			$invokeSuper.call(this);
+						doms.iframe.contentWindow.document.write('');
+						if(dorado.Browser.msie){
+							doms.iframe.contentWindow.close();
+							CollectGarbage();
+						} else {
+							doms.iframe.contentWindow.close();
+						}
+					} else {
+						frame.replaceUrl(null);
+					}
+				} catch(e) {
+					//console.log(e);
+				}
+			}
+		},
+
+		destroy: function() {
+			var frame = this, doms = frame._doms;
+			frame.releaseCurrentPage();
+			if (doms) {
+				$fly(doms.iframe).unbind().remove();
+			}
+			$invokeSuper.call(frame);
 		},
 
 		createDom: function() {
@@ -209,8 +214,7 @@
 			delete frame._notifyResizeOnVisible;
             if (frame.isSameDomain()) {
 	            frame._replacedUrl = replacedUrl;
-                if (frame.getIFrameWindow())
-                    frame.getIFrameWindow().location.replace(replacedUrl);
+                if (frame.getIFrameWindow()) frame.getIFrameWindow().location.replace(replacedUrl);
             } else {
                 $fly(doms.iframe).prop("src", replacedUrl);
             }
@@ -247,8 +251,9 @@
          */
         reload: function() {
             var frame = this;
-			this.replaceUrl(null);
-			this.replaceUrl(frame._path);
+	        frame.releaseCurrentPage();
+	        frame.replaceUrl(null);
+	        frame.replaceUrl(frame._path);
         },
 
 		refreshDom: function(dom) {
@@ -257,15 +262,15 @@
 		},
 		
 		onActualVisibleChange: function() {
-			
+
 			function resizeSubView(subView) {
 				subView._children.each(function(child) {
 					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
 				});
 			}
-			
+
 			$invokeSuper.call(this, arguments);
-			
+
 			var frame = this, window = frame.getIFrameWindow(), actualVisible = frame.isActualVisible();
 			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
 			if (frame._ready && frame.isSameDomain()) {

@@ -113,14 +113,18 @@
              * @type dorado.widget.TabBar
              * @attribute
              */
-            parent: {},
+            parent: {
+	            skipRefresh: true
+            },
 
             /**
              * 用户自定义数据。
              * @type Object
              * @attribute
              */
-            userData: {},
+            userData: {
+	            skipRefresh: true
+            },
 
 	        /**
 	         * 提示信息。
@@ -171,6 +175,18 @@
             }
         },
 
+	    destroy: function() {
+		    dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
+		    var tab = this, dom = tab._dom, doms = tab._doms;
+		    if (dom) {
+			    doms.close && $fly(doms.close).unbind();
+			    $fly(dom).unbind().remove();
+		    }
+		    delete tab._dom;
+		    delete tab._doms;
+		    delete tab._parent;
+	    },
+
         _createIconSpan: function() {
             var tab = this, doms = tab._doms;
             var iconEl = document.createElement("span");
@@ -179,22 +195,7 @@
             doms.icon = iconEl;
 
             $fly(iconEl).prependTo(doms.tabLeft);
-
-            $DomUtils.setBackgroundImage(iconEl, tab._icon);
         },
-
-	    doSet : function(attr, value, skipUnknownAttribute, lockWritingTimes) {
-		    var def = this.ATTRIBUTES[attr];
-
-		    $invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
-
-		    if (def) {
-			    if (!this._rendered) return;
-			    if (!this._duringRefreshDom && (this._visible || attr == "visible") && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
-				    this.refresh(true);
-			    }
-		    }
-	    },
 
         refreshDom: function(dom) {
             var tab = this, closeable = tab._closeable, disabled = tab._disabled, visible = tab._visible, doms = tab._doms,
@@ -221,10 +222,6 @@
             } else {
                 $fly(dom).removeClass(tab._className + TAB_DISABLED_CLASS);
             }
-
-            jQuery(dom).addClassOnHover(tab._className + "-hover", null, function() {
-                return !tab._disabled;
-            });
 
             if (tabbar && !width) {
                 tabMinWidth = tabbar._tabMinWidth;
@@ -284,17 +281,6 @@
         },
 
         /**
-         * 对Tab而言，createDom以后无需refreshDom，所以覆写了该方法。
-         * @protected
-         */
-        getDom: function() {
-            if (!this._dom) {
-                this._dom = this.createDom();
-            }
-            return this._dom;
-        },
-
-        /**
          * 因为Tab的render需要按照顺序来render，所以重写了render方法。
          * @param {HtmlElement} ctEl 要附加到的Element。
          * @param {int} [index] 要添加到到的Element的索引。
@@ -324,6 +310,7 @@
         },
 
         createDom: function() {
+	        debugger;
             var tab = this, doms = {}, dom = $DomUtils.xCreate({
                 tagName: "li",
                 className: tab._className,
@@ -384,11 +371,6 @@
             }
 
             return dom;
-        },
-
-        destroy: function() {
-            var tab = this, dom = tab._dom;
-            if (dom) $fly(dom).remove();
         },
 
         getControl: function() {
@@ -476,9 +458,7 @@
 		},
 		
 		destroy: function() {
-			if (this._control) {
-				this._control && this._control.destroy();
-			}
+			this._control && this._control.destroy();
 			$invokeSuper.call(this);
 		},
 		
@@ -509,6 +489,7 @@
 				path: "_control.path"
 			}
 		},
+
 		doGetControl: function() {
 			var tab = this, iframe = this._control;
 			if (!iframe) {

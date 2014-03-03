@@ -129,6 +129,16 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		});
 		$invokeSuper.call(this, arguments);
 	},
+
+	destroy: function() {
+		var cardbook = this, controls = cardbook._controls;
+		for (var i = controls.size - 1; i >= 0; i--) {
+			controls.get(i).destroy();
+		}
+		cardbook._controls.clear();
+		delete cardbook._currentControl;
+		$invokeSuper.call(cardbook);
+	},
 	
 	onReady: function() {
 		var currentControl = this._currentControl;
@@ -152,7 +162,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		};
 		cardbook.fireEvent("beforeCurrentChange", this, eventArg);
 		if (eventArg.processDefault === false) return;
-		if (oldControl) {
+		if (oldControl && !oldControl._destroyed) {
 			if (oldControl instanceof dorado.widget.IFrame) {
 				if (!oldControl._loaded) {
 					oldControl.cancelLoad();
@@ -215,8 +225,8 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		var card = this, controls = card._controls;
 		control = card.getControl(control);
 		if (control) {
-			control.destroy && control.destroy();
 			controls.remove(control);
+			control.destroy && control.destroy();
 			return control;
 		}
 		return null;
