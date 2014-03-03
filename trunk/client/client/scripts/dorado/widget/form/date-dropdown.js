@@ -1109,8 +1109,11 @@
 							picker.setYear("next", true);
 						}
 						break;
-					case 13://enter                            
-						return true;
+					case 13://enter
+                        if (picker.isDateSelectable(picker._date)) {
+                            picker.fireEvent("onConfirm", picker, { date: new Date(picker._date.getTime()) });
+                        }
+						return false;
 					case 27://esc
 						if (ymPicker && ymPicker._opened) {
 							return false;
@@ -1199,27 +1202,26 @@
 			box.set("control", picker);
 			return box;
 		},
-		
-		doOnKeyPress: function(evt) {
+
+        doOnEditorKeyDown: function(editor, evt) {
 			var dropDown = this, retValue = true, datePicker = this._picker, ymPicker = datePicker._yearMonthPicker;
-			switch (evt.keyCode) {
-				case 27: // esc
-					dropDown.close();
-					retValue = false;
-					break;
-				case 13: // enter
-					if (!ymPicker || !ymPicker._opened) {
-						if (datePicker.isDateSelectable(datePicker._date)) {
-							datePicker.fireEvent("onPick", datePicker, new Date(datePicker._date.getTime()));
-						}
-						retValue = false;
-					}
-					break;
-				default:
-					retValue = datePicker.onKeyDown(evt);
-					break;
-			}
-			return retValue;
+            if (this.get("opened")) {
+                switch (evt.keyCode) {
+                    case 27: // esc
+                        dropDown.close();
+                        retValue = false;
+                        break;
+                    default:
+                        if (!ymPicker || !ymPicker._opened) {
+                            retValue = datePicker.onKeyDown(evt);
+                        } else {
+                            retValue = ymPicker.onKeyDown(evt);
+                        }
+                        break;
+                }
+            }
+            if (retValue) retValue = $invokeSuper.call(this, arguments);
+            return retValue;
 		},
 		
 		initDropDownBox: function(box, editor) {

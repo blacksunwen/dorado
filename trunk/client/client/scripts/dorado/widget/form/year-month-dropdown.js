@@ -233,6 +233,22 @@
                 return monthLabels[value];
             };
             return $invokeSuper.call(this, arguments);
+        },
+
+        doOnKeyDown: function(event) {
+            var picker = this, month = picker.get("value");
+            switch (event.keyCode) {
+                case 37://left arrow
+                    picker.set("value", month == 0 ? 11 : month - 1);
+                    break;
+                case 39://right arrow
+                    picker.set("value", month == 11 ? 0 : month + 1);
+
+                    break;
+                case 13://enter
+                    picker.fireEvent("onPick", picker);
+                    return false;
+            }
         }
     });
 
@@ -314,6 +330,27 @@
             picker.registerInnerControl(nextYearButton);
 
             return dom;
+        },
+
+        doOnKeyDown: function(event) {
+            var picker = this, year = picker.get("value");
+            switch (event.keyCode) {
+                case 38://up arrow
+                    picker.set("value", year - 1);
+                    break;
+                case 40://down arrow
+                    picker.set("value", year + 1);
+                    break;
+                case 33://page up
+                    picker.set("value", year - 10);
+                    break;
+                case 34://page down
+                    picker.set("value", year + 10);
+                    break;
+                case 13://enter
+                    picker.fireEvent("onPick", picker);
+                    return false;
+            }
         }
     });
 
@@ -458,24 +495,17 @@
 			var picker = this, year = picker.get("year"), month = picker.get("month");
 			switch (event.keyCode) {
 				case 37://left arrow
-					if (event.ctrlKey) {
-						picker.set("month", month == 0 ? 11 : month - 1);
-					}
+                    picker.set("month", month == 0 ? 11 : month - 1);
 					break;
 				case 38://up arrow
-					if (event.ctrlKey) {
-						picker.set("year", year - 1);
-					}
+                    picker.set("year", year - 1);
 					break;
 				case 39://right arrow
-					if (event.ctrlKey) {
-						picker.set("month", month == 11 ? 0 : month + 1);
-					}
+                    picker.set("month", month == 11 ? 0 : month + 1);
+
 					break;
 				case 40://down arrow
-					if (event.ctrlKey) {
-						picker.set("year", year + 1);
-					}
+                    picker.set("year", year + 1);
 					break;
 				case 33://page up
 					picker.set("year", year - 10);
@@ -515,8 +545,8 @@
         createDropDownBox: function(editor) {
             var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearPicker({
                 listener: {
-                    onPick: function(self) {
-                        dropDown.close(self.get("value"));
+                    onPick: function() {
+                        dropDown.close(picker.get("value"));
                     }
                 }
             });
@@ -525,19 +555,19 @@
             return box;
         },
 
-        doOnKeyPress: function(event) {
-            var picker = this, retValue = true, yearPicker = picker.get("box.control");
-            switch (event.keyCode) {
+        doOnEditorKeyDown: function(editor, evt) {
+            var dropdown = this, retValue = true, yearPicker = dropdown.get("box.control");
+            switch (evt.keyCode) {
                 case 27: // esc
-                    picker.close();
+                    dropdown.close();
                     retValue = false;
                     break;
                 case 13: // enter
-                    yearPicker.fireEvent("onPick", picker);
+                    yearPicker.fireEvent("onPick", yearPicker);
                     retValue = false;
                     break;
                 default:
-                    retValue = yearPicker.onKeyDown(event);
+                    retValue = yearPicker.onKeyDown(evt);
             }
             return retValue;
         },
@@ -592,19 +622,21 @@
             return box;
         },
 
-        doOnKeyPress: function(event) {
-            var picker = this, retValue = true, yearPicker = picker.get("box.control");
-            switch (event.keyCode) {
-                case 27: // esc
-                    picker.close();
-                    retValue = false;
-                    break;
-                case 13: // enter
-                    yearPicker.fireEvent("onPick", picker);
-                    retValue = false;
-                    break;
-                default:
-                    retValue = yearPicker.onKeyDown(event);
+        doOnEditorKeyDown: function(editor, event) {
+            var dropDown = this, retValue = true, yearPicker = dropDown.get("box.control");
+            if (this.get("opened")) {
+                switch (event.keyCode) {
+                    case 27: // esc
+                        dropDown.close();
+                        retValue = false;
+                        break;
+                    case 13: // enter
+                        yearPicker.fireEvent("onPick", yearPicker);
+                        retValue = false;
+                        break;
+                    default:
+                        retValue = yearPicker.onKeyDown(event);
+                }
             }
             return retValue;
         },
@@ -664,20 +696,22 @@
 			return box;
 		},
 
-        doOnKeyPress: function(event) {
-			var picker = this, retValue = true, ymPicker = picker.get("box.control");
-			switch (event.keyCode) {
-				case 27: // esc
-					picker.close();
-					retValue = false;
-					break;
-				case 13: // enter
-					ymPicker.fireEvent("onPick", picker);
-					retValue = false;
-					break;
-				default:
-					retValue = ymPicker.onKeyDown(event);
-			}
+        doOnEditorKeyDown: function(editor, event) {
+			var dropDown = this, retValue = true, ymPicker = dropDown.get("box.control");
+            if (this.get("opened")) {
+                switch (event.keyCode) {
+                    case 27: // esc
+                        dropDown.close();
+                        retValue = false;
+                        break;
+                    case 13: // enter
+                        ymPicker.fireEvent("onPick", ymPicker);
+                        retValue = false;
+                        break;
+                    default:
+                        retValue = ymPicker.onKeyDown(event);
+                }
+            }
 			return retValue;
 		}
 	});
