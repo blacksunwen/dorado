@@ -40,6 +40,9 @@
             ,onShow: function(self) {
                 self.set("caption", "modified caption.");
             },
+            beforeMinimize: function(self, arg) {
+                arg.processDefault = false;
+            },
             tools: [{
                 $type: "SimpleIconButton",
                 icon: "url(>skin>common/icons.gif) -20px -60px",
@@ -98,7 +101,10 @@
                 }
             }), new dorado.widget.Button({
                 caption: "取消",
-                width: 80
+                width: 80,
+                onClick: function() {
+                    dialog2.set("resizeable", !dialog2._resizeable);
+                }
             })]
         });
 
