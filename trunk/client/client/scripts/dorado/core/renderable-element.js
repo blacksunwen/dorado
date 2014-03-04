@@ -116,7 +116,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				$fly(dom).unbind();
 			}
 			else {
-				$fly(dom).unbind().remove();
+				$fly(dom).remove();
 			}
 		}
 		$invokeSuper.call(this);

@@ -180,7 +180,7 @@
 		    var tab = this, dom = tab._dom, doms = tab._doms;
 		    if (dom) {
 			    doms.close && $fly(doms.close).unbind();
-			    $fly(dom).unbind().remove();
+			    $fly(dom).remove();
 		    }
 		    delete tab._dom;
 		    delete tab._doms;
