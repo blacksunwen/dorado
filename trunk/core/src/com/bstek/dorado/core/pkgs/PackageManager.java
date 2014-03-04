@@ -133,6 +133,7 @@ public final class PackageManager {
 				if (beforeContent || commaFound) {
 					throw new IllegalArgumentException();
 				}
+				commaFound = true;
 				if (version.length() > 0) {
 					String v = trimDependsVersion(version.toString());
 					dependsVersion.setMinVersion(v);
