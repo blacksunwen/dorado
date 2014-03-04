@@ -150,7 +150,7 @@
 			var frame = this, doms = frame._doms;
 			frame.releaseCurrentPage();
 			if (doms) {
-				$fly(doms.iframe).unbind().remove();
+				$fly(doms.iframe).remove();
 			}
 			$invokeSuper.call(frame);
 		},

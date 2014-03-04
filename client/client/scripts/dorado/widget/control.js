@@ -552,7 +552,7 @@
 					$fly(dom).unbind();
 				}
 				else {
-					$fly(dom).unbind().remove();
+					$fly(dom).remove();
 				}
 			}
 

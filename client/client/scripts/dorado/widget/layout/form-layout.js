@@ -167,11 +167,16 @@
 			
 			var tbody = dom.tBodies[0];
 			var grid = this.precalculateRegions();
-			var structureChanged = !isSameGrid(this._grid, grid);
+			var structureChanged = !isSameGrid(this._grid, grid), oldRows = [];
 			if (structureChanged) {
 				this._domCache = {};
 				this._grid = grid;
-				$fly(tbody).empty();
+				dom.removeChild(tbody);
+				while (tbody.firstChild) {
+					oldRows.push(tbody.firstChild);
+					tbody.removeChild(tbody.firstChild);
+				}
+				dom.appendChild(tbody);
 			} else {
 				grid = this._grid;
 			}
@@ -301,6 +306,10 @@
 				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";
 				this.renderControl(region, td, !useControlWidth, true);
 			}
+			
+			if (oldRows.length) {
+				$fly(oldRows).remove();
+			}
 		},
 		
 		createRegionContainer: function(region) {
@@ -309,7 +318,7 @@
 				dom = document.createElement("TD");
 				if (region) this._domCache[region.id] = dom;
 			} else if (dom.firstChild) {
-				$fly(dom).empty();
+				dom.removeChild(dom.firstChild);
 			}
 			dom.className = this._regionClassName;
 			
