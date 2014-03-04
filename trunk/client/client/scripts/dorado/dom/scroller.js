@@ -211,7 +211,6 @@
 			var dom = scroller.dom, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
 			
 			if (scroller.direction == "h") {
-				return;
 				if (container.scrollWidth > (container.clientWidth + MIN_SPILLAGE) && container.clientWidth > 0) {
 					if (!dom) {
 						dom = scroller.createDom();
