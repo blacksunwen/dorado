@@ -133,7 +133,6 @@ public final class PackageManager {
 				if (beforeContent || commaFound) {
 					throw new IllegalArgumentException();
 				}
-				commaFound = true;
 				if (version.length() > 0) {
 					String v = trimDependsVersion(version.toString());
 					dependsVersion.setMinVersion(v);
@@ -219,8 +218,7 @@ public final class PackageManager {
 				}
 
 				boolean versionMatch = true;
-				if (StringUtils.isNotEmpty(dependsVersion.getMinVersion())
-						&& StringUtils.isNotEmpty(dependedPackageVersion)) {
+				if (StringUtils.isNotEmpty(dependsVersion.getMinVersion())) {
 					int i = compareVersion(dependsVersion.getMinVersion(),
 							dependedPackageVersion);
 					if (i > 0 || i == 0
@@ -229,8 +227,7 @@ public final class PackageManager {
 					}
 				}
 
-				if (StringUtils.isNotEmpty(dependsVersion.getMaxVersion())
-						&& StringUtils.isNotEmpty(dependedPackageVersion)) {
+				if (StringUtils.isNotEmpty(dependsVersion.getMaxVersion())) {
 					int i = compareVersion(dependsVersion.getMaxVersion(),
 							dependedPackageVersion);
 					if (i < 0 || i == 0
