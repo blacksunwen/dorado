@@ -1440,7 +1440,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
 				if (propertyDef && simplePropertyOnly) {
 					var pdt = propertyDef.getDataType("never");
-					if (pdt && pdt instanceof dorado.EntityDataType) continue;
+					if (pdt && (pdt instanceof dorado.EntityDataType || pdt instanceof dorado.AggregationDataType)) continue;
 				}
 				
 				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable) continue;
