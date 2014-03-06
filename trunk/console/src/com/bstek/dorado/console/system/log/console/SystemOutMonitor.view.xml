@@ -76,6 +76,7 @@
     <AjaxAction id="retrieveLogAction">
       <Property name="service">dorado.console.systemOutMonitor#last</Property>
       <Property name="async">true</Property>
+      <Property name="modal">false</Property>
     </AjaxAction>
   </View>
 </ViewConfig>
