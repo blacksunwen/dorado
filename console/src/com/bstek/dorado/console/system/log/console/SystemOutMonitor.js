@@ -50,7 +50,7 @@ var logArray = new Array(), logArrayMaxLength = 1000, isAutoFlush = false;
 	if (isAutoFlush) {
 		setTimeout(function() {
 			self.execute()
-		}, 1000);
+		}, 10000);
 	}
 }
 
