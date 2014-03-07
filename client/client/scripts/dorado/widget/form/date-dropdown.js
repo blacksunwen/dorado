@@ -637,7 +637,6 @@
 		
 		refreshDom: function(dom) {
 			var picker = this;
-			
 			picker.refreshDate();
 			picker.refreshYearMonth();
 			picker.refreshButtonOnFilterDate();
@@ -1230,7 +1229,7 @@
 				var date = editor.get("value");
 				if (date && date instanceof Date)
                     datePicker.set("date", new Date(date.getTime()));
-                else if (date == null)
+                else
                     datePicker.set("date", new Date());
 
 				if (datePicker._yearMonthPicker && datePicker._yearMonthPicker._opened) {
