@@ -496,7 +496,6 @@ public class XmlDocumentPreprocessor {
 			if (nodeName.equals(XmlConstants.PROPERTY)
 					|| nodeName.equals(XmlConstants.GROUP_START)
 					|| nodeName.equals(XmlConstants.GROUP_END)
-					|| nodeName.equals(XmlConstants.IMPORT)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER_START)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER_END)) {
@@ -654,11 +653,8 @@ public class XmlDocumentPreprocessor {
 			throws Exception {
 		synchronized (document) {
 			PreparseContext preparseContext = new PreparseContext(viewName);
+
 			Element documentElement = document.getDocumentElement();
-
-			Element viewElement = ViewConfigParserUtils.findViewElement(
-					documentElement, preparseContext.getResource());
-
 			String templateSrc = documentElement
 					.getAttribute(ViewXmlConstants.ATTRIBUTE_TEMPALTE);
 			if (StringUtils.isNotEmpty(templateSrc)) {
@@ -667,10 +663,12 @@ public class XmlDocumentPreprocessor {
 				Document templateDocument = loadTemplate(templateSrc,
 						templateContext);
 				document = templateDocument;
+				documentElement = document.getDocumentElement();
 			}
 
+			Element viewElement = ViewConfigParserUtils.findViewElement(
+					documentElement, preparseContext.getResource());
 			processImports(viewElement, preparseContext);
-
 		}
 		return document;
 	}
