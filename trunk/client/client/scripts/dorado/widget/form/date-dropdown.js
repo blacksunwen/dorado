@@ -777,7 +777,7 @@
                             picker.set("date", now);
                             if (now.getFullYear() === oldDate.getFullYear() && now.getMonth() === oldDate.getMonth()) {
                                 picker.fireEvent("onPick", picker, {
-                                    date: new Date(picker._date.getTime())
+                                    date: picker._showTimeSpinner ? new Date(now.getTime()) : new Date(now.getFullYear(), now.getMonth(), now.getDate())
                                 });
                             }
 						}
