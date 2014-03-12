@@ -595,7 +595,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
         }
 
 		var resizeTopView = function() {
-            return;
 			if (topView.onResizeTimerId) {
 				clearTimeout(topView.onResizeTimerId);
 				delete topView.onResizeTimerId;
