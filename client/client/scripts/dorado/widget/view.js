@@ -595,6 +595,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
         }
 
 		var resizeTopView = function() {
+            return;
 			if (topView.onResizeTimerId) {
 				clearTimeout(topView.onResizeTimerId);
 				delete topView.onResizeTimerId;
@@ -659,7 +660,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					body = document.body;
 
 				document.addEventListener('touchstart', function() {
-					me.scrollToTop();
+                    //为了修复双次点击TextEditor导致位置不正确的Bug，先屏蔽此行代码。
+					//me.scrollToTop();
 				}, true);
 
 				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
