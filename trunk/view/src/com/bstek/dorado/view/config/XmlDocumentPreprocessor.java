@@ -496,6 +496,7 @@ public class XmlDocumentPreprocessor {
 			if (nodeName.equals(XmlConstants.PROPERTY)
 					|| nodeName.equals(XmlConstants.GROUP_START)
 					|| nodeName.equals(XmlConstants.GROUP_END)
+					|| nodeName.equals(XmlConstants.IMPORT)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER_START)
 					|| nodeName.equals(XmlConstants.PLACE_HOLDER_END)) {
