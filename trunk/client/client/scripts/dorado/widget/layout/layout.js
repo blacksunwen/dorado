@@ -363,7 +363,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @param {boolean} delay 尺寸发生改变的控件
 	 */
 	onControlSizeChange: function(control, delay) {
-		if (this._ignoreControlSizeChange || !this.doOnControlSizeChange) return;
+		if (this._ignoreControlSizeChange) return;
 		dorado.Toolkits.cancelDelayedAction(this, "$notifySizeChangeTimerId");
 
 		var fn = function() {
