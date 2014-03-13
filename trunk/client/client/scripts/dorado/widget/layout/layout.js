@@ -153,7 +153,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	refresh: function() {
 		this._duringRefreshDom = true;
 		if (this._attached) {
-			this._shouldRefresh = false;
 			this.refreshDom(this.getDom());
 		}
 		this._duringRefreshDom = false;
@@ -366,14 +365,15 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	onControlSizeChange: function(control, delay) {
 		if (this._ignoreControlSizeChange || !this.doOnControlSizeChange) return;
 		dorado.Toolkits.cancelDelayedAction(this, "$notifySizeChangeTimerId");
-		
-		var dom = this._dom, container = this._container;
+
 		var fn = function() {
-			var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
+			var container = this._container;
+			// var dom = this._dom;
+			// var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
 			if (this.doOnControlSizeChange) this.doOnControlSizeChange(control);
-			if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
-				container.onContentSizeChange();
-			}
+			// if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
+			container.onContentSizeChange();
+			// }
 		}
 		
 		if (delay) {

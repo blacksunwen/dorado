@@ -326,6 +326,7 @@
 						if (shouldFireOnAttach) layout.onAttachToDocument(this.getContentContainer());
 					}
 				}
+				this.updateModernScroller(true);
 			}
 
 			if (!(component instanceof dorado.widget.Control) && !component._ready && this._ready) {
@@ -347,6 +348,7 @@
 			if (component instanceof dorado.widget.Control) {	
 				var layout = this._layout;
 				if (layout) layout.removeControl(component);
+				this.updateModernScroller(true);
 			}
 		},
 		
