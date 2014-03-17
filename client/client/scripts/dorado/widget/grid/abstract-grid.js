@@ -3222,8 +3222,8 @@
 					var col = dataColumns[i];
 					var cell = $DomUtils.getOrCreateChild(footerRow, i, this.createCell);
 					cell.className = "footer";
-					if (col._align) {
-						cell.align = col._align;
+					if (col._footerAlign) {
+						cell.align = col._footerAlign;
 					}
 					else {
 						cell.removeAttribute("align");
