@@ -663,7 +663,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					//me.scrollToTop();
 				}, true);
 
-				document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				//document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
 				this.initialHeight = window.innerHeight;
 
