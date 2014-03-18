@@ -566,8 +566,7 @@
 						target = point.target;
 						while (target.nodeType != 1) target = target.parentNode;
 
-						//Enable Textarea scrollbar on ios
-						if (target.tagName != 'SELECT' && target.tagName != 'INPUT' /*&& target.tagName != 'TEXTAREA'*/) {
+						if (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA') {
 							ev = document.createEvent('MouseEvents');
 							ev.initMouseEvent('click', true, true, event.view, 1, point.screenX, point.screenY, point.clientX, point.clientY, event.ctrlKey, event.altKey, event.shiftKey, event.metaKey, 0, null);
 							ev._fake = true;
