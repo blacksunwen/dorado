@@ -520,6 +520,7 @@ dorado.dequeue = function(namespace) {
 					dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
 					control.setActualVisible(true);
 					control.render(renderTo);
+					control.initObjectShimForIE();
 					control._visible = oldVisible;
 					dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
 					control.setActualVisible(oldActualVisible);
@@ -527,7 +528,26 @@ dorado.dequeue = function(namespace) {
 				control.doShow.apply(control, [options]);
 			});
 		},
-		
+
+		initObjectShimForIE: function() {
+			if (!dorado.Browser.msie || !dorado.useObjectShim) return;
+			var iframe = $DomUtils.xCreate({
+				tagName: "iframe",
+				style: {
+					position: "absolute",
+					visibility: "inherit",
+					top: 0,
+					left: 0,
+					width: "100%",
+					height: "100%",
+					zIndex: -1,
+					filter: "progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)"
+				},
+				src: "javascript:false"
+			});
+			this._dom.appendChild(iframe);
+		},
+
 		/**
 		 * 该方法在动画播放之前调用，会确定组件显示的位置，在位置确定以后，会按照组件属性的设置执行动画。
 		 * 如果需要在动画播放之前执行一些动作，请覆写该方法。

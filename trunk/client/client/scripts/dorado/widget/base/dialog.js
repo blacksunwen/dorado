@@ -617,6 +617,7 @@
 						if (!fakeDialog) {
 							fakeDialog = new dorado.widget.Dialog({ exClassName: "i-dialog-helper d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
 							fakeDialog.render(dialog._dom.parentNode);
+							fakeDialog.initObjectShimForIE();
 						}
 						fakeDialog.render(dialog._dom.parentNode);
                         $fly(fakeDialog._dom).css("display", "");

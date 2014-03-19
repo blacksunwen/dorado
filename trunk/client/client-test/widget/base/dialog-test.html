@@ -5,15 +5,15 @@
     <script type="text/javascript" src="../../include-all.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0;"/>
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
     <script type="text/javascript">
         var view = new dorado.widget.View({ layout: "Anchor" });
 
         var dialog = new dorado.widget.Dialog({
             id: "dialog1",
 
-			//visible: true,
-			//showCaptionBar: false,
+            //visible: true,
+            //showCaptionBar: false,
             //maximized: true,
             //collapsed: true,
             caption: "test222",
@@ -31,34 +31,29 @@
             //,modal: true
             //,closeable: false
             //,minimized: true
-            ,minimizeable: true
-            ,maximizeable: true
-            ,collapseable: true
-            ,center: true
-            ,icon: "del.gif"
-			,buttonAlign: "right"
-            ,onShow: function(self) {
+            , minimizeable: true, maximizeable: true, collapseable: true, center: true, icon: "del.gif", buttonAlign: "right", onShow: function (self) {
                 self.set("caption", "modified caption.");
             },
-            beforeMinimize: function(self, arg) {
+            beforeMinimize: function (self, arg) {
                 arg.processDefault = false;
             },
-            tools: [{
-                $type: "SimpleIconButton",
-                icon: "url(>skin>common/icons.gif) -20px -60px",
-                listener: {
-                    onClick: function() {
+            tools: [
+                {
+                    $type: "SimpleIconButton",
+                    icon: "url(>skin>common/icons.gif) -20px -60px",
+                    listener: {
+                        onClick: function () {
+                        }
                     }
                 }
-            }],
+            ],
             children: [
-            ]
-            ,buttons: [new dorado.widget.Button({
+            ], buttons: [new dorado.widget.Button({
                 id: "button1",
                 caption: "确定",
                 width: 80,
                 listener: {
-                    onClick: function() {
+                    onClick: function () {
                         dialog2.show();
                     }
                 }
@@ -66,9 +61,9 @@
                 caption: "取消",
                 width: 80,
                 listener: {
-                    onClick: function() {
+                    onClick: function () {
                         var taskId = dorado.util.TaskIndicator.showTaskIndicator("保存所有数据", "main");
-                        setTimeout(function() {
+                        setTimeout(function () {
                             dorado.util.TaskIndicator.hideTaskIndicator(taskId);
                         }, 2000);
                     }
@@ -85,24 +80,16 @@
         }));
 
         var dialog2 = new dorado.widget.Dialog({
-            caption: "test"
-            ,width: "30%"
-            ,height: 100
-            ,left: 200
-            ,top: 50
-            ,modal: true
-            ,icon: "del.gif"
-            ,maximizeTarget: "parent"
-            ,buttons: [new dorado.widget.Button({
+            caption: "test", width: "30%", height: 100, left: 200, top: 50, modal: true, icon: "del.gif", maximizeTarget: "parent", buttons: [new dorado.widget.Button({
                 caption: "确定",
                 width: 80,
-                onClick: function() {
+                onClick: function () {
                     dialog2.hide();
                 }
             }), new dorado.widget.Button({
                 caption: "取消",
                 width: 80,
-                onClick: function() {
+                onClick: function () {
                     dialog2.set("resizeable", !dialog2._resizeable);
                 }
             })]
@@ -114,7 +101,7 @@
                 {
                     caption: "显示Dialog",
                     listener: {
-                        onClick: function(self) {
+                        onClick: function (self) {
                             dialog.show({animateTarget: self});
                             //this.id("button1").set("visible", false);
                         }
@@ -123,7 +110,7 @@
                 {
                     caption: "隐藏Dialog",
                     listener: {
-                        onClick: function(self) {
+                        onClick: function (self) {
                             dialog.hide({animateTarget: self});
                         }
                     }
@@ -131,7 +118,7 @@
                 {
                     caption: "Set Icon",
                     listener: {
-                        onClick: function() {
+                        onClick: function () {
                             var result = dialog._captionBar.get("icon") ? "" : "del.gif";
                             dialog.set("icon", result);
                         }
@@ -140,7 +127,7 @@
                 {
                     caption: "minimizeable",
                     listener: {
-                        onClick: function() {
+                        onClick: function () {
                             dialog.set("minimizeable", !dialog._minimizeable);
                         }
                     }
@@ -148,7 +135,7 @@
                 {
                     caption: "maximizeable",
                     listener: {
-                        onClick: function() {
+                        onClick: function () {
                             dialog.set("maximizeable", !dialog._maximizeable);
                         }
                     }
@@ -156,7 +143,7 @@
                 {
                     caption: "closeable",
                     listener: {
-                        onClick: function() {
+                        onClick: function () {
                             dialog.set("closeable", !dialog._closeable);
                         }
                     }
@@ -168,11 +155,21 @@
 
         view.addChild(dialog);
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             view.render(document.body);
+            dorado.useObjectShim = true;
         });
     </script>
 </head>
 <body style="margin:0;padding:0;">
+<object type="application/x-shockwave-flash" data="http://static.youku.com/v1.0.0414/v/swf/player_yknpsv.swf"
+        width="510" height="498" id="movie_player">
+    <param name="allowFullScreen" value="true">
+    <param name="allowscriptaccess" value="always">
+    <param name="bgcolor" value="#000000">
+    <param name="flashvars"
+           value="VideoIDS=XNjgzNTI1OTA0&amp;ShowId=285653&amp;category=97&amp;Cp=authorized&amp;sv=true&amp;Light=on&amp;THX=off&amp;unCookie=0&amp;frame=0&amp;pvid=1395220410210MBn&amp;uepflag=0&amp;Tid=0&amp;isAutoPlay=true&amp;Version=/v1.0.0934&amp;show_ce=0&amp;winType=interior&amp;embedid=AjE3MDg4MTQ3NgJ3d3cueW91a3UuY29tAi8=&amp;vext=bc%3D%26pid%3D1395220410210MBn%26unCookie%3D0%26frame%3D0%26type%3D0%26svt%3D1%26stg%3D54%26emb%3DAjE3MDg4MTQ3NgJ3d3cueW91a3UuY29tAi8%3D%26dn%3D%E7%BD%91%E9%A1%B5%26hwc%3D1%26mtype%3Doth">
+    <param name="movie" value="http://static.youku.com/v1.0.0414/v/swf/player_yknpsv.swf">
+</object>
 </body>
 </html>
