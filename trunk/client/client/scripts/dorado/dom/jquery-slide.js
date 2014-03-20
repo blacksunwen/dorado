@@ -176,7 +176,7 @@
 				mask = document.createElement("div");
 				var maskEl = jQuery(mask);
 				//ie7下必须有背景色，否则无法盖住
-				maskEl.css({ position: "absolute", left: 0, top: 0, backgroundColor: "white", opacity: 0 })
+				maskEl.css({ position: "absolute", left: 0, top: 0, background: "white", opacity: 0 })
 					.bringToFront().outerWidth(rect.width).outerHeight(rect.height);
 
 				if (safe) {

@@ -351,7 +351,7 @@
 			this.current = current;
 			this.pageNo = (current) ? current.page.pageNo : 1;
 			this.timestamp = dorado.Core.getTimestamp();
-			
+
 			this.sendMessage(dorado.EntityList._MESSAGE_CURRENT_CHANGED, eventArg);
 			if (elementDataType) {
 				if (dorado.EntityList.duringFillPage) {

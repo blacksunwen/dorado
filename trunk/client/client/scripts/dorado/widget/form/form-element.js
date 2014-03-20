@@ -13,10 +13,12 @@
 (function () {
 
 	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly"];
-	
-	var DEFAULT_OK_MESSAGES = [{
-		state: "ok"
-	}];
+
+	var DEFAULT_OK_MESSAGES = [
+		{
+			state: "ok"
+		}
+	];
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -582,7 +584,7 @@
 					var hintControl = this.getHintControl(true);
 					if (hintControl) {
 						hintControl.set("messages", this._hint);
-					}					
+					}
 				}
 			},
 
@@ -678,11 +680,6 @@
 					className: "form-content form-content-bottom",
 					content: content
 				};
-				if (this._showLabel) {
-					contentConfig.style = {
-						marginTop: this._labelSpacing + "px"
-					};
-				}
 				config.push(contentConfig);
 			} else {
 				var contentConfig = {
@@ -691,11 +688,6 @@
 					className: "form-content form-content-right",
 					content: content
 				};
-				if (this._showLabel) {
-					contentConfig.style = {
-						marginLeft: this._labelSpacing + "px"
-					};
-				}
 				config.push(contentConfig);
 			}
 
@@ -718,10 +710,7 @@
 					content.push({
 						contextKey: "hintEl",
 						tagName: "DIV",
-						className: "form-hint form-hint-bottom",
-						style: {
-							marginTop: this._hintSpacing + "px"
-						}
+						className: "form-hint form-hint-bottom"
 					});
 				} else {
 					content.push({
@@ -833,6 +822,7 @@
 			var control = this._hintControl;
 			if (!control && create) {
 				var config = {
+					width: this._hintWidth,
 					showIconOnly: !this._showHintMessage
 				};
 				if (this._dataPath) config.dataPath = this._dataPath;
@@ -942,91 +932,72 @@
 			$invokeSuper.call(this, arguments);
 
 			var dom = this._dom, labelEl = this._labelEl, contentEl = this._contentEl, editorEl = this._editorEl, hintEl = this._hintEl;
-			var domWidth = dom.offsetWidth || this._realWidth || 0, domHeight = dom.offsetHeight || this._realHeight || 0;
+			var heightDefined = this.getAttributeWatcher().getWritingTimes("height");
 			if (labelEl) {
 				var label = this.getLabel();
 				labelEl.innerText = label + ((this._labelSeparator && label) ? this._labelSeparator : '');
 				$fly(labelEl).toggleClass("form-label-required", !!this.isRequired());
-			}
 
-			var labelWidth = 0, labelHeight = 0, contentWidth = 0, contentHeight = 0, editorWidth = 0, editorHeight = 0, hintWidth = 0, hintHeight = 0;
-			if (labelEl) {
 				if (this._labelPosition == "top") {
-					contentWidth = domWidth;
-					if (height) {
-						labelHeight = (labelEl) ? ($fly(labelEl).outerHeight() + this._labelSpacing) : 0;
-						contentHeight = domHeight - labelHeight;
-						$fly(contentEl).outerHeight(contentHeight);
+					if (heightDefined) {
+						contentEl.style.height = (dom.offsetHeight - labelEl.offsetHeight) + "px";
 					}
-				} else {
-					labelWidth = this._labelWidth + this._labelSpacing;
-					contentWidth = domWidth - labelWidth;
-					contentHeight = domHeight;
-					$fly(labelEl).outerWidth(this._labelWidth);
-					$fly(contentEl).outerWidth(contentWidth);
 				}
-			}
-			else {
-				contentWidth = domWidth;
-				contentHeight = domHeight;
+				else {
+					$fly(labelEl).outerWidth(this._labelWidth);
+					if (dorado.Browser.msie && dorado.Browser.version < 7) {
+						contentEl.style.marginLeft = this._labelWidth + "px";
+					}
+					else {
+						contentEl.style.marginLeft = (this._labelWidth + this._labelSpacing) + "px";
+					}
+				}
 			}
 
 			if (hintEl) {
 				var hintControl = this.getHintControl(true);
 				if (this._hintPosition == "bottom") {
-					if (height) {
-						hintHeight = (hintEl) ? ($fly(hintEl).outerHeight() + this._hintSpacing) : 0;
+					if (heightDefined) {
+						editorEl.style.height = (contentEl.offsetHeight - hintEl.offsetHeight) + "px";
 					}
 				}
 				else {
-					var realHintWidth;
-					if (this._editorWidth > 0) {
-						realHintWidth = contentWidth - this._editorWidth - this._hintSpacing;
-					} else {
-						realHintWidth = this._hintWidth;
-					}
-					hintWidth = realHintWidth + this._hintSpacing;
-					$fly(hintEl).outerWidth(realHintWidth);
+					hintEl.style.width = this._hintWidth + "px";
+					editorEl.style.marginRight = (this._hintWidth + this._hintSpacing) + "px";
 				}
 				if (!hintControl.get("rendered")) hintControl.render(hintEl);
-			}
-
-			if (this._editorWidth > 0 && this._hintPosition == "right") {
-				editorWidth = this._editorWidth;
-			}
-			else {
-				editorWidth = contentWidth - hintWidth;
-			}
-			editorHeight = contentHeight - hintHeight;
-
-			if (!(this._labelPosition == "top" && this._hintPosition == "bottom")) {
-				if (editorWidth >= 0) editorEl.style.width = editorWidth + "px";
-			}
-			if (height) {
-				if (editorHeight >= 0) editorEl.style.height = editorHeight + "px";
 			}
 
 			var editor = this.getEditor(true);
 			if (editor) {
 				var attrWatcher = editor.getAttributeWatcher();
-				var config = {};
-				var autoHeight = !editor.ATTRIBUTES.height.independent &&
-					!attrWatcher.getWritingTimes("height") &&
-					this.getAttributeWatcher().getWritingTimes("height");
-				config.width = editorWidth;
+				var autoWidth = !editor.ATTRIBUTES.width.independent && !attrWatcher.getWritingTimes("width");
+				var autoHeight = !editor.ATTRIBUTES.height.independent && !attrWatcher.getWritingTimes("height") && heightDefined;
 				if (this._labelPosition == "top") {
-					if (height && autoHeight) config.height = editorHeight;
-				} else {
-					if (autoHeight) config.height = editorHeight;
+					autoHeight = (height && autoHeight);
 				}
 
-				if (!editor.ATTRIBUTES.width.independent && !attrWatcher.getWritingTimes("width")) {
-					editor._realWidth = (config.width > 0) ? config.width : 2;
+				if (autoWidth) {
+					// for performance
+					var editorWidth = 0;
+					if (this._realWidth > 0) {
+						editorWidth = this._realWidth;
+						if (this._showLabel && this._labelPosition != "top") {
+							editorWidth -= (this._labelWidth + this._labelSpacing);
+							if (this._showHint && this._hintPosition != "bottom") {
+								editorWidth -= (this._hintWidth + this._hintSpacing);
+							}
+							else {
+								editorWidth = 0;
+							}
+						}
+						else {
+							editorWidth = 0;
+						}
+					}
+					editor._realWidth = (editorWidth > 0) ? editorWidth : editorEl.offsetWidth;
 				}
-
-				// 导致IE9下自定义Editor的高度异常
-				if (config.height > 0) editor._realHeight = config.height;
-				// if (config.height > 0 && height) editor._realHeight = config.height;
+				if (autoHeight) editor._realHeight = editorEl.offsetHeigh; // 可能导致IE9下自定义Editor的高度异常
 
 				if (!editor.get("rendered")) editor.render(editorEl);
 				else editor.refresh();

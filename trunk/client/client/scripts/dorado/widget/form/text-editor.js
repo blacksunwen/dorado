@@ -226,23 +226,24 @@
 		createDom: function() {
 			var textDom = this._textDom = this.createTextDom();
 			textDom.style.width = "100%";
-			textDom.style.height = "100%";
-			
-			var dom = document.createElement("DIV");
-			with (dom.style) {
-				position = "relative";
-				whiteSpace = "nowrap";
-				overflow = "hidden";
-			}
-			
+
+			var dom = $DomUtils.xCreate({
+				tagName: "div",
+				content: {
+					tagName: "div",
+					className: "editor-wrapper",
+					content: textDom
+				}
+			});
+			this._editorWrapper = dom.firstChild;
+
 			var self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
 				return !self._realReadOnly;
 			}).mousedown(function(evt) {
 				evt.stopPropagation();
 			});
-			dom.appendChild(textDom);
-			
+
 			if (this._text) this.doSetText(this._text);
 			return dom;
 		},
@@ -255,35 +256,27 @@
 					triggerButton.destroy();
 				}
 			}
-			
-			this._triggersWidth = 0;
+
+			var triggerWidth = $setting["widget.TextEditor.triggerWidth"] || 18;
+			var triggersWidth = 0;
 			var triggers = this.get("trigger");
 			if (triggers) {
 				if (!(triggers instanceof Array)) triggers = [triggers];
-				var trigger;
 				this._triggerButtons = triggerButtons = [];
-				for (var i = triggers.length - 1; i >= 0; i--) {
+				for (var i = triggers.length - 1, trigger; i >= 0; i--) {
 					trigger = triggers[i];
 					triggerButton = trigger.createTriggerButton(this);
 					if (triggerButton) {
-						triggerButton.set("style", {
-							position: "absolute",
-							top: 0,
-							right: this._triggersWidth + "px"
-						});
 						triggerButtons.push(triggerButton);
 						this.registerInnerControl(triggerButton);
+						triggerButton.set("style", "right:" + triggersWidth + "px");
 						triggerButton.render(this._dom);
-						this._triggersWidth += triggerButton.getDom().offsetWidth;
+						triggersWidth += triggerWidth;
 					}
 				}
-				this.doOnResize = this.resizeTextDom;
-				this.resizeTextDom();
-			} else {
-				this._triggersWidth = -1;
-				this._textDom.style.width = "100%";
-				delete this.doOnResize;
 			}
+
+			this._editorWrapper.style.marginRight = triggersWidth + "px";
 		},
 		
 		refreshDom: function(dom) {
@@ -359,24 +352,6 @@
 				}
 			}
 			this.fireEvent("onValidationStateChange", this);
-		},
-		
-		resizeTextDom: function() {
-			if (this._attached) {
-				if (this._triggersWidth < 0) {
-					var _triggerButtons = this._triggerButtons;
-					if (_triggerButtons) {
-						this._triggersWidth = 0;
-						for (var i = 0; i < _triggerButtons.length; i++) {
-							var triggerDom = _triggerButtons[i].getDom();
-							triggerDom.style.right = this._triggersWidth + "px";
-							this._triggersWidth += triggerDom.offsetWidth;
-						}
-					}
-				}
-				var w = this._dom.clientWidth - this._triggersWidth + 1;
-				if (w > 0) this._textDom.style.width = w + "px";
-			}
 		},
 		
 		onMouseDown: function() {
@@ -891,12 +866,14 @@
 		doOnFocus: function() {
 			$invokeSuper.call(this);
 			if (this._selectTextOnFocus && this._realEditable) {
-				var self = this;
-				setTimeout(function() {
-					if (self.get("focused") && self._editorFocused) {
-						self._textDom.select();
+				if (this.get("focused") && this._editorFocused) {
+					try {
+						this._textDom.select();
 					}
-				}, 0);
+					catch(e) {
+						// do nothing
+					}
+				}
 			}
 		}
 		

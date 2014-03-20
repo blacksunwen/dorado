@@ -10,14 +10,14 @@
  * at http://www.bstek.com/contact.
  */
 
-(function() {
+(function () {
 
 	/**
 	 * @name dorado.widget
 	 * @namespace 包含dorado中各种界面组件的命名空间。
 	 */
 	dorado.widget = {};
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 组件的抽象类。
@@ -33,9 +33,9 @@
 	 */
 	dorado.widget.Component = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.widget.Component.prototype */ {
 		$className: "dorado.widget.Component",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.Component.prototype */ {
-		
+
 			/**
 			 * 组件的id。
 			 * @type String
@@ -44,7 +44,7 @@
 			id: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 组件当前是否已激活。
 			 * @type boolean
@@ -53,7 +53,7 @@
 			ready: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 组件当前是否已被销毁。
 			 * @type boolean
@@ -62,7 +62,7 @@
 			destroyed: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 父组件，即组件所属的容器。
 			 * @type dorado.widget.Container
@@ -71,21 +71,21 @@
 			parent: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 组件所属的视图。
 			 * @type dorado.widget.View
 			 * @attribute readOnly
 			 */
 			view: {
-				setter: function(view) {
+				setter: function (view) {
 					if (this._view == view) return;
 					if (this._view) this._view.unregisterComponent(this._id);
 					if (view) view.registerComponent(this._id, this);
 					this._view = view;
 				}
 			},
-			
+
 			/**
 			 * 此视图对象使用的数据类型管理器。
 			 * @type dorado.DataTypeRepository
@@ -93,12 +93,12 @@
 			 */
 			dataTypeRepository: {
 				readOnly: true,
-				getter: function() {
+				getter: function () {
 					var view = this.get("view") || $topView;
 					return view.get("dataTypeRepository");
 				}
 			},
-			
+
 			/**
 			 * 用户自定义数据。
 			 * @type Object
@@ -108,7 +108,7 @@
 				skipRefresh: true
 			}
 		},
-		
+
 		EVENTS: /** @scope dorado.widget.Component.prototype */ {
 			/**
 			 * 当组件被创建时触发的事件。
@@ -125,7 +125,7 @@
 			 * @event
 			 */
 			onCreate: {},
-			
+
 			/**
 			 * 当组件被销毁时触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -134,7 +134,7 @@
 			 * @event
 			 */
 			onDestroy: {},
-			
+
 			/**
 			 * 当组件被激活（即真正可用时）时触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -144,8 +144,8 @@
 			 */
 			onReady: {}
 		},
-		
-		constructor: function(config) {
+
+		constructor: function (config) {
 			var id;
 			if (config && config.constructor == String) {
 				id = config;
@@ -163,31 +163,31 @@
 				}
 			}
 			this._id = id ? id : this._uniqueId;
-			
+
 			$invokeSuper.call(this);
-			if (config) this.set(config);
-			
+			if (config) this.set(config, { skipUnknownAttribute: true });
+
 			if (AUTO_APPEND_TO_TOPVIEW && window.$topView) {
 				$topView.addChild(this);
 			}
-			
+
 			if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
 				this.fireEvent("onCreate", this);
 			}
 		},
-		
-		doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
-		
+
+		doSet: function (attr, value, skipUnknownAttribute, lockWritingTimes) {
+
 			function getComponent(value, defaultType) {
 				if (!value) return value;
 				if (!(value instanceof dorado.widget.Component) && typeof value == "object") {
-					value = dorado.Toolkits.createInstance("widget", value, function() {
+					value = dorado.Toolkits.createInstance("widget", value, function () {
 						return defaultType ? dorado.Toolkits.getPrototype("widget", defaultType) : null;
 					});
 				}
 				return value;
 			}
-			
+
 			var def = this.ATTRIBUTES[attr];
 			if (def) {
 				if (this._ready && def.writeBeforeReady) {
@@ -209,7 +209,9 @@
 							allPrepared = (component instanceof dorado.widget.Component);
 						}
 					}
-					return $invokeSuper.call(this, [attr,  (allPrepared ? component : null), skipUnknownAttribute, lockWritingTimes]);
+					$invokeSuper.call(this, [attr, (allPrepared ? component : null), skipUnknownAttribute, lockWritingTimes]);
+					// dorado.AttributeSupport.prototype.doSet.call(this, attr, (allPrepared ? component : null), skipUnknownAttribute, lockWritingTimes);
+					return;
 				} else if (def.innerComponent != null) {
 					if (value) {
 						if (value instanceof Array) {
@@ -224,23 +226,25 @@
 					}
 				}
 			}
+
 			$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+			// dorado.AttributeSupport.prototype.doSet.call(this, attr, value, skipUnknownAttribute, lockWritingTimes);
 		},
-		
+
 		/**
 		 * 当组件的状态已变为可用时被激活的方法。
 		 * @protected
 		 */
-		onReady: function() {
+		onReady: function () {
 			if (this._ready) return;
 			this._ready = true;
 			this.fireEvent("onReady", this);
 		},
-		
+
 		/**
 		 * 销毁组件。
 		 */
-		destroy: function() {
+		destroy: function () {
 			if (this._destroyed) return;
 			this._destroyed = true;
 			this.fireEvent("onDestroy", this);
@@ -248,12 +252,12 @@
 				delete dorado.widget.Component.ALL[this._uniqueId];
 			}
 		},
-		
-		getListenerScope: function() {
+
+		getListenerScope: function () {
 			return this.get("view") || $topView;
 		},
-		
-		fireEvent: function() {
+
+		fireEvent: function () {
 			var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
 			if (optimized) AUTO_APPEND_TO_TOPVIEW = true;
 			var retVal = $invokeSuper.call(this, arguments);
@@ -261,8 +265,8 @@
 			return retVal;
 		}
 	});
-		
-	dorado.widget.Component.getComponentReference = function(object, attr, value) {
+
+	dorado.widget.Component.getComponentReference = function (object, attr, value) {
 		if (!value) return value;
 		if (value instanceof dorado.widget.Component) {
 			return value;
@@ -284,11 +288,11 @@
 			} else if (typeof value == "object" && value.$type) {
 				return dorado.Toolkits.createInstance("widget", value);
 			}
-			
+
 			view = value.view, componentId = value.component;
 			component = view.id(componentId);
 			if (component) return component;
-			
+
 			var wantedComponents = view._wantedComponents;
 			if (!wantedComponents) {
 				view._wantedComponents = wantedComponents = {
@@ -305,7 +309,7 @@
 				object: object,
 				attribute: attr
 			});
-			
+
 			var idProperty = '_' + attr + "_id";
 			if (!object[idProperty]) {
 				object[idProperty] = componentId;
@@ -317,7 +321,7 @@
 			return componentId;
 		}
 	}
-	
+
 	function viewOnComponentRegisteredListener(view, arg) {
 		var wantedComponents = view._wantedComponents;
 		var wanters = wantedComponents[arg.component._id];
@@ -361,10 +365,10 @@
 			}
 		}
 	}
-	
+
 	dorado.widget.Component.ALL = {};
-	
-	dorado.Toolkits.registerTypeTranslator("widget", function(type) {
+
+	dorado.Toolkits.registerTypeTranslator("widget", function (type) {
 		return dorado.util.Common.getClassType("dorado.widget." + type, true);
 	});
 })();

@@ -1374,13 +1374,13 @@
 			this.refresh();
 			
 			var self = this;
-			if (!dorado.Browser.mozilla) {
-				self.resize();
-			} else {
+			if (dorado.Browser.mozilla) {
 				// Moziila BUG, offsetLeft doesn't according to scrollLeft immidately
 				setTimeout(function() {
 					self.resize();
 				}, 0);
+			} else {
+				self.resize();
 			}
 			$fly(window).one("resize", function() {
 				self.hide();
@@ -1590,7 +1590,7 @@
 			if (control) {
 				if (ie6) control.getDom().style.display = "none";
 			}
-			
+
 			$invokeSuper.call(this);
 			
 			if (control) {
@@ -1608,28 +1608,11 @@
 		
 		show: function(parent, cell) {
 			$invokeSuper.call(this, [parent, cell]);
-			
+
 			var control = this.getEditorControl();
 			if (!control) return;
 			control._focusParent = parent;
-			setTimeout(function() {
-				try {
-					control.setFocus();
-				} 
-				catch (e) {
-					// do nothing
-				}
-			}, 50);
-			if (dorado.Browser.msie) {
-				setTimeout(function() {
-					try {
-						control.setFocus();
-					} 
-					catch (e) {
-						// do nothing
-					}
-				}, 50);
-			}
+			control.setFocus();
 		},
 		
 		hide: function(post) {

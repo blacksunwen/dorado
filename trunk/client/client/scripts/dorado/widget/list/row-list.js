@@ -696,7 +696,7 @@
 				}
 			}
 		},
-		
+
 		scrollCurrentIntoView: function() {
 			var currentItemId = this.getRealCurrentItemId();
 			if (currentItemId != null) {

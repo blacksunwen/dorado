@@ -84,7 +84,7 @@ dorado.Exception = $extend(dorado.AbstractException, /** @scope dorado.Exception
 	
 	constructor: function(message) {
 		this.message = message;
-		this._buildStackTrace();
+		if ($setting["common.debugEnabled"]) this._buildStackTrace();
 		$invokeSuper.call(this, arguments);
 	},
 	
@@ -294,6 +294,7 @@ dorado.Exception.processException = function(e) {
 				dorado.Exception.alertException(e);
 			}
 			catch(e2) {
+				dorado.Exception.removeException(e2);
 				alert(dorado.Exception.getExceptionMessage(e));
 			}
 		}

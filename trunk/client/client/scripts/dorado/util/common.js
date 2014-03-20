@@ -213,7 +213,7 @@ dorado.util.Common = {
 		}
 		return n;
 	},
-	
+
 	_classTypeCache: {},
 	
 	/**
@@ -227,10 +227,14 @@ dorado.util.Common = {
 		try {
 			classType = this._classTypeCache[type];
 			if (classType === undefined) {
-				classType = eval(type);
+				var path = type.split('.'), obj = window, i = 0, len = path.length;
+				for (; i < len && obj; i++) {
+					obj = obj[path[i]];
+				}
+				if (i == len) classType = obj;
 				this._classTypeCache[type] = (classType || null);
 			}
-		} 
+		}
 		catch (e) {
 			if (!silence) throw new dorado.ResourceException("dorado.core.UnknownType", type);
 		}
