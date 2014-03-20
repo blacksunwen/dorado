@@ -345,8 +345,12 @@
 			},
 			accumulate: function(value, entity, property) {
 				var v = getValueForSummary(entity, property);
+                if (value == null) return v;
 				return (v < value) ? value : v;
-			}
+			},
+            getFinalValue: function(value) {
+                return value;
+            }
 		},
 		
 		/**
@@ -360,8 +364,12 @@
 			},
 			accumulate: function(value, entity, property) {
 				var v = getValueForSummary(entity, property);
+                if (value == null) return v;
 				return (v > value) ? value : v;
-			}
+			},
+            getFinalValue: function(value) {
+                return value;
+            }
 		}
 	};
 	
