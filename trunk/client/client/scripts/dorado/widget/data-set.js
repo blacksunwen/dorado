@@ -359,7 +359,7 @@
 			return entity;
 		},
 
-		doLoad: function(callback) {
+		doLoad: function(callback, flush) {
 			var data = this._data, shouldFireOnLoadData = false;
 			
 			var dataCache, hashCode;
@@ -373,7 +373,7 @@
 				this.setData(data);
 			}
 			
-			if (data === undefined) {
+			if (data === undefined || flush) {
 				if (this._dataProvider) {
 					data = this._dataPipe;
 					if (!data) {
@@ -398,6 +398,8 @@
                     if (callback) $callback(callback, false);
                     return;
                 }
+
+				if (flush) this.discard();
 				
 				var pipe = data;
 				if (callback) {
@@ -468,6 +470,7 @@
 				}
 			}
 			else {
+				if (flush) this.discard();
 				if (callback) $callback(callback, true);
 			}
 		},
@@ -584,8 +587,6 @@
 			}
 			else options = options || {};
 
-			if (options.flush) this.discard();
-
 			var optionsCode, loadMode = options.loadMode;
 			if (!loadMode) {
 				if (this._loadMode == "manual") {
@@ -600,7 +601,7 @@
 			if (options.acceptAggregation) optionsCode += 'A';
 
 			this._getDataCalled = true;
-			if (this._data === undefined && loadMode != "never") {	
+			if ((options.flush || this._data === undefined) && loadMode != "never") {
 				var sysParameter;			
 				if (this._preloadConfigsMap) {
 					var preloadConfigs = this._preloadConfigsMap[path || "#EMPTY"];
@@ -617,18 +618,18 @@
 						callback: function(success, result) {
 							if (success) result = evaluatePath.call(this, path, options, callback);
 						}
-					});
+					}, options.flush);
 					if (sysParameter) sysParameter.remove("preloadConfigs");
 					return;
 				}
 				else {
 					if (loadMode == "auto") {
-						this.doLoad(dorado._NULL_FUNCTION);
+						this.doLoad(dorado._NULL_FUNCTION, options.flush);
 						if (sysParameter) sysParameter.remove("preloadConfigs");
 						return;
 					}
 					else {
-						this.doLoad();
+						this.doLoad(null, options.flush);
 						if (sysParameter) sysParameter.remove("preloadConfigs");
 					}
 				}
