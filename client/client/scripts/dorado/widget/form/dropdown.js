@@ -525,8 +525,11 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				box.set(config).refresh();
 			}
 		}
-		
-		if (dropdown._boxVisible) {
+
+        var widthOverflow = boxDom.parentNode.clientWidth - ($fly(editorDom).offset().left + boxWidth);
+        if (widthOverflow > 0) widthOverflow = 0;
+
+        if (dropdown._boxVisible) {
 			$DomUtils.dockAround(boxDom, editorDom, {
 				align: align,
 				offsetLeft: widthOverflow,
@@ -534,9 +537,6 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 				autoAdjustPosition: false
 			});
 		} else {
-			var widthOverflow = boxDom.parentNode.clientWidth - ($fly(editorDom).offset().left + boxWidth);
-			if (widthOverflow > 0) widthOverflow = 0;
-
 			/* for Debug
 			boxDom.style.position = "absolute";
 			boxDom.style.left = "200px";
