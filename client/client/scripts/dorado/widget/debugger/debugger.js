@@ -151,6 +151,7 @@
 			config = config || {};
 			if (config.name && config.onActive) {
 				deb.moduleActiveEvent[config.name] = config.onActive;
+				delete config.onActive;
 			}
 			if (!deb.inited) {
 				deb.initTabs.push(config);
