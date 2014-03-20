@@ -202,7 +202,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						Constants.DEFAULT_CHARSET);
 				StringBuffer buf = new StringBuffer();
 				char[] cs = new char[BUFFER_SIZE];
-				for (int n; (n = reader.read(cs)) != -1;) {
+				for (int n; (n = reader.read(cs)) > 0;) {
 					buf.append(new String(cs, 0, n));
 				}
 
