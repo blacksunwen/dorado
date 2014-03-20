@@ -157,7 +157,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			this.resetDimension();
 		}
 	},
-	
+
 	/**
 	 * 重设对象的尺寸。
 	 * @protected
@@ -165,26 +165,26 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 * @return {boolean} 本次操作是否改变了对象的尺寸设置。
 	 */
 	resetDimension: function(forced) {
-		var el = $fly(this.getDom()), changed = false;
+		var dom = this.getDom(), $dom = $fly(dom), changed = false;
 		var width = this.getRealWidth();
 		var height = this.getRealHeight();
 		if (forced || width && this._currentWidth != width) {
 			if (width < 0) {
 				this._currentWidth = null;
-				el.width("");
+				dom.style.width = "";
 			} else {
 				this._currentWidth = width;
-				el.outerWidth(width, true);
+				$dom.outerWidth(width);
 			}
 			changed = true;
 		}
 		if (forced || height && this._currentHeight != height) {
 			if (height < 0) {
 				this._currentHeight = null;
-				el.height("");
+				dom.style.height = "";
 			} else {
 				this._currentHeight = height;
-				el.outerHeight(height, true);
+				$dom.outerHeight(height);
 			}
 			changed = true;
 		}

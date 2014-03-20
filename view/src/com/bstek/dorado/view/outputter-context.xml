@@ -35,7 +35,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.mappingPropertyOutputter" parent="dorado.dataOutputter" class="com.bstek.dorado.view.type.property.MappingPropertyOutputter" />
 	<bean id="dorado.propertyDefsOutputter" parent="dorado.objectOutputterDispatcher" class="com.bstek.dorado.view.type.PropertyDefsOutputter" />
 	<bean id="dorado.defaultValueOutputter" parent="dorado.dataOutputter" class="com.bstek.dorado.view.type.DefaultValueOutputter" />
-	<bean id="dorado.cacheModePropertyOutputter" class="com.bstek.dorado.view.type.property.CacheModePropertyOutputter" />
 
 	<bean id="dorado.dataProviderPropertyOutputter" class="com.bstek.dorado.view.output.DataProviderPropertyOutputter" />
 	<bean id="dorado.dataResolverPropertyOutputter" class="com.bstek.dorado.view.output.DataResolverPropertyOutputter" />

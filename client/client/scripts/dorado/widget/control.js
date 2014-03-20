@@ -580,6 +580,7 @@
 				}
 
 				$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+				// dorado.widget.Component.prototype.doSet.call(this, attr, value, skipUnknownAttribute, lockWritingTimes);
 
 				if (def) {
 					if (def.innerComponent != null && def.autoRegisterInnerControl !== false) {
@@ -717,6 +718,43 @@
 				}
 			},
 
+			_refreshDom: function (dom) {
+				dom.doradoUniqueId = this._uniqueId;
+				if (this._currentVisible !== undefined) {
+					if (this._currentVisible != this._visible) {
+						if (this._hideMode == "display") {
+							if (this._visible) {
+								dom.style.display = this._oldDisplay;
+							} else {
+								this._oldDisplay = dom.style.display;
+								dom.style.display = "none";
+							}
+						} else {
+							dom.style.visibility = (this._visible) ? '' : "hidden";
+						}
+					}
+				} else {
+					if (!this._visible) {
+						if (this._hideMode == "display") {
+							this._oldDisplay = dom.style.display;
+							dom.style.display = "none";
+						} else {
+							dom.style.visibility = "hidden";
+						}
+					}
+				}
+
+				var tip = this.get("tip");
+				if (tip) {
+					this._currentTip = tip;
+					dorado.TipManager.initTip(dom, {
+						text: tip
+					});
+				} else if (this._currentTip) {
+					dorado.TipManager.deleteTip(dom);
+				}
+			},
+
 			/**
 			 * 根据控件自身的属性设定来刷新DOM对象。
 			 * <p>
@@ -728,40 +766,7 @@
 				if (!this.selectable) $DomUtils.disableUserSelection(dom);
 
 				try {
-					dom.doradoUniqueId = this._uniqueId;
-					if (this._currentVisible !== undefined) {
-						if (this._currentVisible != this._visible) {
-							if (this._hideMode == "display") {
-								if (this._visible) {
-									dom.style.display = this._oldDisplay;
-								} else {
-									this._oldDisplay = dom.style.display;
-									dom.style.display = "none";
-								}
-							} else {
-								dom.style.visibility = (this._visible) ? '' : "hidden";
-							}
-						}
-					} else {
-						if (!this._visible) {
-							if (this._hideMode == "display") {
-								this._oldDisplay = dom.style.display;
-								dom.style.display = "none";
-							} else {
-								dom.style.visibility = "hidden";
-							}
-						}
-					}
-
-					var tip = this.get("tip");
-					if (tip) {
-						this._currentTip = tip;
-						dorado.TipManager.initTip(dom, {
-							text: tip
-						});
-					} else if (this._currentTip) {
-						dorado.TipManager.deleteTip(dom);
-					}
+					this._refreshDom(dom);
 				} catch (e) {
 					// do nothing
 				}
@@ -774,9 +779,11 @@
 			},
 
 			updateModernScroller: function () {
-				if (this._modernScrolled) {
-					this._modernScrolled.update();
-				}
+				dorado.Toolkits.setDelayedAction(this, "$updateModernScrollerTimerId", function () {
+					if (this._modernScrolled) {
+						this._modernScrolled.update();
+					}
+				}, 20);
 			},
 
 			getRealWidth: function () {
@@ -1047,9 +1054,10 @@
 						});
 					}
 
-					if (this.renderUtilAttached) {
-						this.onResize();
-					}
+					// 导致contrainer中的layout重新布局，代价太高
+					// if (this.renderUtilAttached) {
+					// 	this.onResize();
+					// }
 
 					this.updateModernScroller();
 					if (!this._ready) {
@@ -1244,7 +1252,7 @@
 						}
 					}
 					dorado._LAST_FOCUS_CONTROL = null;
-				}, 0);
+				}, 10);
 			},
 
 			doSetFocus: function () {

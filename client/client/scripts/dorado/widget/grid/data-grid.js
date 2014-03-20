@@ -229,8 +229,9 @@
 		 * @param {dorado.Entity} entity 数据实体。
 		 */
 		setCurrentEntity: function(entity) {
-			this._innerGrid.setCurrentEntity(entity);
+			var retValue = this._innerGrid.setCurrentEntity(entity);
 			if (this._domMode == 2) this._fixedInnerGrid.setCurrentEntity(entity);
+			return retValue;
 		},
 		
 		getCurrentEntity: function() {
@@ -570,21 +571,13 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
 					this.hideCellEditor();
-					if (arg.entityList == this._itemModel.getItems()) {
-						var oldCurrentEntity = this.getCurrentEntity();
-						if (!this._supportsPaging &&
-							(!oldCurrentEntity || (oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo))) {
-							if (this._itemModel.criterions && this._filterMode == "clientSide") {
-								this.get("filterEntity").clearData();
-								this.filter();
-							}
-							this.refresh(true);
-							this.refreshSummary();
-						} else {
-							this.setCurrentEntity(arg.entityList.current);
+					if (!this.setCurrentEntity(arg.entityList.current)) {
+						if (this._itemModel.criterions && this._filterMode == "clientSide") {
+							this.get("filterEntity").clearData();
+							this.filter();
 						}
-					} else {
 						this.refresh(true);
+						this.refreshSummary();
 					}
 					break;
 				}
@@ -1024,9 +1017,9 @@
 		},
 		
 		setCurrentEntity: function(entity) {
-			DataListBoxProtoType.setCurrentEntity.apply(this, arguments);
+			var retValue = DataListBoxProtoType.setCurrentEntity.apply(this, arguments);
 			this.grid.doInnerGridSetCurrentRow(this, entity ? this._itemModel.getItemId(entity) : null);
-			return true;
+			return retValue;
 		},
 		
 		doRefreshItemDomData: function(row, item) {

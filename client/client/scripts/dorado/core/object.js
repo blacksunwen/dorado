@@ -10,26 +10,26 @@
  * at http://www.bstek.com/contact.
  */
 
-(function() {
+(function () {
 
 	var CLASS_REPOSITORY = {};
 	var UNNAMED_CLASS = "#UnnamedClass";
-	
+
 	function newClassName(prefix) {
 		var i = 1;
-		while (CLASS_REPOSITORY[prefix + i]) 
+		while (CLASS_REPOSITORY[prefix + i])
 			i++;
 		return prefix + i;
 	}
-	
+
 	function adapterFunction(fn) {
-		var adapter = function() {
+		var adapter = function () {
 			return fn.apply(this, arguments);
 		};
 		adapter._doradoAdapter = true;
 		return adapter;
 	}
-	
+
 	function cloneDefintions(defs) {
 		var newDefs = {};
 		for (var p in defs) {
@@ -39,7 +39,7 @@
 		}
 		return newDefs;
 	}
-	
+
 	function overrideDefintions(subClass, defProp, defs, overwrite) {
 		if (!defs) return;
 		var sdefs = subClass.prototype[defProp];
@@ -71,11 +71,11 @@
 			}
 		}
 	}
-	
+
 	function override(subClass, overrides, overwrite) {
 		if (!overrides) return;
 		if (overwrite === undefined) overwrite = true;
-		
+
 		var subp = subClass.prototype;
 		for (var p in overrides) {
 			var override = overrides[p];
@@ -102,14 +102,14 @@
 			}
 		}
 	};
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 用于封装一些对象操作的类。
 	 * @static
 	 */
 	dorado.Object = {
-	
+
 		/**
 		 * 创建一个命名空间。
 		 * @param {String} name 命名空间的名称。例如"dorado.sample"。
@@ -123,7 +123,7 @@
 		 * dorado.sample.MyClass = function() {
 		 * };
 		 */
-		createNamespace: function(name) {
+		createNamespace: function (name) {
 			var names = name.split('.');
 			var parent = window;
 			for (var i = 0; i < names.length; i++) {
@@ -136,7 +136,7 @@
 			}
 			return parent;
 		},
-		
+
 		/**
 		 * 创建并返回一个新的类。
 		 * @param {Object} p 新类的prototype。 在该参数的子属性中有下列几个需特别注意：
@@ -162,12 +162,12 @@
 		 * var foo = new Foo("Hello world!");
 		 * alert(foo.getMessage()); // should say "Hello world!"
 		 */
-		createClass: function(p) {
+		createClass: function (p) {
 			var constr = p.constructor;
 			if (constr === Object) constr = new Function();
 			constr.className = p.$className || newClassName(UNNAMED_CLASS);
 			delete p.$className;
-			
+
 			for (var m in p) {
 				if (p.hasOwnProperty(m)) {
 					var v = p[m];
@@ -180,12 +180,12 @@
 					}
 				}
 			}
-			
+
 			constr.prototype = p;
 			CLASS_REPOSITORY[constr.className] = constr;
 			return constr;
 		},
-		
+
 		/**
 		 * 将一个类或对象中的所有属性和方法改写到另一个类中。
 		 * @function
@@ -194,7 +194,7 @@
 		 * @param {boolean} [overwrite=true] 是否允许覆盖subClass中已存在的同名属性或方法。默认为不允许覆盖。
 		 */
 		override: override,
-		
+
 		/**
 		 * 从指定的父类派生出一个新的子类。
 		 * <p>
@@ -236,9 +236,9 @@
 		 * 	}
 		 * });
 		 */
-		extend: (function() {
+		extend: (function () {
 			var oc = Object.prototype.constructor;
-			return function(superClass, overrides) {
+			return function (superClass, overrides) {
 				var sc, scs;
 				if (superClass instanceof Array) {
 					scs = superClass;
@@ -246,14 +246,14 @@
 				} else {
 					sc = superClass;
 				}
-				
-				var subClass = (overrides && overrides.constructor != oc) ? overrides.constructor : function() {
+
+				var subClass = (overrides && overrides.constructor != oc) ? overrides.constructor : function () {
 					sc.apply(this, arguments);
 				};
-				
+
 				var fn = new Function();
 				var sp = fn.prototype = sc.prototype;
-				
+
 				// 当某超类不是通过dorado的方法声明的时，确保其能够符合dorado的基本规范。
 				if (!sc.className) {
 					sp.constructor = sc;
@@ -261,29 +261,29 @@
 					sc.declaringClass = sp;
 					sc.methodName = "constructor";
 				}
-				
+
 				var subp = subClass.prototype = new fn();
 				subp.constructor = subClass;
 				subClass.className = overrides.$className || newClassName((sc.$className || UNNAMED_CLASS) + '$');
 				subClass.superClass = sc;
 				subClass.declaringClass = subClass;
 				subClass.methodName = "constructor";
-				
+
 				delete overrides.$className;
 				delete overrides.constructor;
-				
+
 				// process attributes, dirty code
 				var attrs = subp["ATTRIBUTES"];
 				if (attrs) {
 					subp["ATTRIBUTES"] = cloneDefintions(attrs);
 				}
-				
+
 				// process avents, dirty code
 				var events = subp["EVENTS"];
 				if (events) {
 					subp["EVENTS"] = cloneDefintions(events);
 				}
-				
+
 				var ps = [sc];
 				if (scs) {
 					for (var i = 1, p; i < scs.length; i++) {
@@ -293,14 +293,14 @@
 					}
 				}
 				subClass.superClasses = ps;
-				
+
 				override(subClass, overrides, true);
-				
+
 				CLASS_REPOSITORY[subClass.className] = subClass;
 				return subClass;
 			};
 		})(),
-		
+
 		/**
 		 * 迭代给定对象的每一个属性。
 		 * @param {Object} object 要迭代的对象。
@@ -312,13 +312,13 @@
 		 * </ul>
 		 * 该方法中的this对象即为被迭代的对象。
 		 */
-		eachProperty: function(object, fn) {
+		eachProperty: function (object, fn) {
 			if (object && fn) {
-				for (var p in object) 
+				for (var p in object)
 					fn.call(object, p, object[p]);
 			}
 		},
-		
+
 		/**
 		 * 将源对象中所有的属性复制（覆盖）到目标对象中。
 		 * @param {Object} target 目标对象。
@@ -354,7 +354,7 @@
 		 * dorado.Object.apply(target, source, listener);
 		 * //此时，target应为 { prop1: 100, prop2: 400 }
 		 */
-		apply: function(target, source, options) {
+		apply: function (target, source, options) {
 			if (source) {
 				for (var p in source) {
 					if (typeof options == "function" && options.call(target, p, source[p]) === false) continue;
@@ -364,7 +364,7 @@
 			}
 			return target;
 		},
-		
+
 		/**
 		 * 判断一个对象实例是否某类或接口的实例。
 		 * <p>
@@ -377,8 +377,7 @@
 		 * @param {Function} type 类或接口。注意：此处传入的超类或接口必须是通过dorado定义的。
 		 * @return {boolean} 是否是给定类或接口的实例。
 		 */
-		isInstanceOf: function(object, type) {
-		
+		isInstanceOf: function (object, type) {
 			function hasSuperClass(superClasses) {
 				if (!superClasses) return false;
 				if (superClasses.indexOf(type) >= 0) return true;
@@ -387,17 +386,17 @@
 				}
 				return false;
 			}
-			
+
 			if (!object) return false;
 			var b = false;
-			if (type.className) eval("b = object instanceof " + type.className);
+			if (type.className) b = object instanceof type;
 			if (!b) {
 				var t = object.constructor;
 				if (t) b = hasSuperClass(t.superClasses);
 			}
 			return b;
 		},
-		
+
 		/**
 		 * 对一个对象进行浅度克隆。
 		 * @param {Object} object 要克隆的对象。
@@ -406,7 +405,7 @@
 		 * @param {Function} [options.onCopyProperty] 用于拦截每一个属性复制的回调函数。
 		 * @return {Object} 新的克隆对象。
 		 */
-		clone: function(object, options) {
+		clone: function (object, options) {
 			if (typeof object == "object") {
 				var objClone, options = options || {};
 				if (options.onCreate) objClone = new options.onCreate(object);
@@ -423,10 +422,10 @@
 				return object;
 			}
 		},
-		
-		hashCode: function(object) {
+
+		hashCode: function (object) {
 			if (object == null) return 0;
-			
+
 			var strKey = (typeof object) + '|' + dorado.JSON.stringify(object), hash = 0;
 			for (i = 0; i < strKey.length; i++) {
 				var c = strKey.charCodeAt(i);
@@ -435,9 +434,9 @@
 			}
 			return hash;
 		}
-		
+
 	};
-	
+
 	/**
 	 * @name $namespace
 	 * @function
@@ -454,7 +453,7 @@
 	 * };
 	 */
 	window.$namespace = dorado.Object.createNamespace;
-	
+
 	/**
 	 * @name $class
 	 * @function
@@ -473,10 +472,10 @@
 	 * 		}
 	 * 	});
 	 * var foo = new Foo("Hello world!");
-	 * alert(foo.getMessage());	// should say "Hello world!";
+	 * alert(foo.getMessage());    // should say "Hello world!";
 	 */
 	window.$class = dorado.Object.createClass;
-	
+
 	/**
 	 * @name $extend
 	 * @function
@@ -501,7 +500,7 @@
 	 * });
 	 */
 	window.$extend = dorado.Object.extend;
-	
+
 	/**
 	 * @name $getSuperClass
 	 * @function
@@ -511,12 +510,12 @@
 	 * </p>
 	 * @return {Function} 超类。
 	 */
-	var getSuperClass = window.$getSuperClass = function() {
+	var getSuperClass = window.$getSuperClass = function () {
 		var fn = getSuperClass.caller, superClass;
 		if (fn.declaringClass) superClass = fn.declaringClass.superClass;
 		return superClass || {};
 	};
-	
+
 	/**
 	 * @name $getSuperClasses
 	 * @function
@@ -526,15 +525,15 @@
 	 * </p>
 	 * @return {Prototype[]} 超类的数组。
 	 */
-	var getSuperClasses = window.$getSuperClasses = function() {
+	var getSuperClasses = window.$getSuperClasses = function () {
 		var fn = getSuperClasses.caller, superClass;
 		if (dorado.Browser.opera && dorado.Browser.version < 10) fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;
-		
+
 		if (fn.declaringClass) superClasses = fn.declaringClass.superClasses;
 		return superClasses || [];
 	};
-	
+
 	/**
 	 * @name $invokeSuper
 	 * @function
@@ -550,18 +549,18 @@
 	 * $invokeSuper.call(this, arguments); // 较简单的调用方式
 	 * $invokeSuper.call(this, [ "Sample Arg", true ]); // 自定义传给超类方法的参数数组
 	 */
-	var invokeSuper = window.$invokeSuper = function(args) {
+	var invokeSuper = window.$invokeSuper = function (args) {
 		var fn = invokeSuper.caller;
-		if (dorado.Browser.opera && dorado.Browser.version < 10) fn = fn.caller;
+//		if (dorado.Browser.opera && dorado.Browser.version < 10) fn = fn.caller;
 		if (fn.caller && fn.caller._doradoAdapter) fn = fn.caller;
-		
+
 		if (fn.declaringClass) {
 			var superClasses = fn.declaringClass.superClasses;
 			if (!superClasses) return;
-			
+
+			var superClass, superFn;
 			for (var i = 0; i < superClasses.length; i++) {
-				var superClass = superClasses[i].prototype;
-				var superFn;
+				superClass = superClasses[i].prototype;
 				if (fn.definitionType) {
 					superFn = superClass[fn.definitionType][fn.definitionName][fn.methodName];
 				} else {
@@ -574,5 +573,5 @@
 		}
 	};
 	invokeSuper.methodName = "$invokeSuper";
-	
+
 })();

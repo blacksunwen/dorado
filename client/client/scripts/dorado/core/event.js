@@ -217,7 +217,7 @@ dorado.Callback.simultaneousCallbacks = function(tasks, callback) {
  */
 dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	$className: "dorado.EventSupport",
-	
+
 	ATTRIBUTES: /** @scope dorado.EventSupport.prototype */ {
 		/**
 		 * 用于简化为对象添加监听器操作的虚拟属性，该属性不支持读取操作。

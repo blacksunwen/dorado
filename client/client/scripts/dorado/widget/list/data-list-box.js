@@ -95,6 +95,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		this.setCurrentRow(row);
 		this.scrollCurrentIntoView();
 		this.fireEvent("onCurrentChange", this);
+		return !!row;
 	},
 	
 	doOnKeyDown: function(evt) {
@@ -361,14 +362,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 				break;
 				
 			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
-				if (arg.entityList == this._itemModel.getItems()) {
-					var oldCurrentEntity = this.getCurrentItem();
-					if (!oldCurrentEntity || (oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
-						this.refresh(true);
-					} else {
-						this.setCurrentEntity(arg.entityList.current);
-					}
-				} else {
+				if (!this.setCurrentEntity(arg.entityList.current)) {
 					this.refresh(true);
 				}
 				break;

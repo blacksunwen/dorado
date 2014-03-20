@@ -412,7 +412,7 @@
 		},
 		
 		destroy: function() {
-			$invokeSuper.call(this, arguments);			
+			$invokeSuper.call(this, arguments);
 			if (this.xScroller) this.xScroller.destroy();
 			if (this.yScroller) this.yScroller.destroy();
 		}
@@ -525,7 +525,7 @@
 	dorado.util.Dom.modernScroll = function(container, options) {
 		var $container = $(container);
 		if ($container.data("modernScrolled")) return;
-		
+
 		try {
 			var modernScrolled;
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {

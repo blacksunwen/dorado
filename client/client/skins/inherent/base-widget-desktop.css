@@ -22,10 +22,9 @@
 }
 
 .i-button .button-left {
-	float: left;
+	display: block;
 	height: 22px;
 	line-height: 22px;
-	display: inline-block;
 	overflow: hidden;
 	margin: 0 3px 0 3px;
 	padding: 0 4px;
