@@ -530,7 +530,7 @@ dorado.dequeue = function(namespace) {
 		},
 
 		initObjectShimForIE: function() {
-			if (!dorado.Browser.msie || !dorado.useObjectShim) return;
+			if (!dorado.Browser.msie || !dorado.useObjectShim || this._objectShimInited) return;
 			var iframe = $DomUtils.xCreate({
 				tagName: "iframe",
 				style: {
@@ -543,9 +543,10 @@ dorado.dequeue = function(namespace) {
 					zIndex: -1,
 					filter: "progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)"
 				},
-				src: "javascript:false"
+				src: "about:blank"
 			});
 			this._dom.appendChild(iframe);
+			this._objectShimInited = true;
 		},
 
 		/**
