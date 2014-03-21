@@ -116,17 +116,18 @@
 
 			processOverflow: function (dom) {
 				var overflowed = false, padding = parseInt(this._padding) || 0;
+				var containerSize = this._container.getContentContainerSize()
 				var width = this._maxRagionRight;
 				if (width < dom.scrollWidth) width = dom.scrollWidth;
 
-				if (width > 0 && (width > this._containerWidth || (width == dom.offsetWidth && dom.style.width == ""))) {
+				if (width > 0 && (width > containerSize[0] || (width == dom.offsetWidth && dom.style.width == ""))) {
 					dom.style.width = (width + padding) + "px";
 					overflowed = true;
 				}
 
 				var height = this._maxRagionBottom;
 				if (height < dom.scrollHeight) height = dom.scrollHeight;
-				if (height > 0 && (height > this._containerHeight || (height == dom.offsetHeight && dom.style.height == ""))) {
+				if (height > 0 && (height > containerSize[1] || (height == dom.offsetHeight && dom.style.height == ""))) {
 					dom.style.height = (height + padding) + "px";
 					overflowed = true;
 				}
