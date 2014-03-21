@@ -530,7 +530,7 @@ dorado.dequeue = function(namespace) {
 		},
 
 		initObjectShimForIE: function() {
-			if (!dorado.Browser.msie || !dorado.useObjectShim || this._objectShimInited) return;
+			if (!dorado.useObjectShim || this._objectShimInited) return;
 			var iframe = $DomUtils.xCreate({
 				tagName: "iframe",
 				style: {
