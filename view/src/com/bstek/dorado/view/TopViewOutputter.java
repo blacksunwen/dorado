@@ -55,8 +55,12 @@ public class TopViewOutputter extends ViewOutputter {
 		outputter.outputView(view, context);
 
 		writer.append("AUTO_APPEND_TO_TOPVIEW=true;\n");
-		writer.append("var doradoView = document.getElementById(\"doradoView\");\n"
-				+ "if (doradoView){view.replace(doradoView);}\n");
+		
+		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");
+		if (view.getRenderMode() == ViewRenderMode.auto) {
+			writer.append("view.render();\n");
+		}
+		
 		writer.append("}\n").append("catch(e){")
 				.append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");

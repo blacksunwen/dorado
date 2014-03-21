@@ -38,6 +38,7 @@ public abstract class View extends Container {
 	private ViewConfig viewConfig;
 	private Map<String, Component> componentMap = new HashMap<String, Component>();
 	private ViewCache cache;
+	private ViewRenderMode renderMode = ViewRenderMode.auto;
 
 	private String packages;
 	private String pageTemplate;
@@ -108,6 +109,15 @@ public abstract class View extends Container {
 
 	public void setCache(ViewCache cache) {
 		this.cache = cache;
+	}
+
+	@ClientProperty(ignored = true)
+	public ViewRenderMode getRenderMode() {
+		return renderMode;
+	}
+
+	public void setCache(ViewRenderMode renderMode) {
+		this.renderMode = renderMode;
 	}
 
 	@ClientProperty(ignored = true)

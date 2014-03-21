@@ -138,9 +138,9 @@
 				 *
 				 * @example // 指定此按钮自动渲染到id为divButtonHolder的DOM元素中。
 				 * new dorado.widget.Button({
-			 * 	caption: "Test Button",
-			 * 	renderTo: "#divButtonHolder"
-			 * });
+				 * 	caption: "Test Button",
+				 * 	renderTo: "#divButtonHolder"
+				 * });
 				 */
 				renderTo: {
 					writeOnce: true,
@@ -164,9 +164,9 @@
 				 *
 				 * @example // 指定此按钮自动渲染并替换掉id为myButton的DOM元素。
 				 * new dorado.widget.Button({
-			 * 	caption: "Test Button",
-			 * 	renderOn: "#myButton"
-			 * });
+				 * 	caption: "Test Button",
+				 * 	renderOn: "#myButton"
+				 * });
 				 */
 				renderOn: {
 					writeOnce: true,
@@ -495,14 +495,10 @@
 					this._actualVisible = false;
 				}
 
-				var renderTo = this._renderTo, renderOn = this._renderOn;
-				if (renderTo || renderOn) {
+				if (this._renderTo || this._renderOn) {
 					$setTimeout(this, function () {
-						var container = renderTo || renderOn;
-						if (typeof container == "string") container = jQuery(container)[0];
-						if (container && container.nodeType) {
-							(renderTo) ? this.render(container) : this.replace(container);
-						}
+						if (this._rendered) return;
+						this.render();
 					}, 0);
 				}
 			},
@@ -991,6 +987,43 @@
 				} else if (this._attached) {
 					this.onDetachFromDocument();
 				}
+			},
+
+			/**
+			 * 将本对象渲染到指定的DOM容器中。
+			 * @param {HTMLElement} [containerElement] 作为容器的DOM元素。
+			 * <li>如果此参数为空，将根据renderTo或renderOn属性来决定渲染位置。</li>
+			 * <li>如果renderTo不为空，将以renderTo指向的DOM对象作为容器。</li>
+			 * <li>如果renderOn不为空，将替换renderOn指向的DOM对象。</li>
+			 * <li>如果renderTo和renderOn均为空，将以document.body作为容器。</li>
+			 * @param {HTMLElement} [nextChildElement] 指定新的DOM元素要在那个子元素之前插入，即通过此参数可以指定新的DOM元素的插入位置。
+			 */
+			render: function (containerElement, nextChildElement) {
+				if (containerElement) {
+					this.doRenderToOrReplace(false, containerElement, nextChildElement);
+				}
+				else if (this._renderTo) {
+					var container = this._renderTo;
+					if (typeof container == "string") container = jQuery(container)[0];
+					this.doRenderToOrReplace(false, container);
+				}
+				else if (this._renderOn) {
+					var placeHolder = this._renderOn;
+					if (typeof placeHolder == "string") placeHolder = jQuery(placeHolder)[0];
+					this.doRenderToOrReplace(true, placeHolder);
+				}
+				else {
+					this.doRenderToOrReplace(false);
+				}
+			},
+
+			/**
+			 * 本对象并替换指定的DOM对象。
+			 * @param {HTMLElement} [containerElement] 要替换的DOM元素。如果此参数为空，将以替换renderOn属性所指向的对象。
+			 * 如果renderTo属性也是空，将以document.body作为容器。
+			 */
+			replace: function (elmenent) {
+				this.doRenderToOrReplace(true, elmenent);
 			},
 
 			unrender: function () {
