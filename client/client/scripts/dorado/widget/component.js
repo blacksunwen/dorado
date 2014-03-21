@@ -185,8 +185,10 @@
 
 		createInnerComponent: function (config, typeTranslator) {
 			if (!config) return null;
+			if (config instanceof dorado.widget.Component) return config;
+
 			var component = null;
-			if (!(config instanceof dorado.widget.Component) && typeof config == "object") {
+			if (typeof config == "object") {
 				config.$prependingView = (this instanceof dorado.widget.View) ? this : this._prependingView;
 				component = dorado.Toolkits.createInstance("widget", config, typeTranslator);
 			}

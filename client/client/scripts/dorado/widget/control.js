@@ -585,24 +585,26 @@
 				if (def) {
 					if (def.innerComponent != null && def.autoRegisterInnerControl !== false) {
 						var component = this.doGet(attr);
-						if (component instanceof Array) {
-							for (var i = 0; i < component.length; i++) {
-								var c = component[i];
-								if (c instanceof dorado.widget.Control) {
-									this.registerInnerControl(c);
+						if (component) {
+							if (component instanceof Array) {
+								for (var i = 0; i < component.length; i++) {
+									var c = component[i];
+									if (c instanceof dorado.widget.Control) {
+										this.registerInnerControl(c);
+									}
 								}
 							}
-						}
-						else if (component.each || typeof component.each == "function") {
-							var self = this;
-							component.each(function (c) {
-								if (c instanceof dorado.widget.Control) {
-									self.registerInnerControl(c);
-								}
-							});
-						}
-						else if (component instanceof dorado.widget.Control) {
-							this.registerInnerControl(component);
+							else if (component.each || typeof component.each == "function") {
+								var self = this;
+								component.each(function (c) {
+									if (c instanceof dorado.widget.Control) {
+										self.registerInnerControl(c);
+									}
+								});
+							}
+							else if (component instanceof dorado.widget.Control) {
+								this.registerInnerControl(component);
+							}
 						}
 					}
 
