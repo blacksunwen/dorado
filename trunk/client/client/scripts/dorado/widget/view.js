@@ -155,12 +155,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		createDefaultLayout: function() {
 			if (this._id != "$TOP_VIEW") $invokeSuper.call(this);
 		},
-
-		createInnerComponent: function (config, typeTranslator) {
-			if (!config) return null;
-			config.$prependingView = this;
-			return $invokeSuper.call(this, arguments);
-		},
 		
 		parentChanged: function() {
 			if (this._parent) {
