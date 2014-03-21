@@ -161,8 +161,15 @@
 				if (!(/^[a-zA-Z_$][a-z0-9A-Z_$]*$/.exec(id))) {
 					throw new dorado.ResourceException("dorado.widget.InvaliedComponentId", id);
 				}
+
+				if (!(this instanceof dorado.widget.View)) {
+					if (config && config.$prependingView) {
+						config.$prependingView._prependingChild[id] = this;
+					}
+				}
 			}
-			this._id = id ? id : this._uniqueId;
+			this._id = id || this._uniqueId;
+			this._prependingView = config && config.$prependingView;
 
 			$invokeSuper.call(this);
 			if (config) this.set(config, { skipUnknownAttribute: true });
@@ -176,18 +183,17 @@
 			}
 		},
 
-		doSet: function (attr, value, skipUnknownAttribute, lockWritingTimes) {
-
-			function getComponent(value, defaultType) {
-				if (!value) return value;
-				if (!(value instanceof dorado.widget.Component) && typeof value == "object") {
-					value = dorado.Toolkits.createInstance("widget", value, function () {
-						return defaultType ? dorado.Toolkits.getPrototype("widget", defaultType) : null;
-					});
-				}
-				return value;
+		createInnerComponent: function (config, typeTranslator) {
+			if (!config) return null;
+			var component = null;
+			if (!(config instanceof dorado.widget.Component) && typeof config == "object") {
+				config.$prependingView = (this instanceof dorado.widget.View) ? this : this._prependingView;
+				component = dorado.Toolkits.createInstance("widget", config, typeTranslator);
 			}
+			return component;
+		},
 
+		doSet: function (attr, value, skipUnknownAttribute, lockWritingTimes) {
 			var def = this.ATTRIBUTES[attr];
 			if (def) {
 				if (this._ready && def.writeBeforeReady) {
@@ -214,14 +220,15 @@
 					return;
 				} else if (def.innerComponent != null) {
 					if (value) {
+						var defaultType = "dorado.widget." + def.innerComponent;
 						if (value instanceof Array) {
 							var components = [];
 							for (var i = 0; i < value.length; i++) {
-								components.push(getComponent(value[i], def.innerComponent));
+								components.push(this.createInnerComponent(value[i], defaultType));
 							}
 							value = components;
 						} else {
-							value = getComponent(value, def.innerComponent);
+							value = this.createInnerComponent(value, defaultType);
 						}
 					}
 				}
@@ -238,6 +245,11 @@
 		onReady: function () {
 			if (this._ready) return;
 			this._ready = true;
+
+			if (this._prependingView) {
+				delete this._prependingView;
+			}
+
 			this.fireEvent("onReady", this);
 		},
 
@@ -286,11 +298,18 @@
 					component: value
 				};
 			} else if (typeof value == "object" && value.$type) {
+				if (object.getListenerScope) {
+					view = object.getListenerScope();
+				}
+				else {
+					view = $topView;
+				}
+				value._prependingView = view;
 				return dorado.Toolkits.createInstance("widget", value);
 			}
 
 			view = value.view, componentId = value.component;
-			component = view.id(componentId);
+			component = (view._prependingChild && view._prependingChild[componentId]) || view.id(componentId);
 			if (component) return component;
 
 			var wantedComponents = view._wantedComponents;

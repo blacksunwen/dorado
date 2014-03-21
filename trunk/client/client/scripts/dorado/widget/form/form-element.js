@@ -278,37 +278,12 @@
 		onProfileChange: function () {
 			var formProfile = this._formProfile;
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
-				var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = {};
-				for (var attr in attrs) {
-					if (!attrs.hasOwnProperty(attr)) {
-						continue;
-					}
-
-					var def = attrs[attr];
-					if (def.readOnly || def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
-						continue;
-					}
-
-					if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
-						continue;
-					}
-
-					var value = formProfile.get(attr);
-					if (def.componentReference && !(value instanceof dorado.widget.Component)) {
-						continue;
-					}
-
-					if (value !== undefined) config[attr] = value;
-				}
-
-				if (config.dataSet) delete config.entity;
-
 				var readOnly = formProfile.get("readOnly");
 				if (this._realReadOnly != readOnly) {
 					this._realReadOnly = readOnly;
 				}
 
-				this.set(config, {
+				this.set(formProfile.getConfig(), {
 					skipUnknownAttribute: true,
 					tryNextOnError: true,
 					preventOverwriting: true,
@@ -360,6 +335,7 @@
 				var attr = arg.attribute;
 				if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
 					dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
+					if (self._config) delete self._config;
 					dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function () {
 						self._bindingElements.invoke("onProfileChange");
 					}, 20);
@@ -373,6 +349,37 @@
 
 		removeBindingElement: function (element) {
 			this._bindingElements.objects.push(element);
+		},
+
+		getConfig: function () {
+			if (this._config) return this._config;
+
+			var formProfile = this;
+			var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = formProfile._config = {};
+			for (var attr in attrs) {
+				if (!attrs.hasOwnProperty(attr)) {
+					continue;
+				}
+
+				var def = attrs[attr];
+				if (def.readOnly || def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
+					continue;
+				}
+
+				if (specialFormConfigProps.indexOf(attr) >= 0 && formProfile instanceof dorado.widget.Control) {
+					continue;
+				}
+
+				var value = formProfile.get(attr);
+				if (def.componentReference && !(value instanceof dorado.widget.Component)) {
+					continue;
+				}
+
+				if (value !== undefined) config[attr] = value;
+			}
+
+			if (config.dataSet) delete config.entity;
+			return config;
 		}
 	});
 
@@ -424,6 +431,8 @@
 			formProfile: {
 				componentReference: true,
 				setter: function (formProfile) {
+					if (this._formProfile === formProfile) return;
+
 					if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
 						this._formProfile.removeBindingElement(this);
 					}
@@ -471,6 +480,13 @@
 			},
 
 			entity: {}
+		},
+
+		constructor: function(config) {
+			var formProfile = config && config.formProfile;
+			if (formProfile) delete config.formProfile;
+			$invokeSuper.call(this, arguments);
+			if (formProfile) this.set("formProfile", formProfile);
 		},
 
 		destroy: function () {
