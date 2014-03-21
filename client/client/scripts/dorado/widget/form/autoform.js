@@ -26,13 +26,13 @@ dorado.widget.autoform = {};
  */
 dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** @scope dorado.widget.autoform.AutoFormElement.prototype */ {
 	$className: "dorado.widget.autoform.AutoFormElement",
-	
+
 	ATTRIBUTES: /** @scope dorado.widget.autoform.AutoFormElement.prototype */ {
-	
+
 		width: {
 			independent: false
 		},
-		
+
 		/**
 		 * 表单元素的名称。
 		 * @type String
@@ -40,7 +40,7 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
 		 */
 		name: {
 			writeOnce: true,
-			setter: function(v) {
+			setter: function (v) {
 				this._name = v;
 				if (!this.getAttributeWatcher().getWritingTimes("property")) this._property = v;
 			}
@@ -56,7 +56,7 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
  * AutoForm的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
  * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
  * <ul>
- * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成AutoFormElement的名称，表示根据名称获取AutoFormElement。参考{@link dorado.widget.AutoForm#getElement}。</li>
+ *    <li>当传入一个以#开头的字符串时，#后面的内容将被识别成AutoFormElement的名称，表示根据名称获取AutoFormElement。参考{@link dorado.widget.AutoForm#getElement}。</li>
  * </ul>
  * </p>
  * @extends dorado.widget.Control
@@ -66,13 +66,13 @@ dorado.widget.autoform.AutoFormElement = $extend(dorado.widget.FormElement, /** 
 dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfile, dorado.widget.FormProfileSupport], /** @scope dorado.widget.AutoForm.prototype */ {
 	$className: "dorado.widget.AutoForm",
 	_inherentClassName: "i-auto-form",
-	
+
 	ATTRIBUTES: /** @scope dorado.widget.AutoForm.prototype */ {
-	
+
 		className: {
 			defaultValue: "d-auto-form"
 		},
-		
+
 		/**
 		 * 绑定的表单配置。
 		 * @type dorado.widget.FormPorfile
@@ -80,7 +80,9 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		 */
 		formProfile: {
 			componentReference: true,
-			setter: function(formProfile) {
+			setter: function (formProfile) {
+				if (this._formProfile === formProfile) return;
+
 				if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
 					this._formProfile.removeBindingElement(this);
 				}
@@ -91,7 +93,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				}
 			}
 		},
-		
+
 		/**
 		 * 表单布局的分栏方式。
 		 * @type String
@@ -100,12 +102,12 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		 */
 		cols: {
 			skipRefresh: true,
-			setter: function(cols) {
+			setter: function (cols) {
 				this._cols = cols;
 				if (this._rendered) this.refreshFormLayout();
 			}
 		},
-		
+
 		/**
 		 * 默认的行高。
 		 * @type int
@@ -116,7 +118,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		rowHeight: {
 			defaultValue: 22
 		},
-		
+
 		/**
 		 * 表单列之间的留白大小。像素值。
 		 * @type int
@@ -127,7 +129,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		colPadding: {
 			defaultValue: 6
 		},
-		
+
 		/**
 		 * 表单行之间的留白大小。像素值。
 		 * @type int
@@ -138,7 +140,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		rowPadding: {
 			defaultValue: 6
 		},
-		
+
 		/**
 		 * 是否将表单的宽度自动扩展为撑满容器。
 		 * @type boolean
@@ -146,7 +148,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		 * @see dorado.widget.layout.FormLayout#attribute:stretchWidth
 		 */
 		stretchWidth: {},
-		
+
 		/**
 		 * 表单四周的留白大小。像素值。
 		 * @type int
@@ -157,7 +159,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		padding: {
 			defaultValue: 8
 		},
-		
+
 		/**
 		 * 此属性只影响自动创建表单元素的功能，即我们可以指定一个实体数据类型让表单根据此数据类型自动创建其中的表单元素。
 		 * @type dorado.data.EntityDataType
@@ -167,14 +169,14 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		dataType: {
 			getter: dorado.LazyLoadDataType.dataTypeGetter
 		},
-		
+
 		/**
 		 * 是否自动根据绑定的EntityDataType自动创建其中的表单元素。
 		 * @type boolean
 		 * @attribute
 		 */
 		autoCreateElements: {},
-		
+
 		/**
 		 * 表单元素的集合。
 		 * <p>
@@ -190,7 +192,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		 */
 		elements: {
 			skipRefresh: true,
-			setter: function(elements) {
+			setter: function (elements) {
 				if (this._rendered) {
 					var container = this._container, layout;
 					if (container) {
@@ -199,12 +201,12 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					}
 					try {
 						if (container) {
-							this._elements.each(function(element) {
+							this._elements.each(function (element) {
 								container.removeChild(element);
 							});
 						}
 						this._elements.clear();
-						
+
 						if (!elements) return;
 						for (var i = 0; i < elements.length; i++) {
 							this.addElement(elements[i]);
@@ -221,7 +223,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				}
 			}
 		},
-		
+
 		/**
 		 * 是否要自动创建一个私有的Entity，否则AutoForm将尝试使用关联的FormProfile中的Entity。
 		 * <p>
@@ -234,7 +236,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		createOwnEntity: {
 			defaultValue: true
 		},
-		
+
 		/**
 		 * 是否要在AutoForm没有实际绑定DataSet时自动创建一个私有的DataSet用于管理表单数据。
 		 * <p>
@@ -247,9 +249,9 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		createPrivateDataSet: {
 			writeBeforeReady: true
 		},
-		
+
 		entity: {
-			getter: function() {
+			getter: function () {
 				if (this._dataSet && this._dataSet._ready) {
 					var entity = this._dataSet.getData(this._dataPath, {
 						loadMode: "auto",
@@ -264,7 +266,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					return this._entity;
 				}
 			},
-			setter: function(entity) {
+			setter: function (entity) {
 				if (this._dataSet && this._dataSet._ready && this._dataSet.get("userData") == "autoFormPrivateDataSet") {
 					this._dataSet.set("data", entity);
 				}
@@ -274,13 +276,13 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 		}
 	},
-	
-	constructor: function() {
+
+	constructor: function () {
 		var autoform = this;
-		autoform._elements = new dorado.util.KeyedArray(function(element) {
+		autoform._elements = new dorado.util.KeyedArray(function (element) {
 			return (element instanceof dorado.widget.autoform.AutoFormElement) ? element._name : element._id;
 		});
-		
+
 		var container = autoform._container = new dorado.widget.Container({
 			layout: "Form",
 			contentOverflow: "visible",
@@ -289,29 +291,29 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				height: "100%"
 			}
 		});
-        var ie7 = (dorado.Browser.msie && dorado.Browser.version <= 7);
-        if (ie7){
-            container.get("style").height="auto";
-        }
+		var ie7 = (dorado.Browser.msie && dorado.Browser.version <= 7);
+		if (ie7) {
+			container.get("style").height = "auto";
+		}
 
 		var notifySizeChange = container.notifySizeChange;
-		container.notifySizeChange = function() {
+		container.notifySizeChange = function () {
 			notifySizeChange.apply(container, arguments);
 			autoform.notifySizeChange.apply(autoform, arguments);
 		}
-		
+
 		autoform.registerInnerControl(autoform._container);
 		autoform._bindingElements = new dorado.ObjectGroup();
-		
+
 		autoform._skipOnCreateListeners = (autoform._skipOnCreateListeners || 0) + 1;
 		$invokeSuper.call(autoform, arguments);
-		autoform._skipOnCreateListeners --;
+		autoform._skipOnCreateListeners--;
 
 		if (autoform._createOwnEntity && autoform.getAttributeWatcher().getWritingTimes("entity") == 0) {
 			var defaultEntity = new dorado.widget.FormProfile.DefaultEntity();
 			autoform.set("entity", defaultEntity);
 		}
-		
+
 		if (autoform._elementConfigs) {
 			var configs = autoform._elementConfigs;
 			for (var i = 0; i < configs.length; i++) {
@@ -319,8 +321,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 			delete autoform._elementConfigs;
 		}
-		
-		autoform.addListener("onAttributeChange", function(self, arg) {
+
+		autoform.addListener("onAttributeChange", function (self, arg) {
 			var attr = arg.attribute;
 			if (attr == "readOnly") {
 				var readOnly = self._readOnly, objects = self._bindingElements.objects;
@@ -331,19 +333,21 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 						object.resetEditorReadOnly();
 					}
 				}
-			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] && dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
-				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
+			} else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
+				dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
+				if (self._config) delete self._config;
+				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function () {
 					self._bindingElements.invoke("onProfileChange");
 				}, 20);
 			}
 		});
-		
+
 		if (!(autoform._skipOnCreateListeners > 0) && autoform.getListenerCount("onCreate")) {
 			autoform.fireEvent("onCreate", autoform);
 		}
 	},
-	
-	doGet: function(attr) {
+
+	doGet: function (attr) {
 		var c = attr.charAt(0);
 		if (c == '#' || c == '&') {
 			var elementName = attr.substring(1);
@@ -352,8 +356,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			return $invokeSuper.call(this, [attr]);
 		}
 	},
-	
-	addBindingElement: function(element) {
+
+	addBindingElement: function (element) {
 		if (!this._privateDataSetInited) {
 			this._privateDataSetInited = true;
 
@@ -363,7 +367,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					dataType: dataType,
 					userData: "autoFormPrivateDataSet",
 					onReady: {
-						listener: function(self) {
+						listener: function (self) {
 							self.insert();
 						},
 						options: {
@@ -382,16 +386,16 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				});
 			}
 		}
-		
+
 		$invokeSuper.call(this, [element]);
 	},
-	
+
 	/**
 	 * 添加一个表单元素。
 	 * @param {Object|dorado.widget.Control} element 表单元素或可用于创建表单元素的JSON对象。
 	 * @return {dorado.widget.Control} 新添加的表单元素。
 	 */
-	addElement: function(element) {
+	addElement: function (element) {
 		var elements = this._elements, config = {}, constraint;
 		if (!config.name) {
 			var name = config.property || "_unnamed";
@@ -404,12 +408,12 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 			config.name = name;
 		}
-		
+
 		if (!(element instanceof dorado.widget.Control)) {
 			dorado.Object.apply(config, element);
 			if (element) {
 				constraint = element._layoutConstraint;
-				element = dorado.Toolkits.createInstance("widget", config, function(type) {
+				element = this.createInnerComponent(config, function (type) {
 					if (!type) return dorado.widget.autoform.AutoFormElement;
 				});
 			} else {
@@ -423,30 +427,30 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			lockWritingTimes: true
 		});
 		elements.append(element);
-		
+
 		if (this._container) this._container.addChild(element);
 		return element;
 	},
-	
+
 	/**
 	 * 移除一个的表单元素。
 	 * @param {dorado.widget.Control} element 移除的表单元素。
 	 */
-	removeElement: function(element) {
+	removeElement: function (element) {
 		this._elements.remove(element);
 		if (this._container) this._container.removeChild(element);
 	},
-	
+
 	/**
 	 * 根据名称或序号获得一个的表单元素。
 	 * @param {String|int} name 表单元素的名称或序号（自0开始）。
 	 * @return {dorado.widget.Control} 表单元素。
 	 */
-	getElement: function(name) {
+	getElement: function (name) {
 		return this._elements.get(name);
 	},
-	
-	createDom: function() {
+
+	createDom: function () {
 		var attrWatcher = this.getAttributeWatcher();
 		if (!this._formProfile && attrWatcher.getWritingTimes("formProfile") == 0) {
 			var view = this.get("view") || dorado.widget.View.TOP;
@@ -454,12 +458,12 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		}
 		return $invokeSuper.call(this, arguments);
 	},
-	
-	refreshDom: function(dom) {
+
+	refreshDom: function (dom) {
 		$invokeSuper.call(this, arguments);
-		
+
 		var container = this._container;
-		if (!container._rendered) {			
+		if (!container._rendered) {
 			if (this._autoCreateElements && !this._defaultElementsGenerated) {
 				this.generateDefaultElements();
 			}
@@ -467,22 +471,22 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			container.render(dom);
 		}
 	},
-	
-	doOnResize: function() {
+
+	doOnResize: function () {
 		var dom = this.getDom(), container = this._container;
 		// container._realWidth = dom.offsetWidth;
 		// container._realHeight = dom.offsetHeight;
 		container.resetDimension();
 	},
-	
-	refreshFormLayout: function() {
+
+	refreshFormLayout: function () {
 		var container = this._container, layout = container.get("layout");
 		container.refresh();
 		this.initLayout(layout);
 		layout.refresh();
 	},
-	
-	initLayout: function(layout) {
+
+	initLayout: function (layout) {
 		configs = {};
 		if (this._cols) configs.cols = this._cols;
 		if (this._rowHeight >= 0) configs.rowHeight = this._rowHeight;
@@ -492,8 +496,8 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		if (this._padding >= 0) configs.padding = this._padding;
 		layout.set(configs);
 	},
-	
-	generateDefaultElements: function() {
+
+	generateDefaultElements: function () {
 		var dataType = this.get("dataType");
 		if (!dataType && this._dataSet) {
 			var dataPath = dorado.DataPath.create(this._dataPath);
@@ -502,19 +506,19 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		if (!dataType && this._entity) {
 			dataType = this._entity.dataType;
 		}
-		
+
 		if (dataType && dataType instanceof dorado.EntityDataType) {
 			this._defaultElementsGenerated = true;
-			
+
 			var container = this._container, layout;
 			if (container) {
 				layout = container.get("layout");
 				layout.disableRendering();
 			}
 			var self = this, elements = self._elements, config;
-			dataType.get("propertyDefs").each(function(propertyDef) {
+			dataType.get("propertyDefs").each(function (propertyDef) {
 				if (!propertyDef._visible) return;
-				
+
 				var name = propertyDef._name, element = elements.get(name);
 				if (!element) {
 					config = {
@@ -530,12 +534,12 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 					self.removeElement(element);
 					self.addElement(element);
 				}
-				
+
 				var propertyDataType = propertyDef.get("dataType");
 				if (propertyDataType instanceof dorado.EntityDataType || propertyDataType instanceof dorado.AggregationDataType) {
 					return;
 				}
-				
+
 				if (!element) element = self.addElement(config);
 				else element.set(config, {
 					skipUnknownAttribute: true,
@@ -550,15 +554,15 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 		}
 	},
-	
+
 	/**
 	 * 验证表单中所有编辑器中的数据。
 	 * @param {boolean} [silent] 是否要在验证失败时禁止Dorado7抛出异常信息。
 	 * @return {boolean} 返回本次验证结果是否全部正确。
 	 */
-	validate: function(silent) {
+	validate: function (silent) {
 		var result = true, elements = this._elements, errorMessages;
-		this._elements.each(function(element) {
+		this._elements.each(function (element) {
 			if (element instanceof dorado.widget.FormElement) {
 				var editor = element.get("editor");
 				if (editor && editor instanceof dorado.widget.AbstractTextBox) {
@@ -572,13 +576,13 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 				}
 			}
 		});
-		
+
 		if (!result && !silent) {
 			throw new dorado.widget.editor.PostException(errorMessages);
 		}
 		return result;
 	},
-	
+
 	/**
 	 * 刷新其中编辑器中的数据。
 	 * <p>
@@ -587,15 +591,15 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 	 * 此时我们需要调用refreshData()方法，手工的通知AutoForm进行数据刷新。
 	 * </p>
 	 */
-	refreshData: function() {
-		this._elements.each(function(element) {
+	refreshData: function () {
+		this._elements.each(function (element) {
 			if (element instanceof dorado.widget.AbstractFormElement) {
 				element.refreshData();
 			}
 		});
 	},
-	
-	getFocusableSubControls: function() {
+
+	getFocusableSubControls: function () {
 		return [this._container];
 	}
 });

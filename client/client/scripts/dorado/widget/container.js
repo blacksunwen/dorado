@@ -141,7 +141,7 @@
 						if (child instanceof dorado.widget.Component) {
 							this.addChild(child);
 						} else if (child.$type) {
-							this.addChild(dorado.Toolkits.createInstance("widget", child));
+							this.addChild(this.createInnerComponent(child));
 						}
 					}
 				}
