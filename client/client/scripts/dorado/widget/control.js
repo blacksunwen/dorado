@@ -1010,7 +1010,9 @@
 				else if (this._renderOn) {
 					var placeHolder = this._renderOn;
 					if (typeof placeHolder == "string") placeHolder = jQuery(placeHolder)[0];
-					this.doRenderToOrReplace(true, placeHolder);
+					if (placeHolder) {
+						this.doRenderToOrReplace(true, placeHolder);
+					}
 				}
 				else {
 					this.doRenderToOrReplace(false);
