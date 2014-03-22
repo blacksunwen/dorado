@@ -172,7 +172,12 @@ dorado.Toolkits = {
 		var constr = this.getPrototype(namespace, type);
 		if (!constr) {
 			if (typeTranslator && typeTranslator.constructor == String) {
-				type = typeTranslator + type;
+				if (type) {
+					type = typeTranslator + type;
+				}
+				else {
+					type = typeTranslator;
+				}
 			}
 			if (!constr) {
 				if (typeTranslator && typeof typeTranslator == "function") {
