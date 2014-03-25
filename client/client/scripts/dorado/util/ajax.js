@@ -566,9 +566,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 	
 	_init : function(connObj, options, async) {
 
-		function urlAppend(url, s) {
+		function urlAppend(url, p, s) {
 			if(s)
-				return url + (url.indexOf('?') === -1 ? '?' : '&') + encodeURI(s);
+				return url + (url.indexOf('?') === -1 ? '?' : '&') + p + '=' + encodeURI(s);
 			return url;
 		}
 
@@ -596,7 +596,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		if(parameter && (method == "GET" || options.xmlData || options.jsonData)) {
 			for(var p in parameter) {
 				if(parameter.hasOwnProperty(p))
-					url = urlAppend(url, parameter[p]);
+					url = urlAppend(url, p, parameter[p]);
 			}
 		}
 
