@@ -446,7 +446,28 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		});
 		dorado.Callback.simultaneousCallbacks(simTasks, callback);
 	};
-	
+
+	var resizeCallbacks = [];
+	dorado.bindResize = function(callback) {
+		if (typeof callback != "function") return;
+		resizeCallbacks.push(callback);
+	};
+
+	dorado.fireResizeCallback = function() {
+		for (var i = 0, j = resizeCallbacks.length; i < j; i++) {
+			var callback = resizeCallbacks[i];
+			callback.call(null);
+		}
+	};
+
+	dorado.unbindResize = function(callback) {
+		if (typeof callback != "function") return;
+		var index = resizeCallbacks.indexOf(callback);
+		if (index != -1) {
+			resizeCallbacks.removeAt(index);
+		}
+	};
+
 	jQuery().ready(function() {
 	
 		function getControlByElement(el) {
@@ -477,55 +498,55 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 		});
 		if (!dorado.Browser.isTouch) {
-            $fly(document).keydown(function(evt) {
-                var b, c = dorado.widget.getFocusedControl();
-                if (c) b = c.onKeyDown(evt);
-                
-                if ((dorado.widget.HtmlContainer && c instanceof dorado.widget.HtmlContainer) ||
+			$fly(document).keydown(function(evt) {
+				var b, c = dorado.widget.getFocusedControl();
+				if (c) b = c.onKeyDown(evt);
+				
+				if ((dorado.widget.HtmlContainer && c instanceof dorado.widget.HtmlContainer) ||
 					(dorado.widget.TemplateField && c instanceof dorado.widget.TemplateField)){
-                	return true;
+					return true;
 				}
-                
-                if (b === false) {
-                    evt.preventDefault();
-                    evt.cancelBubble = true;
-                    return false;
-                } else {
-                    if ($setting["common.preventBackspace"])  {
-                        switch (evt.keyCode || evt.which) {
-                            case 8:
-                                var doPrevent = false;
-                                var d = evt.srcElement || evt.target;
-                                if ((d.tagName.toLowerCase() === 'input' && (d.type.toLowerCase() === 'text' || d.type.toLowerCase() === 'password' || d.type.toLowerCase() === 'file'))
-                                    || d.tagName.toLowerCase() === 'textarea') {
-                                    doPrevent = d.readOnly || d.disabled;
-                                }
-                                else {
-                                    doPrevent = true;
-                                }
+				
+				if (b === false) {
+					evt.preventDefault();
+					evt.cancelBubble = true;
+					return false;
+				} else {
+					if ($setting["common.preventBackspace"])  {
+						switch (evt.keyCode || evt.which) {
+							case 8:
+								var doPrevent = false;
+								var d = evt.srcElement || evt.target;
+								if ((d.tagName.toLowerCase() === 'input' && (d.type.toLowerCase() === 'text' || d.type.toLowerCase() === 'password' || d.type.toLowerCase() === 'file'))
+									|| d.tagName.toLowerCase() === 'textarea') {
+									doPrevent = d.readOnly || d.disabled;
+								}
+								else {
+									doPrevent = true;
+								}
 
-                                if (doPrevent) {
-                                    evt.preventDefault();
-                                    evt.cancelBubble = true;
-                                    return false;
-                                }
-                                break;
-                        }
-                    }
+								if (doPrevent) {
+									evt.preventDefault();
+									evt.cancelBubble = true;
+									return false;
+								}
+								break;
+						}
+					}
 
-                    if (b === true) {
-                        switch (evt.keyCode || evt.which) {
-                            case 8: {	// Backspace
-                                if (evt.srcElement) {
-                                    var nodeName = evt.srcElement.nodeName.toLowerCase();
-                                    if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
-                                        return false;
-                                    }
-                                }
-                                break;
-                            }
-                            case 13:{ // Enter
-                            	if ($setting["common.enterAsTab"]) {
+					if (b === true) {
+						switch (evt.keyCode || evt.which) {
+							case 8: {	// Backspace
+								if (evt.srcElement) {
+									var nodeName = evt.srcElement.nodeName.toLowerCase();
+									if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
+										return false;
+									}
+								}
+								break;
+							}
+							case 13:{ // Enter
+								if ($setting["common.enterAsTab"]) {
 									var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 									if (c) c.setFocus();
 									evt.preventDefault();
@@ -534,29 +555,29 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 								}
 								break;
 							}
-                            case 9: {
+							case 9: {
 								var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 								if (c) c.setFocus();
 								evt.preventDefault();
 								evt.cancelBubble = true;
 								return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
-            }).keypress(function(evt) {
-                var b, c = dorado.widget.getFocusedControl();
-                if (c) b = c.onKeyPress(evt);
-                if (b === false) {
-                    evt.preventDefault();
-                    evt.cancelBubble = true;
-                    return false;
-                } else {
-                    return true;
-                }
-            });
-        }
+							}
+						}
+					}
+					return true;
+				}
+			}).keypress(function(evt) {
+				var b, c = dorado.widget.getFocusedControl();
+				if (c) b = c.onKeyPress(evt);
+				if (b === false) {
+					evt.preventDefault();
+					evt.cancelBubble = true;
+					return false;
+				} else {
+					return true;
+				}
+			});
+		}
 
 		var cls = "d-unknown-browser", b = dorado.Browser, v = b.version;
 		if (b.isTouch) {
@@ -590,15 +611,15 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		}
 
 		$fly(document.body).addClass(cls);
-        if (!dorado.Browser.isTouch) {
-            $fly(document.body).focusin(function(evt) {
-                if (dorado.widget.Control.IGNORE_FOCUSIN_EVENT) return;
-                var control = getControlByElement(evt.target);
-                if (control) {
-                    dorado.widget.onControlGainedFocus(control);
-                }
-            });
-        }
+		if (!dorado.Browser.isTouch) {
+			$fly(document.body).focusin(function(evt) {
+				if (dorado.widget.Control.IGNORE_FOCUSIN_EVENT) return;
+				var control = getControlByElement(evt.target);
+				if (control) {
+					dorado.widget.onControlGainedFocus(control);
+				}
+			});
+		}
 
 		var resizeTopView = function() {
 			if (topView.onResizeTimerId) {
@@ -607,20 +628,21 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 
 			topView.onResizeTimerId = setTimeout(function() {
+				dorado.fireResizeCallback();
 				rootViewport.updateBodySize();
 				delete topView.onResizeTimerId;
 				topView._children.each(function(child) {
 					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
 				});
-			}, 200);
+			}, 100);
 		};
 
-        var isInIFrame = false;
-        try {
-            isInIFrame = !!(top != window || window.frameElement);
-        } catch(e) {
-            isInIFrame = true;
-        }
+		var isInIFrame = false;
+		try {
+			isInIFrame = !!(top != window || window.frameElement);
+		} catch(e) {
+			isInIFrame = true;
+		}
 
 		var doInitDorado = function() {
 			dorado.fireOnInit();
@@ -634,10 +656,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				if (!topView._destroyed) topView.destroy();
 			});
 
-            var oldResize = window.onresize;
+			var oldResize = window.onresize;
 
-            window.onresize = function() {
-                oldResize && oldResize.apply(window, arguments);
+			window.onresize = function() {
+				oldResize && oldResize.apply(window, arguments);
 				if (dorado.Browser.isTouch) {
 					var width = $fly(window).width(), height = $fly(window).height();
 					if ((oldWidth === undefined && oldHeight === undefined) || (width !== oldWidth && height !== oldHeight)) {
@@ -665,7 +687,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					body = document.body;
 
 				document.addEventListener('touchstart', function() {
-                    //为了修复双次点击TextEditor导致位置不正确的Bug，先屏蔽此行代码。
+					//为了修复双次点击TextEditor导致位置不正确的Bug，先屏蔽此行代码。
 					//me.scrollToTop();
 				}, true);
 
@@ -677,7 +699,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 				this.scrollToTop();
 
-				// These 2 timers here are ugly but it's the only way to make address bar hiding works on all the devices we have including the new Galaxy Tab
 				setTimeout(function() {
 					me.scrollToTop();
 					setTimeout(function() {
@@ -692,7 +713,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}, 50);
 			},
 			scrollToTop: function() {
-                if (!dorado.Browser.isPhone) return;
+				if (!dorado.Browser.isPhone) return;
 				if (dorado.Browser.iOS) {
 					if (dorado.Browser.isPhone) {
 						document.body.scrollTop = document.body.scrollHeight;
@@ -702,23 +723,23 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}
 			},
 			updateBodySize: function() {
-                var $body = $fly(document.body);
-                if (isInIFrame) {
-                    return;
-                } else {
-                    var width = jQuery(window).width(), height = jQuery(window).height();
-                    //alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
-                    jQuery(document.body).height(height).width(width);
-                }
+				var $body = $fly(document.body);
+				if (isInIFrame) {
+					return;
+				} else {
+					var width = jQuery(window).width(), height = jQuery(window).height();
+					//alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
+					jQuery(document.body).height(height).width(width);
+				}
 			}
 		};
 
 		if (dorado.Browser.isTouch) {
-            if (isInIFrame) {
-                doInitDorado();
-            } else {
-                rootViewport.init(function() { doInitDorado(); });
-            }
+			if (isInIFrame) {
+				doInitDorado();
+			} else {
+				rootViewport.init(function() { doInitDorado(); });
+			}
 			return;
 		}
 

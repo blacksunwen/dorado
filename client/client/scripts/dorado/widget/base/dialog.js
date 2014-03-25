@@ -24,7 +24,7 @@
 
 	var fakeDialog, fullWindowDialogs = [];
 
-	$fly(window).bind(dorado.Browser.isTouch ? "orientationchange" : "resize", function() {
+	dorado.bindResize(function() {
 		var docWidth = jQuery(window).width(), docHeight = jQuery(window).height();
 		for (var i = 0, j = fullWindowDialogs.length; i < j; i++) {
 			var dialog = fullWindowDialogs[i];
