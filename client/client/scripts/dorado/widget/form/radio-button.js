@@ -196,7 +196,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 							radioButtons[i] = radioButton = new dorado.widget.RadioButton(radioButton);
 						}
 						if (dom) {
-							radioButton._radioGroup = radioGroup;							
+							radioButton._radioGroup = radioGroup;
 							if (radioButton._value == radioGroup._value) {
 								radioGroup.currentRadioButton = radioButton;
 								radioButton._checked = true;
@@ -206,6 +206,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 						radioGroup.registerInnerControl(radioButton);
 					}
 				}
+				if (radioGroup._rendered && radioGroup.isActualVisible()) radioGroup.doOnResize();
 			}
 		},
 		
@@ -451,7 +452,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 								});
 							}
 						}
-						if (radioButtons.length) group.set("radioButtons", radioButtons);
+						if (radioButtons) group.set("radioButtons", radioButtons);
 					}
 				}
 			}
@@ -485,7 +486,6 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 			}
 		}
-
 
 		$invokeSuper.call(this, arguments);
 	},
