@@ -63,11 +63,16 @@
 		},
 		
 		removeItemDom: function(row) {
+			var node = $fly(row).data("item");
 			if (this._scrollMode != "viewport") {
-				$fly(row).remove();
+				if (node && node._tree) {
+					if (row.parentNode) row.parentNode.removeChild(row);
+				}
+				else {
+					$fly(row).remove();
+				}				
 			} else {
-				var item = $fly(row).data("item");
-				if (item) delete item._dom;
+				if (node) delete node._dom;
 				$invokeSuper.call(this, arguments);
 			}
 		},
