@@ -288,7 +288,7 @@
 				}
 				
 				if (typeof valueText == "string" &&
-					(valueText.indexOf(',') >= 0 || valueText.indexOf(' ') >= 0 || valueText.indexOf(';') >= 0)) {
+					(valueText.indexOf(',') >= 0 || valueText.indexOf(';') >= 0)) {
 					text += ('"' + valueText + '"');
 				} else {
 					text += valueText;
