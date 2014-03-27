@@ -105,6 +105,9 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				} else {
 					this._checked = null;
 				}
+				if (!this._dataSet && this._rendered) {
+					this._lastPost = this._checked;
+				}
 			}
 		},
 		
@@ -147,7 +150,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		onValueChange: {}
 	},
 
-    //event: 传入true强制执行onClick，用来响应键盘事件。
+	//event: 传入true强制执行onClick，用来响应键盘事件。
 	onClick: function(event) {
 		var checkBox = this;
 		
@@ -155,7 +158,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			return;
 		}
 
-        if (event !== true && event.target == checkBox._dom) return;
+		if (event !== true && event.target == checkBox._dom) return;
 
 		var checked = checkBox._checked;
 		if (checkBox._triState) {
@@ -181,25 +184,25 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		checkBox.fireEvent("onValueChange", checkBox);
 	},
 
-    post: function() {
-        try {
-            var modified = (this._lastPost !== this._checked);
-            if (modified) {
-                this._lastPost = this._checked;
-                var eventArg = {
-                    processDefault: true
-                };
-                this.fireEvent("beforePost", this, eventArg);
-                if (eventArg.processDefault === false) return false;
-                if (this.doPost) this.doPost();
-                this.fireEvent("onPost", this);
-            }
-            return true;
-        }
-        catch (e) {
-            dorado.Exception.processException(e);
-        }
-    },
+	post: function() {
+		try {
+			var modified = (this._lastPost !== this._checked);
+			if (modified) {
+				this._lastPost = this._checked;
+				var eventArg = {
+					processDefault: true
+				};
+				this.fireEvent("beforePost", this, eventArg);
+				if (eventArg.processDefault === false) return false;
+				if (this.doPost) this.doPost();
+				this.fireEvent("onPost", this);
+			}
+			return true;
+		}
+		catch (e) {
+			dorado.Exception.processException(e);
+		}
+	},
 
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
@@ -262,7 +265,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				checked = false;
 			}
 			checkBox._checked = checked;
-            checkBox._lastPost = checked;
+			checkBox._lastPost = checked;
 			checkBox.setDirty(dirty);
 		}
 		
@@ -331,33 +334,33 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				content: [{
 					tagName: "SPAN",
 					className: "icon",
-                    contextKey: "icon"
+					contextKey: "icon"
 				}, {
 					tagName: "SPAN",
 					className: "caption",
-                    contextKey: "caption",
+					contextKey: "caption",
 					content: checkBox._caption || ''
 				}]
 			}, null, doms);
 
-            checkBox._doms = doms;
+			checkBox._doms = doms;
 
-            $fly([doms.icon, doms.caption]).hover(function() {
-                if (!(checkBox._readOnly || checkBox._readOnly2)) {
-                    $fly(dom).addClass(checkBox._className + "-hover");
-                }
-            }, function() {
-                if (!(checkBox._readOnly || checkBox._readOnly2)) {
-                    $fly(dom).removeClass(checkBox._className + "-hover");
-                }
-            }).mousedown(function() {
-                if (!(checkBox._readOnly || checkBox._readOnly2))
-                    $fly(dom).addClass(checkBox._className + "-click");
-                $(document).one("mouseup", function() {
-                    if (!(checkBox._readOnly || checkBox._readOnly2))
-                        $fly(dom).removeClass(checkBox._className + "-click");
-                });
-            });
+			$fly([doms.icon, doms.caption]).hover(function() {
+				if (!(checkBox._readOnly || checkBox._readOnly2)) {
+					$fly(dom).addClass(checkBox._className + "-hover");
+				}
+			}, function() {
+				if (!(checkBox._readOnly || checkBox._readOnly2)) {
+					$fly(dom).removeClass(checkBox._className + "-hover");
+				}
+			}).mousedown(function() {
+				if (!(checkBox._readOnly || checkBox._readOnly2))
+					$fly(dom).addClass(checkBox._className + "-click");
+				$(document).one("mouseup", function() {
+					if (!(checkBox._readOnly || checkBox._readOnly2))
+						$fly(dom).removeClass(checkBox._className + "-click");
+				});
+			});
 		}
 		
 		return dom;
