@@ -253,6 +253,9 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			if (!found) radioGroup._setValue(null);
 		}
 		radioGroup._value = value;
+		if (!radioGroup._dataSet && radioGroup._rendered) {
+			radioGroup._lastPost = value;
+		}
 	},
 
 	/**
