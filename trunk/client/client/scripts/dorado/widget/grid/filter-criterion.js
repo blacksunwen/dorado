@@ -106,7 +106,7 @@
 		var c;
 		for (var i = 0, len = text.length; i < len; i++, escape = false) {
 			c = text.charAt(i);
-			if (c === ',' || c === ' ' || c === ';') {
+			if (c === ',' || c === ';') {
 				if (contentBegin) {
 					if (!inQuote) {
 						if (operators.indexOf(criterion) < 0) {
