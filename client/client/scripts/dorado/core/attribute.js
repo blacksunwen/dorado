@@ -284,23 +284,22 @@
 			 * oop.set("address.postCode", "7232-00124");
 			 * ... ...
 			 * oop.set({
-		 * 	"name" : "Toad",
-		 * 	"address.postCode" : "7232-00124"
-		 * });
+			 * 	"name" : "Toad",
+			 * 	"address.postCode" : "7232-00124"
+			 * });
 			 * // 上面的两行命令相当于
 			 * oop.get("address").set("postCode", "7232-00124")
 			 *
 			 * @example
 			 * // 使用上文中提及的第一种方法为label属性赋值，同时为onClick事件绑定一个监听器。
 			 * oop.set({
-		 *  label : "Sample Text",
-		 *  onClick : function(self, arg) {
-		 *  	... ...
-		 *  }
-		 * });
+			 *  label : "Sample Text",
+			 *  onClick : function(self, arg) {
+			 *  	... ...
+			 *  }
+			 * });
 			 */
-			set: function (attr, value, options) {
-				var self = this;
+			set: function(attr, value, options) {
 				var skipUnknownAttribute, tryNextOnError, preventOverwriting, lockWritingTimes;
 				if (attr && typeof attr == "object") options = value;
 				if (options && typeof options == "object") {
@@ -310,71 +309,81 @@
 					lockWritingTimes = options.lockWritingTimes;
 				}
 
-				function doSet(attr, value, skipUnknownAttribute, lockWritingTimes) {
-					if (attr.constructor != String) {
-						var attrInfos = [];
-						for (var p in attr) {
-							if (attr.hasOwnProperty(p)) {
-								var v = attr[p], attrInfo = {
-									attr: p,
-									value: v
-								};
-								if (p == "listener" || typeof v == "function") {
-									attrInfos.insert(attrInfo);
-								}
-								else if (p == "DEFINITION") {
-									if (v) {
-										if (v.ATTRIBUTES) {
-											if (!self.PRIVATE_ATTRIBUTES) self.PRIVATE_ATTRIBUTES = {};
-											for (var defName in v.ATTRIBUTES) {
-												if (v.ATTRIBUTES.hasOwnProperty(defName)) {
-													var def = v.ATTRIBUTES[defName];
-													overrideDefinition(self.PRIVATE_ATTRIBUTES, def, defName);
-													if (def && def.defaultValue != undefined && self['_' + p] == undefined) {
-														var dv = def.defaultValue;
-														self['_' + p] = (typeof dv == "function" && !def.dontEvalDefaultValue) ? dv() : dv;
-													}
-												}
-											}
-										}
-										if (v.EVENTS) {
-											if (!self.PRIVATE_EVENTS) self.PRIVATE_EVENTS = {};
-											for (var defName in v.EVENTS) {
-												if (v.EVENTS.hasOwnProperty(defName)) {
-													overrideDefinition(self.PRIVATE_EVENTS, v.EVENTS[defName], defName);
+				if (attr.constructor != String) {
+					var attrInfos = [];
+					for(var p in attr) {
+						if (attr.hasOwnProperty(p)) {
+							var v = attr[p], attrInfo = {
+								attr: p,
+								value: v
+							};
+							if (p == "listener" || typeof v == "function") {
+								attrInfos.insert(attrInfo);
+							}
+							else if (p == "DEFINITION") {
+								if (v) {
+									if (v.ATTRIBUTES) {
+										if (!this.PRIVATE_ATTRIBUTES) this.PRIVATE_ATTRIBUTES = {};
+										for(var defName in v.ATTRIBUTES) {
+											if (v.ATTRIBUTES.hasOwnProperty(defName)) {
+												var def = v.ATTRIBUTES[defName];
+												overrideDefinition(this.PRIVATE_ATTRIBUTES, def, defName);
+												if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
+													var dv = def.defaultValue;
+													this['_' + p] = (typeof dv == "function" && !def.dontEvalDefaultValue) ? dv() : dv;
 												}
 											}
 										}
 									}
-								}
-								else {
-									attrInfos.push(attrInfo);
+									if (v.EVENTS) {
+										if (!this.PRIVATE_EVENTS) this.PRIVATE_EVENTS = {};
+										for(var defName in v.EVENTS) {
+											if (v.EVENTS.hasOwnProperty(defName)) {
+												overrideDefinition(this.PRIVATE_EVENTS, v.EVENTS[defName], defName);
+											}
+										}
+									}
 								}
 							}
+							else {
+								attrInfos.push(attrInfo);
+							}
 						}
+					}
 
-						if (preventOverwriting) watcher = self.getAttributeWatcher();
-						for (var i = 0; i < attrInfos.length; i++) {
-							var attrInfo = attrInfos[i];
-							if (preventOverwriting && watcher.getWritingTimes(attrInfo.attr)) continue;
-							self.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);
+					if (preventOverwriting) watcher = this.getAttributeWatcher();
+					for(var i = 0; i < attrInfos.length; i++) {
+						var attrInfo = attrInfos[i];
+						if (preventOverwriting && watcher.getWritingTimes(attrInfo.attr)) continue;
+
+						try {
+							this.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);
 						}
-					} else {
-						if (preventOverwriting) {
-							if (self.getAttributeWatcher().getWritingTimes(attr)) return;
+						catch(e) {
+							if (!tryNextOnError) {
+								throw e;
+							}
+							else if (e instanceof dorado.Exception) {
+								dorado.Exception.removeException(e);
+							}
 						}
-						self.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
 					}
 				}
-
-				try {
-					doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
-				} catch (e) {
-					if (!tryNextOnError) {
-						throw e;
+				else {
+					if (preventOverwriting) {
+						if (this.getAttributeWatcher().getWritingTimes(attr)) return;
 					}
-					else if (e instanceof dorado.Exception) {
-						dorado.Exception.removeException(e);
+
+					try {
+						this.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
+					}
+					catch(e) {
+						if (!tryNextOnError) {
+							throw e;
+						}
+						else if (e instanceof dorado.Exception) {
+							dorado.Exception.removeException(e);
+						}
 					}
 				}
 				return this;

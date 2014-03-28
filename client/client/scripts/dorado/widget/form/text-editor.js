@@ -796,7 +796,7 @@
 					text: $resource("dorado.data.ErrorContentRequired")
 				});
 			}
-			if (text.length) {
+			if (text && text.length) {
 				var validator = $singleton(dorado.validator.LengthValidator);
 				validator.set({
 					minLength: this._minLength,
