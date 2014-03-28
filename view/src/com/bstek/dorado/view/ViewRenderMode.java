@@ -17,5 +17,5 @@ package com.bstek.dorado.view;
  * @since 2014-3-22
  */
 public enum ViewRenderMode {
-	auto, manual
+	onCreate, onDataLoaded, manual
 }

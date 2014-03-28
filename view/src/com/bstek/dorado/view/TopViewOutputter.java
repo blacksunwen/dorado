@@ -55,12 +55,17 @@ public class TopViewOutputter extends ViewOutputter {
 		outputter.outputView(view, context);
 
 		writer.append("AUTO_APPEND_TO_TOPVIEW=true;\n");
-		
+
 		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");
-		if (view.getRenderMode() == ViewRenderMode.auto) {
+
+		ViewRenderMode renderMode = view.getRenderMode();
+		if (renderMode == ViewRenderMode.onCreate) {
 			writer.append("view.render();\n");
+		} 
+		else if (renderMode == ViewRenderMode.onDataLoaded) {
+			writer.append("view.loadData();\n");
 		}
-		
+
 		writer.append("}\n").append("catch(e){")
 				.append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");
