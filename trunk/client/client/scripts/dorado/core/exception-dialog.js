@@ -111,8 +111,8 @@
 						var dialogHeight = $dom.height(), panelHeight = $contentDom.height();
 						exceptionDialog._height = contentHeight + dialogHeight - panelHeight;
 					}
-					
-					exceptionDialog.doOnResize();
+
+					exceptionDialog.refresh();
 				},
 				onHide: function() {
 					setTimeout(function() {
