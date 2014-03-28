@@ -59,7 +59,24 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * @type String
 			 * @attribute writeBeforeReady
 			 */
-			name: {},
+			name: {
+				writeBeforeReady: true
+			},
+			
+			/**
+			 * 视图的渲染模式，即渲染时机。这个设定通常与性能优化相关。取值范围包括：
+			 * <ul>
+			 * <li>onCreate - 当视图被创建后就自动渲染。</li>
+			 * <li>onDataLoaded - 当视图完成首批DataSet数据装载之后渲染。</li>
+			 * <li>manual - 手工渲染。即需要开发者自行调用View的render()方法来完成渲染。</li>
+			 * </ul>
+			 * 此属性对于Dorado ClientEdition而言是无效的。
+			 * @type String
+			 * @attribute writeBeforeReady
+			 */
+			renderMode: {
+				defaultValue: "onReady"
+			},
 			
 			view: {
 				setter: function(view) {
@@ -76,6 +93,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * @attribute writeBeforeReady
 			 */
 			context: {
+				skipRefresh: true,
 				writeBeforeReady: true,
 				getter: function() {
 					if (this._context == null) this._context = $map();
@@ -145,6 +163,24 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			
 			$invokeSuper.call(this, [configs]);
 			if (topView) topView.addChild(this);
+		},
+		
+		loadData: function() {
+			if (this._renderMode !== "onDataLoaded") return;
+			
+			this._children.each(function (child) {
+				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
+			});			
+			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
+			this._loadingDataSet = [];
+		},
+		
+		onReady: function() {
+			$invokeSuper.call(this);
+			if (this._renderMode !== "onDataLoaded") {
+				$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
+				this._loadingDataSet = [];
+			}
 		},
 		
 		destroy: function() {
@@ -273,18 +309,15 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			return this._dataTypeRepository.getAsync(id, callback);
 		},
 		
-		onReady: function() {
-			$invokeSuper.call(this);
-			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
-			this._loadingDataSet = [];
-		},
-		
 		/**
 		 * 当那些loadMode属性为onReady的数据集全部完成数据装载时触发的方法。
 		 * @protected
 		 * @see dorado.widget.DataSet#loadMode
 		 */
 		onDataLoaded: function() {
+			if (this._renderMode == "onDataLoaded") {
+				this.render();
+			}
 			this.fireEvent("onDataLoaded", this);
 		},
 		
@@ -361,24 +394,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (typeof comp == "function") comp = comp(view);
 		return comp;
 	};
-	
-	var topView = new dorado.widget.View("$TOP_VIEW");
-	
-	/**
-	 * 根视图对象。<br>
-	 * 该视图对象是所有其它尚未被添加到容器中的视图对象的默认容器。
-	 * @type dorado.widget.View
-	 * @constant
-	 */
-	dorado.widget.View.TOP = topView;
-	
-	/**
-	 * dorado.widget.View.TOP的快捷方式。
-	 * @type dorado.widget.View
-	 * @constant
-	 * @see dorado.widget.View.TOP
-	 */
-	window.$topView = topView;
 	
 	/**
 	 * @name $id
@@ -467,6 +482,24 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			resizeCallbacks.removeAt(index);
 		}
 	};
+	
+	var topView = new dorado.widget.View("$TOP_VIEW");
+	
+	/**
+	 * 根视图对象。<br>
+	 * 该视图对象是所有其它尚未被添加到容器中的视图对象的默认容器。
+	 * @type dorado.widget.View
+	 * @constant
+	 */
+	dorado.widget.View.TOP = topView;
+	
+	/**
+	 * dorado.widget.View.TOP的快捷方式。
+	 * @type dorado.widget.View
+	 * @constant
+	 * @see dorado.widget.View.TOP
+	 */
+	window.$topView = topView;
 
 	jQuery().ready(function() {
 	

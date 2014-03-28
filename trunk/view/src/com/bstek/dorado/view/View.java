@@ -38,7 +38,7 @@ public abstract class View extends Container {
 	private ViewConfig viewConfig;
 	private Map<String, Component> componentMap = new HashMap<String, Component>();
 	private ViewCache cache;
-	private ViewRenderMode renderMode = ViewRenderMode.auto;
+	private ViewRenderMode renderMode = ViewRenderMode.onCreate;
 
 	private String packages;
 	private String pageTemplate;
@@ -111,7 +111,7 @@ public abstract class View extends Container {
 		this.cache = cache;
 	}
 
-	@ClientProperty(ignored = true)
+	@ClientProperty(escapeValue = "onCreate")
 	public ViewRenderMode getRenderMode() {
 		return renderMode;
 	}

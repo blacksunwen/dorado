@@ -1097,6 +1097,7 @@
 					// }
 
 					this.updateModernScroller();
+					
 					if (!this._ready) {
 						this.onReady();
 					}

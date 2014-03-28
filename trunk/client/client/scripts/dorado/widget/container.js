@@ -133,6 +133,7 @@
 			 * ]);
 			 */
 			children: {
+				skipRefresh: true,
 				setter: function (children) {
 					if (!children || children.length < 1) return;
 
