@@ -67,7 +67,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * 视图的渲染模式，即渲染时机。这个设定通常与性能优化相关。取值范围包括：
 			 * <ul>
 			 * <li>onCreate - 当视图被创建后就自动渲染。</li>
-			 * <li>onDataLoaded - 当视图完成首批DataSet数据装载之后渲染。</li>
+			 * <li>onDataLoaded - 当视图完成首批DataSet数据装载之后渲染。通常需要将部分DataSet的loadMode设置为onReady，才能产生实际效果。</li>
 			 * <li>manual - 手工渲染。即需要开发者自行调用View的render()方法来完成渲染。</li>
 			 * </ul>
 			 * 此属性对于Dorado ClientEdition而言是无效的。
