@@ -75,7 +75,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * @attribute writeBeforeReady
 			 */
 			renderMode: {
-				defaultValue: "onReady"
+				defaultValue: "onCreate"
 			},
 			
 			view: {
