@@ -127,10 +127,13 @@
 		},
 
 		doOnKeyDown: function(event) {
+            var retValue = true;
 			var button = this;
 			if (event.keyCode == 32 || event.keyCode == 13) {
 				button.fireEvent("onClick", button);
+                retValue = false;
 			}
+            return retValue;
 		},
 
 		/**
