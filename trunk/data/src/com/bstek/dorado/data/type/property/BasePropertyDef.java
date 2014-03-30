@@ -13,6 +13,7 @@
 package com.bstek.dorado.data.type.property;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 
 /**
@@ -21,11 +22,7 @@ import com.bstek.dorado.annotation.XmlNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apirl 17, 2007
  */
-@XmlNode(
-		nodeName = "PropertyDef",
-		label = "PropertyDef",
-		parser = "spring:dorado.propertyDefParser",
-		definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition")
+@XmlNode(nodeName = "PropertyDef", label = "PropertyDef", parser = "spring:dorado.propertyDefParser", definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition")
 @ClientObject(prototype = "dorado.BasePropertyDef", shortTypeName = "Default")
 public class BasePropertyDef extends PropertyDefSupport {
 	private String propertyPath;
@@ -37,6 +34,7 @@ public class BasePropertyDef extends PropertyDefSupport {
 		setName(name);
 	}
 
+	@ClientProperty(ignored = true)
 	public String getPropertyPath() {
 		return propertyPath;
 	}
