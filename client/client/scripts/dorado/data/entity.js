@@ -1783,8 +1783,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					delete this._propertyInfoMap[property];
 				}
 				else {
+                    this._propertyInfoMap = {};
+                    delete this._messages;
                     delete this._messageState;
-					this._propertyInfoMap = {};
 				}
 			}
 
