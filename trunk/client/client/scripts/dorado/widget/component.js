@@ -272,6 +272,8 @@
 		},
 
 		fireEvent: function () {
+			if (this._destroyed) return false;
+
 			var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
 			if (optimized) AUTO_APPEND_TO_TOPVIEW = true;
 			var retVal = $invokeSuper.call(this, arguments);
