@@ -337,7 +337,6 @@
 				dataType = name;
 				name = name._name;
 			}
-			
 			if (this._dataTypeMap[name] instanceof dorado.DataType) return;
 			this._dataTypeMap[name] = dataType;
 			if (dataType instanceof dorado.DataType) {

@@ -306,7 +306,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为得到数据类型。
 		 */
 		getDataTypeAsync: function(name, callback) {
-			return this._dataTypeRepository.getAsync(id, callback);
+			return this._dataTypeRepository.getAsync(name, callback);
 		},
 		
 		/**
