@@ -802,6 +802,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		panel.fireEvent("onClose", panel);
 	},
 
+	doOnResize: function() {
+		this._doOnResize();
+		$invokeSuper.call(this);
+	},
+
 	_doOnResize: function (collapsed) {
 		var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
 		if (typeof height == "number" && height > 0) {
