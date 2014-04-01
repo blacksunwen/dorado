@@ -168,12 +168,12 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		var dom = this.getDom(), $dom = $fly(dom), changed = false;
 		var width = this.getRealWidth();
 		var height = this.getRealHeight();
-		if (forced || width && this._currentWidth != width) {
+		if (forced || width && this._ != width) {
 			if (width < 0) {
-				this._currentWidth = null;
+				this._ = null;
 				dom.style.width = "";
 			} else {
-				this._currentWidth = width;
+				this._ = width;
 				$dom.outerWidth(width);
 			}
 			changed = true;

@@ -274,7 +274,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 	
 	resetControlDimension: function(region, containerDom, autoWidth, autoHeight) {
-		var control = region.control, oldWidth = control._realWidth, oldHeight = control._realHeight;
+		var control = region.control, oldWidth = control._currentWidth, oldHeight = control._currentHeight;
 		if (autoWidth && region.width !== undefined && (!control.ATTRIBUTES.width.independent || control._fixedWidth)) {
 			control._realWidth = region.width + (region.autoWidthAdjust || 0);
 		}
