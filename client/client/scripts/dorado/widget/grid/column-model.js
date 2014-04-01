@@ -1895,7 +1895,7 @@
 				getter: function() {
 					if (this._grid) {
 						var view = this._grid.get("view");
-						if (view) return view.get("dataTypeRepository");
+						if (view) return view.getDataTypeRepository();
 					}
 					return null;
 				},

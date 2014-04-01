@@ -271,6 +271,11 @@
 			return this.get("view") || $topView;
 		},
 
+		getDataTypeRepository: function() {
+			var view = this.get("view") || this._prependingView;
+			return view ? view._dataTypeRepository : null;
+		},
+
 		fireEvent: function () {
 			if (this._destroyed) return false;
 

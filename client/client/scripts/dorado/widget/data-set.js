@@ -819,10 +819,6 @@
 			}
 		},
 
-		getDataTypeRepository: function() {
-			return this._view ? this._view._dataTypeRepository : null;
-		},
-
 		/**
 		 * 返回数据集的数据类型。如果指定了数据路径(path)参数，此方法将提取数据路径所对应的数据类型。
 		 * <p>
@@ -844,13 +840,7 @@
 				loadMode = options ? options.loadMode : undefined;
 			}
 			
-			var dataType = this._dataType;
-			if (dataType != null) {
-				dataType = dorado.LazyLoadDataType.dataTypeTranslator.call(this, dataType);
-				if (this._dataType != dataType && dataType instanceof dorado.DataType) {
-					this._dataType = dataType;
-				}
-			}
+			var dataType = dorado.LazyLoadDataType.dataTypeGetter.call(this);
 			if (!dataType && this._data) dataType = this._data.dataType;
 
 			if (dataType) {
