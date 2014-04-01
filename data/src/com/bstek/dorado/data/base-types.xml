@@ -36,7 +36,7 @@
 	<!-- EntityDataTypes -->
 	<DataType name="Entity" matchType="java.lang.Object" impl="com.bstek.dorado.data.type.DefaultEntityDataType" />
 	<DataType name="Bean" parent="Entity" />
-	<DataType name="Map" parent="Entity" matchType="java.util.Map" />
+	<DataType name="Map" parent="Entity" matchType="java.util.Map" creationType="java.util.HashMap"/>
 	<DataType name="Record" matchType="com.bstek.dorado.data.variant.Record" parent="Map" />
 	
 	<!-- Others -->
