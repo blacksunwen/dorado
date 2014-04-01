@@ -611,7 +611,6 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		if (this._parent) {
 			this._parent._changeVisibleChildNodeCount(-this._visibleChildNodeCount);
 		}
-		var self = this;
 		this._tree._nodeCollapsed(this);
 	},
 	

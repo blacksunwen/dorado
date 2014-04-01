@@ -57,11 +57,6 @@
 			return true;
 		},
 		
-		doRefreshItemDomData: function(row, node) {
-			$invokeSuper.call(this, arguments);
-			if (this._scrollMode != "viewport") node._dom = row;
-		},
-		
 		removeItemDom: function(row) {
 			var node = $fly(row).data("item");
 			if (this._scrollMode != "viewport") {
@@ -72,7 +67,6 @@
 					$fly(row).remove();
 				}				
 			} else {
-				if (node) delete node._dom;
 				$invokeSuper.call(this, arguments);
 			}
 		},

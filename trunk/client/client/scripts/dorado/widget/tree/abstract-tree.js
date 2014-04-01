@@ -76,6 +76,14 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * 内部的渲染方法，供复写。
 	 */
 	doRender: function(cell, node, arg) {
+		if (node._nodesData && node._nodesTimestamp !== node._nodesData.timestamp) {
+			node.resetChildren();
+			node._expanded = false;
+			setTimeout(function() {
+				node.expandAsync();
+			}, 0);
+		}
+
 		var tree = node._tree, level = node.get("level"), hasChild = node.get("hasChild");	
 		var container = (cell.tagName.toLowerCase() == "div") ? cell : cell.firstChild;	
 		container.style.paddingLeft = ((level - 1) * tree._indent) + "px";

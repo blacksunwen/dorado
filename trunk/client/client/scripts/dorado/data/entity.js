@@ -21,7 +21,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		invalid : 1,
 		executing : 2
 	};
-	
+
 	function addMessage2Context(context, entity, property, message) {
 		var state = message.state || "error";
 		context[state].push({
@@ -31,13 +31,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			text : message.text
 		});
 	}
-	
+
 	function addMessages2Context(context, entity, property, messages) {
 		for (var i = 0; i < messages.length; i++) {
 			addMessage2Context(context, entity, property, messages[i]);
 		}
 	}
-	
+
 	function mergeValidationContext(context, state, subContext) {
 		var subContextMessages = subContext[state];
 		if (!subContextMessages) return;
@@ -45,7 +45,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			context[state].push(subContextMessages[i]);
 		}
 	}
-	
+
 	function mergeValidationContexts(context, subContext) {
 		mergeValidationContext(context, "info", subContext);
 		mergeValidationContext(context, "ok", subContext);
@@ -145,7 +145,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @type dorad.DataRepository
 		 */
 		this.dataTypeRepository = dataTypeRepository;
-		
+
 		this._propertyInfoMap = {};
 		if (data) {
 			this._data = data;
@@ -195,7 +195,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.acceptUnknownProperty = (dataType) ? dataType._acceptUnknownProperty : true;
 		}
 	};
-	
+
 	/**
 	 * 实体对象的状态常量 - 无状态。
 	 * @type int
@@ -230,7 +230,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 	dorado.Entity._MESSAGE_DATA_CHANGED = 3;
 	dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED = 4;
 	dorado.Entity._MESSAGE_REFRESH_ENTITY = 5;
-	
+
 	dorado.Entity._MESSAGE_LOADING_START = 10;
 	dorado.Entity._MESSAGE_LOADING_END = 11;
 
@@ -278,7 +278,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			}
 		},
-		
+
 		/**
 		 * 禁止dorado.Entity将消息发送给其观察者。
 		 * <p>
@@ -289,27 +289,27 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		disableObservers: function() {
 			this._disableObserversCounter++;
 		},
-		
+
 		/**
 		 * 允许dorado.Entity将消息发送给其观察者。
 		 */
 		enableObservers: function() {
 			if (this._disableObserversCounter > 0) this._disableObserversCounter--;
 		},
-		
+
 		/**
 		 * 通知dorado.Entity的观察者刷新数据。
 		 */
 		notifyObservers: function() {
 			this.sendMessage(0);
 		},
-		
+
 		sendMessage: function(messageCode, arg) {
 			if (this._disableObserversCounter == 0 && this._observer) {
 				this._observer.entityMessageReceived(messageCode, arg);
 			}
 		},
-		
+
 		/**
 		 * 设置实体对象的状态。
 		 * @param {int} state 状态。
@@ -335,7 +335,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			this.state = state;
 			this.timestamp = dorado.Core.getTimestamp();
-			
+
 			var entityList = this.parent;
 			if (entityList && entityList instanceof dorado.EntityList) {
 				var page = this.page;
@@ -350,22 +350,23 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (dataType && !this.disableEvents) dataType.fireEvent("onStateChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED, eventArg);
 		},
-		
+
 		_get: function(property, propertyDef, callback, loadMode) {
 
 			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
 				if (value && typeof (value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent == entity) return value;
-				
+
 				var dataType = propertyDef.get("dataType");
 				if (dataType == null) return value;
 
-				var originValue = value; 
+				var originValue = value;
 				value = dataType.parse(originValue, propertyDef.get("typeFormat"));
 				replaceValue = replaceValue &&
 					((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent !== entity);
 
 				if ((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent != this) {
 					value.parent = entity;
+					value.timestamp = dorado.Core.getTimestamp();
 					value.parentProperty = property;
 					value._setObserver(entity._observer);
 				}
@@ -378,12 +379,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 						if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
 							oldValue.parent = null;
+							oldValue.timestamp = dorado.Core.getTimestamp();
 							oldValue._setObserver(null);
 						}
 
 						entity._data[propertyDef._name] = value;
 					}
-					
+
 					var eventArg = {};
 					if (value instanceof dorado.Entity) {
 						eventArg.entity = value;
@@ -401,7 +403,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 				return value;
 			}
-			
+
 			var value = this._data[property], invokeCallback = true;
 			if (value === undefined) {
 				if (propertyDef) {
@@ -436,7 +438,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 										if (isNewPipe) {
 											this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
 										}
-												
+
 										if (success) {
 											eventArg.data = result;
 
@@ -476,11 +478,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 										if (callback) $callback(callback, success, result);
 									}
 								});
-								
+
 								this._data[property] = dataPipeWrapper = {
 									isDataPipeWrapper : true,
 									pipe : pipe
-								};	
+								};
 								if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
 								invokeCallback = false;
 							} else {
@@ -499,7 +501,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (aggregationDataType instanceof dorado.AggregationDataType) {
 							value = transferAndReplaceIf(this, propertyDef, [], false);
 							value.isNull = true;;
-							
+
 							if (dataPipeWrapper) {
 								dataPipeWrapper.value = value;
 							} else if (loadMode != "never") {
@@ -520,11 +522,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
 							throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
 						}
-						
+
 						try {
 							value = pipe.get();
 							pipe.abort(true, value);
-						} 
+						}
 						catch (e) {
 							pipe.abort(false, e);
 							throw e;
@@ -557,7 +559,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (invokeCallback && callback) $callback(callback, true, value);
 			return value;
 		},
-		
+
 		/**
 		 * 根据名称返回某属性对应的PropertyDef。
 		 * @param {String} property
@@ -573,7 +575,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return propertyDef;
 		},
-		
+
 		/**
 		 * 获取属性值。
 		 * <p>
@@ -611,7 +613,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return result;
 		},
-		
+
 		/**
 		 * 以异步操作的方式获取属性值。
 		 * <p>
@@ -664,7 +666,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			_getAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
-		
+
 		doGetText: function(property, callback, loadMode) {
 			function toText(value, propertyDef) {
 				var text;
@@ -708,7 +710,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return text;
 			}
 		},
-		
+
 		/**
 		 * 获取属性的文本值。
 		 * <p>
@@ -743,7 +745,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return result;
 		},
-		
+
 		/**
 		 * 以异步方式获取属性的文本值。
 		 * @param {String} property 要获取的属性名。
@@ -793,7 +795,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			_getTextAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
-		
+
 		storeOldData: function() {
 			if (this._oldData) return;
 			var data = this._data, oldData = this._oldData = {};
@@ -805,7 +807,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			}
 		},
-		
+
 		_validateProperty: function(dataType, propertyDef, propertyInfo, value, preformAsyncValidator) {
 			var messages = [], property = propertyDef._name, validating, propertyDataType = propertyDef.get("dataType");
 			if (propertyDef._required && !dataType._validatorsDisabled) {
@@ -818,10 +820,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				}
-				
+
 				if (!hasRequiredValidator) {
 					if (typeof value == "string") value = jQuery.trim(value);
-					var blank = false;				
+					var blank = false;
 					if (value === undefined || value === null || value === "") {
 						if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
 							blank = !value;
@@ -833,7 +835,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					else if (value instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
 						blank = !value.entityCount;
 					}
-					
+
 					if (blank) {
 						messages.push({
 							state: "error",
@@ -852,13 +854,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					});
 				}
 			}
-			
+
 			if (propertyDef._validators && !dataType._validatorsDisabled) {
 				var entity = this, currentValue = value, validateArg = {
 					property: property,
 					entity: entity
 				}, oldData = this._oldData;
-				
+
 				var valueForValidator = entity.get(property, "never");
 				propertyInfo.validating = propertyInfo.validating || 0;
 				for (var i = 0; i < propertyDef._validators.length; i++) {
@@ -866,22 +868,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (!validator._revalidateOldValue && oldData && currentValue == oldData[property]) {
 						continue;
 					}
-					
+
 					if (validator instanceof dorado.validator.RemoteValidator && validator._async && preformAsyncValidator) {
 						propertyInfo.validating++;
 						validator.validate(valueForValidator, validateArg, {
 							callback: function(success, result) {
 								if (propertyInfo.validating <= 0) return;
-								
+
 								propertyInfo.validating--;
 								if (propertyInfo.validating <= 0) {
 									propertyInfo.validating = 0;
 									propertyInfo.validated = true;
 								}
-								
+
 								if (success) {
 									if (entity._data[property] != currentValue) return;
-									
+
 									var originMessages = propertyInfo.messages;
 									var messages = dorado.Toolkits.trimMessages(result, DEFAULT_VALIDATION_RESULT_STATE);
 									if (originMessages) {
@@ -889,7 +891,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									}
 									entity.doSetMessages(property, messages);
 								}
-								
+
 								if (entity._data[property] == currentValue) {
 									entity.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
 										entity: entity,
@@ -912,22 +914,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
-			
+
 			this.doSetMessages(property, messages);
-			
+
 			if (!propertyInfo.validating) {
 				propertyInfo.validated = true;
 			}
 			return messages;
 		},
-		
+
 		_set: function(property, value, propertyDef) {
 			var oldValue = this._data[property];
 			if (oldValue && oldValue instanceof dorado.Entity && value && !(value instanceof dorado.Entity) && typeof value == "object") {
 				oldValue.set(value);
 				return;
 			}
-			
+
 			var eventArg = {
 				entity : this,
 				property : property,
@@ -948,6 +950,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (oldValue && oldValue.isDataPipeWrapper) oldValue = oldValue.value;
 			if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
 				oldValue.parent = null;
+				oldValue.timestamp = dorado.Core.getTimestamp();
 				oldValue._setObserver(null);
 			}
 
@@ -959,6 +962,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					throw new dorado.ResourceException("dorado.data.ValueNotFree", (( value instanceof dorado.Entity) ? "Entity" : "EntityList"));
 				}
 				value.parent = this;
+				value.timestamp = dorado.Core.getTimestamp();
 				value.parentProperty = property;
 				value._setObserver(this._observer);
 
@@ -966,7 +970,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else {
 				var ov = this._oldData ? this._oldData[property] : oldValue;
 				propertyInfo.isDirty = (ov != value);
-				
+
 				if (value && typeof value == "object" && value.$state === undefined && propertyDef && propertyDef.get("dataType") instanceof dorado.EntityDataType) {
 					value = dorado.Object.apply({
 						$state: dorado.Entity.STATE_NEW
@@ -997,7 +1001,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						state : "ok"
 					}];
 				}
-				this.doSetMessages(property, messages);				
+				this.doSetMessages(property, messages);
 
 				if (this.state == dorado.Entity.STATE_NONE) {
 					this.setState(dorado.Entity.STATE_MODIFIED);
@@ -1007,7 +1011,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
-		
+
 		_dispatchOperationToSubEntity: function(property, create, method, args) {
 			var i = property.indexOf('.');
 			var property1 = property.substring(0, i), property2 = property.substring(i + 1);
@@ -1017,7 +1021,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return subEntity[method].apply(subEntity, [property2].concat(args));
 			}
 		},
-		
+
 		/**
 		 * 设置属性值。
 		 * @param {String} property 此参数具有下列两种设置方式：
@@ -1052,10 +1056,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * 	</li>
 		 * </ul>
 		 * @param {Object} value 要设置的属性值。
-		 * @return 
+		 * @return
 		 */
 		set: function(property, value) {
-			
+
 			function doSet(entity, property, value) {
 				if (!entity.ignorePropertyPath && property.indexOf('.') > 0) {
 					entity._dispatchOperationToSubEntity(property, true, "set", [value]);
@@ -1070,7 +1074,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					entity._set(property, value, propertyDef);
 				}
 			}
-			
+
 			if (property.constructor != String) {
 				this.disableObservers();
 				try {
@@ -1092,7 +1096,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return this;
 		},
-		
+
 		/**
 		 * 以文本方式设置属性的值。
 		 * <p>
@@ -1117,7 +1121,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this._set(property, value, propertyDef);
 			}
 		},
-		
+
 		/**
 		 * 取消对当前数据实体的各种数据操作。
 		 * <ul>
@@ -1130,7 +1134,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {boolean} deep 是否执行深度撤销。即一并撤销所有子实体（包括子实体中的子实体）的修改。
 		 */
 		cancel: function(deep) {
-			
+
 			function deepCancel(entity) {
 				var data = entity._data;
 				for(var p in data) {
@@ -1142,7 +1146,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
-			
+
 			if (this.state == dorado.Entity.STATE_NEW) {
 				this.remove();
 			} else if (this.state != dorado.Entity.STATE_NONE) {
@@ -1161,11 +1165,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				}
-				
+
 				var oldState = this.state;
-				
+
 				if (deep) deepCancel(this);
-				
+
 				if (oldState != dorado.Entity.STATE_MOVED) this.resetState();
 				if (oldState == dorado.Entity.STATE_DELETED && this.parent && this.parent instanceof dorado.EntityList) {
 					var entityList = this.parent;
@@ -1180,7 +1184,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				deepCancel(this);
 			}
 		},
-		
+
 		resetState: function() {
 			this._propertyInfoMap = {};
 			delete this._messages;
@@ -1188,7 +1192,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.setState(dorado.Entity.STATE_NONE);
 			delete this._oldData;
 		},
-		
+
 		/**
 		 * 重设实体对象。
 		 * <p>
@@ -1204,11 +1208,19 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					var prop = props[i];
 					if (data[prop] != undefined) {
 						var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(prop) : null;
-						if (propertyDef && propertyDef instanceof dorado.Reference) delete data[prop];
+						if (propertyDef && propertyDef instanceof dorado.Reference) {
+							var oldValue = data[prop];
+							if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+								oldValue.parent = null;
+								oldValue.timestamp = dorado.Core.getTimestamp();
+								oldValue._setObserver(null);
+							}
+							delete data[prop];
+						}
 					}
-					
-					this.doSetMessages(prop, null);	
-					
+
+					this.doSetMessages(prop, null);
+
 					var propertyInfo = this._propertyInfoMap[prop];
 					delete propertyInfo.validating;
 					delete propertyInfo.validated;
@@ -1216,16 +1228,24 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.timestamp = dorado.Core.getTimestamp();
 			} else {
 				this._propertyDefs.each(function(propertyDef) {
-					if (propertyDef instanceof dorado.Reference) delete data[propertyDef._name];
+					if (propertyDef instanceof dorado.Reference) {
+						var oldValue = data[propertyDef._name];
+						if (oldValue instanceof dorado.Entity || oldValue instanceof dorado.EntityList) {
+							oldValue.parent = null;
+							oldValue.timestamp = dorado.Core.getTimestamp();
+							oldValue._setObserver(null);
+						}
+						delete data[propertyDef._name];
+					}
 				});
-				
+
 				this._propertyInfoMap = {};
 				delete this._messages;
 				delete this._messageState;
 			}
 			this.sendMessage(0);
 		},
-		
+
 		/**
 		 * 创建并返回一个兄弟实体对象。即创建一个与本实体对象相同类型的新实体对象。
 		 * @param {Object|dorado.Entity} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
@@ -1237,7 +1257,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		createBrother: function(data, detached) {
 			if (data instanceof dorado.Entity) data = data.getData();
-			
+
 			var brother = new dorado.Entity(null, this.dataTypeRepository, this.dataType);
 			if (data) brother.set(data);
 			if (!detached && this.parent instanceof dorado.EntityList) {
@@ -1245,7 +1265,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return brother;
 		},
-		
+
 		/**
 		 * 创建并返回一个子实体对象。
 		 * @param {String} property 子实体对象对应的属性名。
@@ -1259,7 +1279,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		createChild: function(property, data, detached) {
 			if (data instanceof dorado.Entity) data = data.getData();
-			
+
 			var child = null;
 			if (this.dataType) {
 				var propertyDef = this.getPropertyDef(property);
@@ -1300,7 +1320,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return child;
 		},
-		
+
 		/**
 		 * 返回与当前数据实体平级的前一个数据实体。
 		 * <p>注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。</p>
@@ -1309,13 +1329,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		getPrevious: function() {
 			var entityList = this.parent;
 			if (!entityList || !(entityList instanceof dorado.EntityList)) return null;
-			
+
 			var page = this.page;
 			var entry = page.findEntry(this);
 			entry = entityList._findPreviousEntry(entry);
 			return (entry) ? entry.data : null;
 		},
-		
+
 		/**
 		 * 返回与当前数据实体平级的下一个数据实体。
 		 * <p>注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。</p>
@@ -1324,13 +1344,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		getNext: function() {
 			var entityList = this.parent;
 			if (!entityList || !(entityList instanceof dorado.EntityList)) return null;
-			
+
 			var page = this.page;
 			var entry = page.findEntry(this);
 			entry = entityList._findNextEntry(entry);
 			return (entry) ? entry.data : null;
 		},
-		
+
 		/**
 		 * 将此数据实体设置为其目前所在的实体集合中的当前实体。
 		 * <p>
@@ -1348,12 +1368,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else {
 				parentEntity = this.parent;
 			}
-			
+
 			if (cascade && parentEntity && parentEntity instanceof dorado.Entity) {
 				parentEntity.setCurrent(true);
 			}
 		},
-		
+
 		/**
 		 * 清空本数据实体中所有的数据。
 		 */
@@ -1366,7 +1386,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
-		
+
 		/**
 		 * 将给定的JSON对象中的数据转换成为数据实体。
 		 * @param {Object} json 要转换的JSON对象。
@@ -1379,7 +1399,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
-		
+
 		/**
 		 * 将实体对象转换成一个JSON数据对象。
 		 * @param {Object} [options] 转换选项。
@@ -1416,7 +1436,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			includeUnsubmittableProperties = includeReferenceProperties = true, loadMode = "never";
 			simplePropertyOnly = generateDataType = generateState = generateEntityId = generateOldData = false;
 			properties = entityFilter = null;
-			
+
 			if (options != null) {
 				if (options.includeUnsubmittableProperties === false) includeUnsubmittableProperties = false;
 				if (options.includeReferenceProperties === false) includeReferenceProperties = false;
@@ -1436,23 +1456,23 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (!data.hasOwnProperty(property)) continue;
 				if (property.charAt(0) == '$') continue;
 				if (properties && properties.indexOf(property) < 0) continue;
-				
+
 				var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
 				if (propertyDef && simplePropertyOnly) {
 					var pdt = propertyDef.getDataType("never");
 					if (pdt && (pdt instanceof dorado.EntityDataType || pdt instanceof dorado.AggregationDataType)) continue;
 				}
-				
+
 				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable) continue;
 				if (propertyDef instanceof dorado.Reference) {
 					if (!includeReferenceProperties) continue;
 				}
-				
+
 				var value = this._get(property, propertyDef, null, loadMode);
 				if (value != null) {
 					if (value instanceof dorado.Entity) {
 						if (simplePropertyOnly) continue;
-					
+
 						if (!entityFilter || entityFilter(value)) {
 							value = value.toJSON(options, context);
 						} else {
@@ -1466,7 +1486,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (!oldDataHolder) oldDataHolder = {};
 					oldDataHolder[property] = oldData[property];
 				}
-				
+
 				result[property] = value;
 			}
 
@@ -1478,12 +1498,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (context && context.entities) context.entities.push(this);
 			return result;
 		},
-		
+
 		/**
 		 * 将实体对象转换成一个可以以类似JSON方式来读写的代理对象。
 		 * @param {Object} [options] 转换选项。
-		 * @param {boolean} [options.textMode=false] 是否代理Entity的getText方法。该选项默认值为false，表示代理Entity的get方法。 
-		 * @param {boolean} [options.readOnly=false] 是否以只读方式代理Entity。该选项默认值为false。 
+		 * @param {boolean} [options.textMode=false] 是否代理Entity的getText方法。该选项默认值为false，表示代理Entity的get方法。
+		 * @param {boolean} [options.readOnly=false] 是否以只读方式代理Entity。该选项默认值为false。
 		 * @param {boolean} [options.includeUnloadPage=false] 是否处理{@link dorado.EntityList}中尚未装载的页中的数据。
 		 * 此属性对于{@link dorado.Entity}的getWrapper而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的getWrapper方法中，
 		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
@@ -1497,11 +1517,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					this._textMode = options && options.textMode;
 					this._readOnly = options && options.readOnly;
 				}, wrapperPrototype = wrapperType.prototype;
-				
+
 				var data = this._data, textMode = options && options.textMode;
 				for (var property in data) {
 					if (!data.hasOwnProperty(property)) continue;
-					
+
 					var getter = function() {
 						var value;
 						if (this._textMode) {
@@ -1521,12 +1541,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 						this._entity.set(property, value);
 					};
-					
+
 					try {
-						wrapperPrototype.__defineGetter__(property, getter);	
-						wrapperPrototype.__defineSetter__(property, setter);		
+						wrapperPrototype.__defineGetter__(property, getter);
+						wrapperPrototype.__defineSetter__(property, setter);
 					} catch (e) {
-						Object.defineProperty(wrapperPrototype, property, {  
+						Object.defineProperty(wrapperPrototype, property, {
 					        get: getter,
 					        set: setter
 					    });
@@ -1538,11 +1558,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return new wrapperType(this, options);
 		},
-		
+
 		getData: function() {
 			return this._data;
 		},
-		
+
 		/**
 		 * 返回数据实体内部用于保存原有属性值的JSON对象。
 		 * @return {Object} JSON对象。<br>
@@ -1551,7 +1571,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		getOldData: function() {
 			return this._oldData;
 		},
-		
+
 		/**
 		 * 返回当前数据实体关联的额外信息的数组。
 		 * @param {String} [property] 属性名。
@@ -1574,7 +1594,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return results;
 		},
-		
+
 		doSetMessages: function(property, messages) {
 
 			function getMessageState(entity) {
@@ -1602,7 +1622,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				if (this._messages == messages) return false;
 				this._messages = messages;
-				
+
 				// if (dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
 				this._messageState = getMessageState(this);
 				retval = true;
@@ -1612,12 +1632,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				var propertyInfo = map[property];
 				if (propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages) return false;
-				
+
 				var state = dorado.Toolkits.getTopMessageState(messages);
 				if (!propertyInfo) map[property] = propertyInfo = {};
 				propertyInfo.state = state;
 				propertyInfo.messages = messages;
-				
+
 				// if (state != this._messageState || state != (propertyInfo ? propertyInfo.state : null)) {
 				this._messageState = getMessageState(this);
 				retval = true;
@@ -1634,7 +1654,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return retval;
 		},
-		
+
 		/**
 		 * 设置当前数据实体关联的额外信息的数组。
 		 * <p>
@@ -1667,7 +1687,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return retval;
 		},
-		
+
 		/**
 		 * 返回当前数据实体中最高的信息级别。即系统认为error高于warn高于ok高于info。
 		 * @param {String} [property] 属性名。
@@ -1684,7 +1704,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return this._messageState;
 			}
 		},
-		
+
 		/**
 		 * 返回数据实体中某属性校验状态。
 		 * @param {Object} property 属性名。
@@ -1713,7 +1733,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return state;
 		},
-		
+
 		/**
 		 * 验证此数据实体中的数据当前是否是有效的，即是否可以被提交保存。
 		 * <p>
@@ -1777,7 +1797,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var preformAsyncValidator = (options ? options.preformAsyncValidator : false);
 			var context = options ? options.context : null;
 			var result, topResult, resultCode, topResultCode = -1, hasValidated = false;
-			
+
 			if (force) {
 				if (property) {
 					delete this._propertyInfoMap[property];
@@ -1798,13 +1818,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				context.executing = [];
 				context.executingValidationNum = 0;
 			}
-			
+
 			if (dataType) {
 				var entity = this;
 				var doValidate = function(pd) {
 					var property = pd._name, propertyInfo = propertyInfoMap[property];
 					if (property.charAt(0) == '$') return;
-					
+
 					if (propertyInfo) {
 						if (propertyInfo.validating) {
 							if (context) {
@@ -1826,7 +1846,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					} else {
 						propertyInfoMap[property] = propertyInfo = {};
 					}
-					
+
 					var value = entity._data[property];
 					hasValidated = true;
 					var messages = entity._validateProperty(dataType, pd, propertyInfo, value, preformAsyncValidator);
@@ -1834,7 +1854,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						addMessages2Context(context, entity, property, messages);
 					}
 				};
-				
+
 				if (property) {
 					var pd = this.getPropertyDef(property);
 					if (pd) doValidate(pd);
@@ -1842,7 +1862,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					dataType._propertyDefs.each(doValidate);
 				}
 			}
-			
+
 			if (!simplePropertyOnly) {
 				var data = this._data;
 				var doValidateEntity = function(p) {
@@ -1876,7 +1896,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				};
-				
+
 				if (property) {
 					doValidateEntity(property);
 				} else {
@@ -1886,7 +1906,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
-			
+
 			state = this.getMessageState(property);
 			var acceptState = dataType ? dataType.get("acceptValidationState") : null;
 			if (STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
@@ -1899,12 +1919,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				topResultCode = resultCode;
 				topResult = result;
 			}
-			
+
 			if (context) context.result = topResult;
 			if (hasValidated) this.sendMessage(0);
 			return topResult;
 		},
-		
+
 		/**
 		 * 判断数据实体或数据实体中某属性中是否包含未提交的信息。
 		 * @param {String} [property] 要判断的属性。如果不定义则表示希望判断整个数据实体是否包含未提交的信息。
@@ -1920,7 +1940,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return this.state != dorado.Entity.STATE_NONE;
 			}
 		},
-		
+
 		/**
 		 * 重新装载当前实体中的数据。
 		 */
@@ -1958,7 +1978,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.dataProvider.supportsEntity = oldSupportsEntity;
 			}
 		},
-		
+
 		/**
 		 * 以异步方式重新装载实体中的数据。
 		 * @param {Function|dorado.Callback} callback 回调对象。
@@ -1966,7 +1986,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		flushAsync: function(callback) {
 			this.flush(callback || dorado._NULL_FUNCTION);
 		},
-		
+
 		/**
 		 * 从所属的实体集合{@link dorado.EntityList}中删除本实体对象。
 		 * 如果本实体对象尚不属于任何实体集合，则此方法不会产生实际的作用。
@@ -1979,7 +1999,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.parent.remove(this, detach);
 			}
 		},
-		
+
 		toString: function() {
 			var text;
 			if (this.dataType) {
@@ -2004,7 +2024,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return text;
 		},
-		
+
 		clone: function(deep) {
 			var newData, data = this._data;
 			if (deep) {
