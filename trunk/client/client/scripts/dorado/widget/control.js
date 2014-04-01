@@ -526,9 +526,14 @@
 					delete this._innerControls;
 				}
 
-				if (!dorado.windowClosed && this._parent) {
-					if (this._isInnerControl) this._parent.unregisterInnerControl(this);
-					else this._parent.removeChild(this);
+				if (!dorado.windowClosed){
+					if (this._focused) {
+						dorado.widget.onControlGainedFocus(this.get("focusParent"));
+					}
+					if (this._parent) {
+						if (this._isInnerControl) this._parent.unregisterInnerControl(this);
+						else this._parent.removeChild(this);
+					}
 				}
 
 				if (this._modernScrolled) {

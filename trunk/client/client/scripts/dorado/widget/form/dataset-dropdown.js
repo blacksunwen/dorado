@@ -14,9 +14,9 @@
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @component Trigger
  * @class 支持数据绑定的下拉框。
- * @extends dorado.widget.RowListDropDown
+ * @extends dorado.widget.ListDropDown
  */
-dorado.widget.DataSetDropDown = $extend(dorado.widget.RowListDropDown,/** @scope dorado.widget.DataSetDropDown.prototype */ {
+dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope dorado.widget.DataSetDropDown.prototype */ {
 	$className: "dorado.widget.DataSetDropDown",
 	
 	ATTRIBUTES: /** @scope dorado.widget.DataSetDropDown.prototype */ {
