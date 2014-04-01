@@ -127,11 +127,11 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
     },
 
 	refreshDom: function(dom) {
-		$invokeSuper.call(this, arguments);
 		var fieldset = this;
 	    $fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
-
 		$fly(fieldset._doms.caption).html(fieldset._caption || "&nbsp;");
+		$invokeSuper.call(this, arguments);
+		fieldset._doOnResize();
 	},
 
 	_doOnResize: function(collapsed) {
@@ -154,7 +154,8 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 				if (doms.captionContainer) {
 					captionCtHeight = $fly(doms.captionContainer).outerHeight(true);
 				}
-				$fly(doms.contentPanel).outerHeight(height - captionCtHeight - buttonPanelHeight);
+				var $dom = jQuery(dom), edgeHeight = $dom.edgeHeight();
+				$fly(doms.contentPanel).outerHeight(height - captionCtHeight - buttonPanelHeight - edgeHeight);
 				$fly(dom).height("auto");
 			}
 		}
@@ -291,6 +292,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	    $fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
 		$fly(groupBox._doms.caption).text(groupBox._caption);
         $invokeSuper.call(this, arguments);
+		groupBox._doOnResize();
 	},
 
 	_doOnResize: function(collapsed) {

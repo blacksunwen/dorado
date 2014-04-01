@@ -157,6 +157,11 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		onCollapsedChange: {}
 	},
 
+	doOnResize: function() {
+		this._doOnResize();
+		$invokeSuper.call(this);
+	},
+
 	/**
 	 * @private
 	 */
@@ -800,11 +805,6 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			panel.destroy();
 		}
 		panel.fireEvent("onClose", panel);
-	},
-
-	doOnResize: function() {
-		this._doOnResize();
-		$invokeSuper.call(this);
 	},
 
 	_doOnResize: function (collapsed) {
