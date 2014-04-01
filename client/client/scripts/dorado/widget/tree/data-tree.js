@@ -278,6 +278,8 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				if (node._data) expandedNodes[node._data.entityId] = !!node._expanded;
 			}
 
+			this._nodesData = entity;
+			this._nodesTimestamp = entity.timestamp;
 			if (entity instanceof dorado.EntityList) {
 				for (var it = entity.iterator({ currentPage: true }); it.hasNext();) {
 					var d = it.next();
@@ -323,7 +325,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			});
 		}
 		if (!data) {
-			this._clearChildren();
+			this.clearChildren();
 			return;
 		}
 
@@ -394,7 +396,6 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				}
 
 				if (self._nodesTimestamp != nodesTimestamp) {
-					self._nodesTimestamp = nodesTimestamp;
 					self._visibleChildNodeCount = 0;
 					var startIndex = 0;
 
@@ -423,7 +424,8 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		});
 	},
 
-	_clearChildren: function() {
+	resetChildren: function() {
+		this._nodes.clear();
 		delete this._nodesTimestamp;
 		this._childrenPrepared = false;
 	},
@@ -448,7 +450,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 
 	doCollapse: function() {
 		$invokeSuper.call(this, arguments);
-		this._clearChildren();
+		this.resetChildren();
 	}
 });
 
