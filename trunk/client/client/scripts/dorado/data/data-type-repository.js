@@ -49,9 +49,9 @@
 		 * @param {String} [loadMode="always"] 装载模式。<br>
 		 * 包含下列三种取值:
 		 * <ul>
-		 * <li>always    -    如果有需要总是装载尚未装载的DataType。</li>
-		 * <li>auto    -    如果有需要则自动启动异步的DataType装载过程，但对于本次方法调用将返回undefined。</li>
-		 * <li>never    -    不会激活DataType的装载过程。</li>
+		 * <li>always	-	如果有需要总是装载尚未装载的DataType。</li>
+		 * <li>auto	-	如果有需要则自动启动异步的DataType装载过程，但对于本次方法调用将返回undefined。</li>
+		 * <li>never	-	不会激活DataType的装载过程。</li>
 		 * </ul>
 		 * @return {dorado.DataType} 装载到的DataType。
 		 */
@@ -64,9 +64,9 @@
 		 * @param {String} [loadMode="always"] 装载模式。<br>
 		 * 包含下列三种取值:
 		 * <ul>
-		 * <li>always    -    如果有需要总是装载尚未装载的DataType。</li>
-		 * <li>auto    -    对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
-		 * <li>never    -    不会激活DataType的装载过程。</li>
+		 * <li>always	-	如果有需要总是装载尚未装载的DataType。</li>
+		 * <li>auto	-	对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
+		 * <li>never	-	不会激活DataType的装载过程。</li>
 		 * </ul>
 		 * @param {dorado.Callback} callback 回调对象，传入回调对象的参数即为装载到的DataType。
 		 */
@@ -84,19 +84,16 @@
 		var origin = dataTypeRepository._get(name);
 		if (origin instanceof dorado.DataType) {
 			return origin;
-		}
-		else {
+		} else {
 			if (origin && origin != DataTypeRepository.UNLOAD_DATATYPE) {
 				return dataTypeRepository.get(name);
-			}
-			else {
+			} else {
 				var subId = dorado.DataType.getSubName(id);
 				if (subId) {
 					var aggDataType = newAggDataType.call(dataTypeRepository, name, subId);
 					aggDataType.set("id", id);
 					return aggDataType;
-				}
-				else {
+				} else {
 					dataTypeRepository.register(name);
 					return new dorado.LazyLoadDataType(dataTypeRepository, id);
 				}
@@ -109,16 +106,14 @@
 			var repository;
 			if (this.getDataTypeRepository) {
 				repository = this.getDataTypeRepository();
-			}
-			else if (this.ATTRIBUTES && this.ATTRIBUTES.dataTypeRepository) {
+			} else if (this.ATTRIBUTES && this.ATTRIBUTES.dataTypeRepository) {
 				repository = this.get("dataTypeRepository");
 			}
 			if (!repository) repository = dorado.DataTypeRepository.ROOT;
 
 			if (repository) {
 				dataType = dorado.LazyLoadDataType.create(repository, dataType);
-			}
-			else {
+			} else {
 				throw new dorado.ResourceException("dorado.data.RepositoryUndefined");
 			}
 		}
@@ -127,14 +122,11 @@
 		if (loadMode == "always") {
 			if (dataType instanceof dorado.AggregationDataType) {
 				dataType.getElementDataType();
-			}
-			else if (dataType instanceof dorado.LazyLoadDataType) dataType = dataType.get();
-		}
-		else if (loadMode == "auto") {
+			} else if (dataType instanceof dorado.LazyLoadDataType) dataType = dataType.get();
+		} else if (loadMode == "auto") {
 			if (dataType instanceof dorado.AggregationDataType) {
 				dataType.getElementDataType();
-			}
-			else if (dataType instanceof dorado.LazyLoadDataType) dataType.getAsync();
+			} else if (dataType instanceof dorado.LazyLoadDataType) dataType.getAsync();
 		}
 		if (!(dataType instanceof dorado.DataType)) dataType = null;
 		return dataType;
@@ -186,8 +178,7 @@
 							if (json.$context) {
 								dataTypeJson = json.data;
 								context = json.$context;
-							}
-							else {
+							} else {
 								dataTypeJson = json;
 							}
 
@@ -201,16 +192,14 @@
 							if (context && dataTypeRepository._view) {
 								dataTypeRepository._view.set("context", context);
 							}
-						}
-						else {
+						} else {
 							$callback(callback, false, result.error, {
 								scope: this
 							});
 						}
 					}
 				});
-			}
-			else {
+			} else {
 				dataTypeRepository.unregister(this.name);
 				var result = ajax.requestSync(this.getAjaxOptions());
 				var jsonData = result.getJsonData(), dataType;
@@ -251,7 +240,7 @@
 				interceptor: function(superFire, self, arg) {
 					var retval = superFire(self, arg);
 					if (retval !== false) {
-						for(var i = 0; i < this.children.length; i++) {
+						for (var i = 0; i < this.children.length; i++) {
 							this.children[i].fireEvent(self, arg);
 						}
 					}
@@ -307,8 +296,7 @@
 			delete jsonData.$type;
 			if (type == "Aggregation") {
 				dataType = new dorado.AggregationDataType(name);
-			}
-			else {
+			} else {
 				dataType = new dorado.EntityDataType(name);
 			}
 			if (dataType) {
@@ -323,11 +311,10 @@
 			var n = 0, dataTypeMap = this._dataTypeMap, dataType;
 			if (jsonData instanceof Array) {
 				n = jsonData.length;
-				for(var i = 0; i < n; i++) {
+				for (var i = 0; i < n; i++) {
 					this.register(this.parseSingleDataType(jsonData[i]));
 				}
-			}
-			else {
+			} else {
 				this.register(this.parseSingleDataType(jsonData));
 				n++;
 			}
@@ -346,11 +333,11 @@
 		register: function(name, dataType) {
 			if (name.constructor == String) {
 				dataType = dataType || DataTypeRepository.UNLOAD_DATATYPE;
-			}
-			else {
+			} else {
 				dataType = name;
 				name = name._name;
 			}
+
 			if (this._dataTypeMap[name] instanceof dorado.DataType) return;
 			this._dataTypeMap[name] = dataType;
 			if (dataType instanceof dorado.DataType) {
@@ -390,9 +377,9 @@
 		 * @param {String} [loadMode="always"] 装载模式。<br>
 		 * 包含下列三种取值:
 		 * <ul>
-		 * <li>always    -    如果有需要总是装载尚未装载的DataType。</li>
-		 * <li>auto    -    如果有需要则自动启动异步的DataType装载过程，但对于本次方法调用将返回undefined。</li>
-		 * <li>never    -    不会激活DataType的装载过程。</li>
+		 * <li>always	-	如果有需要总是装载尚未装载的DataType。</li>
+		 * <li>auto	-	如果有需要则自动启动异步的DataType装载过程，但对于本次方法调用将返回undefined。</li>
+		 * <li>never	-	不会激活DataType的装载过程。</li>
 		 * </ul>
 		 * @return {dorado.DataType} 数据类型。
 		 */
@@ -404,29 +391,21 @@
 				if (subId) {
 					dataType = newAggDataType.call(this, name, subId);
 					dataType.set("id", id);
-				}
-				else {
+				} else {
 					loadMode = loadMode || "always";
 					if (loadMode == "always") {
 						var pipe = new dorado.DataTypePipe(this, id);
 						dataType = pipe.get();
-					}
-					else {
+					} else {
 						if (loadMode == "auto") this.getAsync(id);
 						dataType = null;
 					}
 				}
-			}
-			else if (dataType instanceof dorado.DataTypePipe) { // 正在下载的
+			} else if (dataType instanceof dorado.DataTypePipe) { // 正在下载的
 				var pipe = dataType;
-				if (loadMode == "always") {
-					dataType = pipe.get(callback);
-				}
-				else {
-					dataType = null;
-				}
-			}
-			else if (!dataType) { // 不认识的
+				if (loadMode == "always") dataType = pipe.get(callback);
+				else dataType = null;
+			} else if (!dataType) { // 不认识的
 				var subId = dorado.DataType.getSubName(id);
 				if (subId) {
 					dataType = newAggDataType.call(this, name, subId);
@@ -444,9 +423,9 @@
 		 * @param {String} [loadMode="always"] 装载模式。<br>
 		 * 包含下列三种取值:
 		 * <ul>
-		 * <li>always    -    如果有需要总是装载尚未装载的DataType。</li>
-		 * <li>auto    -    对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
-		 * <li>never    -    不会激活DataType的装载过程。</li>
+		 * <li>always	-	如果有需要总是装载尚未装载的DataType。</li>
+		 * <li>auto	-	对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
+		 * <li>never	-	不会激活DataType的装载过程。</li>
 		 * </ul>
 		 */
 		getAsync: function(name, callback, loadMode) {
@@ -457,8 +436,7 @@
 				if (subId) {
 					dataType = newAggDataType.call(this, name, subId);
 					dataType.set("id", id);
-				}
-				else {
+				} else {
 					loadMode = loadMode || "always";
 					if (loadMode != "never") {
 						var pipe = new dorado.DataTypePipe(this, id);
@@ -466,15 +444,13 @@
 						return;
 					}
 				}
-			}
-			else if (dataType instanceof dorado.DataTypePipe) {
+			} else if (dataType instanceof dorado.DataTypePipe) {
 				var pipe = dataType;
 				if (loadMode != "never") {
 					pipe.getAsync(callback);
 					return;
 				}
-			}
-			else if (!dataType) {
+			} else if (!dataType) {
 				var subId = dorado.DataType.getSubName(id);
 				if (subId) {
 					dataType = newAggDataType.call(this, name, subId);
@@ -488,7 +464,7 @@
 
 			function collect(dataTypeRepository, nameMap) {
 				var map = dataTypeRepository._dataTypeMap;
-				for(var name in map) {
+				for (var name in map) {
 					var dt = map[name];
 					if (dt.loadFromServer && !(dt instanceof dorado.AggregationDataType)) nameMap[name] = true;
 				}
@@ -497,7 +473,7 @@
 
 			var nameMap = {}, result = [];
 			collect(this, nameMap);
-			for(var name in nameMap)
+			for (var name in nameMap)
 				result.push(name);
 			return result;
 		}
