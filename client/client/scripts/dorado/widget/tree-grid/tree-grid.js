@@ -81,7 +81,7 @@
 					style: {
 						position: "relative",
 						overflowX: "hidden",
-						overflowY: "visible"
+						overflowY: "hidden"
 					},
 					content: [{
 						tagName: "LABEL",
