@@ -263,6 +263,7 @@
 			this._destroyed = true;
 			this.fireEvent("onDestroy", this);
 			if (!dorado.windowClosed) {
+				if (this._id && this._view) this._view.unregisterComponent(this._id);
 				delete dorado.widget.Component.ALL[this._uniqueId];
 			}
 		},
