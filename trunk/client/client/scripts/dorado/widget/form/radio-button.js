@@ -67,7 +67,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	
 	onClick: function(event) {
 		var radioButton = this;
-        if (event.target == radioButton._dom) return;
+		if (event.target == radioButton._dom) return;
 		if (!radioButton._isReadOnly()) {
 			if (!radioButton._checked) {
 				radioButton._checked = true;
@@ -102,31 +102,31 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 			content: [{
 				tagName: "span",
 				className: "icon",
-                contextKey: "icon"
+				contextKey: "icon"
 			}, {
 				tagName: "span",
 				className: "text",
-                contextKey: "text",
+				contextKey: "text",
 				content: radioButton._text
 			}]
 		}, null, doms);
 
-        radioButton._doms = doms;
+		radioButton._doms = doms;
 
 		$fly([doms.icon, doms.text]).hover(function() {
-            if (!radioButton._isReadOnly())
-                $fly(dom).addClass(radioButton._className + "-hover");
-        }, function() {
-            if (!radioButton._isReadOnly())
-                $fly(dom).removeClass(radioButton._className + "-hover");
+			if (!radioButton._isReadOnly())
+				$fly(dom).addClass(radioButton._className + "-hover");
+		}, function() {
+			if (!radioButton._isReadOnly())
+				$fly(dom).removeClass(radioButton._className + "-hover");
 		}).mousedown(function(event) {
-            if (!radioButton._isReadOnly())
-                $fly(dom).addClass(radioButton._className + "-click");
-            $(document).one("mouseup", function() {
-                if (!radioButton._isReadOnly())
-                    $fly(dom).removeClass(radioButton._className + "-click");
-            });
-        });
+			if (!radioButton._isReadOnly())
+				$fly(dom).addClass(radioButton._className + "-click");
+			$(document).one("mouseup", function() {
+				if (!radioButton._isReadOnly())
+					$fly(dom).removeClass(radioButton._className + "-click");
+			});
+		});
 		
 		return dom;
 	},
@@ -143,8 +143,8 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
  * @extends dorado.widget.AbstractDataEditor
  */
 dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.RadioGroup.prototype */ {
-    $className: "dorado.widget.RadioGroup",
-    _inherentClassName: "i-radiogroup",
+	$className: "dorado.widget.RadioGroup",
+	_inherentClassName: "i-radiogroup",
 	
 	ATTRIBUTES: /** @scope dorado.widget.RadioGroup.prototype */ {
 		className: {
@@ -357,52 +357,50 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		
 		var currentValue = radioGroup._value;
 		radioGroup._value = value;
-		try {
-			radioGroup.post();
-		} 
-		catch (e) {
+
+		var postResult = radioGroup.post();
+		if (postResult == false) {
 			radioGroup._value = currentValue;
 			if (radioButton) {
 				radioButton._checked = false;
 				radioButton.refresh();
 			}
-			throw e;
 		}
-		
+
 		this._setValue(radioButton);
 		radioGroup.fireEvent("onValueChange", radioGroup, {});
 	},
 
-    post: function(force, silent) {
-        try {
-            var modified = (this._lastPost != this._value);
-            if (force || modified) {
-                this._lastPost = this._value;
-                var eventArg = {
-                    processDefault: true
-                };
-                this.fireEvent("beforePost", this, eventArg);
-                if (eventArg.processDefault === false) return false;
-                if (this.doPost) this.doPost();
-                this.fireEvent("onPost", this);
-            }
-            return true;
-        }
-        catch (e) {
-            var eventArg = {
-                exception: e,
-                processDefault: true
-            };
-            this.fireEvent("onPostFailed", this, eventArg);
-            if (eventArg.processDefault && !silent) {
-                dorado.Exception.processException(e);
-            } else {
-                dorado.Exception.removeException(e);
-            }
+	post: function(force, silent) {
+		try {
+			var modified = (this._lastPost != this._value);
+			if (force || modified) {
+				this._lastPost = this._value;
+				var eventArg = {
+					processDefault: true
+				};
+				this.fireEvent("beforePost", this, eventArg);
+				if (eventArg.processDefault === false) return false;
+				if (this.doPost) this.doPost();
+				this.fireEvent("onPost", this);
+			}
+			return true;
+		}
+		catch (e) {
+			var eventArg = {
+				exception: e,
+				processDefault: true
+			};
+			this.fireEvent("onPostFailed", this, eventArg);
+			if (eventArg.processDefault && !silent) {
+				dorado.Exception.processException(e);
+			} else {
+				dorado.Exception.removeException(e);
+			}
 
-            return false;
-        }
-    },
+			return false;
+		}
+	},
 	
 	createDom: function() {
 		var radioGroup = this, layout = radioGroup._layout, radioButtons = radioGroup._radioButtons;
@@ -442,11 +440,11 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 				
 				if (bindingInfo.propertyDef) {
-                    var oldMapping = group._propertyDefMapping, mapping = bindingInfo.propertyDef._mapping;
+					var oldMapping = group._propertyDefMapping, mapping = bindingInfo.propertyDef._mapping;
 					if ((oldMapping || mapping) && (oldMapping != mapping)) {
 						var radioButtons = [];
 						if (mapping) {
-                            group._propertyDefMapping = mapping;
+							group._propertyDefMapping = mapping;
 							for (var i = 0; i < mapping.length; i++) {
 								var item = mapping[i];
 								radioButtons.push({
@@ -460,7 +458,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 			}
 			group.setValue(value);
-            group._lastPost = value;
+			group._lastPost = value;
 			group.setDirty(dirty);
 		}
 		

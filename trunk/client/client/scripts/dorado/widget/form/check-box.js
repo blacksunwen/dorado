@@ -153,7 +153,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 	//event: 传入true强制执行onClick，用来响应键盘事件。
 	onClick: function(event) {
 		var checkBox = this;
-		
+
 		if (checkBox._readOnly || this._readOnly2) {
 			return;
 		}
@@ -173,13 +173,11 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 			checkBox._checked = !checkBox._checked;
 		}
 		
-		try {
-			checkBox.post();
-		} 
-		catch (e) {
+		var postResult = checkBox.post();
+		if (postResult == false) {
 			checkBox._checked = checked;
-			throw e;
 		}
+
 		checkBox.refresh();
 		checkBox.fireEvent("onValueChange", checkBox);
 	},
@@ -201,6 +199,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		}
 		catch (e) {
 			dorado.Exception.processException(e);
+			return false;
 		}
 	},
 
