@@ -193,18 +193,16 @@
 }
 
 .i-form-element .form-hint {
-	position: absolute;
 }
 
 .i-form-element .form-hint-right {
+	position: absolute;
 	top: 0;
 	right: 0;
 	height: 100%;
 }
 
 .i-form-element .form-hint-bottom {
-	bottom: 0;
-	left: 0;
 	width: 100%;
 }
 
