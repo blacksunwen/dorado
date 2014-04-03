@@ -29,7 +29,7 @@ self.set('content',dom);&#xD;
 </Property>
     </HtmlContainer>
     <Tip layoutConstraint="left:40;anchorTop:previous;top:20">
-      <Property name="content">&lt;div class=&quot;console-tip&quot;>&lt;p>  当前应用尚未激活Dorado管理控制台。可在configure.properties添加配置项console.enabled=true进行激活。
+      <Property name="content">&lt;div class=&quot;console-tip&quot;>&lt;p>  当前应用尚未激活Dorado管理控制台。可在configure.properties添加配置项&lt;code>console.enabled=true&lt;/code>进行激活。
 &lt;/p>&lt;div>&lt;a href=&quot;http://wiki.bsdn.org/x/HIA8AQ&quot; target=&quot;_blank&quot;>使用文档……&lt;/a>&lt;/div>&lt;/div>
 
 </Property>

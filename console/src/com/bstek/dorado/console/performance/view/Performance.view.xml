@@ -181,7 +181,6 @@
             </DataColumn>
           </DataGrid>
           <ToolBar layoutConstraint="bottom">
-            <Property name="height">30</Property>
             <ToolBarLabel>
               <Property name="width">10</Property>
             </ToolBarLabel>
@@ -260,7 +259,6 @@
             </DataColumn>
           </DataGrid>
           <ToolBar layoutConstraint="bottom">
-            <Property name="height">30</Property>
             <ToolBarLabel>
               <Property name="width">10</Property>
             </ToolBarLabel>
@@ -308,7 +306,7 @@
           <Property name="height">35</Property>
           <Property name="contentOverflow">hidden</Property>
           <Label id="processNameLabel" layoutConstraint="left:0;top:0">
-            <Property name="height">20</Property>
+            
             <Property name="style">
               <Property name="margin-left">20px</Property>
               <Property name="margin-top&#xA;">10px</Property>
