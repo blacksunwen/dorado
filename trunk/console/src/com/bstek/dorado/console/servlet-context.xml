@@ -10,6 +10,53 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	<!--DataProviderGetResult 拦截器 -->
+	<bean parent="dorado.dataProviderInterceptorRegister">
+		<property name="methodInterceptor">
+			<bean
+				class="com.bstek.dorado.console.performance.interceptor.DataProviderGetResultMethodInterceptor">
+				<property name="order" value="0" />
+				<property name="namePattern" value="dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
+
+			</bean>
+		</property>
+	</bean>
+
+	<!--DataResolveMethodInterceptor 拦截器 -->
+	<bean parent="dorado.dataResolverInterceptorRegister">
+		<property name="methodInterceptor">
+			<bean
+				class="com.bstek.dorado.console.performance.interceptor.DataResolveMethodInterceptor">
+				<property name="order" value="0" />
+				<property name="namePattern" value="dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Dorado Console View Service 访问安全拦截器 -->
+	<bean parent="dorado.viewServiceInterceptorRegister">
+		<property name="methodInterceptor">
+			<bean
+				class="com.bstek.dorado.console.security.ViewServiceSecurityInterceptor">
+				<property name="order" value="1" />
+				<property name="serviceNamePattern" value="dorado.console.*" />
+			</bean>
+		</property>
+	</bean>
+
+	<!--RemoteService 拦截器 -->
+	<bean parent="dorado.viewServiceInterceptorRegister">
+		<property name="methodInterceptor">
+			<bean
+				class="com.bstek.dorado.console.performance.interceptor.RemoteServiceMethodInterceptor">
+				<property name="order" value="0" />
+				<property name="namePattern" value="dorado.console.*"></property>
+				<property name="executeLogOutputter" ref="dorado.console.DefaultExecuteLogOutputter"></property>
+			</bean>
+		</property>
+	</bean>
 
 	<!-- View ResolverListener -->
 	<bean parent="dorado.viewResolverListenerRegister">
@@ -29,5 +76,5 @@
 		</bean>
 	</mvc:interceptors>
 
-	
+
 </beans>
