@@ -1383,7 +1383,7 @@
 				self.resize();
 			}
 			$fly(window).one("resize", function() {
-				self.hide();
+				self.grid.setFocus();
 			});
 			if (this.hideCellContent) cell.firstChild.style.visibility = "hidden";
 			this.visible = true;
