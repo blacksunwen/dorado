@@ -183,24 +183,26 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 	},
 
 	post: function() {
-		try {
-			var modified = (this._lastPost !== this._checked);
-			if (modified) {
-				this._lastPost = this._checked;
-				var eventArg = {
-					processDefault: true
-				};
-				this.fireEvent("beforePost", this, eventArg);
-				if (eventArg.processDefault === false) return false;
-				if (this.doPost) this.doPost();
-				this.fireEvent("onPost", this);
-			}
-			return true;
-		}
-		catch (e) {
-			dorado.Exception.processException(e);
-			return false;
-		}
+        var modified = (this._lastPost !== this._checked);
+        if (!modified) return true;
+
+        var lastPost = this._lastPost;
+        try {
+                this._lastPost = this._checked;
+                var eventArg = {
+                    processDefault: true
+                };
+                this.fireEvent("beforePost", this, eventArg);
+                if (eventArg.processDefault === false) return false;
+                if (this.doPost) this.doPost();
+                this.fireEvent("onPost", this);
+            return true;
+        }
+        catch (e) {
+            this._lastPost = lastPost;
+            dorado.Exception.processException(e);
+            return false;
+        }
 	},
 
 	refreshDom: function(dom) {
