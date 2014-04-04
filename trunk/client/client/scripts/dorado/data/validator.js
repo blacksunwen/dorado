@@ -525,7 +525,7 @@ dorado.validator.EnumValidator = $extend(dorado.validator.BaseValidator, /** @sc
 		 * @type Object[]
 		 * @attribute
 		 */
-		enumValus : {}
+		enumValues : {}
 	},
 
 	doValidate : function(data, arg) {
