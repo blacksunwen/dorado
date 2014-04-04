@@ -470,11 +470,11 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 	},
 
 	doValidate : function(data, arg) {
-		var invalid, message = '', subMessage = '', data = ( typeof data == "number") ? data : parseFloat(data);
+		var invalid, message = '', subMessage = $resource("dorado.data.ErrorOrEqualTo"), data = ( typeof data == "number") ? data : parseFloat(data);
 		if(this._minValueValidateMode != "ignore") {
 			if(data == this._minValue && this._minValueValidateMode != "allowEquals") {
 				invalid = true;
-				subMessage = $resource("dorado.data.ErrorOrEqualTo");
+                subMessage = '';
 			}
 			if(data < this._minValue) {
 				invalid = true;
@@ -486,7 +486,7 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 		if(this._maxValueValidateMode != "ignore") {
 			if(data == this._maxValue && this._maxValueValidateMode != "allowEquals") {
 				invalid = true;
-				subMessage = $resource("dorado.data.ErrorOrEqualTo");
+				subMessage = '';
 			}
 			if(data > this._maxValue) {
 				invalid = true;
