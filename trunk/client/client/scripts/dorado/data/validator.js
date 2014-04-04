@@ -262,7 +262,9 @@ dorado.validator.RequiredValidator = $extend(dorado.validator.BaseValidator, /**
 		 * @type boolean
 		 * @attribute
 		 */
-		acceptZeroOrFalse : {}
+		acceptZeroOrFalse : {
+            defaultValue : false
+        }
 	},
 
 	doValidate: function(data, arg) {
@@ -270,8 +272,8 @@ dorado.validator.RequiredValidator = $extend(dorado.validator.BaseValidator, /**
 		if (valid) {
 			if (this._trimBeforeValid && typeof data == "string") {
 				valid = jQuery.trim(data) != "";
-			} else if (this._acceptZeroOrFalse && (typeof data == "number" || typeof data == "boolean")) {
-				valid = (!data || this._acceptZeroOrFalse);
+			} else if (typeof data == "number" || typeof data == "boolean") {
+				valid = (!!data || this._acceptZeroOrFalse);
 			}
 		}
 		if (!valid) {
