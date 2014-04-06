@@ -777,6 +777,6 @@ dorado.validator.CustomValidator = $extend(dorado.validator.Validator, /** @scop
 			dorado.Exception.removeException(e);
 			result = dorado.Exception.getExceptionMessage(e);
 		}
-		return dorado.Toolkits.trimMessages(result, this._defaultResultState);
+		return result;
 	}
 });
