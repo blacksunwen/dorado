@@ -888,7 +888,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				ruleTemplate, xmlSubNode);
 		childTemplate.setAggregated(aggregated);
 		childTemplate.setFixed(xmlSubNode.fixed());
-		childTemplate.setFixed(xmlSubNode.deprecated());
+		childTemplate.setDeprecated(xmlSubNode.deprecated());
 		return childTemplate;
 	}
 
