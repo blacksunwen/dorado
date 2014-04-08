@@ -89,7 +89,7 @@
 		 * 为Menu添加MenuItem。
 		 * @param {Object|dorado.widget.menu.AbstractMenuItem} item 可以是MenuItem或者MenuItem的Json配置信息。
 		 * @param {int} [index] 可以是整数或者MenuItem。
-		 *                      如果是整数，代表插入以后该Item的位置。如果是MenuItem，则代表要插入到该MenuItem之前。
+		 *					  如果是整数，代表插入以后该Item的位置。如果是MenuItem，则代表要插入到该MenuItem之前。
 		 * @return {dorado.widget.menu.AbstractMenuItem} 返回刚刚添加的MenuItem。
 		 */
 		addItem: function(item, index) {
@@ -327,8 +327,9 @@
 		},
 
 		EVENTS: /** @scope dorado.widget.Menu.prototype */ {
+
 			/**
-			 * 在Menu的最顶层菜单隐藏的时候触发的事件，一般情况下，当菜单失去焦点，菜单项被click的时候，会触发此事件。
+			 * 在Menu的上层菜单被隐藏的时候触发的事件。当菜单项被click的时候，会触发此事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
@@ -436,7 +437,7 @@
 				menu._overflowing = true;
 
 				var contentHeight = $fly(dom).innerHeight() - $fly(doms.overflowTopArrow).outerHeight() -
-				                    $fly(doms.overflowBottomArrow).outerHeight(), contentWidth = $fly(dom).width();
+									$fly(doms.overflowBottomArrow).outerHeight(), contentWidth = $fly(dom).width();
 
 				if (dorado.Browser.msie && dorado.Browser.version == 6) {
 					$fly(dom).width(contentWidth);
@@ -633,22 +634,22 @@
 		 * 处理按键事件，目前支持以下按钮：
 		 * <ul>
 		 *  <li>
-		 *      向上按钮：如果当前获得焦点的MenuItem有上一个菜单项，并且可用，则使上一个菜单项获得焦点。
+		 *	  向上按钮：如果当前获得焦点的MenuItem有上一个菜单项，并且可用，则使上一个菜单项获得焦点。
 		 *  </li>
 		 *  <li>
-		 *      向下按钮: 如果当前获得焦点的MenuItem有下一个菜单项，并且可用，则使下一个菜单项获得焦点。
+		 *	  向下按钮: 如果当前获得焦点的MenuItem有下一个菜单项，并且可用，则使下一个菜单项获得焦点。
 		 *  </li>
 		 *  <li>
-		 *      向左按钮: 如果当前获得焦点的MenuItem有上级菜单，则返回上级菜单，并隐藏当前获得焦点的MenuItem。
+		 *	  向左按钮: 如果当前获得焦点的MenuItem有上级菜单，则返回上级菜单，并隐藏当前获得焦点的MenuItem。
 		 *  </li>
 		 *  <li>
-		 *      向右按钮: 如果当前获得焦点的MenuItem有下级菜单，则打开下级菜单，否则，什么也不做。
+		 *	  向右按钮: 如果当前获得焦点的MenuItem有下级菜单，则打开下级菜单，否则，什么也不做。
 		 *  </li>
 		 *  <li>
-		 *      回车: 相当于单击当前获得焦点的MenuItem。
+		 *	  回车: 相当于单击当前获得焦点的MenuItem。
 		 *  </li>
 		 *  <li>
-		 *      Esc: 隐藏打开的菜单。
+		 *	  Esc: 隐藏打开的菜单。
 		 *  </li>
 		 * </ul>
 		 * @param {Object} event dhtml中的event。
@@ -772,32 +773,32 @@
 					}
 				}
 			}).click(function(event) {
-					if (!menu.processDefaultMouseListener()) return;
-					var defaultReturnValue;
-					if (menu.onClick) {
-						defaultReturnValue = menu.onClick(event);
-					}
-					var arg = {
-						button: event.button,
-						event: event,
-						returnValue: defaultReturnValue
-					}
-					var target = event.target, item;
-					if (target) {
-						var items = menu._items;
-						for (var i = 0, j = items.size; i < j; i++) {
-							var temp = items.get(i);
-							if (temp._dom == target || jQuery.contains(temp._dom, target)) {
-								item = temp;
-								arg.item = item;
-								break;
-							}
+				if (!menu.processDefaultMouseListener()) return;
+				var defaultReturnValue;
+				if (menu.onClick) {
+					defaultReturnValue = menu.onClick(event);
+				}
+				var arg = {
+					button: event.button,
+					event: event,
+					returnValue: defaultReturnValue
+				};
+				var target = event.target, item;
+				if (target) {
+					var items = menu._items;
+					for (var i = 0, j = items.size; i < j; i++) {
+						var temp = items.get(i);
+						if (temp._dom == target || jQuery.contains(temp._dom, target)) {
+							item = temp;
+							arg.item = item;
+							break;
 						}
 					}
-					menu.fireEvent("onClick", menu, arg);
-					event.stopImmediatePropagation();
-					return arg.returnValue;
-				});
+				}
+				menu.fireEvent("onClick", menu, arg);
+				event.stopImmediatePropagation();
+				return arg.returnValue;
+			});
 
 			$fly(groupContent).mousewheel(function(event, delta) {
 				if (menu._overflowing) {
