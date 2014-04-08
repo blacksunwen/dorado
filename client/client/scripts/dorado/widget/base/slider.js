@@ -17,7 +17,7 @@
  * @extends dorado.widget.Control
  */
 dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.Slider.prototype */{
-
+    $className: "dorado.widget.Slider",
 	selectable: false,
     _inherentClassName: "i-slider",
 	focusable: true,
@@ -94,10 +94,11 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 	            value = slider.getValidValue(parseValue);
 
 				var eventArg = {
-					value: slider._value
+					value: value
 				};
 
                 slider.fireEvent("beforeValueChange", slider, eventArg);
+                if (eventArg.processDefault === false) return;
                 slider._value = value;
                 slider.fireEvent("onValueChange", slider);
             }
@@ -127,7 +128,9 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
          * 在Slider的value更改之前触发。
          * @event
          * @param {Object} self 触发该事件的Slider。
-         * @param value int|float|double Slider的当前value。
+         * @param {Object} arg 事件参数。
+         * @param {int|float|double} arg.value 当前value。
+         * @param {boolean} #arg.processDefault=true 是否继续执行后续的触发器动作。
          */
         beforeValueChange: {},
         /**
