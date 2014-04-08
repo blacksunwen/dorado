@@ -33,7 +33,7 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 	private MessageState defaultResultState = MessageState.error;
 	private boolean revalidateOldValue = true;
 
-	@ClientProperty(escapeValue = "client")
+	@ClientProperty(ignored=true)
 	public RunAt getRunAt() {
 		return runAt;
 	}
