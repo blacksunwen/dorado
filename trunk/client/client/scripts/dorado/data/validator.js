@@ -472,7 +472,7 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 	},
 
 	doValidate : function(data, arg) {
-		var invalidMin, invalidMax, message = '', subMessage = $resource("dorado.data.ErrorOrEqualTo"), data = ( typeof data == "number") ? data : parseFloat(data);
+		var invalidMin, invalidMax, message = '', subMessage = '', data = ( typeof data == "number") ? data : parseFloat(data);
 		if(this._minValueValidateMode != "ignore") {
 			if(data == this._minValue && this._minValueValidateMode != "allowEquals") {
                 invalidMin = true;
@@ -480,7 +480,9 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 			if(data < this._minValue) {
                 invalidMin = true;
 			}
-            if (this._minValueValidateMode == "notAllowEquals")  {
+            if (this._minValueValidateMode == "allowEquals")  {
+                subMessage = $resource("dorado.data.ErrorOrEqualTo");
+            } else {
                 subMessage = '';
             }
 			if(invalidMin) {
@@ -494,7 +496,9 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 			if(data > this._maxValue) {
                 invalidMax = true;
 			}
-            if (this._maxValueValidateMode == "notAllowEquals")  {
+            if (this._maxValueValidateMode == "allowEquals")  {
+                subMessage = $resource("dorado.data.ErrorOrEqualTo");
+            } else {
                 subMessage = '';
             }
 			if(invalidMax) {
