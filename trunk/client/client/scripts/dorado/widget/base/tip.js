@@ -530,7 +530,8 @@
 			}
 			options.caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "Dorado7"
 			if (options.autoHide === false) options.showDuration = 0;
-			
+			delete options.autoHide;
+
 			var tip = dorado.NotifyTipPool.borrowObject();
 			tip.set(options);
 			tip.show();
