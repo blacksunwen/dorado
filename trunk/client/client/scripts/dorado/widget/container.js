@@ -511,7 +511,7 @@
 			var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
 
 			var newWidth, newHeight, containerDomSize;
-			if (overflowX == "visible") {
+			if (overflowX == "visible" || !this.getRealWidth()) {
 				containerDomSize = this.getContentContainerSize();
 				var edgeWidth = dom.offsetWidth - containerDom.offsetWidth;
 				var width = layoutDom.offsetWidth + edgeWidth;
@@ -534,7 +534,7 @@
 					}
 				}
 			}
-			if (overflowY == "visible") {
+			if (overflowY == "visible" || !this.getRealHeight()) {
 				var edgeHeight = dom.offsetHeight - containerDom.offsetHeight;
 				var height = layoutDom.offsetHeight + edgeHeight;
 				if (height > this._currentOffsetHeight) {
