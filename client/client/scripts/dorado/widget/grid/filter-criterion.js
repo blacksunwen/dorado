@@ -233,7 +233,7 @@
 		function parseCriterions(text, column) {
 			var criterions = [], criterionTexts = splitCriterions(text, column);
 			for (var i = 0; i < criterionTexts.length; i++) {
-				criterions.push(parseSingleCriterion(criterionTexts[i], column));
+				criterions.push(parseSingleCriterion(jQuery.trim(criterionTexts[i]), column));
 			}
 			return criterions;
 		};
