@@ -148,7 +148,11 @@
 			 * @default false
 			 * @type boolean
 			 */
-			collapsed: {},
+			collapsed: {
+				setter: function(value) {
+					this.doSetCollapsed(value);
+				}
+			},
 
 			/**
 			 * 是否可以折叠，这个属性会决定折叠按钮是否显示。
