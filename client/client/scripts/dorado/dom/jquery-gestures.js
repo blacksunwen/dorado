@@ -65,7 +65,7 @@
 			}
 		}
 		var tagName = (event.target && event.target.tagName || "").toLowerCase();
-		if (eventType == "click" && (tagName != "a" && tagName != "input" && tagName != "textarea")) {
+		if (eventType == "click" && (tagName != "a" && tagName != "textarea")) {
 			event.isDefaultPrevented = function() {
 				return true;
 			};
