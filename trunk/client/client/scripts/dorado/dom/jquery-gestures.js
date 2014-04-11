@@ -36,11 +36,6 @@
 		var t = event.type, oe, props, ne, prop, ct, touch, i, j;
 		event = $.Event(event);
 		event.type = eventType;
-		if (eventType == "click") {
-			event.isDefaultPrevented = function() {
-				return true;
-			};
-		}
 		oe = event.originalEvent;
 		props = $.event.props;
 		if (t.search(/^(mouse|click)/) > -1) {
@@ -68,6 +63,11 @@
 					event.which = 1;
 				}
 			}
+		}
+		if (eventType == "click" && (event.target && event.target.tagName.toLowerCase() != "a")) {
+			event.isDefaultPrevented = function() {
+				return true;
+			};
 		}
 		return event;
 	}
