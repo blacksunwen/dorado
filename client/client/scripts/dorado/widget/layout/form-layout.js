@@ -165,19 +165,26 @@
 				return same;
 			}
 			
-			var tbody = dom.tBodies[0];
+			var tbody;
 			var grid = this.precalculateRegions();
-			var structureChanged = !isSameGrid(this._grid, grid), oldRows = [];
+			var structureChanged = !isSameGrid(this._grid, grid);
 			if (structureChanged) {
 				this._domCache = {};
 				this._grid = grid;
-				dom.removeChild(tbody);
-				while (tbody.firstChild) {
-					oldRows.push(tbody.firstChild);
-					tbody.removeChild(tbody.firstChild);
+
+				tbody = dom.tBodies[0];
+				for (var i = 0, rowNum = tbody.childNodes.length, row; i < rowNum; i++) {
+					row = tbody.childNodes[i];
+					for (var j = 0, cellNum = row.childNodes.length; j < cellNum; j++) {
+						row.childNodes[j].innerHTML = "";
+					}
 				}
+				$fly(tbody).remove();
+
+				tbody = document.createElement("TBODY");
 				dom.appendChild(tbody);
 			} else {
+				tbody = dom.tBodies[0];
 				grid = this._grid;
 			}
 			
@@ -305,10 +312,6 @@
 
 				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";
 				this.renderControl(region, td, !useControlWidth, true);
-			}
-			
-			if (oldRows.length) {
-				$fly(oldRows).remove();
 			}
 		},
 		
