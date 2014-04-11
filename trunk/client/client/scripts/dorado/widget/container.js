@@ -535,9 +535,12 @@
 				}
 			}
 			if (overflowY == "visible" || !this.getRealHeight()) {
+				if (!containerDomSize) {
+					containerDomSize = this.getContentContainerSize();
+				}
 				var edgeHeight = dom.offsetHeight - containerDom.offsetHeight;
 				var height = layoutDom.offsetHeight + edgeHeight;
-				if (height > this._currentOffsetHeight) {
+				if (layoutDom.offsetHeight > containerDomSize[1]) {
 					newHeight = height;
 				} else if (!this._useOriginalHeight && height < this._currentOffsetHeight) {
 					var parent = this._parent, containerToRefresh = this;
