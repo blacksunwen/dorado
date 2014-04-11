@@ -273,7 +273,7 @@
 		},
 
 		checkInputs: function(tagName) {
-			if (tagName === 'INPUT' || tagName === 'TEXTFIELD' || tagName === 'SELECT') {
+			if (tagName === 'INPUT' || tagName === 'TEXTFIELD' || tagName === 'TEXTAREA' || tagName === 'SELECT') {
 				return true;
 			} else {
 				return false;
