@@ -454,7 +454,8 @@
 			overflowY = overflowY || "auto";
 
 			var contentCt = this.getContentContainer();
-			if (contentCt.nodeType && contentCt.nodeType == 1 && !contentCt.style.overflow) {
+			if (contentCt.nodeType && contentCt.nodeType == 1 &&
+				(overflowX == "auto" || overflowY == "auto" || overflowX == "scroll" || overflowY == "scroll")) {
 				contentCt.style.overflowX = overflowX;
 				contentCt.style.overflowY = overflowY;
 				this._modernScrolled = $DomUtils.modernScroll(contentCt, {
