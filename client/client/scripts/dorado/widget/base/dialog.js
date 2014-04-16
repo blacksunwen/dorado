@@ -278,7 +278,6 @@
 					dialog._height = dialog._originalHeight;
 					dialog._left = dialog._originalLeft;
 					dialog._top = dialog._originalTop;
-					dialog.resetDimension();
 					dialog.refresh();
 
                     if (dialog._left !== undefined && dialog._top !== undefined) {
