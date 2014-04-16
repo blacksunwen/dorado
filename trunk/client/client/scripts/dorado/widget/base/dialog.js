@@ -265,7 +265,6 @@
         doHandleOverflow: function(options) {
             var dialog = this;
             dialog._height = options.maxHeight;
-            dialog.onResize();
         },
 
 		maximizeRestore: function() {

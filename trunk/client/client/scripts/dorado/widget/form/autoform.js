@@ -476,7 +476,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		var dom = this.getDom(), container = this._container;
 		// container._realWidth = dom.offsetWidth;
 		// container._realHeight = dom.offsetHeight;
-		container.resetDimension();
+		container.onResize();
 	},
 
 	refreshFormLayout: function () {
