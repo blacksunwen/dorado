@@ -313,12 +313,11 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (region) {
 			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
 			if (this._container.isActualVisible()) {
-				this._ignoreControlSizeChange = true;
+				//this._ignoreControlSizeChange = true;
 				if (this.doRefreshRegion) this.doRefreshRegion(region);
-				this._ignoreControlSizeChange = false;
+				//this._ignoreControlSizeChange = false;
 			}
 			else {
-				this._container.isActualVisible()
 				this._container.refresh(); // 由于container目前不可见，因此本次刷新动作实际会被搁置到可见时再执行。
 			}
 		}

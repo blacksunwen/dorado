@@ -707,7 +707,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 			if (dorado.Browser.isTouch) {
 				$fly(window).bind("orientationchange", function() {
-					resizeTopView();
+					//resizeTopView();
 				});
 			}
 

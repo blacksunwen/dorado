@@ -273,7 +273,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				else element.appendChild(dom);
 			}
 		}
-		if (this._attached || !this.renderUtilAttached) this.refreshDom(dom);
+		if (this._attached) this.refreshDom(dom);
 		this._rendered = true;
 	},
 	
@@ -307,7 +307,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	 * @param {boolean} delay 是否允许此次refresh动作延时执行。设置成true有利于系统对refresh动作进行优化处理。
 	 */
 	refresh: function(delay) {
-		if (!this._rendered || (!this._attached && this.renderUtilAttached)) return;
+		if (!this._rendered || !this._attached) return;
 		if (delay) {
 			dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", function() {
 				dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");

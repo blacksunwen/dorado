@@ -571,13 +571,21 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
 					this.hideCellEditor();
-					if (!this.setCurrentEntity(arg.entityList.current)) {
-						if (this._itemModel.criterions && this._filterMode == "clientSide") {
-							this.get("filterEntity").clearData();
-							this.filter();
+					if (arg.entityList == this._itemModel.getItems()) {
+						var oldCurrentEntity = this.getCurrentEntity();
+						if (!this._supportsPaging &&
+							(!oldCurrentEntity || (oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo))) {
+							if (this._itemModel.criterions && this._filterMode == "clientSide") {
+								this.get("filterEntity").clearData();
+								this.filter();
+							}
+							this.refresh(true);
+							this.refreshSummary();
+						} else {
+							this.setCurrentEntity(arg.entityList.current);
 						}
+					} else {
 						this.refresh(true);
-						this.refreshSummary();
 					}
 					break;
 				}

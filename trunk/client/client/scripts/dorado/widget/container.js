@@ -492,9 +492,11 @@
 			var container = this;
 			dorado.Toolkits.cancelDelayedAction(container, "$notifySizeChangeTimerId");
 
-			var layout = container._layout;
-			if (container._contentContainerVisible && layout && layout._attached) {
-				layout.onResize();
+			if (!this._skipResetDimension) {
+				var layout = container._layout;
+				if (container._contentContainerVisible && layout && layout._attached) {
+					layout.onResize();
+				}
 			}
 		},
 
@@ -535,6 +537,7 @@
 					}
 				}
 			}
+
 			if (overflowY == "visible" || !this.getRealHeight()) {
 				if (!containerDomSize) {
 					containerDomSize = this.getContentContainerSize();
@@ -561,19 +564,29 @@
 				}
 			}
 
-			var sizeChanged = false;
+			var sizeChanged = false, $dom = $fly(dom);
 			if (newWidth !== undefined) {
-				$fly(dom).outerWidth(newWidth);
+				$dom.outerWidth(newWidth);
 				sizeChanged = true;
 				this._useOriginalWidth = false;
-				this._currentOffsetWidth = dom.offsetWidth;
 			}
+			else {
+				newWidth = $dom.outerWidth();
+				sizeChanged = (this._useOriginalWidth != newWidth);
+			}
+			this._currentOffsetWidth = newWidth;
+
 			if (newHeight !== undefined) {
-				$fly(dom).outerHeight(newHeight);
+				$dom.outerHeight(newHeight);
 				sizeChanged = true;
 				this._useOriginalHeight = false;
-				this._currentOffsetHeight = dom.offsetHeight;
 			}
+			else {
+				newHeight = $dom.outerHeight();
+				if (this._currentOffsetHeight != newHeight) sizeChanged = true;
+			}
+			this._currentOffsetHeight = newHeight;
+
 			if (sizeChanged) {
 				this.notifySizeChange();
 			}
