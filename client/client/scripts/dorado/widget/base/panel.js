@@ -857,8 +857,6 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		}
 
 		$fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
-
-		panel._doOnResize();
 	},
 
 	getContentContainer: function () {

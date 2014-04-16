@@ -131,7 +131,6 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	    $fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
 		$fly(fieldset._doms.caption).html(fieldset._caption || "&nbsp;");
 		$invokeSuper.call(this, arguments);
-		fieldset._doOnResize();
 	},
 
 	_doOnResize: function(collapsed) {
@@ -292,7 +291,6 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	    $fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
 		$fly(groupBox._doms.caption).text(groupBox._caption);
         $invokeSuper.call(this, arguments);
-		groupBox._doOnResize();
 	},
 
 	_doOnResize: function(collapsed) {

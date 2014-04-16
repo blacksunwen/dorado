@@ -688,6 +688,7 @@
 							}
 							if (arg.processDefault) {
 								this.refreshDom(dom);
+								this.onResize();
 								this.fireEvent("onRefreshDom", this, arg);
 							}
 
@@ -711,6 +712,7 @@
 						}
 						if (arg.processDefault) {
 							this.refreshDom(dom);
+							this.onResize();
 							this.fireEvent("onRefreshDom", this, arg);
 						}
 
