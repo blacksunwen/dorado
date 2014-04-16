@@ -34,17 +34,6 @@
 			/**
 			 * @protected
 			 * @type boolean
-			 * @default true
-			 * @description 用于指示该控件的DOM对象是否只能在非游离状态下才能被正确的刷新（渲染）。默认值为true。
-			 * <p>
-			 * 对于那些未通过appendChild操作添加中网页document.body中的DOM对象，我们称之为游离状态的对象。
-			 * </p>
-			 */
-			renderUtilAttached: true,
-
-			/**
-			 * @protected
-			 * @type boolean
 			 * @description 用于指示该种控件是否支持获得控制焦点。
 			 */
 			focusable: false,
@@ -656,7 +645,7 @@
 			},
 
 			refresh: function (delay) {
-				if (this._duringRefreshDom || !this._rendered || (!this._attached && this.renderUtilAttached)) return;
+				if (this._duringRefreshDom || !this._rendered || !this._attached) return;
 
 				if (!this.isActualVisible() && !this._forceRefresh
 					&& !(this._currentVisible !== undefined && this._currentVisible != this._visible)) {
@@ -1073,22 +1062,20 @@
 					this._attached = true;
 					this._ignoreRefresh--;
 
-					if (this.renderUtilAttached) {
-						this._skipResize = true;
-						var arg = {
-							dom: dom,
-							processDefault: true
-						};
-						if (this.getListenerCount("beforeRefreshDom")) {
-							arg.processDefault = false;
-							this.fireEvent("beforeRefreshDom", this, arg);
-						}
-						if (arg.processDefault) {
-							this.refreshDom(dom);
-							this.fireEvent("onRefreshDom", this, arg);
-						}
-						this._skipResize = false;
+					this._skipResize = true;
+					var arg = {
+						dom: dom,
+						processDefault: true
+					};
+					if (this.getListenerCount("beforeRefreshDom")) {
+						arg.processDefault = false;
+						this.fireEvent("beforeRefreshDom", this, arg);
 					}
+					if (arg.processDefault) {
+						this.refreshDom(dom);
+						this.fireEvent("onRefreshDom", this, arg);
+					}
+					this._skipResize = false;
 
 					if (this.doOnAttachToDocument) this.doOnAttachToDocument();
 
@@ -1098,10 +1085,8 @@
 						});
 					}
 
-					// 导致contrainer中的layout重新布局，代价太高
-					// if (this.renderUtilAttached) {
-					// 	this.onResize();
-					// }
+					// TODO: 导致contrainer中的layout重新布局，交价太高
+					this.onResize();
 
 					this.updateModernScroller();
 					
@@ -1151,7 +1136,7 @@
 			registerInnerControl: function (control) {
 				if (!this._innerControls) this._innerControls = [];
 				this._innerControls.push(control);
-				if (this._attached)    control.onAttachToDocument();
+				if (this._attached) control.onAttachToDocument();
 				control._isInnerControl = true;
 
 				if (control._parent == window.$topView) {
