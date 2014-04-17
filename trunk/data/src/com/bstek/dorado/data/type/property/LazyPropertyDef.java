@@ -31,7 +31,7 @@ public abstract class LazyPropertyDef extends PropertyDefSupport {
 		this.activeAtClient = activeAtClient;
 	}
 
-	@ClientProperty(escapeValue = "bothSides")
+	@ClientProperty(ignored=true)
 	public CacheMode getCacheMode() {
 		return cacheMode;
 	}
