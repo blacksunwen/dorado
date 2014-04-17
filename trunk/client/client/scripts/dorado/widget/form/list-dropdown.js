@@ -424,7 +424,7 @@
 		
 		doOnEditorKeyDown: function(editor, evt) {
 		
-			function setEditorText(dropdown, rowList) {
+			function assignValue(dropdown, rowList) {
 				var property = dropdown._displayProperty || dropdown._property;
 				var value = rowList.getCurrentItem();
 				if (value && property) {
@@ -434,7 +434,19 @@
 						value = value[property];
 					}
 				}
-				editor.doSetText(value);
+                var eventArg = {
+                    editor : editor,
+                    selectedValue : value,
+                    processDefault : true
+                };
+                dropdown.fireEvent("onValueSelect", dropdown, eventArg);
+                var entityForAssignment;
+                if (dropdown.getEntityForAssignment) {
+                    entityForAssignment = dropdown.getEntityForAssignment();
+                }
+                if (eventArg.processDefault && eventArg.selectedValue !== undefined) {
+                    dropdown.assignValue(editor, entityForAssignment, eventArg);
+                }
 			}
 			
 			var dropdown = this, retValue = true;
@@ -445,11 +457,11 @@
 					case 40:{ // down 
 						if (!rowList._highlightCurrentRow) {
 							rowList.set("highlightCurrentRow", dropdown._rowSelected = true);
-							setEditorText(dropdown, rowList);
+                            assignValue(dropdown, rowList);
 							retValue = false;
 						} else {
 							rowList.addListener("onCurrentChange", function() {
-								setEditorText(dropdown, rowList);
+                                assignValue(dropdown, rowList);
 							}, {
 								once: true
 							});
