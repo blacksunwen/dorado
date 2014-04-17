@@ -76,7 +76,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * 内部的渲染方法，供复写。
 	 */
 	doRender: function(cell, node, arg) {
-		if (node._nodesData && node._nodesTimestamp !== node._nodesData.timestamp) {
+		if (node._nodesData && node._nodesTimestamp !== undefined && node._nodesTimestamp !== node._nodesData.timestamp) {
 			node.resetChildren();
 			node._expanded = false;
 			setTimeout(function() {
