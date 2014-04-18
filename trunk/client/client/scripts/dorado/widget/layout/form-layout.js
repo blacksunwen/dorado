@@ -171,12 +171,13 @@
 			if (structureChanged) {
 				this._domCache = {};
 				this._grid = grid;
-
+				
 				tbody = dom.tBodies[0];
 				for (var i = 0, rowNum = tbody.childNodes.length, row; i < rowNum; i++) {
 					row = tbody.childNodes[i];
 					for (var j = 0, cellNum = row.childNodes.length; j < cellNum; j++) {
-						row.childNodes[j].innerHTML = "";
+						var cell = row.childNodes[j];
+						if (cell.firstChild) cell.removeChild(cell.firstChild);
 					}
 				}
 				$fly(tbody).remove();

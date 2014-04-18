@@ -424,7 +424,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 								pageNo: 1
 							};
 							propertyDef.fireEvent("beforeLoadData", propertyDef, eventArg);
-							if (eventArg.processDefault !== false && (callback || loadMode == "auto")) {
+							if (eventArg.processDefault === false) {
+								if (callback) $callback(callback, false);
+								return;
+							}
+							
+							if (callback || loadMode == "auto") {
 								var isNewPipe = (pipe.runningProcNum == 0);
 								pipe.getAsync({
 									scope : this,
