@@ -467,6 +467,7 @@
 				}
 				else {
 					this.iscroll.disable();
+					this.iscroll.refresh();
 				}
 			}
 			else {
