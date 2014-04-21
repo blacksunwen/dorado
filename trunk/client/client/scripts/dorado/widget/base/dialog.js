@@ -362,15 +362,14 @@
 				var domEl = jQuery(dom);
 				domEl.css(targetOffset);
 
-				dialog.resetDimension();
-
 				if (dialog._resizeable) {
 					domEl.removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
 				}
-
 				if (dialog._draggable) {
 					domEl.removeClass("i-dialog-draggable d-dialog-draggable").draggable("disable");
 				}
+
+				dialog.refresh();
 
 				fullWindowDialogs.push(dialog);
 				dialog.fireEvent("onMaximize", dialog);
@@ -809,7 +808,7 @@
 							dialog._top = offset.top;
 							dialog._width = wrapEl.outerWidth();
 							dialog._height = wrapEl.outerHeight();
-							dialog.resetDimension();
+							dialog.refresh();
 							$fly(dialog._dom).css(offset);
 						}
 					});
