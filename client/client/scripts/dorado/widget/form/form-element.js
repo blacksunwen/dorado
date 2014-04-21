@@ -1013,7 +1013,7 @@
 					}
 					editor._realWidth = (editorWidth > 0) ? editorWidth : editorEl.offsetWidth;
 				}
-                if (this._editorWidth > 0 && this._realWidth > 0 && this._editorWidth < editor._realWidth) {
+                if (this._editorWidth > 0 && editor._realWidth > 0 && this._editorWidth < editor._realWidth) {
                     editor._realWidth = this._editorWidth;
                 }
 				if (autoHeight) editor._realHeight = editorEl.offsetHeigh; // 可能导致IE9下自定义Editor的高度异常
