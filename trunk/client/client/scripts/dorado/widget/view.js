@@ -734,15 +734,13 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 				setTimeout(function() {
 					me.scrollToTop();
-					setTimeout(function() {
-						me.scrollToTop();
-						me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
+					me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
 
-						me.updateBodySize();
-						if (fn) {
-							fn.apply(scope || window);
-						}
-					}, 50);
+					me.updateBodySize();
+
+					if (fn) {
+						fn.apply(scope || window);
+					}
 				}, 50);
 			},
 			scrollToTop: function() {
