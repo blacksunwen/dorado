@@ -492,11 +492,9 @@
 			var container = this;
 			dorado.Toolkits.cancelDelayedAction(container, "$notifySizeChangeTimerId");
 
-			if (!this._skipResetDimension) {
-				var layout = container._layout;
-				if (container._contentContainerVisible && layout && layout._attached) {
-					layout.onResize();
-				}
+			var layout = container._layout;
+			if (container._contentContainerVisible && layout && layout._attached) {
+				layout.onResize();
 			}
 		},
 

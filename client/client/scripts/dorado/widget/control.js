@@ -798,7 +798,7 @@
 				if (this._skipResetDimension || !this.isActualVisible()) return;
 
 				var changed = this.doResetDimension(forced) || !this._fixedWidth || !this._fixedHeight;
-				if (changed || !this._currentVisible) {
+				if (!this._duringRefreshDom && (changed || !this._currentVisible)) {
 					this._skipResetDimension = true;
 					this.onResize();
 					this._skipResetDimension = false;
