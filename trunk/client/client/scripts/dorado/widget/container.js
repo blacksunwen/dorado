@@ -303,7 +303,9 @@
 		addChild: function (component) {
 			if (component._parent) {
 				fireParentChanged = false;
-				component._parent.removeChild(component);
+				if (component._parent.removeChild) {
+                    component._parent.removeChild(component);
+                }
 				fireParentChanged = true;
 			}
 
