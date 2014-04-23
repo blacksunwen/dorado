@@ -1857,7 +1857,14 @@
 					break;
 			}
 			if (this._editing && !this._currentCellEditor && this._currentColumn) {
-				this.showCellEditor(this._currentColumn);
+				if (dorado.Browser.msie && dorado.Browser.version == 8) {
+					$setTimeout(this, function() {
+						this.showCellEditor(this._currentColumn);
+					}, 0);
+				}
+				else {
+					this.showCellEditor(this._currentColumn);
+				}
 			}
 			return retValue;
 		},

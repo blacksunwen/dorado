@@ -107,6 +107,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 			var from = blockDom.itemIndex;
 			this.removeItemDom(blockDom);
 			this._arrangeBlockDoms(from + 1, -1);
+			this.notifySizeChange();
 		}
 	},
 	
@@ -148,6 +149,7 @@ dorado.widget.DataBlockView = $extend([dorado.widget.AbstractBlockView, dorado.w
 			default:
 				this.refreshItemDom(container, entity, this._itemModel.getItemCount() - 1);
 		}
+		this.notifySizeChange();
 	},
 	
 	filterDataSetMessage: function(messageCode, arg) {
