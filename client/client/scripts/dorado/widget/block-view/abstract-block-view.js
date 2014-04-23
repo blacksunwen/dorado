@@ -549,39 +549,10 @@
 			var blockView = this;
 			var scroller = blockView._scroller = dom.firstChild;
 			var container = blockView._container = scroller.firstChild;
-			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller, {
-                notMoveElement: true,
-                useTransform: false,
-                fadeScrollbar: false,
-                fixedScrollbar: true,
-                bounce: false,
-                momentum: true,
-                desktopCompatibility: true,
-                scrollSize: function(dir) {
-                    var result = dir == "h" ? blockView._scroller.scrollWidth : blockView._scroller.scrollHeight;
-                    return result;
-                },
-                viewportSize: function(dir) {
-                    return dir == "h" ? blockView._scroller.clientWidth : blockView._scroller.clientHeight;
-                },
-                resumeHelper: function() {
-                    return {
-                        x: blockView._scroller.scrollLeft * -1,
-                        y: blockView._scroller.scrollTop * -1
-                    }
-                },
-                onScrolling: function() {
-                    blockView._scroller.scrollLeft = this.x * -1;
-                    blockView._scroller.scrollTop = this.y * -1;
-                },
-                onScrollMove: function() {
-                    blockView._scroller.scrollLeft = this.x * -1;
-                    blockView._scroller.scrollTop = this.y * -1;
-                }
-            });
+			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller);
 			
 			var $scroller = $(scroller);
-			$scroller.bind("scroll", $scopify(blockView, blockView.onScroll));
+			$scroller.bind("modernScroll", $scopify(blockView, blockView.onScroll));
 			
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
                 $fly(blockView._container).css("position", "relative");
@@ -989,8 +960,8 @@
 			decorator.refresh();
 		},
 		
-		onScroll: function() {
-		
+		onScroll: function(arg) {debugger;
+
 			function process(p1, p2) {
 				if (scroller[p1] == (scroller[p2] || 0)) return;
 				if (scroller._scrollTimerId) {
@@ -1003,18 +974,17 @@
 			}
 			
 			if (this._scrollMode == "viewport") {
-				var scroller = this._scroller;
 				if (this._blockLayout == "vertical") {
-					if ((this._scrollTop || 0) != scroller.scrollTop) {
+					if ((this._scrollTop || 0) != arg.scrollTop) {
 						process.call(this, "scrollTop", "_scrollTop");
 					}
 				} else {
-					if ((this._scrollLeft || 0) != scroller.scrollLeft) {
+					if ((this._scrollLeft || 0) != arg.scrollLeft) {
 						process.call(this, "scrollLeft", "_scrollLeft");
 					}
 				}
-				this._scrollLeft = scroller.scrollLeft;
-				this._scrollTop = scroller.scrollTop;
+				this._scrollLeft = arg.scrollLeft;
+				this._scrollTop = arg.scrollTop;
 			} else if (this._scrollMode == "lazyRender") {
 				var range = this._getVisibleBlockRange(), childNodes = this._container.childNodes;
 				for (var i = range[0]; i <= range[1] &&
@@ -1237,31 +1207,29 @@
 		},
 		
 		scrollCurrentIntoView: function() {
+			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
+				return;
+			}
+
 			var currentItemId = this.getCurrentItemId();
-			var itemDom = this._itemDomMap[currentItemId], dom = this._dom, itemIndex;
+			var itemDom = this._itemDomMap[currentItemId], scroller = this._scroller, itemIndex;
 			if (itemDom) {
 				itemIndex = itemDom.itemIndex;
 				if (itemIndex >= this.startIndex &&
 				itemIndex <= (this.startIndex + this.itemDomCount)) {
 					if (this._blockLayout == "vertical") {
-						if (itemDom.offsetTop < dom.scrollTop) {
-							dom.scrollTop = this._scrollTop = itemDom.offsetTop -
-							this._vertSpacing;
-						} else if ((itemDom.offsetTop + itemDom.offsetHeight) > (dom.scrollTop + dom.clientHeight)) {
-							dom.scrollTop = this._scrollTop = itemDom.offsetTop +
-							itemDom.offsetHeight -
-							dom.clientHeight +
-							this._vertSpacing;
+						if (itemDom.offsetTop < scroller.scrollTop) {
+							scroller.scrollTop = this._scrollTop = itemDom.offsetTop - this._vertSpacing;
+						} else if ((itemDom.offsetTop + itemDom.offsetHeight) > (scroller.scrollTop + scroller.clientHeight)) {
+							scroller.scrollTop = this._scrollTop = itemDom.offsetTop + itemDom.offsetHeight
+								- scroller.clientHeight + this._vertSpacing;
 						}
 					} else {
-						if (itemDom.offsetLeft < dom.scrollLeft) {
-							dom.scrollLeft = this._scrollLeft = itemDom.offsetLeft -
-							this._horiSpacing;
-						} else if ((itemDom.offsetLeft + itemDom.offsetWidth) > (dom.scrollLeft + dom.clientWidth)) {
-							dom.scrollLeft = this._scrollLeft = itemDom.offsetLeft +
-							itemDom.offsetWidth -
-							dom.clientWidth +
-							this._horiSpacing;
+						if (itemDom.offsetLeft < scroller.scrollLeft) {
+							scroller.scrollLeft = this._scrollLeft = itemDom.offsetLeft - this._horiSpacing;
+						} else if ((itemDom.offsetLeft + itemDom.offsetWidth) > (scroller.scrollLeft + scroller.clientWidth)) {
+							scroller.scrollLeft = this._scrollLeft = itemDom.offsetLeft + itemDom.offsetWidth
+								- scroller.clientWidth + this._horiSpacing;
 						}
 					}
 					return;
@@ -1273,30 +1241,21 @@
 			var lineIndex = parseInt(itemIndex / this._realLineSize);
 			if (itemIndex < this.startIndex) {
 				if (this._blockLayout == "vertical") {
-					dom.scrollTop = this._scrollTop = lineIndex *
-					(this._blockHeight + this._vertSpacing) +
-					this._vertPadding -
-					this._vertSpacing;
+					scroller.scrollTop = this._scrollTop = lineIndex * (this._blockHeight + this._vertSpacing)
+						+ this._vertPadding - this._vertSpacing;
 				} else {
-					dom.scrollLeft = this._scrollLeft = lineIndex *
-					(this._blockWidth + this._horiSpacing) +
-					this._horiPadding -
-					this._horiSpacing;
+					scroller.scrollLeft = this._scrollLeft = lineIndex * (this._blockWidth + this._horiSpacing)
+						+ this._horiPadding - this._horiSpacing;
 				}
 			} else if (itemIndex > (this.startIndex + this.itemDomCount - 1)) {
 				if (this._blockLayout == "vertical") {
-					dom.scrollTop = this._scrollTop = (lineIndex + 1) *
-					(this._blockHeight + this._vertSpacing) +
-					this._vertPadding -
-					dom.clientHeight;
+					scroller.scrollTop = this._scrollTop = (lineIndex + 1) * (this._blockHeight + this._vertSpacing)
+						+ this._vertPadding - scroller.clientHeight;
 				} else {
-					dom.scrollLeft = this._scrollLeft = (lineIndex + 1) *
-					(this._blockWidth + this._horiSpacing) +
-					this._horiPadding -
-					dom.clientWidth;
+					scroller.scrollLeft = this._scrollLeft = (lineIndex + 1) * (this._blockWidth + this._horiSpacing)
+						+ this._horiPadding - scroller.clientWidth;
 				}
 			}
-			this.doOnScroll();
 		},
 		
 		_getContainerSize: function() {

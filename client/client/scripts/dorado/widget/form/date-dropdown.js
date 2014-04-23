@@ -1203,7 +1203,7 @@
 		},
 
         doOnEditorKeyDown: function(editor, evt) {
-			var dropDown = this, retValue = true, datePicker = this._picker, ymPicker = datePicker._yearMonthPicker;
+			var dropDown = this, retValue = true, datePicker = dropDown.get("box.control");
             if (this.get("opened")) {
                 switch (evt.keyCode) {
                     case 27: // esc
@@ -1211,6 +1211,7 @@
                         retValue = false;
                         break;
                     default:
+	                    var ymPicker = datePicker._yearMonthPicker;
                         if (!ymPicker || !ymPicker._opened) {
                             retValue = datePicker.onKeyDown(evt);
                         } else {
@@ -1219,7 +1220,7 @@
                         break;
                 }
             }
-            if (retValue) retValue = $invokeSuper.call(this, arguments);
+            if (retValue) retValue = $invokeSuper.call(dropDown, arguments);
             return retValue;
 		},
 		

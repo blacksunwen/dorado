@@ -12,7 +12,7 @@
 (function($) {
 
 	var SCROLLER_SIZE = 3, ACTIVE_SCROLLER_SIZE = 15, SCROLLER_PADDING = 0, MIN_SLIDER_SIZE = ACTIVE_SCROLLER_SIZE, MIN_SPILLAGE = 2;
-	
+
 	function insertAfter(element, refElement) {
 		var parent = refElement.parentNode;
 		if (parent.lastChild == refElement) {
@@ -21,10 +21,10 @@
 			parent.insertBefore(element, refElement.nextSibling);
 		}
 	}
-	
+
 	var Scroller = $class({
 		// dom, doms, container, direction
-		
+
 		constructor: function(container, direction, options) {
 			this.container = container;
 			this.direction = direction;
@@ -36,7 +36,7 @@
 			delete this.doms;
 			delete this.container;
 		},
-		
+
 		createDom: function() {
 			var scroller = this, doms = scroller.doms = {}, dom = scroller.dom = $DomUtils.xCreate({
 				tagName: "DIV",
@@ -57,7 +57,7 @@
 					style: "position: absolute"
 				}]
 			}, null, doms);
-			
+
 			var $dom = $(dom), slider = doms.slider, $slider = $(slider), track = doms.track, $track = $(track);
 
 			var draggableOptions = {
@@ -124,7 +124,7 @@
 			$DomUtils.disableUserSelection(doms.track);
 			return dom;
 		},
-		
+
 		doMouseEnter: function() {
 			var scroller = this;
 			scroller.hover = true;
@@ -133,7 +133,7 @@
 			$fly(scroller.dom).addClass("d-modern-scroller-hover");
 			scroller.expand();
 		},
-		
+
 		doMouseLeave: function() {
 			var scroller = this;
 			scroller.hover = false;
@@ -142,12 +142,12 @@
 			$fly(scroller.dom).removeClass("d-modern-scroller-hover");
 			scroller.unexpand();
 		},
-		
+
 		expand: function() {
 			var scroller = this;
 			dorado.Toolkits.cancelDelayedAction(scroller, "$expandTimerId");
 			if (scroller.expanded) return;
-			
+
 			var animOptions;
 			if (scroller.direction == "h") {
 				animOptions = {
@@ -158,7 +158,7 @@
 					width: ACTIVE_SCROLLER_SIZE
 				};
 			}
-			
+
 			scroller.expanded = true;
 
 			var $dom = $(scroller.dom);
@@ -172,7 +172,7 @@
 				});
 			}
 		},
-		
+
 		unexpand: function() {
 			var scroller = this;
 			dorado.Toolkits.setDelayedAction(scroller, "$expandTimerId", function() {
@@ -201,15 +201,15 @@
 				}
 			}, 700);
 		},
-		
+
 		update: function() {
 			if (this.dragging) return;
-			
+
 			var scroller = this, container = scroller.container;
 			if (!container) return;
-			
+
 			var dom = scroller.dom, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
-			
+
 			if (scroller.direction == "h") {
 				if (container.scrollWidth > (container.clientWidth + MIN_SPILLAGE) && container.clientWidth > 0) {
 					if (!dom) {
@@ -224,11 +224,11 @@
 					} else {
 						dom.style.display = "";
 					}
-					
+
 					if (dorado.Browser.msie && dorado.Browser.version == 6) {
 						dom.style.width = container.offsetWidth + "px";
 					}
-					
+
 					var trackSize = container.offsetWidth - SCROLLER_PADDING * 2;
 					var slider = scroller.doms.slider;
 					var sliderSize = (trackSize * container.clientWidth / container.scrollWidth);
@@ -236,7 +236,7 @@
 						trackSize -= (MIN_SLIDER_SIZE - sliderSize);
 						sliderSize = MIN_SLIDER_SIZE;
 					}
-					
+
 					scroller.positionRatio = container.scrollWidth / trackSize;
 					slider.style.left = Math.round(container.scrollLeft / scroller.positionRatio) + "px";
 					slider.style.width = Math.round(sliderSize) + "px";
@@ -245,7 +245,7 @@
 						// IE9下有时无法在初始化是取到正确的clientWidth
 						setTimeout(function() {
 							scroller.update();
-						}, 0);						
+						}, 0);
 					}
 					if (dom) {
 						dom.style.display = "none";
@@ -295,19 +295,19 @@
 			}
 		}
 	});
-	
+
 	var ModernScrolled = $class({
 		constructor: function(container, options) {
 			this.id = dorado.Core.newId();
-			this.container = container;	
-			this.options = options || {};		
+			this.container = container;
+			this.options = options || {};
 			var $container = $(container), options = this.options;
-			
+
 			if (options.listenSize || options.listenContainerSize || options.listenContentSize) {
 				addListenModernScrolled(this);
 			}
 		},
-		
+
 		destroy: function() {
 			var options = this.options;
 			if (options.listenSize || options.listenContainerSize || options.listenContentSize) {
@@ -316,20 +316,20 @@
 			delete this.container;
 		}
 	});
-	
+
 	var DesktopModernScrolled = $extend(ModernScrolled, {
 		// container, xScroller, yScroller
-		
+
 		constructor: function(container, options) {
 			$invokeSuper.call(this, arguments);
-			
+
 			var options= this.options; $container = $(container),
 				parentDom = container.parentNode, $parentDom = $(parentDom);
-			
+
 			var overflowX = $container.css("overflowX"), overflowY = $container.css("overflowY");
 			var width = $container.css("width"), height = $container.css("height");
 			var xScroller, yScroller;
-			
+
 			if (!(overflowX == "hidden" || overflowX != "scroll" && (width == "" || width == "auto"))) {
 				$container.css("overflowX", "hidden");
 				xScroller = new Scroller(container, "h", options);
@@ -338,24 +338,24 @@
 				$container.css("overflowY", "hidden");
 				yScroller = new Scroller(container, "v", options);
 			}
-			
+
 			if (!xScroller && !yScroller) throw new dorado.AbortException();
-			
+
 			this.xScroller = xScroller;
 			this.yScroller = yScroller;
-			
+
 			var position = $parentDom.css("position");
 			if (position != "relative" && position != "absolute") {
 				$parentDom.css("position", "relative");
 			}
-			
+
 			position = $container.css("position");
 			if (position != "relative" && position != "absolute") {
 				$container.css("position", "relative");
 			}
-			
+
 			this.update();
-			
+
 			var modernScrolled = this;
 			if ($container.mousewheel) {
 				$container.mousewheel(function(evt, delta) {
@@ -391,53 +391,62 @@
 			}
 			$container.bind("scroll", function(evt) {
 				modernScrolled.update();
+
+				var arg = { scrollLeft: container.scrollLeft, scrollTop: container.scrollTop };
+				$container.trigger("modernScrolling", arg).trigger("modernScroll", arg);
 			}).resize(function(evt) {
 				modernScrolled.update();
 			});
 		},
-		
+
 		update: function() {
 			if (this.xScroller) this.xScroller.update();
 			if (this.yScroller) this.yScroller.update();
-			
+
 			var container = this.container;
 			this.currentClientWidth = container.clientWidth;
 			this.currentClientHeight = container.clientHeight;
 			this.currentScrollWidth = container.scrollWidth;
 			this.currentScrollHeight = container.scrollHeight;
 		},
-		
+
 		scrollToElement: function(dom) {
 			// TODO
 		},
-		
+
 		destroy: function() {
 			$invokeSuper.call(this, arguments);
 			if (this.xScroller) this.xScroller.destroy();
 			if (this.yScroller) this.yScroller.destroy();
 		}
 	});
-	
+
 	var TouchModernScrolled = $extend(ModernScrolled, {
 		// iscroll
-		
+
 		constructor: function(container, options) {
 			var $container = $(container);
 			var overflowX = $container.css("overflowX"), overflowY = $container.css("overflowY");
 			var width = $container.css("width"), height = $container.css("height");
-			
+
 			/*
 			if ((overflowX == "hidden" || overflowX != "scroll" && (width == "" || width == "auto")) &&
 				(overflowY == "hidden" || overflowY != "scroll" && (height == "" || height == "auto"))) {
 				throw new dorado.AbortException();
 			}
-			*/		
-			
+			*/
+
 			var modernScrolled = this, options = modernScrolled.options = dorado.Object.apply({
 				scrollbarClass: "iscroll",
-				hideScrollbar: true
+				hideScrollbar: true,
+				onScrolling: function() {
+					$container.trigger("modernScrolling", { scrollLeft: this.x * -1, scrollTop: this.y * -1 });
+				},
+				onScrollMove: function() {
+					$container.trigger("modernScroll", { scrollLeft: this.x * -1, scrollTop: this.y * -1 });
+				}
 			}, options, false);
-			
+
 			$container.css("overflowX", "hidden").css("overflowY", "hidden");
 			setTimeout(function() {
 				modernScrolled.iscroll = new iScroll(container, modernScrolled.options);
@@ -445,9 +454,9 @@
 					modernScrolled.iscroll.disable();
 				}
 			}, 0);
-			
+
 			$invokeSuper.call(modernScrolled, [container, modernScrolled.options]);
-			
+
 			var $container = $(container);
 			$container.bind("scroll", function(evt) {
 				modernScrolled.update();
@@ -455,10 +464,10 @@
 				modernScrolled.update();
 			});
 		},
-		
+
 		update: function() {
 			if (!this.iscroll) return;
-			
+
 			if (this.options.autoDisable) {
 				var container = this.container;
 				if (container.scrollHeight > (container.clientHeight + 2) || container.scrollWidth > (container.clientWidth + 2)) {
@@ -474,14 +483,14 @@
 				this.iscroll.refresh();
 			}
 		},
-		
+
 		scrollToElement: function(dom) {
 			if (this.iscroll) this.iscroll.scrollToElement(dom);
 		}
 	});
-	
+
 	var listenModernScrolleds = new dorado.util.KeyedList(dorado._GET_ID), listenTimerId;
-	
+
 	function addListenModernScrolled(modernScrolled) {
 		listenModernScrolleds.insert(modernScrolled);
 		if (listenModernScrolleds.size == 1) {
@@ -507,7 +516,7 @@
 			}, 300);
 		}
 	}
-	
+
 	function removeListenModernScrolled(modernScrolled) {
 		listenModernScrolleds.remove(modernScrolled);
 		if (listenModernScrolleds.size == 0 && listenTimerId) {
@@ -515,7 +524,7 @@
 			listenTimerId = 0;
 		}
 	}
-	
+
 	/**
 	 * @param {Object} container
 	 * @param {Object} [options]
@@ -532,24 +541,24 @@
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
 				modernScrolled = new TouchModernScrolled(container, options);;
 			}
-			else {			
+			else {
 				var parentDom = container.parentNode;
 				if (parentDom) {
 					modernScrolled = new DesktopModernScrolled(container, options);
 				}
 			}
-			
+
 			if (modernScrolled) $container.data("modernScrolled", modernScrolled);
-		} 
+		}
 		catch (e) {
 			dorado.Exception.processException(e);
 		}
 		return modernScrolled;
 	}
-	
+
 	dorado.util.Dom.destroyModernScroll = function(container, options) {
 		var modernScrolled = $(container).data("modernScrolled");
 		if (modernScrolled) modernScrolled.destroy();
 	}
-	
+
 })(jQuery);
