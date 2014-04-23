@@ -960,7 +960,8 @@
 			decorator.refresh();
 		},
 		
-		onScroll: function(arg) {
+		onScroll: function(event, arg) {
+			var blockView = this;
 
 			function process(p1, p2) {
 				if (scroller[p1] == (scroller[p2] || 0)) return;
@@ -970,43 +971,45 @@
 				} else {
 					scroller[p2] = scroller[p1];
 				}
-				scroller._scrollTimerId = $setTimeout(this, this.doOnScroll, 300);
+				scroller._scrollTimerId = setTimeout(function() {
+					blockView.doOnScroll(arg);
+				}, 300);
 			}
 			
-			if (this._scrollMode == "viewport") {
-				if (this._blockLayout == "vertical") {
-					if ((this._scrollTop || 0) != arg.scrollTop) {
-						process.call(this, "scrollTop", "_scrollTop");
+			if (blockView._scrollMode == "viewport") {
+				if (blockView._blockLayout == "vertical") {
+					if ((blockView._scrollTop || 0) != arg.scrollTop) {
+						process.call(blockView, "scrollTop", "_scrollTop");
 					}
 				} else {
-					if ((this._scrollLeft || 0) != arg.scrollLeft) {
-						process.call(this, "scrollLeft", "_scrollLeft");
+					if ((blockView._scrollLeft || 0) != arg.scrollLeft) {
+						process.call(blockView, "scrollLeft", "_scrollLeft");
 					}
 				}
-				this._scrollLeft = arg.scrollLeft;
-				this._scrollTop = arg.scrollTop;
-			} else if (this._scrollMode == "lazyRender") {
-				var range = this._getVisibleBlockRange(), childNodes = this._container.childNodes;
+				blockView._scrollLeft = arg.scrollLeft;
+				blockView._scrollTop = arg.scrollTop;
+			} else if (blockView._scrollMode == "lazyRender") {
+				var range = blockView._getVisibleBlockRange(), childNodes = blockView._container.childNodes;
 				for (var i = range[0]; i <= range[1] &&
 				i < childNodes.length; i++) {
 					var blockDom = childNodes[i];
 					if (blockDom._lazyRender) {
 						var item = $fly(blockDom).data("item");
-						this.createItemDomDetail(blockDom, item);
+						blockView.createItemDomDetail(blockDom, item);
 						delete blockDom._lazyRender;
-						this.refreshItemDomData(blockDom, item);
+						blockView.refreshItemDomData(blockDom, item);
 					}
 				}
 			}
 		},
 		
-		doOnScroll: function() {
+		doOnScroll: function(arg) {
 			var scroller = this._scroller;
 			if (scroller._scrollTimerId) {
 				clearTimeout(scroller._scrollTimerId);
 				scroller._scrollTimerId = undefined;
 			}
-			this._itemModel.setScrollPos((this._blockLayout == "vertical") ? scroller.scrollTop : scroller.scrollLeft);
+			this._itemModel.setScrollPos((this._blockLayout == "vertical") ? arg.scrollTop : arg.scrollLeft);
 			this.refreshViewPortContent(this._container);
 		},
 		
