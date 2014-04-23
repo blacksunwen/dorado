@@ -489,7 +489,7 @@
 		 * 如果仍然不能显示在屏幕范围内，我们就认为该组件的超出触发，会调用该组件的overflowHandler来处理组件的超出。
 		 * </p>
 		 * @param {HTMLElement} element 要停靠的DOM对象。
-		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
+		 *	 此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
 		 * @param {HTMLElement|window} fixedElement 固定位置的DOM对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。
 		 * @param {Object} options 以JSON方式定义的选项。
 		 * @param {String} [options.align=innerleft] 在水平方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为left、innerleft、center、innerright、top。
@@ -507,17 +507,17 @@
 		dockAround: function(element, fixedElement, options) {
 			options = options || {};
 			var align = options.align || "innerleft", vAlign = options.vAlign || "innertop",
-                offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0,
-                autoAdjustPosition = options.autoAdjustPosition, handleOverflow = options.handleOverflow,
-                offsetParentEl = jQuery(element.offsetParent), offsetParentWidth = offsetParentEl.width(), offsetParentHeight = offsetParentEl.height(),
-                offsetParentBottom, offsetParentRight,
-                overflowTrigger = false, offsetParentOffset = $fly(element.offsetParent).offset(), maxWidth, maxHeight, adjustLeft, adjustTop;
+				offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0,
+				autoAdjustPosition = options.autoAdjustPosition, handleOverflow = options.handleOverflow,
+				offsetParentEl = $fly(element.offsetParent), offsetParentWidth = offsetParentEl.width(),
+				offsetParentHeight = offsetParentEl.height(), offsetParentBottom, offsetParentRight, overflowTrigger = false,
+				offsetParentOffset = offsetParentEl.offset() || { left: 0, top: 0 }, maxWidth, maxHeight, adjustLeft, adjustTop;
 
-            offsetParentRight = offsetParentWidth + offsetParentOffset.left;
-            offsetParentBottom = offsetParentHeight + offsetParentOffset.top;
+			offsetParentRight = offsetParentWidth + offsetParentOffset.left;
+			offsetParentBottom = offsetParentHeight + offsetParentOffset.top;
 
 			var position = jQuery(fixedElement == window ? document.body : fixedElement).offset(),
-                left = position.left, top = position.top, rect, newAlign, vAlignPrefix, overflowRect;
+				left = position.left, top = position.top, rect, newAlign, vAlignPrefix, overflowRect;
 
 			if (fixedElement) {
 				rect = getRect(fixedElement);
@@ -533,89 +533,89 @@
 				if (align) {
 					left = getLeft(rect, element, align);
 
-                    if ((left + element.offsetWidth > offsetParentRight) || (left < 0)) {
-                        if (!(autoAdjustPosition === false)) {
-                            if (align != "center") {
-                                if (align.indexOf("left") != -1) {
-                                    newAlign = align.replace("left", "right");
-                                } else if (align.indexOf("right") != -1) {
-                                    newAlign = align.replace("right", "left");
-                                }
-                                adjustLeft = getLeft(rect, element, newAlign);
-                                if ((adjustLeft + element.offsetWidth > offsetParentRight) || (adjustLeft < 0)) {
-                                    left = 0;
-                                    overflowTrigger = true;
-                                    maxWidth = offsetParentWidth;
-                                } else {
-                                    left = adjustLeft;
-                                    align = newAlign;
-                                }
-                            } else if (align == "center") {
-                                if (left < 0) {
-                                    left = 0;
-                                    overflowTrigger = true;
-                                    maxWidth = offsetParentWidth;
-                                }
-                            }
-                        } else {
-                            overflowTrigger = true;
-                        }
+					if ((left + element.offsetWidth > offsetParentRight) || (left < 0)) {
+						if (!(autoAdjustPosition === false)) {
+							if (align != "center") {
+								if (align.indexOf("left") != -1) {
+									newAlign = align.replace("left", "right");
+								} else if (align.indexOf("right") != -1) {
+									newAlign = align.replace("right", "left");
+								}
+								adjustLeft = getLeft(rect, element, newAlign);
+								if ((adjustLeft + element.offsetWidth > offsetParentRight) || (adjustLeft < 0)) {
+									left = 0;
+									overflowTrigger = true;
+									maxWidth = offsetParentWidth;
+								} else {
+									left = adjustLeft;
+									align = newAlign;
+								}
+							} else if (align == "center") {
+								if (left < 0) {
+									left = 0;
+									overflowTrigger = true;
+									maxWidth = offsetParentWidth;
+								}
+							}
+						} else {
+							overflowTrigger = true;
+						}
 					}
 				}
 				
 				if (vAlign) {
 					top = getTop(rect, element, vAlign);
 
-                    if ((top + element.offsetHeight > offsetParentBottom) || (top < 0)) {
-                        if (!(autoAdjustPosition === false)) {
-                            if (vAlign != "center") {
-                                if (vAlign.indexOf("top") != -1) {
-                                    vAlign = vAlign.replace("top", "bottom");
-                                    vAlignPrefix = vAlign.replace("top", "");
-                                } else if (vAlign.indexOf("bottom") != -1) {
-                                    vAlign = vAlign.replace("bottom", "top");
-                                    vAlignPrefix = vAlign.replace("bottom", "");
-                                }
+					if ((top + element.offsetHeight > offsetParentBottom) || (top < 0)) {
+						if (!(autoAdjustPosition === false)) {
+							if (vAlign != "center") {
+								if (vAlign.indexOf("top") != -1) {
+									vAlign = vAlign.replace("top", "bottom");
+									vAlignPrefix = vAlign.replace("top", "");
+								} else if (vAlign.indexOf("bottom") != -1) {
+									vAlign = vAlign.replace("bottom", "top");
+									vAlignPrefix = vAlign.replace("bottom", "");
+								}
 
-                                adjustTop = getTop(rect, element, vAlign);
+								adjustTop = getTop(rect, element, vAlign);
 
-                                if (adjustTop + element.offsetHeight > offsetParentBottom) {//超出的情况下才会触发这个
-                                    //overflow trigger
-                                    overflowTrigger = true;
-                                    if (adjustTop < (offsetParentHeight / 2)) {
-                                        top = adjustTop;
-                                        maxHeight = offsetParentHeight - top;
-                                        vAlign = vAlignPrefix + "bottom";
-                                    } else {
-                                        maxHeight = element.offsetHeight + top;
-                                        vAlign = vAlignPrefix + "top";
-                                    }
-                                } else if (adjustTop < 0) {//top < 0的情形下才会触发这个
-                                    //overflow trigger
-                                    overflowTrigger = true;
-                                    if (top > (offsetParentHeight / 2)) {
-                                        top = 0;
-                                        maxHeight = element.offsetHeight + adjustTop;
-                                        vAlign = vAlignPrefix + "top";
-                                    } else {
-                                        maxHeight = offsetParentHeight - top;
-                                        vAlign = vAlignPrefix + "bottom";
-                                    }
-                                } else {
-                                    top = adjustTop;
-                                }
-                            } else if (vAlign == "center") {
-                                if (top < 0) {
-                                    overflowTrigger = true;
-                                    top = 0;
-                                    maxHeight = offsetParentHeight;
-                                }
-                            }
-                        } else {
-                            overflowTrigger = true;
-                        }
-                    }
-                }
+								if (adjustTop + element.offsetHeight > offsetParentBottom) {//超出的情况下才会触发这个
+									//overflow trigger
+									overflowTrigger = true;
+									if (adjustTop < (offsetParentHeight / 2)) {
+										top = adjustTop;
+										maxHeight = offsetParentHeight - top;
+										vAlign = vAlignPrefix + "bottom";
+									} else {
+										maxHeight = element.offsetHeight + top;
+										vAlign = vAlignPrefix + "top";
+									}
+								} else if (adjustTop < 0) {//top < 0的情形下才会触发这个
+									//overflow trigger
+									overflowTrigger = true;
+									if (top > (offsetParentHeight / 2)) {
+										top = 0;
+										maxHeight = element.offsetHeight + adjustTop;
+										vAlign = vAlignPrefix + "top";
+									} else {
+										maxHeight = offsetParentHeight - top;
+										vAlign = vAlignPrefix + "bottom";
+									}
+								} else {
+									top = adjustTop;
+								}
+							} else if (vAlign == "center") {
+								if (top < 0) {
+									overflowTrigger = true;
+									top = 0;
+									maxHeight = offsetParentHeight;
+								}
+							}
+						} else {
+							overflowTrigger = true;
+						}
+					}
+				}
 			}
 			
 			//console.log("overflowTrigger:" + overflowTrigger);
@@ -623,26 +623,26 @@
 			options.vAlign = vAlign;
 
 			var finalLeft = left + offsetLeft /**+ $fly(element.offsetParent).scrollLeft()*/,
-                finalTop = top + offsetTop /**+ $fly(element.offsetParent).scrollTop() */;
+				finalTop = top + offsetTop /**+ $fly(element.offsetParent).scrollTop() */;
 			
 			$fly(element).offset({ left: finalLeft, top: finalTop });
 
-            finalLeft = parseInt($fly(element).css("left"), 10);
-            finalTop = parseInt($fly(element).css("top"), 10);
+			finalLeft = parseInt($fly(element).css("left"), 10);
+			finalTop = parseInt($fly(element).css("top"), 10);
 
-            if (!(handleOverflow === false) && overflowTrigger) {
-                if (typeof options.overflowHandler == "function") {
-                    overflowRect = {
-                        left: finalLeft,
-                        top: finalTop,
-                        align: align,
-                        vAlign: vAlign,
-                        maxHeight: maxHeight,
-                        maxWidth: maxWidth
-                    };
-                    options.overflowHandler.call(null, overflowRect);
-                }
-            }
+			if (!(handleOverflow === false) && overflowTrigger) {
+				if (typeof options.overflowHandler == "function") {
+					overflowRect = {
+						left: finalLeft,
+						top: finalTop,
+						align: align,
+						vAlign: vAlign,
+						maxHeight: maxHeight,
+						maxWidth: maxWidth
+					};
+					options.overflowHandler.call(null, overflowRect);
+				}
+			}
 
 			return {
 				left: finalLeft,
@@ -656,7 +656,7 @@
 		 * 将一个绝对定位(style.position=absolute)的DOM对象放置在屏幕或另一个DOM对象的可见区域内。
 		 *
 		 * @param {HTMLElement} element 要放置的DOM对象。
-		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
+		 *	 此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
 		 * @param {Object} options 以JSON方式定义的选项。
 		 * @param {HTMLElement} options.parent 作为容器的DOM对象（并不是指DOM结构上的父节点，仅指视觉上的关系）。如果不指定此属性则表示放置在屏幕可见区域内。
 		 * @param {int} options.offsetLeft 水平偏移量，可以为正，可以为负。
@@ -670,9 +670,10 @@
 		locateIn: function(element, options) {
 			options = options || {};
 			var offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0, handleOverflow = options.handleOverflow,
-                parent = options.parent, offsetParentEl = jQuery(element.offsetParent), offsetParentWidth = offsetParentEl.width(), offsetParentHeight = offsetParentEl.height(),
-                adjustLeft, adjustTop, overflowTrigger = false, maxWidth, maxHeight, position = options.position,
-                left = position ? position.left : 0, top = position ? position.top : 0, autoAdjustPosition = options.autoAdjustPosition;
+				parent = options.parent, offsetParentEl = $fly(element.offsetParent), offsetParentWidth = offsetParentEl.width(),
+				offsetParentHeight = offsetParentEl.height(), adjustLeft, adjustTop, overflowTrigger = false, maxWidth, maxHeight,
+				position = options.position, left = position ? position.left : 0, top = position ? position.top : 0,
+				autoAdjustPosition = options.autoAdjustPosition;
 			
 			if (parent) {
 				var parentPos = $fly(parent).offset();
@@ -688,49 +689,49 @@
 					left = 0;
 				}
 				if (left + element.offsetWidth > offsetParentWidth) {
-                    if (!(handleOverflow === false)) {
-                        adjustLeft = left - element.offsetWidth;
-                        if (adjustLeft > 0) {
-                            left = adjustLeft;
-                        } else {
-                            left = 0;
-                            overflowTrigger = true;
-                            maxWidth = offsetParentWidth;
-                        }
-                    } else {
-                        overflowTrigger = true;
-                    }
+					if (!(handleOverflow === false)) {
+						adjustLeft = left - element.offsetWidth;
+						if (adjustLeft > 0) {
+							left = adjustLeft;
+						} else {
+							left = 0;
+							overflowTrigger = true;
+							maxWidth = offsetParentWidth;
+						}
+					} else {
+						overflowTrigger = true;
+					}
 				}
 				if (top + element.offsetHeight >= offsetParentHeight) {
-                    if (!(handleOverflow === false)) {
-                        adjustTop = top - element.offsetHeight;
-                        if (adjustTop < 0) {
-                            top = 0;
-                            overflowTrigger = true;
-                            maxHeight = offsetParentHeight;
-                        } else {
-                            top = adjustTop;
-                        }
-                    } else {
-                        overflowTrigger = true;
-                    }
+					if (!(handleOverflow === false)) {
+						adjustTop = top - element.offsetHeight;
+						if (adjustTop < 0) {
+							top = 0;
+							overflowTrigger = true;
+							maxHeight = offsetParentHeight;
+						} else {
+							top = adjustTop;
+						}
+					} else {
+						overflowTrigger = true;
+					}
 				}
 			}
 			
 			var finalLeft = left + offsetLeft, finalTop = top + offsetTop;
 			$fly(element).left(finalLeft).top(finalTop);
 
-            if (handleOverflow !== false && overflowTrigger) {
-                if (typeof options.overflowHandler == "function") {
-                    var overflowRect = {
-                        left: finalLeft,
-                        top: finalTop,
-                        maxHeight: maxHeight,
-                        maxWidth: maxWidth
-                    };
-                    options.overflowHandler.call(null, overflowRect);
-                }
-            }
+			if (handleOverflow !== false && overflowTrigger) {
+				if (typeof options.overflowHandler == "function") {
+					var overflowRect = {
+						left: finalLeft,
+						top: finalTop,
+						maxHeight: maxHeight,
+						maxWidth: maxWidth
+					};
+					options.overflowHandler.call(null, overflowRect);
+				}
+			}
 
 			return {
 				left: finalLeft,
