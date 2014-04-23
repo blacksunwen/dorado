@@ -960,7 +960,7 @@
 			decorator.refresh();
 		},
 		
-		onScroll: function(arg) {debugger;
+		onScroll: function(arg) {
 
 			function process(p1, p2) {
 				if (scroller[p1] == (scroller[p2] || 0)) return;
