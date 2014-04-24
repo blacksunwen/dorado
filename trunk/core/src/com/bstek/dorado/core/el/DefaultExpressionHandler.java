@@ -38,12 +38,14 @@ import com.bstek.dorado.core.Context;
  * @since Mar 4, 2007
  */
 public class DefaultExpressionHandler implements ExpressionHandler {
+
 	private static final Log logger = LogFactory
 			.getLog(ExpressionHandler.class);
 
 	private final static String DORADO_VAR = "dorado";
 	private final static String CONTEXT_ATTRIBUTE_KEY = DefaultExpressionHandler.class
 			.getName();
+	private static final String DORADO_EXPRESSION_UTILS_TYPE = "com.bstek.dorado.core.el.$DoradoExpressionUtils";
 
 	private static ThreadLocal<JexlEngine> threadLocal = new ThreadLocal<JexlEngine>();
 	private static Object doradoExpressionUtilsBean;
@@ -164,8 +166,10 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 			Map<String, Method> utilMethods) throws Exception {
 		if (doradoExpressionUtilsBean == null) {
 			ClassPool pool = ClassPool.getDefault();
-			CtClass ctClass = pool
-					.makeClass("com.bstek.dorado.core.el.$DoradoExpressionUtils");
+			CtClass ctClass = pool.get(DORADO_EXPRESSION_UTILS_TYPE);
+			if (ctClass == null) {
+				ctClass = pool.makeClass(DORADO_EXPRESSION_UTILS_TYPE);
+			}
 			for (Map.Entry<String, Method> entry : utilMethods.entrySet()) {
 				String name = entry.getKey();
 				Method method = entry.getValue();
