@@ -203,8 +203,6 @@
 		},
 
 		update: function() {
-			if (this.dragging) return;
-
 			var scroller = this, container = scroller.container;
 			if (!container) return;
 
@@ -309,6 +307,7 @@
 		},
 
 		destroy: function() {
+			this.destroyed = true;
 			var options = this.options;
 			if (options.listenSize || options.listenContainerSize || options.listenContentSize) {
 				removeListenModernScrolled(this);
@@ -392,7 +391,11 @@
 			$container.bind("scroll", function(evt) {
 				modernScrolled.update();
 
-				var arg = { scrollLeft: container.scrollLeft, scrollTop: container.scrollTop };
+				var arg = {
+					scrollLeft: container.scrollLeft, scrollTop: container.scrollTop,
+					scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
+					clientWidth: container.clientWidth, clientHeight: container.clientHeight
+				};
 				$container.trigger("modernScrolling", arg).trigger("modernScroll", arg);
 			}).resize(function(evt) {
 				modernScrolled.update();
@@ -400,6 +403,8 @@
 		},
 
 		update: function() {
+			if (this.destroyed || this.dragging) return;
+
 			if (this.xScroller) this.xScroller.update();
 			if (this.yScroller) this.yScroller.update();
 
@@ -440,10 +445,20 @@
 				scrollbarClass: "iscroll",
 				hideScrollbar: true,
 				onScrolling: function() {
-					$container.trigger("modernScrolling", { scrollLeft: this.x * -1, scrollTop: this.y * -1 });
+					var arg = {
+						scrollLeft: this.x * -1, scrollTop: this.y * -1,
+						scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
+						clientWidth: container.clientWidth, clientHeight: container.clientHeight
+					};
+					$container.trigger("modernScrolling", arg);
 				},
 				onScrollMove: function() {
-					$container.trigger("modernScroll", { scrollLeft: this.x * -1, scrollTop: this.y * -1 });
+					var arg = {
+						scrollLeft: this.x * -1, scrollTop: this.y * -1,
+						scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
+						clientWidth: container.clientWidth, clientHeight: container.clientHeight
+					};
+					$container.trigger("modernScroll", arg);
 				}
 			}, options, false);
 
@@ -466,7 +481,7 @@
 		},
 
 		update: function() {
-			if (!this.iscroll) return;
+			if (!this.iscroll || this.destroyed || this.dragging) return;
 
 			if (this.options.autoDisable) {
 				var container = this.container;

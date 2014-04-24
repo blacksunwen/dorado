@@ -1206,22 +1206,6 @@
 						return false;
 					}
 				}
-				/*
-				 if (divScroll.scrollWidth > divScroll.clientWidth) {
-				 var scrollLeft = divScroll.scrollLeft - delta * this._rowHeight * 2;
-				 if (scrollLeft <= 0) {
-				 scrollLeft = 0;
-				 } else if (scrollLeft + divScroll.clientWidth > divScroll.scrollWidth) {
-				 scrollLeft = divScroll.scrollWidth - divScroll.clientWidth;
-				 }
-				 if (scrollLeft != divScroll.scrollLeft) {
-				 divScroll.scrollLeft = scrollLeft;
-				 //this.hideCellEditor();
-				 this.setFocus();
-				 return false;
-				 }
-				 }
-				 */
 			}));
 			return dom;
 		},
@@ -1258,50 +1242,11 @@
 					content: "^DIV"
 				});
 
-				$fly(div).bind("scroll", $scopify(this, this.onScroll));
 				this._divViewPort = div.firstChild;
 				dom.appendChild(div);
 
-				if (dorado.Browser.isTouch && iScroll) {
-					var grid = this;
-					setTimeout(function () {
-						var scroller = new iScroll(grid._dom, {
-							scrollSize: function (dir) {
-								var result = dir == "h" ? grid._divScroll.scrollWidth : grid._divScroll.scrollHeight;
-								return result;
-							},
-							viewportSize: function (dir) {
-								return dir == "h" ? grid._divScroll.clientWidth : grid._divScroll.clientHeight;
-							},
-							fadeScrollbar: false,
-							bounce: false,
-							momentum: false,
-							useTransform: false,
-							notMoveElement: true,
-							direction: "both",
-							showHoriScrollbar: true,
-							showVertScrollbar: true,
-							fixedScrollbar: true,
-							desktopCompatibility: true,
-							onScrollMove: function () {
-								grid._divScroll.scrollLeft = this.x * -1;
-								grid._divScroll.scrollTop = this.y * -1;
-							},
-							resumeHelper: function () {
-								return {
-									x: (grid._divScroll.scrollLeft || grid._scrollLeft) * -1,
-									y: (grid._divScroll.scrollTop || grid._scrollTop) * -1
-								}
-							},
-							lockDirection: true
-						});
-						grid._scroller = scroller;
-					}, 0);
-				}
-				else {
-					this._modernScrolled = $DomUtils.modernScroll(div);
-				}
-
+				this._modernScrolled = $DomUtils.modernScroll(div);
+				$fly(div).bind("modernScroll", $scopify(this, this.onScroll));
 				return div;
 			}
 
@@ -1761,7 +1706,7 @@
 			}
 		},
 
-		onScroll: function () {
+		onScroll: function (event, arg) {
 			if (this._currentCellEditor) {
 				if (dorado.Browser.webkit) { // webkit改变scrollLeft不能立即在onScroll事件的计算逻辑中反映出来
 					var self = this;
@@ -1775,38 +1720,36 @@
 			}
 			if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
 
-			var divScroll = this._divScroll;
-			if ((this._scrollLeft || 0) != divScroll.scrollLeft) {
-				if (this.onXScroll) this.onXScroll();
+			if ((this._scrollLeft || 0) != arg.scrollLeft) {
+				if (this.onXScroll) this.onXScroll(arg);
 			}
-			if ((this._scrollTop || 0) != divScroll.scrollTop) {
-				if (this.onYScroll) this.onYScroll();
+			if ((this._scrollTop || 0) != arg.scrollTop) {
+				if (this.onYScroll) this.onYScroll(arg);
 			}
 
 			if (this._watchScrollTimerId) {
 				clearTimeout(this._watchScrollTimerId);
 				delete this._watchScrollTimerId;
 			}
-			if (divScroll.scrollTop && this._scrollMode != "simple") {
+			if (arg.scrollTop && this._scrollMode != "simple") {
 				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
 			}
-			this._scrollLeft = divScroll.scrollLeft;
-			this._scrollTop = divScroll.scrollTop;
+			this._scrollLeft = arg.scrollLeft;
+			this._scrollTop = arg.scrollTop;
 		},
 
-		onXScroll: function () {
+		onXScroll: function (arg) {
 			if (this._innerGridWrapper) {
-				var divScroll = this._divScroll;
 				var innerGridWrapper = this._innerGridWrapper;
-				var ratio = ((divScroll.scrollWidth - divScroll.clientWidth) / (innerGridWrapper.scrollWidth - innerGridWrapper.clientWidth)) || 1;
-				innerGridWrapper.scrollLeft = Math.round(divScroll.scrollLeft / ratio);
+				var ratio = ((arg.scrollWidth - arg.clientWidth) / (innerGridWrapper.scrollWidth - innerGridWrapper.clientWidth)) || 1;
+				innerGridWrapper.scrollLeft = Math.round(arg.scrollLeft / ratio);
 			}
 		},
 
-		onYScroll: function () {
+		onYScroll: function (arg) {
 			if (!this._divScroll) return;
 
-			var ratio = this._divScroll.scrollTop / (this._divScroll.scrollHeight - this._divScroll.clientHeight), innerContainer = this._innerGrid._container;
+			var ratio = arg.scrollTop / (arg.scrollHeight - arg.clientHeight), innerContainer = this._innerGrid._container;
 			if (this._scrollMode == "lazyRender") {
 				innerContainer.scrollTop = Math.round((innerContainer.scrollHeight - innerContainer.clientHeight) * ratio);
 			} else {
@@ -1815,15 +1758,15 @@
 			if (this._domMode == 2) this._fixedInnerGrid._container.scrollTop = innerContainer.scrollTop;
 
 			if (this._scrollMode == "lazyRender") {
-				if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll();
+				if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll(this._fixedInnerGrid._container);
 				var innerGrid = this._innerGrid;
-				innerGrid.doOnYScroll();
+				innerGrid.doOnYScroll(innerGrid._container);
 				if (this._rowHeightInfos) this.syncroRowHeights(innerGrid._container);
 				this.updateScroller(innerGrid._container);
 			} else if (this._scrollMode == "viewport") {
 				dorado.Toolkits.setDelayedAction(this, "$scrollTimerId", function () {
-					if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll();
-					this._innerGrid.doOnYScroll();
+					if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll(this._fixedInnerGrid._container);
+					this._innerGrid.doOnYScroll(this._innerGrid._container);
 				}, 300);
 			}
 		},
@@ -3000,12 +2943,6 @@
 				if (grid._rowHeightInfos) grid.syncroRowHeights(this._container);
 				var oldScrollTop = grid._scrollTop || 0;
 				grid.updateScroller(this._container);
-
-				/* TODO: may no need for modernScroller
-				 if (grid._ready && oldScrollTop != grid._scrollTop) {
-				 grid.onYScroll();
-				 }
-				 */
 			}
 		},
 
@@ -3316,7 +3253,7 @@
 				this.refreshContent(container);
 			}
 			if (this._scrollMode && this._scrollMode != this._scrollMode && !this.getCurrentItemId()) {
-				this.onYScroll();
+				this.onYScroll(this._divScroll);
 			}
 		},
 
@@ -3423,10 +3360,10 @@
 		setFocus: dorado._NULL_FUNCTION,
 		doOnResize: dorado._NULL_FUNCTION,
 
-		onScroll: function () {
+		onScroll: function (event, arg) {
 			var grid = this.grid;
 			if (grid._innerGrid == this) {
-				grid.onScroll();
+				grid.onScroll(event, arg);
 			}
 		},
 
@@ -3514,7 +3451,9 @@
 			var container = this._container, scrollTop = Math.round((container.scrollHeight - container.clientHeight) * ratio);
 			if (scrollTop != container.scrollTop) {
 				container.scrollTop = scrollTop;
-				this.onYScroll();
+
+				// 防止Grid的onScroll中的某些逻辑被触发导致死锁
+				this.onYScroll(container);
 
 				dorado.Toolkits.cancelDelayedAction(this._container, "$scrollTimerId");
 				this._container.$scrollTimerId = 1; // 加一个假的timerId以避免row-list.js的onYScroll方法中判断出错

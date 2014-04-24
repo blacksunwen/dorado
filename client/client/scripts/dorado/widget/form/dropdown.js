@@ -464,7 +464,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			boxDom.style.visibility = "hidden";
 			boxDom.style.display = "";
 		}
-		
+
 		box.set({
 			width: boxWidth,
 			height: boxHeight
@@ -477,6 +477,10 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		else {
 			box.refresh();
 		}
+
+		var containerDom = box.get("containerDom");
+		dropdown._edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
+		dropdown._edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
 		
 		var currentBoxWidth = boxWidth, currentBoxHeight = boxHeight;
 		dropdown.initDropDownBox(box, editor);
@@ -486,16 +490,14 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			box.setActualVisible(false);
 		}
 
-		var containerDom = box.get("containerDom"), control = box.get("control"), controlDom = control ? control.getDom() : containerDom.firstChild;
+		var control = box.get("control"), controlDom = control ? control.getDom() : containerDom.firstChild;
 		if (!dropdown._width) {
-			var edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
-			if (controlDom) boxWidth = controlDom.offsetWidth + edgeWidth;
+			if (controlDom) boxWidth = controlDom.offsetWidth + dropdown._edgeWidth;
 			if (boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
 			if (boxWidth < dropdown._minWidth) boxWidth = dropdown._minWidth;
 		}
 		if (!dropdown._height) {
-			var edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
-			if (controlDom) boxHeight =  controlDom.offsetHeight + edgeHeight;
+			if (controlDom) boxHeight =  controlDom.offsetHeight + dropdown._edgeHeight;
 			if (boxHeight > dropdown._realMaxHeight) boxHeight = dropdown._realMaxHeight;
 			if (boxHeight < dropdown._minHeight) boxHeight = dropdown._minHeight;
 		}

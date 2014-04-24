@@ -171,24 +171,6 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		panel.doSetCollapsed(!collapsed, animate);
 	},
 
-	// for performance
-	getContentContainerSize: function () {
-		var contentContainer = this.getContentContainer();
-		var width = contentContainer.style.width || -1;
-		if (typeof width === "string" && width.endsWith("px")) width = parseInt(width);
-		if (!(width >= 0)) {
-			// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
-			width = contentContainer.clientWidth || contentContainer.offsetWidth;
-		}
-		var height = contentContainer.style.height || -1;
-		if (typeof height === "string" && height.endsWith("px")) height = parseInt(height);
-		if (!(height >= 0)) {
-			// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
-			height = contentContainer.clientHeight || contentContainer.offsetHeight;
-		}
-		return [width, height];
-	},
-
 	setContentContainerVisible: function (collapsed) {
 		var panel = this, buttons = panel._buttons, doms = panel._doms;
 		if (buttons) {
