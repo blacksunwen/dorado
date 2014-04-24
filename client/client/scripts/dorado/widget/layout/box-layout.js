@@ -74,12 +74,12 @@
 	var p = dorado.widget.layout.AbstractBoxLayout.prototype;
 	p.onAddControl = p.doRefreshRegion = function () {
 		if (!this._attached || this._disableRendering) return;
-		this.refreshDom(this.getDom());
+		this.refresh();
 	};
 	p.removeControl = function (control) {
 		this._regions.removeKey(control._id);
 		if (!this._attached || this._disableRendering) return;
-		this.refreshDom(this.getDom());
+		this.refresh();
 	},
 
 	/**
