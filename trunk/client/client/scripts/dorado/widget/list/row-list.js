@@ -12,7 +12,7 @@
 (function() {
 
 	var TABLE_HEIGHT_ADJUST = (dorado.Browser.msie) ? -1 : 0;
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 具有行集特征的列表控件的抽象类。
@@ -21,7 +21,7 @@
 	 */
 	dorado.widget.RowList = $extend(dorado.widget.ViewPortList, /** @scope dorado.widget.RowList.prototype */ {
 		$className: "dorado.widget.RowList",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.RowList.prototype */ {
 			/**
 			 * 默认的行高。
@@ -31,7 +31,7 @@
 			rowHeight: {
 				defaultValue: dorado.Browser.isTouch ? 30 : 18
 			},
-			
+
 			/**
 			 * 高亮显示当前行。
 			 * @type boolean
@@ -48,7 +48,7 @@
 					}
 				}
 			},
-			
+
 			/**
 			 * 高亮显示鼠标悬停的行。
 			 * @type boolean
@@ -58,7 +58,7 @@
 			highlightHoverRow: {
 				defaultValue: true
 			},
-			
+
 			/**
 			 * 高亮显示多选选中的行。
 			 * @type boolean
@@ -69,9 +69,9 @@
 				defaultValue: true
 			}
 		},
-		
+
 		EVENTS: /** @scope dorado.widget.RowList.prototype */ {
-		
+
 			/**
 			 * 当数据行被点击时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
@@ -81,7 +81,7 @@
 			 * @event
 			 */
 			onDataRowClick: {},
-			
+
 			/**
 			 * 当数据行被双击时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
@@ -92,12 +92,12 @@
 			 */
 			onDataRowDoubleClick: {}
 		},
-		
+
 		constructor: function() {
 			$invokeSuper.call(this, arguments);
 			if (this._itemModel) this._itemModel.setItemDomSize(this._rowHeight);
 		},
-		
+
 		getIndexByItemId: function(itemId) {
 			if (typeof itemId == "number") return itemId;
 			else {
@@ -105,11 +105,11 @@
 				return itemModel.getItemIndex(itemModel.getItemById(itemId));
 			}
 		},
-		
+
 		getCurrentItemDom: function() {
 			return this._currentRow;
 		},
-		
+
 		getDraggableOptions: function(dom) {
 			var options = $invokeSuper.call(this, arguments);
 			if (dom == this._dom) {
@@ -117,7 +117,7 @@
 			}
 			return options;
 		},
-		
+
 		createDataTable: function() {
 			var table = this._dataTable = $DomUtils.xCreate({
 				tagName: "TABLE",
@@ -129,7 +129,7 @@
 				}
 			});
 			var tbody = this._dataTBody = table.tBodies[0];
-			
+
 			var self = this;
 			$fly(table).mouseover(function(evt) {
 				if ($DomUtils.isDragging() || !self._highlightHoverRow) return;
@@ -142,7 +142,7 @@
 			});
 			return table;
 		},
-		
+
 		findItemDomByEvent: function(evt) {
 			var target = evt.srcElement || evt.target;
 			var target = target || evt, tbody = this._dataTBody;
@@ -150,12 +150,12 @@
 				return parentNode.parentNode == tbody;
 			});
 		},
-		
+
 		onMouseDown: function(evt) {
 			var row = this.findItemDomByEvent(evt);
 			if (row || this._allowNoCurrent) {
 				if (row && evt.shiftKey) $DomUtils.disableUserSelection(row);
-				
+
 				var oldCurrentItem = this.getCurrentItem();
 				if (this.setCurrentItemDom(row)) {
 					var clickedItem = (row ? $fly(row).data("item") : null), selection = this.getSelection();
@@ -172,7 +172,7 @@
 							if (oldCurrentItem) {
 								si = itemModel.getItemIndex(oldCurrentItem);
 							}
-							
+
 							if (oldCurrentItem) {
 								if (si < 0) si = itemModel.getItemIndex(oldCurrentItem);
 								ei = itemModel.getItemIndex(clickedItem);
@@ -180,13 +180,13 @@
 									var i = si;
 									si = ei, ei = i;
 								}
-								
+
 								removed = selection.slice(0);
 								removed.remove(oldCurrentItem);
 								removed.remove(clickedItem);
-								
+
 								selection = [];
-								
+
 								var c = ei - si + 1, i = 0;
 								var it = itemModel.iterator(si);
 								while (it.hasNext() && i < c) {
@@ -207,7 +207,7 @@
 						this.replaceSelection(removed, added);
 					}
 				}
-				
+
 				if (dorado.Browser.msie) {
 					var tbody = this._dataTBody;
 					try {
@@ -215,14 +215,14 @@
 							return parentNode.parentNode.parentNode == tbody;
 						}, true);
 						if (cell) ((cell.firstChild && cell.firstChild.nodeType == 1) ? cell.firstChild : cell).focus();
-					} 
+					}
 					catch (e) {
 						evt.target.focus();
 					}
 				}
 			}
 		},
-		
+
 		getSelection: function() {
 			var selection = this._selection;
 			if (this._selectionMode == "multiRows") {
@@ -230,14 +230,14 @@
 			}
 			return selection;
 		},
-		
+
 		setSelection: function(selection) {
 			this._selection = selection;
 		},
-		
+
 		replaceSelection: function(removed, added, silence) {
 			if (removed == added) return;
-			
+
 			switch (this._selectionMode) {
 				case "singleRow":{
 					removed = this.get("selection");
@@ -247,7 +247,7 @@
 					if (removed instanceof Array && removed.length == 0) removed = null;
 					if (added instanceof Array && added.length == 0) added = null;
 					if (removed == added) return;
-					
+
 					if (removed && !(removed instanceof Array)) {
 						removed = [removed];
 					}
@@ -257,7 +257,7 @@
 					break;
 				}
 			}
-			
+
 			var eventArg = {
 				removed: removed,
 				added: added
@@ -267,7 +267,7 @@
 				removed = eventArg.removed;
 				added = eventArg.added;
 			}
-			
+
 			switch (this._selectionMode) {
 				case "singleRow":{
 					if (removed) this.toggleItemSelection(removed, false);
@@ -309,18 +309,18 @@
 				this.fireEvent("onSelectionChange", this, eventArg);
 			}
 		},
-		
+
 		addOrRemoveSelection: function(selection, clickedObj, removed, added) {
 			if (!selection || selection.indexOf(clickedObj) < 0) added.push(clickedObj);
 			else removed.push(clickedObj);
 		},
-		
+
 		toggleItemSelection: function(item, selected) {
 			if (!this._highlightSelectedRow || !this._itemDomMap) return;
 			var row = this._itemDomMap[this._itemModel.getItemId(item)];
 			if (row) $fly(row).toggleClass("selected-row", selected);
 		},
-		
+
 		onClick: function(evt) {
 			if (this.findItemDomByEvent(evt)) {
 				this.fireEvent("onDataRowClick", this, {
@@ -328,7 +328,7 @@
 				});
 			}
 		},
-		
+
 		onDoubleClick: function(evt) {
 			if (this.findItemDomByEvent(evt)) {
 				this.fireEvent("onDataRowDoubleClick", this, {
@@ -336,7 +336,7 @@
 				});
 			}
 		},
-		
+
 		setHoverRow: function(row) {
 			if (row) {
 				if (this._draggable && this._dragMode != "control") {
@@ -348,7 +348,7 @@
 			if (this._hoverRow) $fly(this._hoverRow).removeClass("hover-row");
 			this._hoverRow = row;
 		},
-		
+
 		setCurrentRow: function(row) {
 			if (this._currentRow == row) return;
 			this.setHoverRow(null);
@@ -356,11 +356,11 @@
 			this._currentRow = row;
 			if (row && this._highlightCurrentRow) $fly(row).addClass("current-row");
 		},
-		
+
 		getItemTimestamp: function(item) {
 			return (item instanceof dorado.Entity) ? item.timestamp : -1;
 		},
-		
+
 		refreshItemDoms: function(tbody, reverse, fn) {
 			if (this._scrollMode == "viewport") this.setCurrentRow(null);
 			this._duringRefreshAll = true;
@@ -373,11 +373,11 @@
 				this._duringRefreshAll = false;
 			}
 		},
-		
+
 		getRealCurrentItemId: function() {
 			return this.getCurrentItemId();
 		},
-		
+
 		refreshItemDom: function(tbody, item, index, prepend) {
 			var row;
 			if (index >= 0 && index < tbody.childNodes.length) {
@@ -389,7 +389,7 @@
 				row = this.createItemDom(item);
 				prepend ? tbody.insertBefore(row, tbody.firstChild) : tbody.appendChild(row);
 			}
-			
+
 			var flag = prepend ? -1 : 1;
 			if (index < 0) flag = -flag;
 			index = this._itemModel.getStartIndex() + index * flag;
@@ -397,15 +397,15 @@
 			this._itemDomMap[itemId] = row;
 			row.itemIndex = index;
 			row._itemId = itemId;
-			
+
 			var $row = $fly(row);
 			$row.data("item", item);
-			
+
 			if (!this._shouldSkipRender && row._lazyRender) {
 				this.createItemDomDetail(row, item);
 				row._lazyRender = undefined;
 			}
-			
+
 			if (!row._lazyRender) {
 				$row.toggleClass("odd-row", (!this._itemModel.groups && (index % 2) == 1));
 				if (itemId == this.getRealCurrentItemId()) {
@@ -428,7 +428,7 @@
 			}
 			return row;
 		},
-		
+
 		refreshItemDomData: function(row, item) {
 			if (row._lazyRender) return;
 			var timestamp = this.getItemTimestamp(item);
@@ -437,7 +437,7 @@
 				row.timestamp = timestamp;
 			}
 		},
-		
+
 		refreshContent: function(container) {
 			if (!this._dataTable) {
 				var table = this.createDataTable();
@@ -450,7 +450,7 @@
 				if (endBlankRow) endBlankRow.parentNode.style.display = "none";
 				this._itemModel.setScrollPos(0);
 			}
-			
+
 			var fn;
 			if (this._scrollMode == "lazyRender" && container.clientHeight > 0) {
 				var count = parseInt(container.clientHeight / this._rowHeight), i = 0;
@@ -462,11 +462,11 @@
 
 			this.refreshItemDoms(this._dataTBody, false, fn);
 		},
-		
+
 		refreshViewPortContent: function(container) {
 			var beginBlankRow = this._beginBlankRow;
 			var endBlankRow = this._endBlankRow;
-			
+
 			if (!this._dataTable) container.appendChild(this.createDataTable());
 			if (!beginBlankRow) {
 				this._beginBlankRow = beginBlankRow = $DomUtils.xCreate({
@@ -488,12 +488,12 @@
 				tfoot.appendChild(endBlankRow);
 				container.firstChild.appendChild(tfoot);
 			}
-			
+
 			var tbody = this._dataTBody;
 			var itemModel = this._itemModel, itemCount = itemModel.getItemCount();
 			var clientHeight = (container.scrollWidth > container.clientWidth) ? container.offsetHeight : container.clientHeight;
 			var viewPortHeight, itemDomCount, self = this;
-			
+
 			if (clientHeight) {
 				viewPortHeight = TABLE_HEIGHT_ADJUST;
 				itemDomCount = this.refreshItemDoms(tbody, itemModel.isReverse(), function(row) {
@@ -505,7 +505,7 @@
 				itemDomCount = viewPortHeight = 0;
 			}
 			this._itemDomCount = itemDomCount;
-			
+
 			if (!this._skipProcessBlankRows) {
 				var startIndex = this.startIndex;
 				var cols = this._cols || 1;
@@ -530,7 +530,7 @@
 						firstChild.style.height = "0px";
 					}
 				}
-				
+
 				var st;
 				if (this.startIndex >= itemModel.getStartIndex()) {
 					st = this._dataTBody.offsetTop;
@@ -538,17 +538,17 @@
 					st = this._dataTBody.offsetTop + this._dataTBody.offsetHeight - container.clientHeight;
 				}
 				container.scrollTop = this._scrollTop = st;
-				
+
 				var scrollHeight = container.scrollHeight;
 				itemModel.setScrollSize(container.clientHeight, scrollHeight);
 				this._rowHeightAverage = rowHeightAverage;
 			}
 		},
-		
-		_watchScroll: function() {
+
+		_watchScroll: function(arg) {
 			delete this._watchScrollTimerId;
 			if (this._scrollMode == "simple") return;
-			
+
 			var container = this._container;
 			if (container.scrollLeft == 0 && container.scrollTop == 0 && container.offsetWidth > 0) {
 				container.scrollLeft = this._scrollLeft || 0;
@@ -558,72 +558,76 @@
 				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
 			}
 		},
-		
-		onScroll: function() {
-			if (this._scrollMode == "simple") return;
-			
-			var container = this._container;
-			if ((this._scrollLeft || 0) != container.scrollLeft) {
-				if (this.onXScroll) this.onXScroll();
+
+		onScroll: function(event, arg) {
+			var rowList = this;
+			if (rowList._scrollMode == "simple") return;
+
+			var container = rowList._container;
+			if ((rowList._scrollLeft || 0) != arg.scrollLeft) {
+				if (rowList.onXScroll) rowList.onXScroll(arg);
 			}
-			if ((this._scrollTop || 0) != container.scrollTop) {
-				this.onYScroll();
+			if ((rowList._scrollTop || 0) != arg.scrollTop) {
+				rowList.onYScroll(arg);
 			}
-			
-			if (this._watchScrollTimerId) {
-				clearTimeout(this._watchScrollTimerId);
-				delete this._watchScrollTimerId;
+
+			if (rowList._watchScrollTimerId) {
+				clearTimeout(rowList._watchScrollTimerId);
+				delete rowList._watchScrollTimerId;
 			}
-			if (container.scrollTop) {
-				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
+
+			if (arg.scrollTop) {
+				rowList._watchScrollTimerId = setTimeout(function() {
+					rowList._watchScroll(arg);
+				}, 300);
 			}
-			this._scrollLeft = container.scrollLeft;
-			this._scrollTop = container.scrollTop;
+
+			rowList._scrollLeft = arg.scrollLeft;
+			rowList._scrollTop = arg.scrollTop;
 		},
-		
-		onYScroll: function() {
+
+		onYScroll: function(arg) {
 			var container = this._container;
-			if (container.scrollTop == (container._scrollTop || 0)) return;
-			
+			if (arg.scrollTop == (container._scrollTop || 0)) return;
+
 			if (this._scrollMode == "viewport") {
 				if (dorado.Toolkits.cancelDelayedAction(container, "$scrollTimerId")) {
-					if (Math.abs(container.scrollTop - container._scrollTop) > (container.clientHeight / 2)) {
+					if (Math.abs(arg.scrollTop - container._scrollTop) > (arg.clientHeight / 4)) {
 						var itemCount = this._itemModel.getItemCount();
-						var rowHeight = container.scrollHeight / itemCount;
-						this.setScrollingIndicator((Math.round(container.scrollTop / rowHeight) + 1) + "/" + itemCount);
+						var rowHeight = arg.scrollHeight / itemCount;
+						this.setScrollingIndicator((Math.round(arg.scrollTop / rowHeight) + 1) + "/" + itemCount);
 					}
 				} else {
-					container._scrollTop = container.scrollTop;
+					container._scrollTop = arg.scrollTop;
 				}
 				var self = this;
 				dorado.Toolkits.setDelayedAction(container, "$scrollTimerId", function() {
-					self.doOnYScroll();
+					self.doOnYScroll(arg);
 				}, 300);
 			} else {
-				container._scrollTop = container.scrollTop;
-				this.doOnYScroll();
+				container._scrollTop = arg.scrollTop;
+				this.doOnYScroll(arg);
 			}
 		},
-		
-		doOnYScroll: function() {
-			var container = this._container;
+
+		doOnYScroll: function(arg) {
 			if (this._scrollMode == "viewport") {
-				dorado.Toolkits.cancelDelayedAction(container, "$scrollTimerId");
-				this._itemModel.setScrollPos(container.scrollTop);
+				dorado.Toolkits.cancelDelayedAction(this._container, "$scrollTimerId");
+				this._itemModel.setScrollPos(arg.scrollTop);
 				this.setHoverRow(null);
 				this.refresh();
 				this.hideScrollingIndicator();
 			} else if (this._scrollMode == "lazyRender") {
 				var rows = this._dataTBody.rows;
-				var i = parseInt(container.scrollTop / this._rowHeight) || 0;
+				var i = parseInt(arg.scrollTop / this._rowHeight) || 0;
 				if (i >= rows.length) i = rows.length - 1;
 				var row = rows[i];
 				if (!row) return;
-				while (row.offsetTop > container.scrollTop) {
+				while (row.offsetTop > arg.scrollTop) {
 					i--;
 					row = rows[i];
 				}
-				var bottom = container.scrollTop + container.clientHeight;
+				var bottom = arg.scrollTop + arg.clientHeight;
 				while (row && row.offsetTop < bottom) {
 					if (row._lazyRender) {
 						var item = $fly(row).data("item");
@@ -636,30 +640,30 @@
 				}
 			}
 		},
-		
+
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
 			if (dorado.Browser.msie && dorado.Browser.version >= 8) dom.hideFocus = true;
-			$fly(this._container).bind("scroll", $scopify(this, this.onScroll));
+			$fly(this._container).bind("modernScroll", $scopify(this, this.onScroll));
 			return dom;
 		},
-		
+
 		refreshDom: function(dom) {
 			var hasRealWidth = !!this._width, hasRealHeight = !!this._height, oldWidth, oldHeight;
 			if (!hasRealWidth || !hasRealHeight) {
 				oldWidth = dom.offsetWidth;
 				oldHeight = dom.offsetHeight;
 			}
-			
+
 			$invokeSuper.call(this, arguments);
-			
+
 			var container = this._container;
 			if (this._scrollMode == "viewport") {
 				this.refreshViewPortContent(container);
 			} else {
 				this.refreshContent(container);
 			}
-			
+
 			if (this._currentScrollMode && this._currentScrollMode != this._scrollMode && !this.getCurrentItemId()) {
 				this.onYScroll();
 			}
@@ -674,14 +678,14 @@
 				}
 			}
 			delete this._skipScrollCurrentIntoView;
-			
+
 			if ((!hasRealWidth || !hasRealHeight) && (oldWidth != dom.offsetWidth || oldHeight != dom.offsetHeight)) {
 				this.notifySizeChange();
 			}
-			
+
 			delete this._ignoreItemTimestamp;
 		},
-		
+
 		scrollItemDomIntoView: function(row) {
 			with (this._container) {
 				var st = -1;
@@ -718,7 +722,7 @@
 				}
 			}
 		},
-		
+
 		findItemDomByPosition: function(pos) {
 			var dom = this._dom, y = pos.y + dom.scrollTop, row = null;
 			var rows = this._dataTBody.rows, rowHeight = this._rowHeightAverage || this._rowHeight, i;
@@ -729,7 +733,7 @@
 			} else {
 				i = parseInt(y / rowHeight);
 			}
-			
+
 			if (i < 0) i = 0;
 			else if (i >= rows.length) i = rows.length - 1;
 			row = rows[i];
@@ -751,5 +755,5 @@
 			return row;
 		}
 	});
-	
+
 })();

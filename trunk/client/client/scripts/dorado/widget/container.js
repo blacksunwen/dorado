@@ -408,31 +408,49 @@
 
 		// for performance
 		getContentContainerSize: function () {
-			var width = this.getRealWidth(), height = this.getRealHeight();
-			if (typeof width === "string" && width.endsWith("px")) width = parseInt(width);
-			if (typeof height === "string" && height.endsWith("px")) height = parseInt(height);
-			if (width >= 0 && height >= 0) {
+			if (this._className == "d-container" && !this._exClassName) {
+				var width = this.getRealWidth(), height = this.getRealHeight();
+				if (typeof width === "string" && width.endsWith("px")) width = parseInt(width);
+				if (typeof height === "string" && height.endsWith("px")) height = parseInt(height);
+				if (width >= 0 && height >= 0) {
+					return [width, height];
+				}
+
+				var contentContainer = this.getContentContainer();
+				if (!(width >= 0)) {
+					width = contentContainer.style.width || -1;
+					if (typeof width === "string" && width.endsWith("px")) width = parseInt(width);
+					if (!(width >= 0)) {
+						// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
+						width = contentContainer.clientWidth || contentContainer.offsetWidth;
+					}
+				}
+				if (!(height >= 0)) {
+					height = contentContainer.style.height || -1;
+					if (typeof height === "string" && height.endsWith("px")) height = parseInt(height);
+					if (!(height >= 0)) {
+						// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
+						height = contentContainer.clientHeight || contentContainer.offsetHeight;
+					}
+				}
 				return [width, height];
 			}
-
-			var contentContainer = this.getContentContainer();
-			if (!(width >= 0)) {
-				width = contentContainer.style.width || -1;
+			else {
+				var contentContainer = this.getContentContainer();
+				var width = contentContainer.style.width || -1;
 				if (typeof width === "string" && width.endsWith("px")) width = parseInt(width);
 				if (!(width >= 0)) {
 					// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
 					width = contentContainer.clientWidth || contentContainer.offsetWidth;
 				}
-			}
-			if (!(height >= 0)) {
-				height = contentContainer.style.height || -1;
+				var height = contentContainer.style.height || -1;
 				if (typeof height === "string" && height.endsWith("px")) height = parseInt(height);
 				if (!(height >= 0)) {
 					// IE下，在floatControl中此时取得的clientWidth可能是0，但offsetWidth是正确的
 					height = contentContainer.clientHeight || contentContainer.offsetHeight;
 				}
+				return [width, height];
 			}
-			return [width, height];
 		},
 
 		setContentContainerVisible: function (visible) {
@@ -456,21 +474,23 @@
 			overflowY = overflowY || "auto";
 
 			var contentCt = this.getContentContainer();
-			if (contentCt.nodeType && contentCt.nodeType == 1 &&
-				(overflowX == "auto" || overflowY == "auto" || overflowX == "scroll" || overflowY == "scroll")) {
-				contentCt.style.overflowX = overflowX;
-				contentCt.style.overflowY = overflowY;
-				this._modernScrolled = $DomUtils.modernScroll(contentCt, {
-					autoDisable: true
-				});
-			}
+			if (contentCt) {
+				if (contentCt.nodeType && contentCt.nodeType == 1 &&
+					(overflowX == "auto" || overflowY == "auto" || overflowX == "scroll" || overflowY == "scroll")) {
+					contentCt.style.overflowX = overflowX;
+					contentCt.style.overflowY = overflowY;
+					this._modernScrolled = $DomUtils.modernScroll(contentCt, {
+						autoDisable: true
+					});
+				}
 
-			if (dorado.Browser.msie && dorado.Browser.version < 8) {
-				$fly(contentCt).addClass("d-relative");
-			}
+				if (dorado.Browser.msie && dorado.Browser.version < 8) {
+					$fly(contentCt).addClass("d-relative");
+				}
 
-			if (this._containerUi) {
-				$fly(contentCt).addClass("d-container-ui-" + this._containerUi);
+				if (this._containerUi) {
+					$fly(contentCt).addClass("d-container-ui-" + this._containerUi);
+				}
 			}
 
 			var layout = this._layout;

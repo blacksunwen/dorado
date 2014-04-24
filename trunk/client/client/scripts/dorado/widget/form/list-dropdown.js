@@ -303,7 +303,7 @@
 				
 				if (useMaxHeight && this._realMaxHeight) {
 					rowList.set({
-						height: this._realMaxHeight,
+						height: this._realMaxHeight - (this._edgeHeight || 0),
 						scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")
 					});
 					
@@ -317,7 +317,7 @@
 				if (!refreshed) rowList.refresh();
 			} else {
 				rowList.set({
-					height: this._height,
+					height: this._height - (this._edgeHeight || 0),
 					scrollMode: ((cellCount > 300) ? "viewport" : "lazyRender")
 				});
 				rowList.refresh();
