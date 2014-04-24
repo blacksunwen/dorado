@@ -151,6 +151,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * 刷新布局。
 	 */
 	refresh: function() {
+		if (this._duringRefreshDom) return;
 		this._duringRefreshDom = true;
 		if (this._attached) {
 			this.refreshDom(this.getDom());
@@ -169,7 +170,11 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this._attached = true;
 			var dom = this.getDom();
 			if (dom.parentNode != containerElement) containerElement.appendChild(dom);
+
+			this._duringRefreshDom = true;
 			this.refreshDom(dom);
+			this._duringRefreshDom = false;
+
 			this._rendered = true;
 		}
 	},

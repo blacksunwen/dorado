@@ -900,12 +900,6 @@
 				if (!(criteria.criterions && criteria.criterions.length || criteria.orders && criteria.orders.length)) criteria = null;
 				sysParameter.put("criteria", criteria);
 				
-				if (parentEntityInfo) {
-					parentEntityInfo.parentEntity.reset(parentEntityInfo.subProperty);
-				} else {
-					dataSet.flushAsync();
-				}
-				
 				var dataColumns = this._columnsInfo.dataColumns, grid = this;
 				function setSortFlags() {
 					var sortOrderMap = {};

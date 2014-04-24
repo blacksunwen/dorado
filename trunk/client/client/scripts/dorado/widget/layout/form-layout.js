@@ -482,6 +482,6 @@
 	var p = dorado.widget.layout.FormLayout.prototype;
 	p.onAddControl = p.onRemoveControl = p.doRefreshRegion = function() {
 		if (!this._attached || this._disableRendering) return;
-		this.refreshDom(this.getDom());
+		this.refresh();
 	};
 })();
