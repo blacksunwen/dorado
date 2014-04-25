@@ -1344,7 +1344,11 @@
 			var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();;
 			var l = offsetCell.left - offsetGrid.left - $gridDom.edgeLeft(), t = offsetCell.top - offsetGrid.top - $gridDom.edgeTop(),
 				w = cell.offsetWidth, h = cell.offsetHeight;
-			if (this.minWidth && this.minWidth > w) w = this.minWidth;
+            //Grid不定义高度情况下将使用浏览器自身的滚动栏
+            if (!this.grid._divScroll && $gridDom.scrollLeft()>0){
+                l += $gridDom.scrollLeft();
+            }
+            if (this.minWidth && this.minWidth > w) w = this.minWidth;
 			if (this.minHeight && this.minHeight > h) h = this.minHeight;
 			$fly(dom).css({
 				left: l,
