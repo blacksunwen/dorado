@@ -957,13 +957,24 @@
 			},
 
 			doRenderToOrReplace: function (replace, element, nextChildElement) {
-				var renderTarget = this._renderTo || this._renderOn;
-				$invokeSuper.call(this, [replace, element, nextChildElement]);
-
-				var dom = this._dom;
+				var dom = this.getDom();
 				if (!dom) return;
 
-				var attached = false;
+				if (replace) {
+					if (!element.parentNode) return;
+					element.parentNode.replaceChild(dom, element);
+				} else {
+					if (!element) element = document.body;
+					if (dom.parentNode != element || (nextChildElement && dom.nextSibling != nextChildElement)) {
+						if (nextChildElement) element.insertBefore(dom, nextChildElement);
+						else element.appendChild(dom);
+					}
+				}
+
+				if (this._attached) this.refreshDom(dom);
+				this._rendered = true;
+
+				var attached = false, renderTarget = this._renderTo || this._renderOn;
 				if (!renderTarget && this._parent && this._parent._rendered && this._parent != dorado.widget.View.TOP) {
 					attached = this._parent._attached;
 				} else {
@@ -1062,6 +1073,7 @@
 					this._attached = true;
 					this._ignoreRefresh--;
 
+					this._duringRefreshDom = true;
 					this._skipResize = true;
 					var arg = {
 						dom: dom,
@@ -1075,6 +1087,7 @@
 						this.refreshDom(dom);
 						this.fireEvent("onRefreshDom", this, arg);
 					}
+					this._duringRefreshDom = false;
 					this._skipResize = false;
 
 					if (this.doOnAttachToDocument) this.doOnAttachToDocument();
