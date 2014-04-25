@@ -448,8 +448,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		else {
 			realMaxHeight = offsetTargetBottom;
 		}
-		dropdown._realMaxWidth = dropdown._maxWidth;
-		dropdown._realMaxHeight = (realMaxHeight < dropdown._maxHeight) ? realMaxHeight : dropdown._maxHeight;
+		dropdown._realMaxWidth = dropdown._maxWidth - (box.widthAdjust || 0);
+		dropdown._realMaxHeight = ((realMaxHeight < dropdown._maxHeight) ? realMaxHeight : dropdown._maxHeight) - (box.heightAdjust || 0);
 
 		var boxWidth = dropdown._width || dropdown.getDefaultWidth(editor);
 		if (dropdown._realMaxWidth > 0 && boxWidth > dropdown._realMaxWidth) boxWidth = dropdown._realMaxWidth;
