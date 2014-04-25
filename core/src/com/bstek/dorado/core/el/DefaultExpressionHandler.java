@@ -166,7 +166,12 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 			Map<String, Method> utilMethods) throws Exception {
 		if (doradoExpressionUtilsBean == null) {
 			ClassPool pool = ClassPool.getDefault();
-			CtClass ctClass = pool.get(DORADO_EXPRESSION_UTILS_TYPE);
+			CtClass ctClass = null;
+			try {
+				ctClass = pool.get(DORADO_EXPRESSION_UTILS_TYPE);
+			} catch (Exception e) {
+				// do nothing
+			}
 			if (ctClass == null) {
 				ctClass = pool.makeClass(DORADO_EXPRESSION_UTILS_TYPE);
 			}
