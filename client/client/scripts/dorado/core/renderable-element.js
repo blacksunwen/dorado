@@ -273,6 +273,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				else element.appendChild(dom);
 			}
 		}
+
 		this.refreshDom(dom);
 		this._rendered = true;
 	},
