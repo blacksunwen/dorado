@@ -391,13 +391,6 @@
 			return dom;
 		},
 
-		refreshDom: function (dom) {
-			$invokeSuper.call(this, [dom]);
-			if (this._currentVisible) {
-				this.processContentSize();
-			}
-		},
-
 		/**
 		 * 返回用于容纳子控件的DOM对象。
 		 * @return {HTMLElement} DOM对象。
@@ -518,6 +511,7 @@
 			if (container._contentContainerVisible && layout && layout._attached) {
 				layout.onResize();
 			}
+			this.processContentSize();
 		},
 
 		onContentSizeChange: function () {
