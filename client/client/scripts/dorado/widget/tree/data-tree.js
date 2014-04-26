@@ -279,7 +279,6 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			}
 
 			this._nodesData = entity;
-			this._nodesTimestamp = entity.timestamp;
 			if (entity instanceof dorado.EntityList) {
 				for (var it = entity.iterator({ currentPage: true }); it.hasNext();) {
 					var d = it.next();
@@ -396,6 +395,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				}
 
 				if (self._nodesTimestamp != nodesTimestamp) {
+					self._nodesTimestamp = nodesTimestamp
 					self._visibleChildNodeCount = 0;
 					var startIndex = 0;
 
