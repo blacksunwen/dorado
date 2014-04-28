@@ -665,7 +665,7 @@
 			}
 
 			if (this._currentScrollMode && this._currentScrollMode != this._scrollMode && !this.getCurrentItemId()) {
-				this.onYScroll();
+                this.doOnYScroll(container);
 			}
 			this._currentScrollMode = this._scrollMode;
 
