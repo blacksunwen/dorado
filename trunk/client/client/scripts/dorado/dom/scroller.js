@@ -396,7 +396,7 @@
 					scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
 					clientWidth: container.clientWidth, clientHeight: container.clientHeight
 				};
-				$container.trigger("modernScrolling", arg).trigger("modernScroll", arg);
+                $(container).trigger("modernScrolling", arg).trigger("modernScroll", arg);
 			}).resize(function(evt) {
 				modernScrolled.update();
 			});
