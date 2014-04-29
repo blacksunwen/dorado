@@ -468,11 +468,9 @@
 				onKeyPress: {},
 
 				onTap: {},
-				onSwipe: {},
+				onDoubleTap: {},
 				onTapHold: {},
-				onTransformStart: {},
-				onTransform: {},
-				onTransformEnd: {}
+				onSwipe: {}
 			},
 
 			constructor: function (config) {
