@@ -53,11 +53,9 @@ import com.bstek.dorado.common.ClientType;
 		@ClientEvent(name = "beforeDraggingSourceDrop"),
 		@ClientEvent(name = "onDraggingSourceDrop"),
 		@ClientEvent(name = "onTap", clientTypes = ClientType.TOUCH),
-		@ClientEvent(name = "onSwipe", clientTypes = ClientType.TOUCH),
+		@ClientEvent(name = "onDoubleTap", clientTypes = ClientType.TOUCH),
 		@ClientEvent(name = "onTapHold", clientTypes = ClientType.TOUCH),
-		@ClientEvent(name = "onTransformStart", clientTypes = ClientType.TOUCH),
-		@ClientEvent(name = "onTransform", clientTypes = ClientType.TOUCH),
-		@ClientEvent(name = "onTransformEnd", clientTypes = ClientType.TOUCH) })
+		@ClientEvent(name = "onSwipe", clientTypes = ClientType.TOUCH) })
 public abstract class Control extends Component implements HtmlElement,
 		RenderableElement {
 	private Object layoutConstraint;
