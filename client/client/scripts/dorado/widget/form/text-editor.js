@@ -866,7 +866,7 @@
 				else {
 					e.set(p, this.get("value"));
 				}
-				this.timestamp = this._entity.timestamp;
+				//this.timestamp = this._entity.timestamp;
 			}
 			else {
 				if (e instanceof dorado.Entity) {
