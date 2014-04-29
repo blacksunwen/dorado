@@ -721,7 +721,7 @@
 			if (currentDecorator) itemDomContainer.insertBefore(currentDecorator.getDom(), itemDomContainer.firstChild);
 			
 			var currentItemId = this.getRealCurrentItemId();
-			if (currentItemId) {
+			if (currentItemId != undefined) {
 				var itemDom = this._itemDomMap[currentItemId];
 				if (itemDom) this.setCurrentBlock(itemDom);
 			}
