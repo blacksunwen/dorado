@@ -441,18 +441,22 @@
 			}
 			*/
 
+			var onScrolling = function() {
+				var arg = {
+					scrollLeft: this.x * -1, scrollTop: this.y * -1,
+					scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
+					clientWidth: container.clientWidth, clientHeight: container.clientHeight
+				};
+				$container.trigger("modernScrolling", arg);
+			};
+
 			var modernScrolled = this, options = modernScrolled.options = dorado.Object.apply({
 				scrollbarClass: "iscroll",
 				hideScrollbar: true,
-				onScrolling: function() {
-					var arg = {
-						scrollLeft: this.x * -1, scrollTop: this.y * -1,
-						scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
-						clientWidth: container.clientWidth, clientHeight: container.clientHeight
-					};
-					$container.trigger("modernScrolling", arg);
-				},
-				onScrollMove: function() {
+				fadeScrollbar: true,
+				onScrolling: onScrolling,
+				onScrollMove: onScrolling,
+				onScrollEnd: function() {
 					var arg = {
 						scrollLeft: this.x * -1, scrollTop: this.y * -1,
 						scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
