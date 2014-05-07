@@ -949,10 +949,10 @@ dorado.dequeue = function(namespace) {
 			}
 		},
 		
-		mordernZoom: {
+		modernZoom: {
 			show: function(options) {
 				var control = this, dom = control._dom;
-				jQuery(dom).css("visibility", "").mordernZoomIn(jQuery.extend(options, {
+				jQuery(dom).css("visibility", "").modernZoomIn(jQuery.extend(options, {
 					duration: options.animateDuration || 200,
 					easing: options.animateEasing,
 					complete: function() {
@@ -962,7 +962,7 @@ dorado.dequeue = function(namespace) {
 			},
 			hide: function(options) {
 				var control = this, dom = control._dom;
-				jQuery(dom).mordernZoomOut(jQuery.extend(options, {
+				jQuery(dom).modernZoomOut(jQuery.extend(options, {
 					duration: options.animateDuration || 200,
 					easing: options.animateEasing,
 					complete: function() {
