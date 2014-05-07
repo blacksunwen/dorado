@@ -44,27 +44,27 @@
 	});
 	*/
 
-    if (jQuery.Tween) {
-        var oldFn = jQuery.Tween.prototype.run;
-        jQuery.Tween.prototype.run = function(percent) {
-            this.state = percent;
+	if (jQuery.Tween) {
+		var oldFn = jQuery.Tween.prototype.run;
+		jQuery.Tween.prototype.run = function(percent) {
+			this.state = percent;
 
-            return oldFn.apply(this, arguments)
-        };
-    }
+			return oldFn.apply(this, arguments)
+		};
+	}
 
 	jQuery.fn.region = function(){
 		var self = this, element = self[0];
 		if(self.length == 1){
 			var position = self.offset(), width = element.offsetWidth, height = element.offsetHeight;
 			return {
-                top: position.top,
-                right: position.left + width,
-                left: position.left,
-                bottom: position.top + height,
-                height: height,
-                width: width
-            };
+				top: position.top,
+				right: position.left + width,
+				left: position.left,
+				bottom: position.top + height,
+				height: height,
+				width: width
+			};
 		}
 	};
 
@@ -81,13 +81,13 @@
 			//	+ "\tborderWidth:" + borderTop + "\tborderHeight:" + borderLeft);
 
 			return {
-                top: position.top + borderLeft + paddingTop,
-                right: position.left + borderTop + paddingLeft + width,
-                left: position.left + borderTop + paddingLeft,
-                bottom: position.top + borderLeft + paddingTop + height,
-                height: height,
-                width: width
-            };
+				top: position.top + borderLeft + paddingTop,
+				right: position.left + borderTop + paddingLeft + width,
+				left: position.left + borderTop + paddingLeft,
+				bottom: position.top + borderLeft + paddingTop + height,
+				height: height,
+				width: width
+			};
 		}
 	};
 
@@ -294,10 +294,10 @@
 			start = options.start, animConfig, animElement = element, animEl, delayFunc, inited = false;
 
 		delayFunc = function(direction) {
-            if (start) {
-                if (type == "in") $fly(element).css("display", "");
-                start.call(element);
-            }
+			if (start) {
+				if (type == "in") $fly(element).css("display", "");
+				start.call(element);
+			}
 
 			$fly(element).dockable(type == "in" ? slideInDockDirMap[direction] : slideOutDockDirMap[direction], safe);
 
@@ -518,207 +518,207 @@
 		});
 	};
 
-    jQuery.fn.zoomIn = function(options) {
-        var self = this;
-        if (self.length == 1) {
-            zoom("in", self[0], options);
-        }
-        return this;
-    };
+	jQuery.fn.zoomIn = function(options) {
+		var self = this;
+		if (self.length == 1) {
+			zoom("in", self[0], options);
+		}
+		return this;
+	};
 
-    jQuery.fn.zoomOut = function(options) {
-        var self = this;
-        if (self.length == 1) {
-            zoom("out", self[0], options);
-        }
-        return this;
-    };
+	jQuery.fn.zoomOut = function(options) {
+		var self = this;
+		if (self.length == 1) {
+			zoom("out", self[0], options);
+		}
+		return this;
+	};
 
-    var isFunction = function (value) {
-        return ({}).toString.call(value) == "[object Function]";
-    };
+	var isFunction = function (value) {
+		return ({}).toString.call(value) == "[object Function]";
+	};
 
-    var vendor = (/webkit/i).test(navigator.appVersion) ? 'webkit' :
-        (/firefox/i).test(navigator.userAgent) ? 'moz' :
-            (/trident/i).test(navigator.userAgent) ? 'ms' :
-                'opera' in window ? 'o' : '', cssVendor = "-" + vendor + "-",
-        TRANSITION = cssVendor + "transition", TRANSFORM = cssVendor + "transform",
-        TRANSFORMORIGIN = cssVendor + "transform-origin", BACKFACEVISIBILITY = cssVendor + "backface-visibility";
+	var vendor = (/webkit/i).test(navigator.appVersion) ? 'webkit' :
+		(/firefox/i).test(navigator.userAgent) ? 'moz' :
+			(/trident/i).test(navigator.userAgent) ? 'ms' :
+				'opera' in window ? 'o' : '', cssVendor = "-" + vendor + "-",
+		TRANSITION = cssVendor + "transition", TRANSFORM = cssVendor + "transform",
+		TRANSFORMORIGIN = cssVendor + "transform-origin", BACKFACEVISIBILITY = cssVendor + "backface-visibility";
 
-    var transitionEnd = "transitionEnd";
-    if (jQuery.browser.webkit) {
-        transitionEnd = "webkitTransitionEnd";
-    } else if (jQuery.browser.msie) {
-        transitionEnd = "msTransitionEnd";
-    } else if (jQuery.browser.mozilla) {
-        transitionEnd = "transitionend";
-    } else if (jQuery.browser.opera) {
-        transitionEnd = "oTransitionEnd";
-    }
+	var transitionEnd = "transitionEnd";
+	if (jQuery.browser.webkit) {
+		transitionEnd = "webkitTransitionEnd";
+	} else if (jQuery.browser.msie) {
+		transitionEnd = "msTransitionEnd";
+	} else if (jQuery.browser.mozilla) {
+		transitionEnd = "transitionend";
+	} else if (jQuery.browser.opera) {
+		transitionEnd = "oTransitionEnd";
+	}
 
-    jQuery.fn.anim = function(properties, duration, ease, callback){
-        var transforms = [], opacity, key;
-        for (key in properties)
-            if (key === 'opacity') opacity = properties[key];
-            else transforms.push(key + '(' + properties[key] + ')');
+	jQuery.fn.anim = function(properties, duration, ease, callback){
+		var transforms = [], opacity, key;
+		for (key in properties)
+			if (key === 'opacity') opacity = properties[key];
+			else transforms.push(key + '(' + properties[key] + ')');
 
-        if (parseFloat(duration) !== 0) {
-            isFunction(callback) && this.one(transitionEnd, callback);
-        } else {
-            setTimeout(callback, 0);
-        }
+		if (parseFloat(duration) !== 0) {
+			isFunction(callback) && this.one(transitionEnd, callback);
+		} else {
+			setTimeout(callback, 0);
+		}
 
-        return this.css({ opacity: opacity }).css(TRANSITION, 'all ' + (duration !== undefined ? duration : 0.5) + 's ' + (ease || '')).css(TRANSFORM, transforms.join(' '));
-    };
+		return this.css({ opacity: opacity }).css(TRANSITION, 'all ' + (duration !== undefined ? duration : 0.5) + 's ' + (ease || '')).css(TRANSFORM, transforms.join(' '));
+	};
 
-    var mordernZoom = function(type, el, options) {
-        if (!el) return;
-        options = options || {};
+	var modernZoom = function(type, el, options) {
+		if (!el) return;
+		options = options || {};
 
-        var position = options.position, animTarget = options.animateTarget,
-            startLeft, startTop, endLeft, endTop, offset;
+		var position = options.position, animTarget = options.animateTarget,
+			startLeft, startTop, endLeft, endTop, offset;
 
-        if (typeof animTarget == "string") {
-            animTarget = jQuery(animTarget)[0];
-        } else if(animTarget instanceof dorado.widget.Control){
-            animTarget = animTarget._dom;
-        }
-        var elementEl = jQuery(el), animTargetEl = jQuery(animTarget);
-        if (type == "in") {
-            if (animTarget) {
-                offset = animTargetEl.offset();
+		if (typeof animTarget == "string") {
+			animTarget = jQuery(animTarget)[0];
+		} else if(animTarget instanceof dorado.widget.Control){
+			animTarget = animTarget._dom;
+		}
+		var elementEl = jQuery(el), animTargetEl = jQuery(animTarget);
+		if (type == "in") {
+			if (animTarget) {
+				offset = animTargetEl.offset();
 
-                startTop = offset.top;
-                startLeft = offset.left;
-                endTop = position.top;
-                endLeft = position.left;
-            }
-        } else {
-            if (animTarget) {
-                offset = animTargetEl.offset();
-                if (!position) {
-                    position = elementEl.offset();
-                }
-                startTop = position.top;
-                startLeft = position.left;
-                endTop = offset.top;
-                endLeft = offset.left;
-            }
-        }
+				startTop = offset.top;
+				startLeft = offset.left;
+				endTop = position.top;
+				endLeft = position.left;
+			}
+		} else {
+			if (animTarget) {
+				offset = animTargetEl.offset();
+				if (!position) {
+					position = elementEl.offset();
+				}
+				startTop = position.top;
+				startLeft = position.left;
+				endTop = offset.top;
+				endLeft = offset.left;
+			}
+		}
 
-        var fromScale = 1,
-            toScale = 1;
+		var fromScale = 1,
+			toScale = 1;
 
-        if (type == "out") {
-            toScale = 0.01;
-        } else {
-            fromScale = 0.01;
-        }
+		if (type == "out") {
+			toScale = 0.01;
+		} else {
+			fromScale = 0.01;
+		}
 
-        if (animTarget) {
-            $(el).css({
-                left: startLeft,
-                top: startTop
-            }).css(TRANSFORM, 'scale(' + fromScale + ')').css(TRANSFORMORIGIN, '0 0');
-        } else {
-            $(el).css(TRANSFORM, 'scale(' + fromScale + ')').css(TRANSFORMORIGIN, '50% 50%');
-        }
+		if (animTarget) {
+			$(el).css({
+				left: startLeft,
+				top: startTop
+			}).css(TRANSFORM, 'scale(' + fromScale + ')').css(TRANSFORMORIGIN, '0 0');
+		} else {
+			$(el).css(TRANSFORM, 'scale(' + fromScale + ')').css(TRANSFORMORIGIN, '50% 50%');
+		}
 
-        var callback = function() {
-            if (options.complete) {
-                options.complete.apply(null, []);
-            }
-            $(el).css(TRANSITION, "").css(TRANSFORMORIGIN, "").css(TRANSFORM, "");
-        };
-        if (animTarget) {
-            setTimeout(function() {
-                $(el).anim({}, options.animateDuration ? options.animateDuration / 1000 : .3, "ease-in-out", callback).css({
-                    left: endLeft,
-                    top: endTop
-                }).css(TRANSFORM, 'scale(' + toScale + ')').css(TRANSFORMORIGIN, '0 0');
-            }, 5);
-        } else {
-            setTimeout(function() {
-                $(el).anim({}, options.animateDuration ? options.animateDuration / 1000 : .3, "ease-in-out", callback)
-                    .css(TRANSFORM, 'scale(' + toScale + ')').css(TRANSFORMORIGIN, '50% 50%');
-            }, 5);
-        }
-    };
+		var callback = function() {
+			if (options.complete) {
+				options.complete.apply(null, []);
+			}
+			$(el).css(TRANSITION, "").css(TRANSFORMORIGIN, "").css(TRANSFORM, "");
+		};
+		if (animTarget) {
+			setTimeout(function() {
+				$(el).anim({}, options.animateDuration ? options.animateDuration / 1000 : .3, "ease-in-out", callback).css({
+					left: endLeft,
+					top: endTop
+				}).css(TRANSFORM, 'scale(' + toScale + ')').css(TRANSFORMORIGIN, '0 0');
+			}, 5);
+		} else {
+			setTimeout(function() {
+				$(el).anim({}, options.animateDuration ? options.animateDuration / 1000 : .3, "ease-in-out", callback)
+					.css(TRANSFORM, 'scale(' + toScale + ')').css(TRANSFORMORIGIN, '50% 50%');
+			}, 5);
+		}
+	};
 
-    var flip = function(type, el, options) {
-        if (!el) return;
-        options = options || {};
-        var callback = function() {
-            if (options.complete) {
-                options.complete.apply(null, []);
-            }
-            $(el).css(TRANSITION, "").css(TRANSFORMORIGIN, "").css(TRANSFORM, "").css(BACKFACEVISIBILITY, "");
-        };
+	var flip = function(type, el, options) {
+		if (!el) return;
+		options = options || {};
+		var callback = function() {
+			if (options.complete) {
+				options.complete.apply(null, []);
+			}
+			$(el).css(TRANSITION, "").css(TRANSFORMORIGIN, "").css(TRANSFORM, "").css(BACKFACEVISIBILITY, "");
+		};
 
-        var rotateProp = 'Y',
-            fromScale = 1,
-            toScale = 1,
-            fromRotate = 0,
-            toRotate = 0;
+		var rotateProp = 'Y',
+			fromScale = 1,
+			toScale = 1,
+			fromRotate = 0,
+			toRotate = 0;
 
-        if (type == "out") {
-            toRotate = -180;
-            toScale = 0.8;
-        } else {
-            fromRotate = 180;
-            fromScale = 0.8;
-        }
+		if (type == "out") {
+			toRotate = -180;
+			toScale = 0.8;
+		} else {
+			fromRotate = 180;
+			fromScale = 0.8;
+		}
 
-        if (options.direction == 'up' || options.direction == 'down') {
-            rotateProp = 'X';
-        }
+		if (options.direction == 'up' || options.direction == 'down') {
+			rotateProp = 'X';
+		}
 
-        if (options.direction == 'right' || options.direction == 'left') {
-            toRotate *= -1;
-            fromRotate *= -1;
-        }
+		if (options.direction == 'right' || options.direction == 'left') {
+			toRotate *= -1;
+			fromRotate *= -1;
+		}
 
-        $(el).css(TRANSFORM, 'rotate' + rotateProp + '(' + fromRotate + 'deg) scale(' + fromScale + ')').css(BACKFACEVISIBILITY, 'hidden');
+		$(el).css(TRANSFORM, 'rotate' + rotateProp + '(' + fromRotate + 'deg) scale(' + fromScale + ')').css(BACKFACEVISIBILITY, 'hidden');
 
-        setTimeout(function() {
-            $(el).anim({}, options.animateDuration ? options.animateDuration / 1000 : .3, "linear", callback).
-                css(TRANSFORM, 'rotate' + rotateProp + '(' + toRotate + 'deg) scale(' + toScale + ')').css(BACKFACEVISIBILITY, 'hidden');
-        }, 5);
-    };
+		setTimeout(function() {
+			$(el).anim({}, options.animateDuration ? options.animateDuration / 1000 : .3, "linear", callback).
+				css(TRANSFORM, 'rotate' + rotateProp + '(' + toRotate + 'deg) scale(' + toScale + ')').css(BACKFACEVISIBILITY, 'hidden');
+		}, 5);
+	};
 
-    jQuery.fn.mordernZoomIn = function(options) {
-        var self = this;
-        if (self.length == 1) {
-            mordernZoom("in", self[0], options);
-        }
-        return this;
-    };
+	jQuery.fn.modernZoomIn = function(options) {
+		var self = this;
+		if (self.length == 1) {
+			modernZoom("in", self[0], options);
+		}
+		return this;
+	};
 
-    jQuery.fn.mordernZoomOut = function(options) {
-        var self = this;
-        if (self.length == 1) {
-            mordernZoom("out", self[0], options);
-        }
-        return this;
-    };
+	jQuery.fn.modernZoomOut = function(options) {
+		var self = this;
+		if (self.length == 1) {
+			modernZoom("out", self[0], options);
+		}
+		return this;
+	};
 
-    jQuery.fn.flipIn = function(options) {
-        var self = this;
-        if (self.length == 1) {
-            options.direction = "left";
-            flip("in", self[0], options);
-        }
-        return this;
-    };
+	jQuery.fn.flipIn = function(options) {
+		var self = this;
+		if (self.length == 1) {
+			options.direction = "left";
+			flip("in", self[0], options);
+		}
+		return this;
+	};
 
-    jQuery.fn.flipOut = function(options) {
-        var self = this;
-        if (self.length == 1) {
-            options.direction = "right";
-            flip("out", self[0], options);
-        }
-        return this;
-    };
+	jQuery.fn.flipOut = function(options) {
+		var self = this;
+		if (self.length == 1) {
+			options.direction = "right";
+			flip("out", self[0], options);
+		}
+		return this;
+	};
 
 	var getWin = function(elem) {
 		return (elem && ('scrollTo' in elem) && elem['document']) ?
