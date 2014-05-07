@@ -19,5 +19,5 @@ package com.bstek.dorado.view.widget;
  * @since 2010-6-2
  */
 public enum FloatControlAnimateType {
-	zoom, mordernZoom, flip, slide, safeSlide, fade, none
+	zoom, modernZoom, flip, slide, safeSlide, modernSlide, fade, none
 }
