@@ -724,7 +724,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					//me.scrollToTop();
 				}, true);
 
-				//document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+				$fly(document).bind('touchmove', function (e) { e.preventDefault(); });
 
 				this.initialHeight = window.innerHeight;
 
