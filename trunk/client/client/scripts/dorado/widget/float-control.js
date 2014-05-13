@@ -1006,7 +1006,6 @@ dorado.dequeue = function(namespace) {
 							opacity: ""
 						});
 						control.doAfterShow.apply(control, [options]);
-						$fly(dom);
 					}
 				});
 			},
@@ -1022,7 +1021,6 @@ dorado.dequeue = function(namespace) {
 							opacity: ""
 						});
 						control.doAfterHide.apply(control, arguments);
-						$fly(dom);
 					}
 				});
 			}
