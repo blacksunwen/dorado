@@ -11,7 +11,7 @@
  */
 
 (function ($, window, document, undefined) {
-	if (!(dorado.Browser.isTouch && (dorado.Browser.android || dorado.Browser.iOS))) return;
+	if (!(dorado.Browser.isTouch /**&& (dorado.Browser.android || dorado.Browser.iOS)*/ )) return;
 
 	var dataPropertyName = "virtualMouseBindings", touchTargetPropertyName = "virtualTouchID",
 		virtualEventNames = "mouseover mousedown mousemove mouseup click mouseout mousecancel".split(" "),
