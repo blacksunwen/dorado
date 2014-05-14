@@ -286,7 +286,7 @@
 			
 			if (!this._height) {
 				var useMaxHeight = true, refreshed = false;
-				if (this._realMaxHeight && (!itemCount || (this._realMaxHeight / (rowList._rowHeight + 2) > (itemCount + 1)))) {
+				if (this._realMaxHeight && (!itemCount || (this._realMaxHeight / (rowList._rowHeight + 1) > (itemCount + 1)))) {
 					rowList.set({
 						height: "auto",
 						scrollMode: "simple"
