@@ -18,10 +18,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.event.DefaultClientEvent;
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.data.Constants;
-import com.bstek.dorado.util.StringAliasUtils;
 import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.config.xml.ViewXmlConstants;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -64,17 +61,7 @@ public class SubViewPropertyOutputter extends ObjectOutputterDispatcher
 			if (viewConfig != null) {
 				view = viewConfig.getView();
 				if (view != null) {
-					String dataTypeIdPrefix = context
-							.getOutputtableDataTypeIdPrefix();
-					context.setOutputtableDataTypeIdPrefix(ViewXmlConstants.PATH_VIEW_SHORT_NAME
-							+ Constants.PRIVATE_DATA_OBJECT_SUBFIX
-							+ StringAliasUtils.getUniqueAlias(view.getName())
-							+ ViewXmlConstants.PATH_COMPONENT_PREFIX);
-					try {
-						super.outputObject(view, context);
-					} finally {
-						context.setOutputtableDataTypeIdPrefix(dataTypeIdPrefix);
-					}
+					super.outputObject(view, context);
 				}
 			}
 			jsonBuilder.endValue();

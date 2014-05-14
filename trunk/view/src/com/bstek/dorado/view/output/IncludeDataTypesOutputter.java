@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.manager.ViewConfig;
 
 /**
  * 用于输出
@@ -30,17 +30,33 @@ import com.bstek.dorado.data.type.EntityDataType;
  */
 public class IncludeDataTypesOutputter extends ObjectOutputterDispatcher {
 	@Override
-	@SuppressWarnings("unchecked")
 	public void output(Object object, OutputContext context) throws Exception {
-		Map<String, DataType> includeDataTypes = (Map<String, DataType>) object;
-		Set<DataType> processedDataTypes = new HashSet<DataType>();
+		ViewConfig viewConfig = ((View) object).getViewConfig();
+		Map<String, DataType> includeDataTypes = context.getIncludeDataTypes();
+
+		int includeDataTypeNum = 0;
 		Set<DataType> dataTypes = new HashSet<DataType>();
-		for (Map.Entry<String, DataType> entry : includeDataTypes.entrySet()) {
-			DataType dataType = entry.getValue();
-			DataType outputDataType = getOutputDataType(dataTypes, dataType,
-					context);
+
+		if (includeDataTypes != null) {
+			includeDataTypeNum = includeDataTypes.size();
+
+			for (Map.Entry<String, DataType> entry : includeDataTypes
+					.entrySet()) {
+				DataType dataType = entry.getValue();
+				DataType outputDataType = getOutputDataType(dataType, context);
+
+				if (outputDataType != null
+						&& outputDataType.getId().equals(
+								outputDataType.getName())) {
+					dataTypes.add(outputDataType);
+				}
+			}
+		}
+
+		for (String dataTypeName : viewConfig.getPrivateDataTypeNames()) {
+			DataType dataType = viewConfig.getDataType(dataTypeName);
+			DataType outputDataType = getOutputDataType(dataType, context);
 			if (outputDataType != null) {
-				processedDataTypes.add(dataType);
 				dataTypes.add(outputDataType);
 			}
 		}
@@ -53,36 +69,40 @@ public class IncludeDataTypesOutputter extends ObjectOutputterDispatcher {
 			json.endValue();
 		}
 
-		if (processedDataTypes.size() < includeDataTypes.size()) {
-			dataTypes.clear();
-			for (Map.Entry<String, DataType> entry : includeDataTypes
-					.entrySet()) {
-				DataType dataType = entry.getValue();
-				if (!processedDataTypes.contains(dataType)) {
-					DataType outputDataType = getOutputDataType(dataTypes,
-							dataType, context);
-					if (outputDataType != null) {
-						processedDataTypes.add(outputDataType);
-						dataTypes.add(outputDataType);
+		if (includeDataTypes != null) {
+			while (includeDataTypeNum < includeDataTypes.size()) {
+				dataTypes.clear();
+
+				for (Map.Entry<String, DataType> entry : includeDataTypes
+						.entrySet()) {
+					DataType dataType = entry.getValue();
+					if (!dataTypes.contains(dataType)) {
+						DataType outputDataType = getOutputDataType(dataType,
+								context);
+						if (outputDataType != null
+								&& outputDataType.getId().equals(
+										outputDataType.getName())) {
+							dataTypes.add(outputDataType);
+						}
 					}
+				}
+				includeDataTypeNum = includeDataTypes.size();
+
+				for (DataType dataType : dataTypes) {
+					json.beginValue();
+					outputObject(dataType, context);
+					json.endValue();
 				}
 			}
 
 			for (DataType dataType : dataTypes) {
-				json.beginValue();
-				outputObject(dataType, context);
-				json.endValue();
+				includeDataTypes.remove(dataType.getId());
 			}
-		}
-
-		for (DataType dataType : processedDataTypes) {
-			includeDataTypes.remove(dataType.getId());
 		}
 		json.endArray();
 	}
 
-	private DataType getOutputDataType(Set<DataType> dataTypes,
-			DataType dataType, OutputContext context) {
+	private DataType getOutputDataType(DataType dataType, OutputContext context) {
 		if (dataType instanceof AggregationDataType) {
 			DataType elementDataType = ((AggregationDataType) dataType)
 					.getElementDataType();
@@ -93,13 +113,6 @@ public class IncludeDataTypesOutputter extends ObjectOutputterDispatcher {
 			}
 		} else if (!(dataType instanceof EntityDataType)) {
 			dataType = null;
-		}
-
-		String dataTypeIdPrefix = context.getOutputtableDataTypeIdPrefix();
-		if (dataType != null && StringUtils.isNotEmpty(dataTypeIdPrefix)) {
-			if (!dataType.getId().startsWith(dataTypeIdPrefix)) {
-				dataType = null;
-			}
 		}
 		return dataType;
 	}

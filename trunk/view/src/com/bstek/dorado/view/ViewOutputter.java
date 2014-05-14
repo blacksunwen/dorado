@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.io.Resource;
-import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.BeanExtender;
 import com.bstek.dorado.view.config.attachment.AttachedResourceManager;
 import com.bstek.dorado.view.config.attachment.JavaScriptContent;
@@ -148,7 +147,7 @@ public class ViewOutputter extends ContainerOutputter {
 			writer.append("}\n");
 
 			// 输出DataType
-			outputIncludeDataTypes(context);
+			outputIncludeDataTypes(view, context);
 
 			writer.append("f(view);\n");
 		} finally {
@@ -178,16 +177,11 @@ public class ViewOutputter extends ContainerOutputter {
 	/**
 	 * 输出客户端需要的DataType
 	 */
-	protected void outputIncludeDataTypes(OutputContext context)
+	protected void outputIncludeDataTypes(View view, OutputContext context)
 			throws Exception {
-		Map<String, DataType> includeDataTypes = context
-				.getIncludeDataTypes(false);
-		if (includeDataTypes == null || includeDataTypes.isEmpty())
-			return;
-
 		Writer writer = context.getWriter();
 		writer.write("view.get(\"dataTypeRepository\").parseJsonData(");
-		includeDataTypesOutputter.output(includeDataTypes, context);
+		includeDataTypesOutputter.output(view, context);
 		writer.write(");\n");
 	}
 }

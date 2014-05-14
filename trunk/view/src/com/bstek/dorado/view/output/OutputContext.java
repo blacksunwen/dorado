@@ -43,7 +43,6 @@ public class OutputContext {
 	private Stack<JsonBuilder> jsonBuilders = new Stack<JsonBuilder>();
 	private boolean usePrettyJson;
 	private boolean shouldOutputDataTypes = true;
-	private String outputtableDataTypeIdPrefix;
 	private boolean shouldOutputEntityState;
 	private boolean escapeable;
 	private Set<String> loadedDataTypes;
@@ -126,15 +125,6 @@ public class OutputContext {
 		this.shouldOutputDataTypes = shouldOutputDataTypes;
 	}
 
-	public String getOutputtableDataTypeIdPrefix() {
-		return outputtableDataTypeIdPrefix;
-	}
-
-	public void setOutputtableDataTypeIdPrefix(
-			String outputtableDataTypeIdPrefix) {
-		this.outputtableDataTypeIdPrefix = outputtableDataTypeIdPrefix;
-	}
-
 	/**
 	 * @return the shouldOutputEntityState
 	 */
@@ -177,11 +167,20 @@ public class OutputContext {
 	/**
 	 * 返回客户端需要的DataType的集合。
 	 */
-	public Map<String, DataType> getIncludeDataTypes(boolean allowCreate) {
-		if (includeDataTypes == null && allowCreate) {
+	public Map<String, DataType> getIncludeDataTypes() {
+		return includeDataTypes;
+	}
+
+	/**
+	 * 返回客户端需要的DataType的集合。
+	 */
+	public void markIncludeDataType(DataType dataType) {
+		if (includeDataTypes == null) {
 			includeDataTypes = new LinkedHashMap<String, DataType>();
 		}
-		return includeDataTypes;
+		if (!includeDataTypes.containsKey(dataType.getName())) {
+			includeDataTypes.put(dataType.getName(), dataType);
+		}
 	}
 
 	/**
