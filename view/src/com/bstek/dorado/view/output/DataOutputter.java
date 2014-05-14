@@ -17,7 +17,6 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.Stack;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -362,11 +361,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 				dataType = EntityUtils.getDataType(object);
 			}
 			if (dataType != null) {
-				Map<String, DataType> includeDataTypes = context
-						.getIncludeDataTypes(true);
-				if (!includeDataTypes.containsKey(dataType.getName())) {
-					includeDataTypes.put(dataType.getName(), dataType);
-				}
+				context.markIncludeDataType(dataType);
 			}
 		}
 	}

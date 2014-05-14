@@ -13,7 +13,6 @@
 package com.bstek.dorado.view.type;
 
 import java.io.Writer;
-import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
@@ -79,11 +78,7 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 							.getElementDataType();
 				}
 				if (dataType != null) {
-					Map<String, DataType> includeDataTypes = context
-							.getIncludeDataTypes(true);
-					if (!includeDataTypes.containsKey(dataType.getName())) {
-						includeDataTypes.put(dataType.getName(), dataType);
-					}
+					context.markIncludeDataType(dataType);
 				}
 			}
 		}

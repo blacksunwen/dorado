@@ -145,14 +145,8 @@ public class AttachedJavaScriptResourceManager extends AttachedResourceManager {
 		}
 
 		DataType dataType = viewConfig.getDataType(dataTypeName);
-		if (dataType == null) {
-			return;
-		}
-
-		Map<String, DataType> includeDataTypes = context
-				.getIncludeDataTypes(true);
-		if (!includeDataTypes.containsKey(dataTypeName)) {
-			includeDataTypes.put(dataTypeName, dataType);
+		if (dataType != null) {
+			context.markIncludeDataType(dataType);
 		}
 	}
 }

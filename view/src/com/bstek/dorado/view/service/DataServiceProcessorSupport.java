@@ -152,7 +152,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 				jsonBuilder.key("$dataTypeDefinitions");
 				boolean hasDataTypes = false;
 				Map<String, DataType> includeDataTypes = context
-						.getIncludeDataTypes(false);
+						.getIncludeDataTypes();
 				if (includeDataTypes != null && !includeDataTypes.isEmpty()) {
 					Map<String, DataType> outputDataTypes = new HashMap<String, DataType>();
 					for (Map.Entry<String, DataType> entry : includeDataTypes
