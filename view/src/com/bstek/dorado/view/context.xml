@@ -111,7 +111,10 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="dataTypeManager" ref="dorado.dataTypeManager" />
 		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
 		<property name="dataOutputter" ref="dorado.dataOutputter" />
-		<property name="includeDataTypesOutputter" ref="dorado.includeDataTypesOutputter" />
+		<property name="includeDataTypesOutputter">
+			<bean parent="dorado.objectOutputterDispatcher"
+				class="com.bstek.dorado.view.output.IncludeDataTypesOutputter" />
+		</property>
 	</bean>
 	<bean id="dorado.loadDataTypeServiceProcessor" parent="dorado.dataServiceProcessorSupport"
 		class="com.bstek.dorado.view.service.LoadDataTypeServiceProcessor" />

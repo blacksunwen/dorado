@@ -186,13 +186,13 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 	}
 
 	protected void outputDataTypes(Map<String, DataType> includeDataTypes,
-			OutputContext birchContext) throws Exception {
-		includeDataTypesOutputter.output(includeDataTypes, birchContext);
+			OutputContext outputContext) throws Exception {
+		includeDataTypesOutputter.output(includeDataTypes, outputContext);
 	}
 
-	protected void outputData(Object result, OutputContext birchContext)
+	protected void outputData(Object result, OutputContext outputContext)
 			throws Exception {
-		dataOutputter.output(result, birchContext);
+		dataOutputter.output(result, outputContext);
 	}
 
 	protected ViewConfig getViewConfig(DoradoContext context, String viewName)

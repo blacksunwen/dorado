@@ -40,7 +40,7 @@ import com.bstek.dorado.web.DoradoContextUtils;
  */
 public class ViewOutputter extends ContainerOutputter {
 	protected Outputter childrenComponentOutputter;
-	protected Outputter includeDataTypesOutputter;
+	protected Outputter viewDataTypesOutputter;
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
 
@@ -49,8 +49,8 @@ public class ViewOutputter extends ContainerOutputter {
 		this.childrenComponentOutputter = childrenComponentOutputter;
 	}
 
-	public void setIncludeDataTypesOutputter(Outputter includeDataTypesOutputter) {
-		this.includeDataTypesOutputter = includeDataTypesOutputter;
+	public void setViewDataTypesOutputter(Outputter viewDataTypesOutputter) {
+		this.viewDataTypesOutputter = viewDataTypesOutputter;
 	}
 
 	public void setJavaScriptResourceManager(
@@ -181,7 +181,7 @@ public class ViewOutputter extends ContainerOutputter {
 			throws Exception {
 		Writer writer = context.getWriter();
 		writer.write("view.get(\"dataTypeRepository\").parseJsonData(");
-		includeDataTypesOutputter.output(view, context);
+		viewDataTypesOutputter.output(view, context);
 		writer.write(");\n");
 	}
 }
