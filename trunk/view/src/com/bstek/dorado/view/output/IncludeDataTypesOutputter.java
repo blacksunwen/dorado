@@ -16,11 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
-import com.bstek.dorado.data.type.EntityDataType;
-import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.manager.ViewConfig;
 
 /**
  * 用于输出
@@ -28,35 +24,21 @@ import com.bstek.dorado.view.manager.ViewConfig;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Nov 20, 2008
  */
-public class IncludeDataTypesOutputter extends ObjectOutputterDispatcher {
-	@Override
-	public void output(Object object, OutputContext context) throws Exception {
-		ViewConfig viewConfig = ((View) object).getViewConfig();
-		Map<String, DataType> includeDataTypes = context.getIncludeDataTypes();
+public class IncludeDataTypesOutputter extends AbstractDataTypeOutputter {
 
-		int includeDataTypeNum = 0;
+	@Override
+	@SuppressWarnings("unchecked")
+	public void output(Object object, OutputContext context) throws Exception {
+		Map<String, DataType> includeDataTypes = (Map<String, DataType>) object;
 		Set<DataType> dataTypes = new HashSet<DataType>();
 
-		if (includeDataTypes != null) {
-			includeDataTypeNum = includeDataTypes.size();
-
-			for (Map.Entry<String, DataType> entry : includeDataTypes
-					.entrySet()) {
-				DataType dataType = entry.getValue();
-				DataType outputDataType = getOutputDataType(dataType, context);
-
-				if (outputDataType != null
-						&& outputDataType.getId().equals(
-								outputDataType.getName())) {
-					dataTypes.add(outputDataType);
-				}
-			}
-		}
-
-		for (String dataTypeName : viewConfig.getPrivateDataTypeNames()) {
-			DataType dataType = viewConfig.getDataType(dataTypeName);
+		int includeDataTypeNum = includeDataTypes.size();
+		for (Map.Entry<String, DataType> entry : includeDataTypes.entrySet()) {
+			DataType dataType = entry.getValue();
 			DataType outputDataType = getOutputDataType(dataType, context);
-			if (outputDataType != null) {
+
+			if (outputDataType != null
+					&& outputDataType.getId().equals(outputDataType.getName())) {
 				dataTypes.add(outputDataType);
 			}
 		}
@@ -69,52 +51,38 @@ public class IncludeDataTypesOutputter extends ObjectOutputterDispatcher {
 			json.endValue();
 		}
 
-		if (includeDataTypes != null) {
-			while (includeDataTypeNum < includeDataTypes.size()) {
-				dataTypes.clear();
+		while (includeDataTypeNum < includeDataTypes.size()) {
+			dataTypes.clear();
 
-				for (Map.Entry<String, DataType> entry : includeDataTypes
-						.entrySet()) {
-					DataType dataType = entry.getValue();
-					if (!dataTypes.contains(dataType)) {
-						DataType outputDataType = getOutputDataType(dataType,
-								context);
-						if (outputDataType != null
-								&& outputDataType.getId().equals(
-										outputDataType.getName())) {
-							dataTypes.add(outputDataType);
-						}
+			int i = 0;
+			for (Map.Entry<String, DataType> entry : includeDataTypes
+					.entrySet()) {
+				i++;
+				if (i <= includeDataTypeNum) {
+					continue;
+				}
+
+				DataType dataType = entry.getValue();
+				if (!dataTypes.contains(dataType)) {
+					DataType outputDataType = getOutputDataType(dataType,
+							context);
+					if (outputDataType != null
+							&& outputDataType.getId().equals(
+									outputDataType.getName())) {
+						dataTypes.add(outputDataType);
 					}
 				}
-				includeDataTypeNum = includeDataTypes.size();
-
-				for (DataType dataType : dataTypes) {
-					json.beginValue();
-					outputObject(dataType, context);
-					json.endValue();
-				}
 			}
+			includeDataTypeNum = includeDataTypes.size();
 
 			for (DataType dataType : dataTypes) {
-				includeDataTypes.remove(dataType.getId());
+				json.beginValue();
+				outputObject(dataType, context);
+				json.endValue();
 			}
 		}
+
+		includeDataTypes.clear();
 		json.endArray();
 	}
-
-	private DataType getOutputDataType(DataType dataType, OutputContext context) {
-		if (dataType instanceof AggregationDataType) {
-			DataType elementDataType = ((AggregationDataType) dataType)
-					.getElementDataType();
-			if (elementDataType instanceof EntityDataType) {
-				dataType = elementDataType;
-			} else {
-				dataType = null;
-			}
-		} else if (!(dataType instanceof EntityDataType)) {
-			dataType = null;
-		}
-		return dataType;
-	}
-
 }
