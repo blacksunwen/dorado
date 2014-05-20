@@ -380,7 +380,7 @@
 		},
 
 		doSetFocus: function() {
-			if (/*!dorado.Browser.isTouch && */this._textDom) this._textDom.focus();
+			if (!dorado.Browser.isTouch && this._textDom) this._textDom.focus();
 		},
 
 		doOnFocus: function() {
