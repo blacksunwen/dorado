@@ -169,7 +169,7 @@
 
 		doOnRemove: function() {
 			this.set("action", null);
-			this._dom || $fly(this._dom).remove();
+			this._dom && $fly(this._dom).remove();
 		},
 
 		refreshDom: function(dom) {
