@@ -11,11 +11,10 @@
                 var title1 = "测试111111";
                 var msg1 = "我是来测试的，你好吗？真的吗？哈哈。测试。"+ "测试。测试。测试。测试。测试。测试。测试。测试。"+ "测试。测试。测试。测试。测试。测试。测试。测试。"+ "测试。测试。测试。测试。测试。测试。测试。测试。测试。";
                 for (var i = 0; i < 10; i++) {
-                    dorado.widget.NotifyTipManager.notify({ text : msg1, icon : "INFO", showDuration : 1 });
+                    dorado.widget.NotifyTipManager.notify({ caption : title1, text : msg1, icon : "INFO", showDuration : 10000 });
                 }
             }
         });
-
         var count = 0;
         var toolbar = new dorado.widget.ToolBar({
             items: [
@@ -23,7 +22,7 @@
                     caption: "显示Tip",
                     listener: {
                         onClick: function(self) {
-                            dorado.widget.NotifyTipManager.notify({ iconClass: "error-icon", content: "我闲着没事，出来转转" + count++ });
+                            dorado.widget.NotifyTipManager.notify("我闲着没事，出来转转" + count++, { iconClass: "error-icon", caption: "DDD" });
                         }
                     }
                 }
