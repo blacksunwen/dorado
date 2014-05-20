@@ -69,7 +69,7 @@
 			var action = this, form = document.createElement("form");
 			form.name = form_prefix + form_seed++;
 			form.style.display = "none";
-			form.action = dorado.Toolkits.translateURL(action._action);
+			form.action = dorado.util.Common.translateURL(action._action);
 			form.target = action._target || "_self";
 			form.method = action._method || "post";
 
