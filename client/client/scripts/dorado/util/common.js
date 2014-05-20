@@ -21,7 +21,7 @@ dorado.util.Common = {
 	/**
 	 * 用于注册URL预设变量的JSON对象。
 	 * @type {Object}
-	 * @see dorado.Toolkits.translateURL
+	 * @see dorado.util.Common.translateURL
 	 * @see $url
 	 */
 	URL_VARS: {},
