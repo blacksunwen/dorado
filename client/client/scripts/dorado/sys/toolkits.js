@@ -16,29 +16,9 @@
  * @static
  */
 dorado.Toolkits = {
-	ajaxDefaultOptions: $setting["ajax.defaultOptions"],
-	
-	ajaxs: {},
-	
-	getAjax: function(options) {
-		var defaultOptions = {};
-		if (this.ajaxDefaultOptions) dorado.Object.apply(defaultOptions, this.ajaxDefaultOptions);
-		var options = dorado.Object.apply(defaultOptions, options);
-		
-		var key = (options.url || "#EMPTY") + '|' + (options.autoBatchEnabled || false);
-		var ajax = this.ajaxs[key];
-		if (ajax === undefined) {
-			ajax = new dorado.util.AjaxEngine();
-			ajax.set("defaultOptions", options);
-			ajax.set("autoBatchEnabled", options.autoBatchEnabled);
-			this.ajaxs[key] = ajax;
-		}
-		return ajax;
-	},
-	
 	typesRegistry: {},
 	typeTranslators: {},
-	
+
 	/**
 	 * 向系统中注册一个类型的简写名。
 	 * <p>
@@ -62,23 +42,25 @@ dorado.Toolkits = {
 	 * @see dorado.Toolkits.createInstance
 	 */
 	registerPrototype: function(namespace, name, constr) {
-		
+
 		function register(namespace, name, constr) {
 			this.typesRegistry[namespace + '.' + name] = constr;
 		}
-		
+
 		if (typeof name == "object") {
-			for (var p in name) {
+			for(var p in name) {
 				if (name.hasOwnProperty(p)) register.call(this, namespace, p, name[p]);
 			}
 		}
-		else register.call(this, namespace, name, constr);
+		else {
+			register.call(this, namespace, name, constr);
+		}
 	},
-	
+
 	registerTypeTranslator: function(namespace, typeTranslator) {
 		this.typeTranslators[namespace] = typeTranslator;
 	},
-	
+
 	/**
 	 * 根据传入的类型简写名返回匹配的对象的构造函数。
 	 * @param {String} namespace 命名空间。
@@ -88,7 +70,7 @@ dorado.Toolkits = {
 	 */
 	getPrototype: function(namespace, name) {
 		var ns = namespace.split(",");
-		for (var i = 0; i < ns.length; i++) {
+		for(var i = 0; i < ns.length; i++) {
 			var n = ns[i], constr = this.typesRegistry[n + '.' + (name || "Default")];
 			if (!constr) {
 				var typeTranslator = this.typeTranslators[n];
@@ -99,7 +81,7 @@ dorado.Toolkits = {
 			if (constr) return constr;
 		}
 	},
-	
+
 	/**
 	 * 此方法用于根据JSON配置对象中的$type属性指定的对象类型来实例化一个新的对象。
 	 * <p>
@@ -165,33 +147,30 @@ dorado.Toolkits = {
 		if (typeof config == "string") {
 			type = config;
 			config = null;
-		} else {
+		}
+		else {
 			type = config ? config.$type : undefined;
 		}
-		
+
 		var constr = this.getPrototype(namespace, type);
 		if (!constr) {
 			if (typeTranslator && typeTranslator.constructor == String) {
-				if (type) {
-					type = typeTranslator + type;
-				}
-				else {
-					type = typeTranslator;
-				}
+				type = typeTranslator;
 			}
 			if (!constr) {
 				if (typeTranslator && typeof typeTranslator == "function") {
 					constr = typeTranslator(type);
-				} 
+				}
 				if (!constr) {
 					if (type) {
 						constr = dorado.util.Common.getClassType(type);
-					} else {
+					}
+					else {
 						throw new dorado.ResourceException("dorado.core.TypeUndefined");
 					}
 				}
 			}
-			
+
 			if (constr && type) {
 				this.registerPrototype(namespace, type, constr);
 			}
@@ -201,82 +180,13 @@ dorado.Toolkits = {
 		}
 		return new constr(config);
 	},
-	
-	/**
-	 * 用于注册URL预设变量的JSON对象。
-	 * @type {Object}
-	 * @see dorado.Toolkits.translateURL
-	 * @see $url
-	 */
-	URL_VARS: {},
-	
-	concatURL: function() {
-		var url = "";
-		for (var i = 0; i < arguments.length; i++) {
-			var section = arguments[i];
-			if (typeof section == "string" && section) {
-				section = jQuery.trim(section);
-				var e = (url.charAt(url.length - 1) == '/');
-				var s = (section.charAt(0) == '/');
-				if (s == e) {
-					if (s) {
-						url += section.substring(1);
-					}
-					else {
-						url += '/' + section;
-					}
-				}
-				else {
-					url += section;
-				}
-			}
-		}
-		return url;
-	},
-	
-	/**
-	 * 将一段给定URL转换为最终的可以使用的URL。
-	 * <p>
-	 * 此方法允许用户在定义一个URL时利用">"在URL中植入特定的内容。<br>
-	 * 例如：">images/loading.gif"表示应用的根路径下的"images/loading.gif"。
-	 * 如果此时应用的根路径是"/sampleApp"，那么此方法最终返回的URL将是"/sampleApp/images/loading.gif"。（应用的根路径通过{@link $setting}中的"common.contextPath"项设定）
-	 * </p>
-	 * <p>
-	 * 另外，此方法还支持在URL中植入预设变量。<br>
-	 * 例如："skin>button.css"表示系统当前皮肤根路径中的button.css。其中的"skin>"就代表一个名为skin的预设变量。此方法会将预设变量的值替换的URL中。<br>
-	 * 假设skin变量的值为"/sampleApp/skins/nature/"，那么上述URL的最终转换结果为"/sampleApp/skins/nature/button.css"。
-	 * </p>
-	 * <p>
-	 * 此方法中使用的预设变量都需要注册在{@link dorado.Toolkits.URL_VARS}中，系统默认情况下只提供一个名为skin的预设变量。开发人员可以根据自己的需要向URL_VARS中注册自己的预设变量。
-	 * </p>
-	 * @param {String} url 要转换的URL。
-	 * @return {String} 转换后得到的URL。
-	 * @see $url
-	 * @see dorado.Toolkits.URL_VARS
-	 */
-	translateURL: function(url) {
-		if (!url) return url;
 
-		var reg = /^.+\>/, m = url.match(reg);
-		if (m) {
-			m = m[0];
-			var varName = m.substring(0, m.length - 1);
-			if (varName.charAt(0) == '>') varName = varName.substring(1);
-			var s1 = this.URL_VARS[varName] || "", s2 = url.substring(m.length);
-			url = this.concatURL(s1, s2);
-		}
-		else if (url.charAt(0) == '>') {
-			url = this.concatURL($setting["common.contextPath"], url.substring(1));
-		}
-		return url;
-	},
-	
 	setDelayedAction: function(owner, actionId, fn, timeMillis) {
 		actionId = actionId || dorado.Core.newId();
 		this.cancelDelayedAction(owner, actionId);
 		owner[actionId] = $setTimeout(owner, fn, timeMillis);
 	},
-	
+
 	cancelDelayedAction: function(owner, actionId) {
 		if (owner[actionId]) {
 			clearTimeout(owner[actionId]);
@@ -285,7 +195,7 @@ dorado.Toolkits = {
 		}
 		return false;
 	},
-	
+
 	STATE_CODE: {
 		info: 0,
 		ok: 1,
@@ -297,7 +207,7 @@ dorado.Toolkits = {
 	getTopMessage: function(messages) {
 		if (!messages) return null;
 		var topMessage = null, topStateCode = -1;
-		for (var i = 0; i < messages.length; i++) {
+		for(var i = 0; i < messages.length; i++) {
 			var message = messages[i];
 			var code = this.STATE_CODE[message.state];
 			if (code > topStateCode) {
@@ -307,13 +217,13 @@ dorado.Toolkits = {
 		}
 		return topMessage;
 	},
-	
-	getTopMessageState : function(messages) {
+
+	getTopMessageState: function(messages) {
 		if (!messages) return null;
 		var topMessage = this.getTopMessage(messages);
 		return topMessage ? topMessage.state : null;
 	},
-	
+
 	trimSingleMessage: function(message, defaultState) {
 		if (!message) return null;
 		if (typeof message == "string") {
@@ -321,39 +231,28 @@ dorado.Toolkits = {
 				state: defaultState,
 				text: message
 			};
-		} else {
+		}
+		else {
 			message.state = message.state || defaultState;
 		}
 		return message;
 	},
-	
+
 	trimMessages: function(message, defaultState) {
 		if (!message) return null;
 		var result;
 		if (message instanceof Array) {
 			var array = [];
-			for (var i = 0; i < message.length; i++) {
+			for(var i = 0; i < message.length; i++) {
 				var m = this.trimSingleMessage(message[i], defaultState);
 				if (!m) continue;
 				array.push(m);
 			}
 			result = (array.length) ? array : null;
-		} else {
+		}
+		else {
 			result = [this.trimSingleMessage(message, defaultState)];
 		}
 		return result;
 	}
 };
-
-/**
- * @name $url
- * @function
- * @description dorado.Toolkits.translateURL()方法的快捷方式。
- * 详细用法请参考dorado.Toolkits.translateURL()的说明。
- * @see dorado.Toolkits.translateURL
- */
-window.$url = function(url) {
-	return dorado.Toolkits.translateURL(url);
-};
-
-dorado.Toolkits.URL_VARS.skin = $url($setting["widget.skinRoot"] + ($setting["widget.skin"] ? ($setting["widget.skin"] + '/') : ''));

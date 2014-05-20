@@ -16,8 +16,8 @@
  */
 dorado.widget.tree = {};
 
-dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
-	$className: "dorado.widget.tree.NodeList",
+dorado.widget.tree.BaseNodeList = $extend(dorado.util.KeyedArray, {
+	$className: "dorado.widget.tree.BaseNodeList",
 	
 	constructor: function(parent, getKeyFunction) {
 		$invokeSuper.call(this, [getKeyFunction]);
@@ -84,20 +84,20 @@ dorado.widget.tree.NodeList = $extend(dorado.util.KeyedArray, {
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @class 树状列表的节点。
- * @extends dorado.AttributeSupport
- * @extends dorado.EventSupport
+ * @abstract
+ * @extends dorado.widget.ViewElement
  * @param {String|Object} [config] 配置信息。
  * <p>
  * 此参数具有多态性。当传入的数值为String时，系统会将此参数识别为节点的文字标签。
  * 当我们传入的参数是一个JSON对象时，系统会自动将该JSON对象中的属性设置到节点中。
  * </p>
  */
-dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.widget.tree.Node.prototype */ {
-	$className: "dorado.widget.tree.Node",
+dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dorado.widget.tree.BaseNode.prototype */ {
+	$className: "dorado.widget.tree.BaseNode",
 	
 	_visibleChildNodeCount: 0,
 	
-	ATTRIBUTES: /** @scope dorado.widget.tree.Node.prototype */ {
+	ATTRIBUTES: /** @scope dorado.widget.tree.BaseNode.prototype */ {
 		/**
 		 * 该节点所隶属的柱状列表。
 		 * @type dorado.widget.Tree
@@ -109,12 +109,10 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		
 		/**
 		 * 该节点所隶属父节点。
-		 * @type dorado.widget.tree.Node
+		 * @type dorado.widget.tree.BaseNode
 		 * @attribute readOnly
 		 */
-		parent: {
-			readOnly: true
-		},
+		parent: {},
 		
 		/**
 		 * 子节点的集合。
@@ -128,7 +126,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		 * </li>
 		 * </ul>
 		 * </p>
-		 * @type dorado.util.KeyedArray|[Object]|[dorado.widget.tree.Node]
+		 * @type dorado.util.KeyedArray|[Object]|[dorado.widget.tree.BaseNode]
 		 * @attribute
 		 */
 		nodes: {
@@ -140,7 +138,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		
 		/**
 		 * 返回第一个有效的子节点。
-		 * @type dorado.widget.tree.Node
+		 * @type dorado.widget.tree.BaseNode
 		 * @attribute readOnly
 		 */
 		firstNode: {
@@ -334,16 +332,14 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	},
 	
 	constructor: function(config) {
-		this._id = dorado.Core.newId();
-		this._nodes = new dorado.widget.tree.NodeList(this, dorado._GET_ID);
-		$invokeSuper.call(this, arguments);
-		if (config) {
-			if (config.constructor == String) {
-				this._label = config;
-			} else {
-				this.set(config);
-			}
+		this._uniqueId = dorado.Core.newId();
+		this._nodes = new dorado.widget.tree.BaseNodeList(this, function(element) {
+			return element._uniqueId;
+		});
+		if (config && config.constructor == String) {
+			this._label = config;
 		}
+		$invokeSuper.call(this, arguments);
 	},
 	
 	_setTree: function(tree) {
@@ -445,14 +441,14 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	
 	/**
 	 * 向节点中插入一个子节点。
-	 * @param {dorado.widget.tree.Node|Object} data 要插入的子节点。此处也可以传入描述子节点信息的JSON对象。
+	 * @param {dorado.widget.tree.BaseNode|Object} data 要插入的子节点。此处也可以传入描述子节点信息的JSON对象。
 	 * @param {int|String} [insertMode] 对象的插入位置或插入模式。
 	 * @param {Object} [refData] 插入位置的参照对象。
-	 * @return {dorado.widget.tree.Node} 新插入的树节点。
+	 * @return {dorado.widget.tree.BaseNode} 新插入的树节点。
 	 * @see dorado.util.KeyedArray#insert
 	 */
 	addNode: function(node, insertMode, refData) {
-		if (node instanceof dorado.widget.tree.Node) {
+		if (node instanceof dorado.widget.tree.BaseNode) {
 			this._nodes.insert(node, insertMode, refData);
 		} else {
 			node = this.createChildNode(node);
@@ -464,7 +460,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	
 	/**
 	 * 向节点中插入一批子节点。
-	 * @param {dorado.widget.tree.Node[]|Object[]} nodeConfigs 子节点数组或包含子节点信息的JSON对象数组。
+	 * @param {dorado.widget.tree.BaseNode[]|Object[]} nodeConfigs 子节点数组或包含子节点信息的JSON对象数组。
 	 */
 	addNodes: function(nodeConfigs) {
 		for (var i = 0; i < nodeConfigs.length; i++) {
@@ -504,7 +500,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 * 展开节点，此方法可供子类复写。
 	 * @protected
 	 * @param {Function|Callback} callback 回调对象。
-	 * @see dorado.widget.tree.Node#expand
+	 * @see dorado.widget.tree.BaseNode#expand
 	 */
 	doExpand: function(callback) {
 		this._expand(callback);
@@ -514,7 +510,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 * 以异步处理的方式展开节点，此方法可供子类复写。
 	 * @protected
 	 * @param {Function|Callback} callback 回调对象。
-	 * @see dorado.widget.tree.Node#expandAsync
+	 * @see dorado.widget.tree.BaseNode#expandAsync
 	 */
 	doExpandAsync: function(callback) {
 		this._expand(callback);
@@ -527,7 +523,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 * 因此只要此方法结束展开动作事实就已经结束了，不过此时展开节点的动画效果可能并未结束。
 	 * 为了满足某些特殊场景的需求，此方法特别提供的回调参数以响应节点展开动画的结束事件。</p>
 	 * @param {Function|Callback} [callback] 回调对象。
-	 * @see dorado.widget.tree.Node#doExpand
+	 * @see dorado.widget.tree.BaseNode#doExpand
 	 */
 	expand: function(callback) {
 		if (this._expanded || !this._tree) {
@@ -543,7 +539,13 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 		};
 		tree.fireEvent("beforeExpand", tree, eventArg);
 		if (!eventArg.processDefault) return;
-		if (this.doExpand) this.doExpand(callback);
+		this._expandingCounter ++;
+		try {
+			if (this.doExpand) this.doExpand(callback);
+		}
+		finally {
+			this._expandingCounter --;
+		}
 		tree.fireEvent("onExpand", tree, eventArg);
 	},
 	
@@ -551,7 +553,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	 * 以异步处理的方式展开节点。
 	 * <p>此方法通常不应被子类复写，如有需要子类应复写doExpandAsync方法。</p>
 	 * @param {Function|Callback} callback 回调对象。
-	 * @see dorado.widget.tree.Node#doExpandAsync
+	 * @see dorado.widget.tree.BaseNode#doExpandAsync
 	 */
 	expandAsync: function(callback) {
 		if (this._expanded || !this._tree) {
@@ -565,6 +567,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 			called = true;
 			
 			self._expanding = false;
+			tree._expandingCounter --;
 			if (success === false) {
 				$callback(callback, false, result);
 			} else {
@@ -596,6 +599,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 				tree.refreshNode(this);
 			}
 		} else {
+			this._expandingCounter ++;
 			callDefault();
 		}
 	},
@@ -603,7 +607,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	/**
 	 * 收起节点。此方法可供子类复写。
 	 * @protected
-	 * @see dorado.widget.tree.Node#collapse
+	 * @see dorado.widget.tree.BaseNode#collapse
 	 */
 	doCollapse: function() {
 		this._expanded = false;
@@ -617,7 +621,7 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 	/**
 	 * 收起节点。
 	 * <p>此方法通常不应被子类复写，doCollapse。</p>
-	 * @see dorado.widget.tree.Node#doCollapse
+	 * @see dorado.widget.tree.BaseNode#doCollapse
 	 */
 	collapse: function() {
 		if (!this._expanded) return;
@@ -669,10 +673,55 @@ dorado.widget.tree.Node = $extend([dorado.AttributeSupport, dorado.EventSupport]
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @class 与一个数据实体对应的树节点。
- * @extends dorado.widget.tree.Node
+ * @class 支持定义id和事件的树节点。
+ * @extends dorado.widget.tree.BaseNode
+ * @extends dorado.EventSupport
  */
-dorado.widget.tree.DataNode = $extend(dorado.widget.tree.Node, /** @scope dorado.widget.tree.DataNode.prototype */ {
+dorado.widget.tree.Node = $extend([dorado.widget.tree.BaseNode, dorado.EventSupport], /** @scope dorado.widget.tree.Node.prototype */ {
+	$className: "dorado.widget.tree.Node",
+
+	constructor: function(config) {
+		$invokeSuper.call(this, arguments);
+		if (config && typeof config == "object") {
+			this._id = config.id;
+		}
+	},
+
+	_setTree: function(tree) {
+		if (this._tree !== tree && this._id) {
+			var oldTree = this._tree, oldView, newView;
+			if (oldTree) {
+				delete oldTree._identifiedNodes[this._id];
+				oldView = oldTree.get("view");
+			}
+
+			if (tree) {
+				tree._identifiedNodes[this._id] = this;
+				newView = tree.get("view");
+			}
+
+			if (oldView !== newView) {
+				if (oldView) oldView.unregisterViewElement(this._id);
+				$invokeSuper.call(this, [tree]);
+				if (newView) newView.registerViewElement(this._id, this);
+				return;
+			}
+		}
+		$invokeSuper.call(this, [tree]);
+	},
+
+	getListenerScope: function() {
+		var tree = this.get("view");
+		return (tree && tree.get("view")) || $topView;
+	}
+});
+
+/**
+ * @author Benny Bao (mailto:benny.bao@bstek.com)
+ * @class 与一个数据实体对应的树节点。
+ * @extends dorado.widget.tree.BaseNode
+ */
+dorado.widget.tree.DataNode = $extend(dorado.widget.tree.BaseNode, /** @scope dorado.widget.tree.DataNode.prototype */ {
 	$className: "dorado.widget.tree.DataNode",
 	
 	ATTRIBUTES: /** @scope dorado.widget.tree.DataNode.prototype */ {
@@ -881,11 +930,11 @@ dorado.widget.tree.ItemModel = $extend(dorado.widget.list.ItemModel, {
 	},
 	
 	onNodeAttached: function(node) {
-		this._itemMap[node._id] = node;
+		this._itemMap[node._uniqueId] = node;
 	},
 	
 	onNodeDetached: function(node) {
-		delete this._itemMap[node._id];
+		delete this._itemMap[node._uniqueId];
 	},
 	
 	iterator: function(startIndex) {
@@ -919,7 +968,7 @@ dorado.widget.tree.ItemModel = $extend(dorado.widget.list.ItemModel, {
 	getItemIndex: dorado.widget.tree.TreeNodeIterator.getNodeIndex,
 	
 	getItemId: function(node) {
-		return node._id;
+		return node._uniqueId;
 	},
 	
 	getItemById: function(itemId) {

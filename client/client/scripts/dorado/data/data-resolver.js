@@ -100,7 +100,7 @@
 		 * @throws {Error}
 		 */
 		resolve: function(arg) {
-			var ajaxOptions = this.getAjaxOptions(arg), ajax = dorado.Toolkits.getAjax(ajaxOptions);
+			var ajaxOptions = this.getAjaxOptions(arg), ajax = dorado.util.AjaxEngine.getInstance(ajaxOptions);
 			var result = ajax.requestSync(ajaxOptions);
 			if (result.success) {
 				var result = result.getJsonData(), returnValue = (result ? result.returnValue : null);
@@ -132,7 +132,7 @@
 		 * @see dorado.DataResolver#resolve
 		 */
 		resolveAsync: function(arg, callback) {
-			var ajaxOptions = this.getAjaxOptions(arg), supportsEntity = this.supportsEntity, ajax = dorado.Toolkits.getAjax(ajaxOptions);
+			var ajaxOptions = this.getAjaxOptions(arg), supportsEntity = this.supportsEntity, ajax = dorado.util.AjaxEngine.getInstance(ajaxOptions);
 			
 			var message = this.message;
 			if (message == null) message = ajaxOptions.message;

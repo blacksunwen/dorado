@@ -294,7 +294,6 @@
 	 */
 	dorado.widget.AbstractBlockView = $extend(dorado.widget.ViewPortList, /** @scope dorado.widget.AbstractBlockView.prototype */ {
 		$className: "dorado.widget.AbstractBlockView",
-		_inherentClassName: "i-block-view",
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractBlockView.prototype */ {
 			className: {
@@ -550,9 +549,9 @@
 			var scroller = blockView._scroller = dom.firstChild;
 			var container = blockView._container = scroller.firstChild;
 			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller);
-			
+
 			var $scroller = $(scroller);
-			$scroller.bind("modernScroll", $scopify(blockView, blockView.onScroll));
+			$scroller.bind("modernScrolled", $scopify(blockView, blockView.onScroll));
 			
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
                 $fly(blockView._container).css("position", "relative");
@@ -712,16 +711,16 @@
 		
 		refreshItemDoms: function(itemDomContainer) {
 			var currentDecorator = this._currentDecorator, hoverDecorator = this._hoverDecorator;
-			if (currentDecorator) itemDomContainer.removeChild(currentDecorator.getDom());
-			if (hoverDecorator) itemDomContainer.removeChild(hoverDecorator.getDom());
+			if (currentDecorator) itemDomContainer.removeChild(currentDecorator);
+			if (hoverDecorator) itemDomContainer.removeChild(hoverDecorator);
 			
 			$invokeSuper.call(this, arguments);
 			
-			if (hoverDecorator) itemDomContainer.insertBefore(hoverDecorator.getDom(), itemDomContainer.firstChild);
-			if (currentDecorator) itemDomContainer.insertBefore(currentDecorator.getDom(), itemDomContainer.firstChild);
+			if (hoverDecorator) itemDomContainer.insertBefore(hoverDecorator, itemDomContainer.firstChild);
+			if (currentDecorator) itemDomContainer.insertBefore(currentDecorator, itemDomContainer.firstChild);
 			
 			var currentItemId = this.getRealCurrentItemId();
-			if (currentItemId != undefined) {
+			if (currentItemId !== undefined && currentItemId !== null) {
 				var itemDom = this._itemDomMap[currentItemId];
 				if (itemDom) this.setCurrentBlock(itemDom);
 			}
@@ -761,8 +760,8 @@
             var itemDoms = new Array();
             for (var i=0; i < itemDomContainer.childNodes.length; i++){
                 var subItemDom = itemDomContainer.childNodes[i];
-                if (currentDecorator && subItemDom === currentDecorator.getDom()) continue;
-                if (hoverDecorator && subItemDom === hoverDecorator.getDom()) continue;
+                if (currentDecorator && subItemDom === currentDecorator) continue;
+                if (hoverDecorator && subItemDom === hoverDecorator) continue;
                 itemDoms.push(subItemDom);
             }
 
@@ -846,25 +845,12 @@
 		getHoverBlockDecorator: function() {
 			var decorator = this._hoverDecorator;
 			if (!decorator) {
-				if (dorado.widget.Panel) {
-					decorator = new dorado.widget.Panel({
-						className: "block-decorator",
-						border: "curve"
-					});
-				}
-				else {
-					decorator = new dorado.widget.Control({
-						className: "block-decorator"
-					});
-				}
+				decorator = $DomUtils.xCreate({
+					tagName: "DIV",
+					className: "block-decorator block-decorator-hover"
+				});
+				this._container.insertBefore(decorator, this._container.firstChild);
 				this._hoverDecorator = decorator;
-				
-				var refDom;
-				if (this._currentDecorator) refDom = this._currentDecorator.getDom();
-				
-				$fly(decorator.getDom()).addClass("hover-decorator");
-				decorator.render(this._container, refDom);
-				this.registerInnerControl(decorator);
 			}
 			return decorator;
 		},
@@ -882,46 +868,26 @@
 			
 			var decorator = this.getHoverBlockDecorator();
 			if (itemDom && this._currentBlock != itemDom) {
-				decorator.set({
-					width: itemDom.offsetWidth +
-					this._blockDecoratorSize * 2,
-					height: itemDom.offsetHeight +
-					this._blockDecoratorSize * 2,
-					style: {
-						left: itemDom.offsetLeft -
-						this._blockDecoratorSize,
-						top: itemDom.offsetTop -
-						this._blockDecoratorSize,
-						display: ''
-					}
-				});
+				$fly(decorator).outerWidth(itemDom.offsetWidth + this._blockDecoratorSize * 2)
+					.outerHeight(itemDom.offsetHeight + this._blockDecoratorSize * 2)
+					.css({
+						left: itemDom.offsetLeft - this._blockDecoratorSize,
+						top: itemDom.offsetTop - this._blockDecoratorSize
+					}).show();
 			} else {
-				decorator.set("style", {
-					display: "none"
-				});
+				$fly(decorator).hide();
 			}
-			decorator.refresh();
 		},
 		
 		getCurrentBlockDecorator: function() {
 			var decorator = this._currentDecorator;
 			if (!decorator) {
-				if (dorado.widget.Panel) {
-					decorator = new dorado.widget.Panel({
-						className: "block-decorator",
-						border: "curve"
-					});
-				}
-				else {
-					decorator = new dorado.widget.Control({
-						className: "block-decorator"
-					});
-				}
+				decorator = $DomUtils.xCreate({
+					tagName: "DIV",
+					className: "block-decorator block-decorator-current"
+				});
+				this._container.insertBefore(decorator, this._container.firstChild);
 				this._currentDecorator = decorator;
-				
-				$fly(decorator.getDom()).addClass("current-decorator");
-				decorator.render(this._container);
-				this.registerInnerControl(decorator);
 			}
 			return decorator;
 		},
@@ -933,33 +899,21 @@
 			if (itemDom) $fly(itemDom).addClass("block-current");
 
             var hoverBlockDecorator = this.getHoverBlockDecorator();
-            hoverBlockDecorator.set("style", {
-                display: "none"
-            });
+            $fly(hoverBlockDecorator).hide();
 
 			var decorator = this.getCurrentBlockDecorator();
 			if (itemDom) {
-				decorator.set({
-					width: itemDom.offsetWidth +
-					this._blockDecoratorSize * 2,
-					height: itemDom.offsetHeight +
-					this._blockDecoratorSize * 2,
-					style: {
-						left: itemDom.offsetLeft -
-						this._blockDecoratorSize,
-						top: itemDom.offsetTop -
-						this._blockDecoratorSize,
-						display: ''
-					}
-				});
+				$fly(decorator).outerWidth(itemDom.offsetWidth + this._blockDecoratorSize * 2)
+					.outerHeight(itemDom.offsetHeight + this._blockDecoratorSize * 2)
+					.css({
+						left: itemDom.offsetLeft - this._blockDecoratorSize,
+						top: itemDom.offsetTop - this._blockDecoratorSize
+					}).show();
 			} else {
-				decorator.set("style", {
-					display: "none"
-				});
+				$fly(decorator).hide();
 			}
-			decorator.refresh();
 		},
-		
+
 		onScroll: function(event, arg) {
 			var blockView = this;
 
@@ -975,7 +929,7 @@
 					blockView.doOnScroll(arg);
 				}, 300);
 			}
-			
+
 			if (blockView._scrollMode == "viewport") {
 				if (blockView._blockLayout == "vertical") {
 					if ((blockView._scrollTop || 0) != arg.scrollTop) {
@@ -991,7 +945,7 @@
 			} else if (blockView._scrollMode == "lazyRender") {
 				var range = blockView._getVisibleBlockRange(), childNodes = blockView._container.childNodes;
 				for (var i = range[0]; i <= range[1] &&
-				i < childNodes.length; i++) {
+					i < childNodes.length; i++) {
 					var blockDom = childNodes[i];
 					if (blockDom._lazyRender) {
 						var item = $fly(blockDom).data("item");
@@ -1002,7 +956,7 @@
 				}
 			}
 		},
-		
+
 		doOnScroll: function(arg) {
 			var scroller = this._scroller;
 			if (scroller._scrollTimerId) {
@@ -1208,7 +1162,7 @@
 				}
 			}
 		},
-		
+
 		scrollCurrentIntoView: function() {
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
 				return;
@@ -1219,7 +1173,7 @@
 			if (itemDom) {
 				itemIndex = itemDom.itemIndex;
 				if (itemIndex >= this.startIndex &&
-				itemIndex <= (this.startIndex + this.itemDomCount)) {
+					itemIndex <= (this.startIndex + this.itemDomCount)) {
 					if (this._blockLayout == "vertical") {
 						if (itemDom.offsetTop < scroller.scrollTop) {
 							scroller.scrollTop = this._scrollTop = itemDom.offsetTop - this._vertSpacing;
@@ -1346,7 +1300,7 @@
 				if (itemDom) {
 					var contentDom = $DomUtils.xCreate({
 						tagName: "div",
-						className: "d-list-dragging-item"
+						className: "d-block-view-dragging-item"
 					});
 					$fly(itemDom).clone().css({
 						left: 0,
@@ -1459,7 +1413,7 @@
 				}
 				$insertIndicator.show().appendTo(container);
 			} else {
-				$insertIndicator.hide().appendTo($DomUtils.getInvisibleContainer());
+				$insertIndicator.hide().appendTo($DomUtils.getUndisplayContainer());
 			}
 		},
 		
@@ -1471,17 +1425,16 @@
 		processItemDrop: dorado.widget.AbstractList.prototype.processItemDrop
 	});
 	
+	var draggingIndicatorHolder = {};
 	dorado.widget.blockview.getDraggingInsertIndicator = function(direction) {
 		var code = (direction == "horizontal") ? 'h' : 'v';
-		var indicator = this["_draggingInsertIndicator-" + code];
+		var indicator = draggingIndicatorHolder["_draggingInsertIndicator-" + code];
 		if (indicator == null) {
 			indicator = $DomUtils.xCreate({
 				tagName: "div",
-				className: "i-block-dragging-insert-indicator-" + code +
-				" d-block-dragging-insert-indicator-" +
-				code
+				className: "d-block-view-dragging-insert-indicator-" + code
 			});
-			this["_draggingInsertIndicator-" + code] = indicator;
+			draggingIndicatorHolder["_draggingInsertIndicator-" + code] = indicator;
 		}
 		return indicator;
 	};

@@ -16,10 +16,9 @@
  * @class 滑动条
  * @extends dorado.widget.Control
  */
-dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.Slider.prototype */{
-    $className: "dorado.widget.Slider",
+dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.Slider.prototype */ {
+	$className: "dorado.widget.Slider",
 	selectable: false,
-    _inherentClassName: "i-slider",
 	focusable: true,
     
 	ATTRIBUTES: /** @scope dorado.widget.Slider.prototype */{
@@ -93,12 +92,12 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
 	            value = slider.getValidValue(parseValue);
 
-				var eventArg = {
-					value: value
-				};
+	            var eventArg = {
+		            value: value
+	            };
 
                 slider.fireEvent("beforeValueChange", slider, eventArg);
-                if (eventArg.processDefault === false) return;
+	            if (eventArg.processDefault === false) return;
                 slider._value = value;
                 slider.fireEvent("onValueChange", slider);
             }
@@ -124,14 +123,14 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		step: {}
 	},
     EVENTS: /** @scope dorado.widget.Slider.prototype */{
-        /**
-         * 在Slider的value更改之前触发。
-         * @event
-         * @param {Object} self 触发该事件的Slider。
-         * @param {Object} arg 事件参数。
-         * @param {int|float|double} arg.value 当前value。
-         * @param {boolean} #arg.processDefault=true 是否继续执行后续的触发器动作。
-         */
+	    /**
+	     * 在Slider的value更改之前触发。
+	     * @event
+	     * @param {Object} self 触发该事件的Slider。
+	     * @param {Object} arg 事件参数。
+	     * @param {int|float|double} arg.value 当前value。
+	     * @param {boolean} #arg.processDefault=true 是否继续执行后续的触发器动作。
+	     */
         beforeValueChange: {},
         /**
          * 在Slider的value更改之后触发。
@@ -193,8 +192,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		var tip;
 		if (!dorado.Browser.isTouch) {
 			tip = new dorado.widget.Tip({
-				animateType: "none",
-				showDelay: ""
+				animateType: "none"
 			});
 		}
 
@@ -205,12 +203,12 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			stop: function(event, ui) {
 				var helper = ui.helper[0], minValue = slider._minValue, maxValue = slider._maxValue, offset, size, thumbSize;
 				if (orientation == "horizontal") {
-					thumbSize = $fly(doms.thumb).width();
+					thumbSize = doms.thumb.offsetWidth;
 					size = $fly(dom).width() - thumbSize;
 					offset = parseInt($fly(helper).css("left"), 10);
 				}
 				else {
-					thumbSize = $fly(doms.thumb).height();
+					thumbSize = doms.thumb.offsetHeight;
 					size = $fly(dom).height() - thumbSize;
 					offset = parseInt($fly(helper).css("top"), 10);
 				}
@@ -222,15 +220,15 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 			drag: function(event, ui) {
 				var helper = ui.helper[0], minValue = slider._minValue, maxValue = slider._maxValue, offset, size, thumbSize;
 				if (orientation == "horizontal") {
-					thumbSize = $fly(doms.thumb).width();
+					thumbSize = doms.thumb.offsetWidth;
 					size = $fly(dom).width() - thumbSize;
 					offset = parseInt($fly(helper).css("left"), 10);
-					$fly(doms.current).css("width", offset + thumbSize / 2);
+					$fly(doms.current).css("width", offset);
 				} else {
-					thumbSize = $fly(doms.thumb).height();
+					thumbSize = doms.thumb.offsetHeight;
 					size = $fly(dom).height() - thumbSize;
 					offset = parseInt($fly(helper).css("top"), 10);
-					$fly(doms.current).css("height", offset + thumbSize / 2);
+					$fly(doms.current).css("height", offset);
 				}
 
 				if (tip) {
@@ -259,8 +257,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 				tip.show({
 					anchorTarget: ui.helper[0],
 					align: "center",
-					vAlign: "top",
-					showDelay: 0
+					vAlign: "top"
 				});
 			}
 		});
@@ -345,7 +342,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		var slider = this, doms = slider._doms, orientation = slider._orientation, maxValue = slider._maxValue, minValue = slider._minValue,
 			value = slider._value, thumbSize, step = slider._step, handleIncrease = (step != null), stepCount;
 
-		$fly(dom).addClass(this._inherentClassName + "-" + orientation + " " + this._className + "-" + orientation);
+		$fly(dom).addClass(this._className + "-" + orientation);
 		
 		if (value == null) {
 			value = minValue;
@@ -359,7 +356,7 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 		}
 
 		if (orientation == "vertical") {
-			thumbSize = $fly(doms.thumb).height();
+			thumbSize = doms.thumb.offsetHeight;
 			var height, startHeight, endHeight;
 
 			height = $fly(dom).innerHeight();
@@ -368,17 +365,17 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
 
 			$fly(doms.body).height(height - startHeight - endHeight);
 			$fly(doms.thumb).css("top", (height - thumbSize) * (value - minValue) / (maxValue - minValue));
-			$fly(doms.current).css("height", (height - thumbSize) * (value - minValue) / (maxValue - minValue) + thumbSize / 2);
+			$fly(doms.current).css("height", (height - thumbSize) * (value - minValue) / (maxValue - minValue));
 
 			if (handleIncrease) {
 				$fly(doms.thumb).draggable("option", "grid", [0, (height - thumbSize) / stepCount]);
 			}
 		} else {
-			thumbSize = $fly(doms.thumb).width();
+			thumbSize = doms.thumb.offsetWidth;
 			var width = $fly(dom).innerWidth();
 
 			$fly(doms.thumb).css("left", (width - thumbSize) * (value - minValue) / (maxValue - minValue));
-			$fly(doms.current).css("width", (width - thumbSize) * (value - minValue) / (maxValue - minValue) + thumbSize / 2);
+			$fly(doms.current).css("width", (width - thumbSize) * (value - minValue) / (maxValue - minValue));
 
 			if (handleIncrease) {
 				$fly(doms.thumb).draggable("option", "grid", [(width - thumbSize) / stepCount, 0]);

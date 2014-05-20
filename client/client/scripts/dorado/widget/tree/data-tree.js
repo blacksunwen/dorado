@@ -395,7 +395,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				}
 
 				if (self._nodesTimestamp != nodesTimestamp) {
-					self._nodesTimestamp = nodesTimestamp
+					self._nodesTimestamp = nodesTimestamp;
 					self._visibleChildNodeCount = 0;
 					var startIndex = 0;
 
@@ -595,7 +595,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				return entity ? entity.dataType : dataType;
 			});
 
-			this.addListener("onCurrentChange", function() {
+			this.bind("onCurrentChange", function() {
 				self.disableBinding();
 				self.get("dataSet").notifyObservers();
 				self.enableBinding();
@@ -752,7 +752,9 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			}
 
 			case dorado.widget.DataSet.MESSAGE_LOADING_START:{
-				this.showLoadingTip();
+				if (!this._expandingCounter) {
+					this.showLoadingTip();
+				}
 				break;
 			}
 

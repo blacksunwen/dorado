@@ -93,7 +93,8 @@
 			form.submit();
             document.body.removeChild(form);
 		},
-		doExecuteSync: function() {
+
+		doExecute: function() {
 			var action = this, parameter = dorado.JSON.evaluate(action._parameter), data = {};
 			if (parameter && parameter instanceof dorado.Entity) {
 				data = parameter.toJSON();
@@ -101,10 +102,7 @@
 				data = parameter;
 			}
 			action.doSubmitData(data);
-		},
-		doExecuteAsync: function(callback) {
-			this.doExecuteSync();
-			$callback(callback, true);
 		}
+
 	});
 })();

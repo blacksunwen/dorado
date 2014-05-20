@@ -81,7 +81,7 @@ dorado.debug.initProcedures.push(function(){
 				}, "->", {
 					$type: "CheckBox",
 					caption: "Trap Error",
-					width: 80,
+					width: 100,
 					checked: dorado.Debugger.trapError,
 					listener: {
 						onValueChange: function(self) {
@@ -109,9 +109,6 @@ dorado.debug.initProcedures.push(function(){
 				//find TabControl
 				self._parent._parent.set("currentTab", "console");
 				var logDom = dorado.Debugger.log(errorMsg, "error");
-				$fly(logDom).effect("highlight", {
-					color: "#FFFF80"
-				}, 1500);
 			}
 		})
 	});

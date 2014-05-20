@@ -50,7 +50,6 @@ dorado.widget.list.ListBoxRowRenderer = $extend(dorado.Renderer, /** @scope dora
  */
 dorado.widget.AbstractListBox = $extend(dorado.widget.RowList, /** @scope dorado.widget.AbstractListBox.prototype */ {
 	$className: "dorado.widget.AbstractListBox",
-	_inherentClassName: "i-list-box",
 	
 	ATTRIBUTES: /** @scope dorado.widget.AbstractListBox.prototype */ {
 		className: {

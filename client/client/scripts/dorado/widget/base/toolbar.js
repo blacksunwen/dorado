@@ -23,7 +23,7 @@ dorado.widget.toolbar = {};
  */
 dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.ToolBar.prototype */ {
 	$className: "dorado.widget.ToolBar",
-	_inherentClassName: "i-toolbar",
+
 	ATTRIBUTES: /** @scope dorado.widget.ToolBar.prototype */ {
 		className: {
 			defaultValue: "d-toolbar"
@@ -92,7 +92,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	createDom: function() {
 		var toolbar = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
-			className: "i-toolbar " + toolbar._className,
+			className: toolbar._className,
 			content: [{
 				tagName: "div",
 				className: "toolbar-left-wrap",
@@ -182,7 +182,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			}
 			items.insert(item, index);
 			item.render(doms.toolbarLeft, refDom);
-			$fly(item._dom).addClass("i-toolbar-item");
+			$fly(item._dom).addClass("d-toolbar-item");
 		} else {
 			items.insert(item, index);
 		}
@@ -237,7 +237,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				} else {
 					item.render(doms.toolbarRight);
 				}
-				$fly(item._dom).addClass("i-toolbar-item");
+				$fly(item._dom).addClass("d-toolbar-item");
 			}
 		}
 	},
@@ -369,9 +369,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		$invokeSuper.call(this, arguments);
 		var toolbar = this;
 		if (toolbar._fixRight) {
-			$fly(dom).addClass("i-toolbar-fixright " + toolbar._className + "-fixright");
+			$fly(dom).addClass(toolbar._className + "-fixright");
 		} else {
-			$fly(dom).removeClass("i-toolbar-fixright " + toolbar._className + "-fixright");
+			$fly(dom).removeClass(toolbar._className + "-fixright");
 		}
 	},
 
@@ -437,8 +437,8 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 
 		toolbar._overflowItems = [];
 
-        if (overflow) {
-            $fly(dom).addClass("i-toolbar-overflow " + toolbar._className + "-overflow");
+		if (overflow) {
+			$fly(dom).addClass(toolbar._className + "-overflow");
 
             if (!overflowMenu) {
                 overflowMenu = toolbar._overflowMenu = new dorado.widget.Menu();
@@ -536,7 +536,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			}
 		} else {
-			$fly(dom).removeClass("i-toolbar-overflow " + toolbar._className + "-overflow");
+			$fly(dom).removeClass(toolbar._className + "-overflow");
 			if (!items) return;
 			if (!toolbar._fixRight) {
 				afterFill = false;
@@ -578,7 +578,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
  */
 dorado.widget.toolbar.Separator = $extend(dorado.widget.Control, {
 	$className: "dorado.widget.toolbar.Separator",
-	_inherentClassName: "i-toolbar-sep",
+	
 	ATTRIBUTES: {
 		className: {
 			defaultValue: "d-toolbar-sep"
@@ -613,10 +613,6 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 	},
 
 	ATTRIBUTES: {
-		className: {
-			defaultValue: "d-toolbar-button"
-		},
-		
 		/**
 		 * 该属性为虚拟属性，指向MenuBarItem对应的Menu的items属性。
 		 * @type dorado.util.KeyedArray
@@ -789,7 +785,7 @@ dorado.widget.toolbar.Fill = $extend(dorado.widget.Control, {
  */
 dorado.widget.toolbar.Label = $extend(dorado.widget.Control, {
 	$className: "dorado.widget.toolbar.Label",
-	_inherentClassName: "i-toolbar-label",
+	
 	ATTRIBUTES: {
 		className: {
 			defaultValue: "d-toolbar-label"

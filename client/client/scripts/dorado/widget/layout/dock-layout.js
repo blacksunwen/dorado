@@ -126,7 +126,7 @@
 	 */
 	dorado.widget.layout.DockLayout = $extend(dorado.widget.layout.AnchorLayout, /** @scope dorado.widget.layout.DockLayout.prototype */ {
 		$className: "dorado.widget.layout.DockLayout",
-		_className: "i-dock-layout d-dock-layout",
+		_className: "d-dock-layout",
 		
 		ATTRIBUTES: /** @scope dorado.widget.layout.DockLayout.prototype */ {
 			

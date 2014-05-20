@@ -46,9 +46,6 @@ var dorado = {
 		for (var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
-		
-		// if (browser.chrome) browser.webkit = true; // jQuery 1.8.0不再认为chrome属于webkit
-		// jQuery 1.8.3又恢复认为chrome属于webkit
 
 		function detect(ua){
 			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/),
@@ -70,7 +67,7 @@ var dorado = {
 			return os;
 		}
 
-		var os = detect(navigator.userAgent);
+		var ua = navigator.userAgent, os = detect(ua);
 		if (os.iphone) {
 			browser.isPhone = os.iphone;
 		} else if (os.android) {
@@ -83,7 +80,7 @@ var dorado = {
 		browser.iOS = os.ios;
 		browser.osVersion = os.version;
 
-		browser.isTouch = !!("ontouchstart" in window || (window["$setting"] && $setting["common.simulateTouch"]));
+		browser.isTouch = (browser.android || browser.iOS) && !!("ontouchstart" in window || (window["$setting"] && $setting["common.simulateTouch"]));
 		if (browser.chrome) {
 			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
 		}

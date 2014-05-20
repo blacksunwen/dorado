@@ -259,7 +259,7 @@
 			switch (itemCode.code) {
 				case "|<":
 					item = new PageButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) 0px -220px" : null,
+						iconClass: itemCode.showIcon ? "icon-first-page" : null,
 						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotFirstPage") : null,
 						onClick: function(self) {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -274,7 +274,7 @@
 					break;
 				case "<":
 					item = new PageButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) -40px -220px" : null,
+						iconClass: itemCode.showIcon ? "icon-previous-page" : null,
 						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPreviousPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -289,7 +289,7 @@
 					break;
 				case ">":
 					item = new PageButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) -60px -220px" : null,
+						iconClass: itemCode.showIcon ? "icon-next-page" : null,
 						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotNextPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -304,7 +304,7 @@
 					break;
 				case ">|":
 					item = new PageButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) -100px -220px" : null,
+						iconClass: itemCode.showIcon ? "icon-last-page" : null,
 						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotLastPage") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -376,7 +376,7 @@
 					break;
 				case "+":
 					item = new ToolBarButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) -120px 0px" : null,
+						iconClass: itemCode.showIcon ? "icon-add" : null,
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotInsert") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -387,7 +387,7 @@
 					break;
 				case "-":
 					item = new ToolBarButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) -140px 0px" : null,
+						iconClass: itemCode.showIcon ? "icon-delete" : null,
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotDelete") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -401,7 +401,7 @@
 					break;
 				case "x":
 					item = new ToolBarButton({
-						icon: itemCode.showIcon ? "url(skin>common/icons.gif) -280px -220px" : null,
+						iconClass: itemCode.showIcon ? "icon-cancel" : null,
 						caption: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotCancel") : null,
 						onClick: function() {
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
@@ -598,16 +598,6 @@
 				max: 1,
 				value: 1,
 				showSpinTrigger: false,
-//				trigger: {
-//					$type: "Trigger",
-//					icon: ">skin>base/goto-page.gif",
-//					onExecute: function(self, arg) {
-//						spinner.post();
-//						gotoPage.fireEvent("onAction", gotoPage, {
-//							pageNo: spinner.get("value")
-//						});
-//					}
-//				},
 				onPost:function (self, arg) {
 					gotoPage.fireEvent("onAction", gotoPage, {pageNo:spinner.get("value")});
 				},
@@ -615,15 +605,10 @@
 					if (arg.keyCode == 13) {
 						spinner.post();
 						arg.returnValue = true;
-//						if (gotoPage._currentPageNo != spinner.get("value")) {
-//							gotoPage.fireEvent("onAction", gotoPage, {
-//								pageNo: spinner.get("value")
-//							});
-//						}
 					}
 				},
 				width: 40,
-				style: "float: left; margin-top: 1px"
+				style: "float: left"
 			});
 			spinner.render(dom);
 			this.registerInnerControl(spinner);
@@ -706,7 +691,7 @@
 					}
 				},
 				width: 45,
-				style: "float: left; margin-top: 1px"
+				style: "float: left"
 			});
 			spinner.render(dom);
 			this.registerInnerControl(spinner);

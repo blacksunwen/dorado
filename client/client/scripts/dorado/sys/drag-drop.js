@@ -140,12 +140,12 @@
 	});
 	
 	dorado.DraggingInfo.getFromJQueryUI = function(ui) {
-		return $fly(ui.draggable[0]).data("draggable").draggingInfo;
+		return $fly(ui.draggable[0]).data("ui-draggable").draggingInfo;
 	};
 	
 	dorado.DraggingInfo.getFromElement = function(element) {
 		element = (element instanceof jQuery) ? element : $fly(element);
-		return element.data("draggable").draggingInfo;
+		return element.data("ui-draggable").draggingInfo;
 	};
 	
 	/**

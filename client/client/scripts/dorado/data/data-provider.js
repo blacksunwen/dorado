@@ -151,7 +151,7 @@
 		 * @throws {Error}
 		 */
 		getResult: function(arg) {
-			var ajaxOptions = this.getAjaxOptions(arg), ajax = dorado.Toolkits.getAjax(ajaxOptions);
+			var ajaxOptions = this.getAjaxOptions(arg), ajax = dorado.util.AjaxEngine.getInstance(ajaxOptions);
 			var result = ajax.requestSync(ajaxOptions);
 			if (result.success) {
 				var json = result.getJsonData(), data;
@@ -184,7 +184,7 @@
 		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为提取到的数据。
 		 */
 		getResultAsync: function(arg, callback) {
-			var ajaxOptions = this.getAjaxOptions(arg), ajax = dorado.Toolkits.getAjax(ajaxOptions);
+			var ajaxOptions = this.getAjaxOptions(arg), ajax = dorado.util.AjaxEngine.getInstance(ajaxOptions);
 			var dataType = this.dataType, supportsEntity = this.supportsEntity, dataTypeRepository = this.dataTypeRepository;
 			
 			var message = this.message;

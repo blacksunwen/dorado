@@ -168,6 +168,7 @@
 				});
 			}
 			this._columns.insert(column, insertMode, refColumn);
+			if (this._grid) this._grid.registerInnerViewElement(column);
 			column.set("grid", this._grid);
 			return column;
 		},
@@ -179,6 +180,26 @@
 		addColumns: function(columnConfigs) {
 			for (var i = 0; i < columnConfigs.length; i++) {
 				this.addColumn(columnConfigs[i]);
+			}
+		},
+
+		/**
+		 * 删除一个表格列。
+		 * @param {dorado.widget.grid.Column} column 要删除的表格列。
+		 */
+		removeColumn: function(column) {
+			this._columns.remove(column);
+			if (this._grid) this._grid.unregisterInnerViewElement(column);
+			column.set("grid", null);
+		},
+
+		/**
+		 * 删除所有表格列。
+		 */
+		removeAllColumns: function() {
+			var columns = this._columns.items;
+			for (var i = columns.length - 1; i >= 0; i--) {
+				this.removeColumn(columns[i]);
 			}
 		},
 		
@@ -224,7 +245,7 @@
 				for (var i = 0; i < cols.length; i++) {
 					var col = cols[i];
 					if (!col._visible) continue;
-					idMap[col._id] = col;
+					idMap[col._uniqueId] = col;
 					var cell = {
 						column: col,
 						row: row,
@@ -352,11 +373,10 @@
  	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表格列的抽象类。
 	 * @abstract
-	 * @extends dorado.AttributeSupport
-	 * @extends dorado.EventSupport
+	 * @extends dorado.widget.ViewElement
 	 * @param {Object} [config] 包含表格列配置信息的JSON对象。
 	 */
-	dorado.widget.grid.Column = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.widget.grid.Column.prototype */ {
+	dorado.widget.grid.Column = $extend(dorado.widget.ViewElement, /** @scope dorado.widget.grid.Column.prototype */ {
 		$className: "dorado.widget.grid.Column",
 		
 		/**
@@ -376,15 +396,6 @@
 			 * @attribute readOnly
 			 */
 			grid: {},
-			
-			/**
-			 * 父对象。即此列所属的上一级列对象，如果此列已是顶层列则其 父对象就是所属的表格。
-			 * @type dorado.widget.grid.ColumnModel
-			 * @attribute readOnly
-			 */
-			parent: {
-				readOnly: true
-			},
 			
 			/**
 			 * 列名称。
@@ -448,15 +459,6 @@
 			supportsOptionMenu: {
 				skipRefresh: true,
 				defaultValue: true
-			},
-		
-			/**
-			 * 用户自定义数据。
-			 * @type Object
-			 * @attribute skipRefresh
-			 */
-			userData: {
-				skipRefresh: true
 			}
 		},
 		
@@ -487,9 +489,7 @@
 		
 		constructor: function(config) {
 			$invokeSuper.call(this, [config]);
-			this._id = dorado.Core.newId();
-			if (config) this.set(config);
-			if (!this._name) this._name = this._id;
+			if (!this._name) this._name = this._uniqueId;
 		},
 
 		destroy: function() {},
@@ -498,16 +498,10 @@
 			$invokeSuper.call(this, [attr, value]);
 			
 			var grid = this._grid;
-			if (!grid || !grid._rendered) return;
-			var def = this.ATTRIBUTES[attr];
-			if (grid._rendered && grid._ready && (this._visible || attr == "visible") && grid._ignoreRefresh < 1 && def && !def.skipRefresh) {
-				grid._ignoreItemTimestamp = true;
-				dorado.Toolkits.setDelayedAction(grid, "$refreshDelayTimerId", grid.refresh, 50);
+			if (grid && grid._rendered) {
+				var def = this.ATTRIBUTES[attr];
+				if (def && !def.skipRefresh) grid.refresh(true);
 			}
-		},
-		
-		getListenerScope: function() {
-			return this.get("grid.view") || dorado.widget.View.TOP;
 		}
 	});
 	
@@ -623,24 +617,26 @@
 			var rowHeightInfos = grid._rowHeightInfos, itemId = row._itemId, oldHeight;
 			if (grid._dynaRowHeight) {
 				if (innerGrid.fixed) {
+					/*
 					if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 						oldHeight = row.firstChild.clientHeight;
 					} else {
-						oldHeight = row.clientHeight;
-					}
+					*/
+					oldHeight = row.clientHeight;
 				}
 				else if (rowHeightInfos) {
 					oldHeight = rowHeightInfos.rows[itemId];
 				}
-				
+
+				row.style.height = "";
 				if (dorado.Browser.msie && dorado.Browser.version == 8) {
-					row.style.height = '';
 					$fly(row).addClass("fix-valign-bug");
-				} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+				} 
+				/*
+				else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 					row.firstChild.style.height = '';
-				} else {
-					row.style.height = '';
 				}
+				*/
 			}
 			
 			for (var i = 0; i < dataColumns.length; i++) {
@@ -648,12 +644,12 @@
 				var cell = row.cells[i];
 				
 				var label = cell.firstChild;
-				if (grid._dynaRowHeight) {
+				if (grid._dynaRowHeight && col._dynaRowHeight) {
 					label.style.overflowY = "visible";
 					cell.style.height = grid._rowHeight + "px";
 				} else {
 					cell.style.height = '';
-					label.style.height = grid._rowHeight + "px";
+					label.style.height = (grid._rowHeight - 1) + "px";
 				}
 				
 				if (col instanceof dorado.widget.grid.DataColumn) {
@@ -685,16 +681,18 @@
 					data: entity,
 					column: col
 				});
-				cell.colId = col._id;
+				cell.colId = col._uniqueId;
 			}
 			
 			if (grid._dynaRowHeight) {
-				var h;
+				var h = row.clientHeight;
+				/*
 				if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
 					h = row.firstChild.scrollHeight;
 				} else {
 					h = row.clientHeight;
 				}
+				*/
 				
 				if (oldHeight != h) {
 					if (!grid.xScroll || !grid.yScroll) grid.notifySizeChange();
@@ -717,11 +715,14 @@
 							if (dorado.Browser.msie && dorado.Browser.version == 8) {
 								row.style.height = fh + "px";
 								$fly(row).toggleClass("fix-valign-bug");
-							} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-								row.firstChild.style.height = fh + "px";
 							} else {
 								row.style.height = fh + "px";
 							}
+							/*
+							else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+								row.firstChild.style.height = fh + "px";
+							}
+							*/
 						}
 					}
 				}
@@ -828,7 +829,7 @@
 					} else if (entity.isDirty(property)) {
 						exCls = "cell-flag-dirty";
 					}
-					dom.className = "cell" + (exCls ? (" " + exCls) : '');
+					dom.parentNode.className = exCls || "";
 				}
 			}
 		},
@@ -912,8 +913,8 @@
 		
 		doRender: function(dom, arg) {
 			var subControl;
-			if (dom.subControlId && dom.parentNode && dom.parentNode.colId == arg.column._id) {
-				subControl = dorado.widget.Component.ALL[dom.subControlId];
+			if (dom.subControlId && dom.parentNode && dom.parentNode.colId == arg.column._uniqueId) {
+				subControl = dorado.widget.ViewElement.ALL[dom.subControlId];
 			}
 			var attach;
 			if (!subControl) {
@@ -944,7 +945,7 @@
 				}
 				
 				jQuery(controlEl).bind("remove", function() {
-					var sc = dorado.widget.Component.ALL[dom.subControlId];
+					var sc = dorado.widget.ViewElement.ALL[dom.subControlId];
 					if (sc) sc.destroy();
 				});
 				arg.innerGrid.registerInnerControl(subControl);
@@ -1344,11 +1345,13 @@
 			var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();;
 			var l = offsetCell.left - offsetGrid.left - $gridDom.edgeLeft(), t = offsetCell.top - offsetGrid.top - $gridDom.edgeTop(),
 				w = cell.offsetWidth, h = cell.offsetHeight;
-            //Grid不定义高度情况下将使用浏览器自身的滚动栏
-            if (!this.grid._divScroll && $gridDom.scrollLeft() > 0){
-                l += $gridDom.scrollLeft();
-            }
-            if (this.minWidth && this.minWidth > w) w = this.minWidth;
+
+			//Grid不定义高度情况下将使用浏览器自身的滚动栏
+			if (!this.grid._divScroll && $gridDom.scrollLeft() > 0){
+				l += $gridDom.scrollLeft();
+			}
+
+			if (this.minWidth && this.minWidth > w) w = this.minWidth;
 			if (this.minHeight && this.minHeight > h) h = this.minHeight;
 			$fly(dom).css({
 				left: l,
@@ -1387,7 +1390,7 @@
 				self.resize();
 			}
 			$fly(window).one("resize", function() {
-				self.grid.setFocus();
+				self.hide();
 			});
 			if (this.hideCellContent) cell.firstChild.style.visibility = "hidden";
 			this.visible = true;
@@ -1552,13 +1555,13 @@
 			if (editorControl && !editorControl._initedForCellEditor) {
 				editorControl._initedForCellEditor = true;
 				
-				editorControl.addListener("onBlur", function(self) {
+				editorControl.bind("onBlur", function(self) {
 					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
 				})
 				if (editorControl instanceof dorado.widget.AbstractEditor) {
-					editorControl.addListener("beforePost", function(self, arg) {
+					editorControl.bind("beforePost", function(self, arg) {
 						cellEditor.beforePost(arg);
-					}).addListener("onPost", function(self, arg) {
+					}).bind("onPost", function(self, arg) {
 						cellEditor.onPost(arg);
 					});
 					editorControl._cellEditor = cellEditor; // 主要供DropDown进行判断
@@ -1799,6 +1802,10 @@
 					this._width = width;
 					delete this._realWidth;
 				}
+			},
+
+			dynaRowHeight: {
+				defaultValue: true
 			},
 			
 			caption: {
@@ -2201,10 +2208,14 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.grid.ColumnGroup.prototype */ {
 			grid: {
-				setter: function(v, p) {
-					this._grid = v;
+				setter: function(grid) {
+					var oldGrid = this._grid;
+					this._grid = grid;
+
 					this._columns.each(function(column) {
-						column.set(p, v);
+						if (oldGrid) oldGrid.unregisterInnerViewElement(column);
+						if (grid) grid.registerInnerViewElement(column);
+						column.set("grid", grid);
 					});
 				}
 			}
@@ -2229,6 +2240,9 @@
 		ATTRIBUTES: /** @scope dorado.widget.grid.IndicatorColumn.prototype */{
 			width: {
 				defaultValue: 16
+			},
+			dynaRowHeight: {
+				defaultValue: false
 			},
 			caption: {
 				defaultValue: "Indicator"
@@ -2272,7 +2286,7 @@
 						}
 					}
 					dom.innerHTML = '';
-					dom.className = "cell " + className;
+					dom.className = "cell indicator " + className;
 				}
 			}
 		}
@@ -2288,6 +2302,9 @@
 		ATTRIBUTES: /** @scope dorado.widget.grid.RowNumColumn.prototype */{
 			width: {
 				defaultValue: 16
+			},
+			dynaRowHeight: {
+				defaultValue: false
 			},
 			caption: {
 				defaultValue: "RowNum"
@@ -2364,7 +2381,7 @@
 			var self = this;
 			if (!this._listenerBinded) {
 				this._listenerBinded = true;
-				arg.grid.addListener("onSelectionChange", $scopify(this, this.gridOnSelectionChangedListener));
+				arg.grid.bind("onSelectionChange", $scopify(this, this.gridOnSelectionChangedListener));
 			}
 			
 			var checkbox = new dorado.widget.CheckBox({
@@ -2437,6 +2454,9 @@
 		ATTRIBUTES: /** @scope dorado.widget.grid.RowSelectorColumn.prototype */{
 			width: {
 				defaultValue: 16
+			},
+			dynaRowHeight: {
+				defaultValue: false
 			},
 			align: {
 				defaultValue: "center"

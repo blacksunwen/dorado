@@ -37,8 +37,8 @@
 	};
 	
 	/**
-	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
-	 * @component Base
+     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+     * @component Base
 	 * @class 分割面板
 	 * <p>
 	 * 用来布局的一个组件。使用该组件需要指定一个边组件，一个主组件，边组件可以被收缩起来，并且可以指定边组件的宽度或者高度的最大值和最小值。
@@ -51,13 +51,12 @@
 	 */
 	dorado.widget.SplitPanel = $extend(dorado.widget.Control, /** @scope dorado.widget.SplitPanel.prototype*/ {
 		$className: "dorado.widget.SplitPanel",
-		_inherentClassName: "i-split-panel",
 		
 		ATTRIBUTES: /** @scope dorado.widget.SplitPanel.prototype*/ {
 			className: {
 				defaultValue: "d-split-panel"
 			},
-			
+            
 			/**
 			 * 边组件的显示的位置。
 			 * 可选值：left、right、top、bottom，默认值left。
@@ -77,7 +76,7 @@
 					this._direction = value;
 				}
 			},
-			
+            
 			/**
 			 * 边组件的最大的尺寸，如果不指定，则表示不限制。
 			 * 如果direction是left、right，则尺寸指的是宽，如果direction是top、bottom，则尺寸指的是高。
@@ -105,9 +104,9 @@
 			 */
 			position: {
 				defaultValue: 100,
-				setter: function(value) {
-					this._position = value;
-				}
+                setter: function(value) {
+                    this._position = value;
+                }
 			},
 
 			/**
@@ -154,22 +153,22 @@
 				}
 			},
 
-			/**
-			 * 是否可以折叠，这个属性会决定折叠按钮是否显示。
-			 * @attribute
-			 * @default true
-			 * @type boolean
-			 */
-			collapseable: {
-				defaultValue: true
-			},
+            /**
+             * 是否可以折叠，这个属性会决定折叠按钮是否显示。
+             * @attribute
+             * @default true
+             * @type boolean
+             */
+            collapseable: {
+                defaultValue: true
+            },
 
-			/**
-			 * 是否可以预览，这个属性会决定是否在sideControl折叠以后显示一个竖向或者横向的工具条。
-			 * @attribute
-			 * @default false
-			 * @type boolean
-			 */
+            /**
+             * 是否可以预览，这个属性会决定是否在sideControl折叠以后显示一个竖向或者横向的工具条。
+             * @attribute
+             * @default false
+             * @type boolean
+             */
 			previewable: {
 				defaultValue: false
 			}
@@ -208,7 +207,7 @@
 
 			panel._previewOpened = true;
 
-			var position = panel.getPixelPosition();
+            var position = panel.getPixelPosition();
 
 			switch (direction) {
 				case "left":
@@ -242,9 +241,9 @@
 
 			$fly(doms.sidePanel).css(sidePanelCss).bringToFront().animate(animConfig, {
 				complete: function() {
-					if (panel._sideControl) {
-						panel._sideControl.setActualVisible(true);
-					}
+                    if (panel._sideControl) {
+                        panel._sideControl.setActualVisible(true);
+                    }
 				}
 			});
 			$fly(document).bind("click", {panel: panel}, documentMouseDown);
@@ -264,7 +263,7 @@
 
 			panel._previewOpened = false;
 
-			var position = panel.getPixelPosition();
+            var position = panel.getPixelPosition();
 
 			switch (direction) {
 				case "left":
@@ -294,7 +293,7 @@
 			$fly(doms.sidePanel).animate(animConfig, {
 				complete: function() {
 					$fly(doms.sidePanel).css("z-index", "");
-					panel._sideControl.setActualVisible(false);
+                    panel._sideControl.setActualVisible(false);
 				}
 			});
 			$fly([doms.sidePanel, doms.collapseBar]).unbind("mouseenter", mouseEnterfunc).unbind("mouseleave", mouseLeavefunc);
@@ -353,7 +352,6 @@
 		createDom: function() {
 			var panel = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
-				className: panel._className,
 				content: [
 					{
 						tagName: "div",
@@ -381,80 +379,80 @@
 			panel._doms = doms;
 
 			$DomUtils.disableUserSelection(doms.splitter);
-			var splitterPosition, containment;
+            var splitterPosition, containment;
 			$fly(doms.splitter).addClass("splitter-" + panel._direction).draggable({
 				addClasses: false,
 				//containment: "parent",
 				axis: axis,
 				helper: "clone",
-				iframeFix: true,
+                iframeFix: true,
 				start: function(event, ui){
 					var helper = ui.helper;
 					if(helper){
-						helper.addClass("splitter-dragging").bringToFront().find("> .button").css("display", "none");
+						helper.addClass("d-splitter-dragging").bringToFront().find("> .button").css("display", "none");
 					}
-					splitterPosition = $fly(doms.splitter).position();
-					var vertical = direction == "top" || direction == "bottom";
-					if (panel._maxPosition != null || panel._minPosition != null) {
-						var width = $fly(dom).width(), height = $fly(dom).height(),
-							min = panel._minPosition || 50, max, sideMin, sideMax, range;
-						if (vertical) {
-							max = panel._maxPosition || height - 50;
-						} else {
-							max = panel._maxPosition || width - 50;
-						}
+                    splitterPosition = $fly(doms.splitter).position();
+                    var vertical = direction == "top" || direction == "bottom";
+                    if (panel._maxPosition != null || panel._minPosition != null) {
+                        var width = $fly(dom).width(), height = $fly(dom).height(),
+                            min = panel._minPosition || 50, max, sideMin, sideMax, range;
+                        if (vertical) {
+                            max = panel._maxPosition || height - 50;
+                        } else {
+                            max = panel._maxPosition || width - 50;
+                        }
 
-						if (panel._direction == "left") {
-							sideMin = min;
-							sideMax = max;
-						} else if (panel._direction == "right") {
-							sideMin = width - max;
-							sideMax = width - min;
-						} else if (panel._direction == "top") {
-							sideMin = min;
-							sideMax = max;
-						} else if (panel._direction == "bottom") {
-							sideMin = height - max;
-							sideMax = height - min;
-						}
+                        if (panel._direction == "left") {
+                            sideMin = min;
+                            sideMax = max;
+                        } else if (panel._direction == "right") {
+                            sideMin = width - max;
+                            sideMax = width - min;
+                        } else if (panel._direction == "top") {
+                            sideMin = min;
+                            sideMax = max;
+                        } else if (panel._direction == "bottom") {
+                            sideMin = height - max;
+                            sideMax = height - min;
+                        }
 
-						if (vertical) {
-							containment = [0, sideMin, 0, sideMax];
-						} else {
-							containment = [sideMin, 0, sideMax, 0];
-						}
-					}
+                        if (vertical) {
+                            containment = [0, sideMin, 0, sideMax];
+                        } else {
+                            containment = [sideMin, 0, sideMax, 0];
+                        }
+                    }
 				},
-				drag: function(event, ui) {
-					var inst = jQuery.data(this, "draggable"), horiChange = event.pageX - inst.originalPageX, vertChange = event.pageY - inst.originalPageY;
+                drag: function(event, ui) {
+                    var inst = jQuery.data(this, "ui-draggable"), horiChange = event.pageX - inst.originalPageX, vertChange = event.pageY - inst.originalPageY;
 
-					ui.position = {
-						left: splitterPosition.left,
-						top: splitterPosition.top
-					};
+                    ui.position = {
+                        left: splitterPosition.left,
+                        top: splitterPosition.top
+                    };
 
-					var left, top;
+                    var left, top;
 
-					if (panel._direction == "left" || panel._direction == "right") {
-						left = splitterPosition.left + horiChange;
-						if (left < containment[0]) {
-							left = containment[0];
-						} else if (left > containment[2]) {
-							left = containment[2];
-						}
-						ui.position.left = left;
-					} else {
-						top = splitterPosition.top + vertChange;
-						if (top < containment[1]) {
-							top = containment[1];
-						} else if (top > containment[3]) {
-							top = containment[3];
-						}
-						ui.position.top = top;
-					}
+                    if (panel._direction == "left" || panel._direction == "right") {
+                        left = splitterPosition.left + horiChange;
+                        if (left < containment[0]) {
+                            left = containment[0];
+                        } else if (left > containment[2]) {
+                            left = containment[2];
+                        }
+                        ui.position.left = left;
+                    } else {
+                        top = splitterPosition.top + vertChange;
+                        if (top < containment[1]) {
+                            top = containment[1];
+                        } else if (top > containment[3]) {
+                            top = containment[3];
+                        }
+                        ui.position.top = top;
+                    }
 
-					ui.helper.css(ui.position);
-				},
+                    ui.helper.css(ui.position);
+                },
 				stop: function(event, ui) {
 					var position = ui.position;
 					switch (panel._direction) {
@@ -504,7 +502,7 @@
 			this._doms.splitter.appendChild(iframe);
 			this._objectShimInited = true;
 		},
-		
+
 		doSetCollapsed: function(collapsed, callback, slience) {
 			var panel = this, dom = panel._dom, doms = panel._doms, eventArg = {};
 			panel.fireEvent("beforeCollapsedChange", panel, eventArg);
@@ -618,23 +616,23 @@
 			}
 		},
 
-		getPixelPosition: function() {
-			var panel = this, position = panel._position, dir = panel._direction;
-			if (typeof position == "string") {
-				if (position.indexOf("%") == -1) {
-					position = parseInt(position, 10);
-				} else {
-					position = (dir == "left" || dir == "right" ? panel.getRealWidth() : panel.getRealHeight()) * parseInt(position.replace("%", ""), 10) / 100;
-				}
-			}
-			return position;
-		},
+        getPixelPosition: function() {
+            var panel = this, position = panel._position, dir = panel._direction;
+            if (typeof position == "string") {
+                if (position.indexOf("%") == -1) {
+                    position = parseInt(position, 10);
+                } else {
+                    position = (dir == "left" || dir == "right" ? panel.getRealWidth() : panel.getRealHeight()) * parseInt(position.replace("%", ""), 10) / 100;
+                }
+            }
+            return position;
+        },
 
 		doOnAttachToDocument: function() {
 			var panel = this, sideControl = panel._sideControl, mainControl = panel._mainControl, doms = panel._doms;
 			if (sideControl) {
 				sideControl.render(doms.sidePanel);
-				sideControl.setActualVisible(!panel._collapsed);
+                sideControl.setActualVisible(!panel._collapsed);
 			}
 
 			if (mainControl) {
@@ -651,21 +649,21 @@
 				direction = panel._direction, previewable = panel._previewable && panel._collapseable,
 				vertical = direction == "top" || direction == "bottom";
 
-			if(panel._collapseable){
-				if (panel._collapsed) {
-					$fly(dom).addClass(panel._className + "-collapsed");
-					$fly(doms.splitter).draggable("disable");
-				} else {
-					$fly(dom).removeClass(panel._className + "-collapsed");
-					$fly(doms.splitter).draggable("enable");
-				}
-			}
+            if(panel._collapseable){
+                if (panel._collapsed) {
+                    $fly(dom).addClass(panel._className + "-collapsed");
+                    $fly(doms.splitter).draggable("disable");
+                } else {
+                    $fly(dom).removeClass(panel._className + "-collapsed");
+                    $fly(doms.splitter).draggable("enable");
+                }
+            }
 
-			if(panel._collapseable){
-				$fly(doms.button).css("display", "");
-			} else {
-				$fly(doms.button).css("display", "none");
-			}
+            if(panel._collapseable){
+                $fly(doms.button).css("display", "");
+            } else {
+                $fly(doms.button).css("display", "none");
+            }
 
 			$fly(doms.splitter).removeClass("splitter-h-resizeable splitter-v-resizeable");
 			if (panel._resizeable) {
@@ -675,7 +673,7 @@
 			var sidePanelStyle, splitterStyle, mainPanelStyle, mainControlStyle, sideControlStyle, collapseBarStyle,
 				collapseBarWidth = 0, collapseBarHeight = 0;
 
-			var position = panel.getPixelPosition();
+            var position = panel.getPixelPosition();
 
 			if (panel._collapseable && panel._collapsed) {
 				if (previewable) {
@@ -997,7 +995,7 @@
 
 			//set draggable range
 
-			$fly(doms.splitter).draggable(panel._resizeable ? "enable" : "disable");
+            $fly(doms.splitter).draggable(panel._resizeable ? "enable" : "disable");
 		},
 	
 		getFocusableSubControls: function() {

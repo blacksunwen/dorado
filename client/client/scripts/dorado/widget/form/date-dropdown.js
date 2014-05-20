@@ -52,9 +52,18 @@
 	dorado.widget.DatePicker = $extend(dorado.widget.Control, /** @scope dorado.widget.DatePicker.prototype */ {
 		$className: "dorado.widget.DatePicker",
 		focusable: true,
-		_inherentClassName: "i-date-picker",
 		
 		ATTRIBUTES: /** @scope dorado.widget.DatePicker.prototype */ {
+			width: {
+				independent: true,
+				readOnly: true
+			},
+			
+			height: {
+				independent: true,
+				readOnly: true
+			},
+			
 			className: {
 				defaultValue: "d-date-picker"
 			},
@@ -756,7 +765,6 @@
 						content: dateRows
 					}
 				}, {
-					tagName: "div",
 					contextKey: "buttonBlock",
 					className: "button-block"
 				}, {
@@ -818,6 +826,7 @@
 			if (picker._showConfirmButton) {
 				var confirmButton = new dorado.widget.Button({
 					caption: $resource("dorado.baseWidget.DatePickerConfirm"),
+					ui: "highlight",
 					listener: {
 						onClick: function() {
 							var date, pickerDate = picker._date;
@@ -838,30 +847,7 @@
 				picker.registerInnerControl(confirmButton);
 			}
 			
-			var lastOverCell = null, dateTable = doms.dateTable;
-			
-			if (dorado.Browser.msie && dorado.Browser.version == 6) {
-				$fly(dateTable).mousemove(function(event) {
-					var position = $DomUtils.getCellPosition(event);
-					
-					if (position && position.element && (position.element != lastOverCell || !lastOverCell)) {
-						if (position.row <= 0) {
-							return;
-						}
-						if (lastOverCell) {
-							$fly(lastOverCell).removeClass("hover");
-						}
-						$fly(position.element).addClass("hover");
-						lastOverCell = position.element;
-					}
-				}).mouseout(function() {
-					if (lastOverCell) {
-						$fly(lastOverCell).removeClass("hover");
-					}
-					lastOverCell = null;
-				});
-			}
-
+			var dateTable = doms.dateTable;
             var isSingleSelect = picker._selectionMode != "multiDate";
 
 			$fly(dateTable).click(function(event) {
@@ -1136,10 +1122,6 @@
 				defaultValue: 260
 			},
 			
-			height: {
-				defaultValue: 200
-			},
-			
 			iconClass: {
 				defaultValue: "d-trigger-icon-date"
 			},
@@ -1202,26 +1184,26 @@
 			return box;
 		},
 
-        doOnEditorKeyDown: function(editor, evt) {
+		doOnEditorKeyDown: function(editor, evt) {
 			var dropDown = this, retValue = true, datePicker = dropDown.get("box.control");
-            if (this.get("opened")) {
-                switch (evt.keyCode) {
-                    case 27: // esc
-                        dropDown.close();
-                        retValue = false;
-                        break;
-                    default:
-	                    var ymPicker = datePicker._yearMonthPicker;
-                        if (!ymPicker || !ymPicker._opened) {
-                            retValue = datePicker.onKeyDown(evt);
-                        } else {
-                            retValue = ymPicker.onKeyDown(evt);
-                        }
-                        break;
-                }
-            }
-            if (retValue) retValue = $invokeSuper.call(dropDown, arguments);
-            return retValue;
+			if (this.get("opened")) {
+				switch (evt.keyCode) {
+					case 27: // esc
+						dropDown.close();
+						retValue = false;
+						break;
+					default:
+						var ymPicker = datePicker._yearMonthPicker;
+						if (!ymPicker || !ymPicker._opened) {
+							retValue = datePicker.onKeyDown(evt);
+						} else {
+							retValue = ymPicker.onKeyDown(evt);
+						}
+						break;
+				}
+			}
+			if (retValue) retValue = $invokeSuper.call(dropDown, arguments);
+			return retValue;
 		},
 		
 		initDropDownBox: function(box, editor) {

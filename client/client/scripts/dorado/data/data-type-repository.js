@@ -12,13 +12,13 @@
 
 (function() {
 	var hasRespositoryListener = false;
-
+	
 	function newAggDataType(name, subId) {
 		var dataType = new AggregationDataType(name, dorado.LazyLoadDataType.create(this, subId));
 		this.register(dataType);
 		return dataType;
 	}
-
+	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 用于实现{@link dorado.DataType}信息延时装载的类。
@@ -27,7 +27,7 @@
 	 */
 	dorado.LazyLoadDataType = $class(/** @scope dorado.LazyLoadDataType.prototype */{
 		$className: "dorado.LazyLoadDataType",
-
+		
 		constructor: function(dataTypeRepository, id) {
 			/**
 			 * @name dorado.LazyLoadDataType#dataTypeRepository
@@ -35,7 +35,7 @@
 			 * @description 隶属的数据类型的管理器。
 			 */
 			this.dataTypeRepository = dataTypeRepository;
-
+			
 			/**
 			 * @name dorado.LazyLoadDataType#id
 			 * @type String
@@ -43,7 +43,7 @@
 			 */
 			this.id = id;
 		},
-
+		
 		/**
 		 * 以同步操作的方式装载DataType的详细信息。
 		 * @param {String} [loadMode="always"] 装载模式。<br>
@@ -58,7 +58,7 @@
 		get: function(loadMode) {
 			return this.dataTypeRepository.get(this.id, loadMode);
 		},
-
+		
 		/**
 		 * 以异步操作的方式装载DataType的详细信息。
 		 * @param {String} [loadMode="always"] 装载模式。<br>
@@ -73,12 +73,12 @@
 		getAsync: function(loadMode, callback) {
 			this.dataTypeRepository.getAsync(this.id, callback, loadMode);
 		},
-
+		
 		toString: function() {
 			return dorado.defaultToString(this);
 		}
 	});
-
+	
 	dorado.LazyLoadDataType.create = function(dataTypeRepository, id) {
 		var name = dorado.DataUtil.extractNameFromId(id);
 		var origin = dataTypeRepository._get(name);
@@ -100,7 +100,7 @@
 			}
 		}
 	};
-
+	
 	dorado.LazyLoadDataType.dataTypeTranslator = function(dataType, loadMode) {
 		if (dataType.constructor == String) {
 			var repository;
@@ -110,14 +110,14 @@
 				repository = this.get("dataTypeRepository");
 			}
 			if (!repository) repository = dorado.DataTypeRepository.ROOT;
-
+			
 			if (repository) {
 				dataType = dorado.LazyLoadDataType.create(repository, dataType);
 			} else {
 				throw new dorado.ResourceException("dorado.data.RepositoryUndefined");
 			}
 		}
-
+		
 		loadMode = loadMode || "always";
 		if (loadMode == "always") {
 			if (dataType instanceof dorado.AggregationDataType) {
@@ -131,7 +131,7 @@
 		if (!(dataType instanceof dorado.DataType)) dataType = null;
 		return dataType;
 	};
-
+	
 	dorado.LazyLoadDataType.dataTypeGetter = function() {
 		var dataType = this._dataType;
 		if (dataType != null) {
@@ -142,7 +142,7 @@
 		}
 		return dataType;
 	};
-
+	
 	dorado.DataTypePipe = $extend(dorado.DataPipe, {
 		constructor: function(dataTypeRepository, id) {
 			this.dataTypeRepository = dataTypeRepository || $dataTypeRepository;
@@ -150,7 +150,7 @@
 			this.id = id;
 			this.name = dorado.DataUtil.extractNameFromId(id);
 		},
-
+		
 		getAjaxOptions: function() {
 			var dataTypeRepository = this.dataTypeRepository;
 			return dorado.Object.apply({
@@ -161,13 +161,13 @@
 				}
 			}, this.loadOptions);
 		},
-
+		
 		doGet: function() {
 			return this.doGetAsync();
 		},
-
+		
 		doGetAsync: function(callback) {
-			var ajax = dorado.Toolkits.getAjax(this.loadOptions), dataTypeRepository = this.dataTypeRepository;
+			var ajax = dorado.util.AjaxEngine.getInstance(this.loadOptions), dataTypeRepository = this.dataTypeRepository;
 			if (callback) {
 				dataTypeRepository.register(this.name, this);
 				ajax.request(this.getAjaxOptions(), {
@@ -181,14 +181,14 @@
 							} else {
 								dataTypeJson = json;
 							}
-
+							
 							if (dataTypeRepository.parseJsonData(dataTypeJson) > 0) {
 								var dataType = dataTypeRepository._dataTypeMap[this.name];
 								$callback(callback, true, dataType, {
 									scope: this
 								});
 							}
-
+							
 							if (context && dataTypeRepository._view) {
 								dataTypeRepository._view.set("context", context);
 							}
@@ -213,7 +213,7 @@
 			}
 		}
 	});
-
+	
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 数据类型的管理器。
@@ -225,9 +225,9 @@
 	 */
 	dorado.DataTypeRepository = DataTypeRepository = $extend(dorado.EventSupport, /** @scope dorado.DataTypeRepository.prototype */ {
 		$className: "dorado.DataTypeRepository",
-
+		
 		EVENTS: /** @scope dorado.DataTypeRepository.prototype */ {
-
+		
 			/**
 			 * 每当有新的数据类型被注册到该管理器或其父管理器中是触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
@@ -248,10 +248,10 @@
 				}
 			}
 		},
-
+		
 		constructor: function(parent) {
 			this._dataTypeMap = {};
-
+			
 			/**
 			 * @name dorado.DataTypeRepository#parent
 			 * @type dorado.DataTypeRepository
@@ -259,14 +259,14 @@
 			 */
 			this.parent = parent;
 			if (parent) parent.children.push(this);
-
+			
 			/**
 			 * @name dorado.DataTypeRepository#children
 			 * @type dorado.DataTypeRepository[]
 			 * @description 子数据类型的管理器的数组。
 			 */
 			this.children = [];
-
+			
 			/**
 			 * @name dorado.DataTypeRepository#loadOptions
 			 * @type Object
@@ -280,16 +280,16 @@
 			 */
 			this.loadOptions = dorado.Object.apply({}, $setting["ajax.dataTypeRepositoryOptions"]);
 		},
-
+		
 		destroy: function() {
 			if (this.parent) this.parent.children.remove(this);
 		},
-
-		addListener: function() {
+		
+		bind: function() {
 			hasRespositoryListener = true;
 			return $invokeSuper.call(this, arguments);
 		},
-
+		
 		parseSingleDataType: function(jsonData) {
 			var dataType, name = jsonData.name, type = jsonData.$type;
 			delete jsonData.name;
@@ -306,7 +306,7 @@
 			}
 			return dataType;
 		},
-
+		
 		parseJsonData: function(jsonData) {
 			var n = 0, dataTypeMap = this._dataTypeMap, dataType;
 			if (jsonData instanceof Array) {
@@ -320,7 +320,7 @@
 			}
 			return n;
 		},
-
+		
 		/**
 		 * 向管理器中注册一个数据类型。 注意此方法的多态参数。
 		 * @param {String|dorado.DataType} name 此参数是一个多态参数。
@@ -337,7 +337,7 @@
 				dataType = name;
 				name = name._name;
 			}
-
+			
 			if (this._dataTypeMap[name] instanceof dorado.DataType) return;
 			this._dataTypeMap[name] = dataType;
 			if (dataType instanceof dorado.DataType) {
@@ -349,7 +349,7 @@
 				}
 			}
 		},
-
+		
 		/**
 		 * 从管理器中注销一个数据类型。
 		 * @param {Object} name 此参数是一个多态参数。
@@ -361,7 +361,7 @@
 		unregister: function(name) {
 			delete this._dataTypeMap[name];
 		},
-
+		
 		_get: function(name) {
 			var dataType = this._dataTypeMap[name];
 			if (!dataType && this.parent) {
@@ -369,7 +369,7 @@
 			}
 			return dataType;
 		},
-
+		
 		/**
 		 * 根据名称从管理器中获取相应的数据类型。<br>
 		 * 如果该数据类型的详细信息尚不存于客户端，那么管理将自动从服务端装载该数据类型的详细信息。
@@ -414,7 +414,7 @@
 			}
 			return dataType;
 		},
-
+		
 		/**
 		 * 以异步方式、根据名称从管理器中获取相应的数据类型。<br>
 		 * 如果该数据类型的详细类型尚不存于客户端，那么管理将自动从服务端装载该数据类型的详细信息。
@@ -459,9 +459,9 @@
 			}
 			$callback(callback, true, dataType);
 		},
-
+		
 		getLoadedDataTypes: function() {
-
+		
 			function collect(dataTypeRepository, nameMap) {
 				var map = dataTypeRepository._dataTypeMap;
 				for (var name in map) {
@@ -470,18 +470,18 @@
 				}
 				if (dataTypeRepository.parent) collect(dataTypeRepository.parent, nameMap);
 			}
-
+			
 			var nameMap = {}, result = [];
 			collect(this, nameMap);
-			for (var name in nameMap)
+			for (var name in nameMap) 
 				result.push(name);
 			return result;
 		}
 	});
-
+	
 	var DataType = dorado.DataType;
 	var root = new DataTypeRepository();
-
+	
 	/**
 	 * 客户端的根数据类型管理器。
 	 * @name dorado.DataTypeRepository.ROOT
@@ -490,7 +490,7 @@
 	 */
 	DataTypeRepository.ROOT = root;
 	DataTypeRepository.UNLOAD_DATATYPE = {};
-
+	
 	/**
 	 * dorado.DataTypeRepository.ROOT的快捷方式。
 	 * @type dorado.DataTypeRepository
@@ -498,53 +498,53 @@
 	 * @see dorado.DataTypeRepository.ROOT
 	 */
 	window.$dataTypeRepository = DataTypeRepository.ROOT;
-
+	
 	function cloneDataType(dataType, name) {
 		var newDataType = dorado.Object.clone(dataType);
 		newDataType._name = name;
 		return newDataType;
 	}
-
+	
 	root.register(dorado.$String);
 	root.register(dorado.$char);
 	root.register(dorado.$Character);
-
+	
 	dataType = dorado.$int;
 	root.register("int", dataType);
 	root.register("byte", cloneDataType(dataType, "byte"));
 	root.register("short", cloneDataType(dataType, "short"));
 	root.register("long", cloneDataType(dataType, "long"));
-
+	
 	dataType = dorado.$Integer;
 	root.register("Integer", dataType);
 	root.register("Byte", cloneDataType(dataType, "Byte"));
 	root.register("Short", cloneDataType(dataType, "Short"));
 	root.register("Long", cloneDataType(dataType, "Long"));
-
+	
 	dataType = dorado.$float;
 	root.register("float", dataType);
 	root.register("double", cloneDataType(dataType, "double"));
-
+	
 	dataType = dorado.$Float;
 	root.register("Float", dataType);
 	root.register("Double", cloneDataType(dataType, "Double"));
 	root.register("BigDecimal", cloneDataType(dataType, "BigDecimal"));
-
+	
 	root.register(dorado.$boolean);
 	root.register(dorado.$Boolean);
-
+	
 	dataType = dorado.$Date;
 	root.register("Date", dataType);
 	root.register("Calendar", cloneDataType(dataType, "Calendar"));
-
+	
 	root.register("Time", dorado.$Time);
 	root.register("DateTime", dorado.$DateTime);
-
+	
 	var AggregationDataType = dorado.AggregationDataType;
 	root.register(new AggregationDataType("List"));
 	root.register(new AggregationDataType("Set"));
 	root.register(new AggregationDataType("Array"));
-
+	
 	var EntityDataType = dorado.EntityDataType;
 	root.register(new EntityDataType("Bean"));
 	root.register(new EntityDataType("Map"));

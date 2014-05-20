@@ -27,7 +27,6 @@
  */
 dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.CheckBox.prototype */ {
 	$className: "dorado.widget.CheckBox",
-	_inherentClassName: "i-checkbox",
 	
 	ATTRIBUTES: /** @scope dorado.widget.CheckBox.prototype */ {
 		className: {
@@ -45,11 +44,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		 * @type boolean
 		 */
 		iconOnly: {
-			writeBeforeReady: true,
-			setter: function(value) {
-				this.iconOnly = value;
-				this._inherentClassName = (value ? "i-checkbox i-checkbox-icononly" : "i-checkbox");
-			}
+			writeBeforeReady: true
 		},
 		
 		/**
@@ -150,15 +145,15 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		onValueChange: {}
 	},
 
-	//event: 传入true强制执行onClick，用来响应键盘事件。
+    //event: 传入true强制执行onClick，用来响应键盘事件。
 	onClick: function(event) {
 		var checkBox = this;
-
+		
 		if (checkBox._readOnly || this._readOnly2) {
 			return;
 		}
 
-		if (event !== true && event.target == checkBox._dom) return;
+        if (event !== true && event.target == checkBox._dom) return;
 
 		var checked = checkBox._checked;
 		if (checkBox._triState) {
@@ -172,7 +167,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		} else {
 			checkBox._checked = !checkBox._checked;
 		}
-		
+
 		var postResult = checkBox.post();
 		if (postResult == false) {
 			checkBox._checked = checked;
@@ -183,26 +178,26 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 	},
 
 	post: function() {
-        var modified = (this._lastPost !== this._checked);
-        if (!modified) return true;
+		var modified = (this._lastPost !== this._checked);
+		if (!modified) return true;
 
-        var lastPost = this._lastPost;
-        try {
-                this._lastPost = this._checked;
-                var eventArg = {
-                    processDefault: true
-                };
-                this.fireEvent("beforePost", this, eventArg);
-                if (eventArg.processDefault === false) return false;
-                if (this.doPost) this.doPost();
-                this.fireEvent("onPost", this);
-            return true;
-        }
-        catch (e) {
-            this._lastPost = lastPost;
-            dorado.Exception.processException(e);
-            return false;
-        }
+		var lastPost = this._lastPost;
+		try {
+			this._lastPost = this._checked;
+			var eventArg = {
+				processDefault: true
+			};
+			this.fireEvent("beforePost", this, eventArg);
+			if (eventArg.processDefault === false) return false;
+			if (this.doPost) this.doPost();
+			this.fireEvent("onPost", this);
+			return true;
+		}
+		catch (e) {
+			this._lastPost = lastPost;
+			dorado.Exception.processException(e);
+			return false;
+		}
 	},
 
 	refreshDom: function(dom) {
@@ -211,8 +206,10 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		var checkBox = this, checked = checkBox._checked, caption = checkBox._caption || '';
 		
 		this.refreshExternalReadOnly();
-		$fly(dom)[checkBox._readOnly || checkBox._readOnly2 ? "addClass" : "removeClass"](checkBox._className + "-readonly");
-		
+
+		$fly(dom).toggleClass(checkBox._className + "-icononly", !!checkBox._iconOnly)
+			.toggleClass(checkBox._className + "-readonly", (checkBox._readOnly || checkBox._readOnly2));
+
 		if (checkBox._dataSet) {
 			checked = undefined;
 			var value, dirty;
@@ -266,66 +263,33 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				checked = false;
 			}
 			checkBox._checked = checked;
-			checkBox._lastPost = checked;
+            checkBox._lastPost = checked;
 			checkBox.setDirty(dirty);
 		}
 		
-		if (!checkBox._iconOnly) {
-			var iconEl = dom.firstChild, captionEl = iconEl.nextSibling;
-			if (checked) {
-				$fly(iconEl).removeClass("unchecked halfchecked").addClass("checked");
-			} else if (checked == null && checkBox._triState) {
-				$fly(iconEl).removeClass("checked unchecked").addClass("halfchecked");
-			} else {
-				$fly(iconEl).removeClass("checked halfchecked").addClass("unchecked");
-			}
-			captionEl.innerText = caption;
+		var iconEl = dom.firstChild;
+		if (checked) {
+			$fly(iconEl).removeClass("unchecked halfchecked").addClass("checked");
+		} else if (checked == null && checkBox._triState) {
+			$fly(iconEl).removeClass("checked unchecked").addClass("halfchecked");
 		} else {
-			var hovering = false, cls, $dom = $fly(dom);
-			$dom.removeClass("d-checkbox-checked d-checkbox-unchecked d-checkbox-halfchecked");
-			if ($dom.hasClass("d-checkbox-unchecked-hover") || $dom.hasClass("d-checkbox-checked-hover") || $dom.hasClass("d-checkbox-halfchecked-hover")) {
-				$dom.removeClass("d-checkbox-checked-hover d-checkbox-unchecked-hover d-checkbox-halfchecked-hover");
-				hovering = true;
-			}
-			if (checked) {
-				cls = hovering ? "d-checkbox-checked-hover" : "d-checkbox-checked";
-				$dom.addClass(cls);
-			} else if (checked == null) {
-				cls = hovering ? "d-checkbox-halfchecked-hover" : "d-checkbox-halfchecked";
-				$dom.addClass(cls);
-			} else {
-				cls = hovering ? "d-checkbox-unchecked-hover" : "d-checkbox-unchecked";
-				$dom.addClass(cls);
-			}
+			$fly(iconEl).removeClass("checked halfchecked").addClass("unchecked");
+		}
+		
+		if (!checkBox._iconOnly) {
+			iconEl.nextSibling.innerText = caption;
 		}
 	},
 	
 	createDom: function() {
 		var checkBox = this, dom, doms = {};
 		if (checkBox._iconOnly) {
-			checkBox._className = checkBox._className + "-icononly";
 			dom = $DomUtils.xCreate({
 				tagName: "SPAN",
-				className: checkBox._className
-			});
-			$fly(dom).hover(function() {
-				if (!(checkBox._readOnly || checkBox._readOnly2)) {
-					if (checkBox._checked) {
-						$fly(dom).removeClass("d-checkbox-checked").addClass("d-checkbox-checked-hover");
-					} else if (checkBox._checked == null) {
-						$fly(dom).removeClass("d-checkbox-halfchecked").addClass("d-checkbox-halfchecked-hover");
-					} else {
-						$fly(dom).removeClass("d-checkbox-unchecked").addClass("d-checkbox-unchecked-hover");
-					}
-				}
-			}, function() {
-				$fly(dom).removeClass("d-checkbox-checked-hover d-checkbox-unchecked-hover d-checkbox-halfchecked-hover");
-				if (checkBox._checked) {
-					$fly(dom).addClass("d-checkbox-checked");
-				} else if (checkBox._checked === null || checkBox._checked === undefined) {
-					$fly(dom).addClass("d-checkbox-halfchecked");
-				} else {
-					$fly(dom).addClass("d-checkbox-unchecked");
+				className: checkBox._className,
+				content: {
+					tagName: "SPAN",
+					className: "icon"
 				}
 			});
 		} else {
@@ -335,35 +299,36 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 				content: [{
 					tagName: "SPAN",
 					className: "icon",
-					contextKey: "icon"
+                    contextKey: "icon"
 				}, {
 					tagName: "SPAN",
 					className: "caption",
-					contextKey: "caption",
+                    contextKey: "caption",
 					content: checkBox._caption || ''
 				}]
-			}, null, doms);
-
-			checkBox._doms = doms;
-
-			$fly([doms.icon, doms.caption]).hover(function() {
-				if (!(checkBox._readOnly || checkBox._readOnly2)) {
-					$fly(dom).addClass(checkBox._className + "-hover");
-				}
-			}, function() {
-				if (!(checkBox._readOnly || checkBox._readOnly2)) {
-					$fly(dom).removeClass(checkBox._className + "-hover");
-				}
-			}).mousedown(function() {
-				if (!(checkBox._readOnly || checkBox._readOnly2))
-					$fly(dom).addClass(checkBox._className + "-click");
-				$(document).one("mouseup", function() {
-					if (!(checkBox._readOnly || checkBox._readOnly2))
-						$fly(dom).removeClass(checkBox._className + "-click");
-				});
 			});
 		}
 		
+		$fly(dom).hover(function() {
+			if (!(checkBox._readOnly || checkBox._readOnly2)) {
+				if (checkBox._checked) {
+					$fly(dom).removeClass("d-checkbox-checked").addClass("d-checkbox-hover");
+				} else if (checkBox._checked == null) {
+					$fly(dom).removeClass("d-checkbox-halfchecked").addClass("d-checkbox-hover");
+				} else {
+					$fly(dom).removeClass("d-checkbox-unchecked").addClass("d-checkbox-hover");
+				}
+			}
+		}, function() {
+			$fly(dom).removeClass("d-checkbox-hover");
+			if (checkBox._checked) {
+				$fly(dom).addClass("d-checkbox-checked");
+			} else if (checkBox._checked === null || checkBox._checked === undefined) {
+				$fly(dom).addClass("d-checkbox-halfchecked");
+			} else {
+				$fly(dom).addClass("d-checkbox-unchecked");
+			}
+		});		
 		return dom;
 	},
 	

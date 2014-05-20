@@ -11,419 +11,390 @@
  */
 
 (function() {
-	var TAB_CLOSEABLE_CLASS = "-closeable", TAB_DISABLED_CLASS = "-disabled", ICON_CLASS = "icon";
+	var TAB_CLOSEABLE_CLASS = "-closeable", TAB_DISABLED_CLASS = "-disabled", ICON_CLASS = "d-icon";
 
 	/**
 	 * @namespace
 	 */
 	dorado.widget.tab = {};
 
-    /**
-     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
-     * @class TabBar、TabColumn中使用的标签页。
-     * @shortTypeName Default
-     * @extends dorado.RenderableElement, dorado.EventSupport
-     */
-    dorado.widget.tab.Tab = $extend([dorado.RenderableElement, dorado.EventSupport], /** @scope dorado.widget.tab.Tab.prototype */ {
-        $className: "dorado.widget.tab.Tab",
+	/**
+	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+	 * @class TabBar、TabColumn中使用的标签页。
+	 * @shortTypeName Default
+	 * @extends dorado.widget.RenderableViewElement
+	 */
+	dorado.widget.tab.Tab = $extend(dorado.widget.RenderableViewElement, /** @scope dorado.widget.tab.Tab.prototype */ {
+		$className: "dorado.widget.tab.Tab",
 
-        ATTRIBUTES: /** @scope dorado.widget.tab.Tab.prototype */ {
-            className: {
-                defaultValue: "tab"
-            },
+		ATTRIBUTES: /** @scope dorado.widget.tab.Tab.prototype */ {
+			className: {
+				defaultValue: "tab"
+			},
 
-            /**
-             * Tab的Name，用来唯一表示TabBar或者TabColumn里面的一个Tab。
-             * 可以指定，也可以不指定，不指定则默认为空。
-             * @type String
-             * @attribute
-             */
-            name: {},
+			/**
+			 * Tab的Name，用来唯一表示TabBar或者TabColumn里面的一个Tab。
+			 * 可以指定，也可以不指定，不指定则默认为空。
+			 * @type String
+			 * @attribute
+			 */
+			name: {},
 
-            /**
-             * Tab上显示的文字。
-             * @type String
-             * @attribute
-             */
-            caption: {},
+			/**
+			 * Tab上显示的文字。
+			 * @type String
+			 * @attribute
+			 */
+			caption: {},
 
-            /**
-             * Tab是否可以被关闭，也就是是否显示右侧的关闭按钮。
-             * @type boolean
-             * @default false
-             * @attribute
-             */
-            closeable: {},
+			/**
+			 * Tab是否可以被关闭，也就是是否显示右侧的关闭按钮。
+			 * @type boolean
+			 * @default false
+			 * @attribute
+			 */
+			closeable: {},
 
-            /**
-             * Tab上显示的图标所在的具体路径，图标大小建议是20*20或者16*16。
-             * @type String
-             * @attribute
-             */
-            icon: {},
+			/**
+			 * Tab上显示的图标所在的具体路径，图标大小建议是20*20或者16*16。
+			 * @type String
+			 * @attribute
+			 */
+			icon: {},
 
-            /**
-             * icon使用的className。
-             * @type String
-             * @attribute
-             */
-            iconClass: {},
+			/**
+			 * icon使用的className。
+			 * @type String
+			 * @attribute
+			 */
+			iconClass: {},
 
-            /**
-             * Tab是否被禁用，默认为false。
-             * @type boolean
-             * @default false
-             * @attribute
-             */
-            disabled: {
-                setter: function(value) {
-                    var tab = this, tabbar = tab._parent;
-                    if (tabbar) {
-                        if (value) {
-                            tabbar.disableTab(tab);
-                        } else {
-                            tabbar.enableTab(tab);
-                        }
-                    } else {
-                        tab._disabled = value;
-                    }
-                }
-            },
+			/**
+			 * Tab是否被禁用，默认为false。
+			 * @type boolean
+			 * @default false
+			 * @attribute
+			 */
+			disabled: {
+				setter: function(value) {
+					var tab = this, tabbar = tab._parent;
+					if (tabbar) {
+						if (value) {
+							tabbar.disableTab(tab);
+						}
+						else {
+							tabbar.enableTab(tab);
+						}
+					}
+					else {
+						tab._disabled = value;
+					}
+				}
+			},
 
-            /**
-             * Tab是否可见，默认值为true。
-             * @type boolean
-             * @default true
-             * @attribute
-             */
-            visible: {
-                defaultValue: true,
-                skipRefresh: true,
-                setter: function(value) {
-                    var tab = this, tabbar = tab._parent;
-                    if (tabbar && tab) {
-                        tabbar.doSetTabVisible(tab, value);
-                    }
-                    tab._visible = value;
-                }
-            },
+			/**
+			 * Tab是否可见，默认值为true。
+			 * @type boolean
+			 * @default true
+			 * @attribute
+			 */
+			visible: {
+				defaultValue: true,
+				skipRefresh: true,
+				setter: function(value) {
+					var tab = this, tabbar = tab._parent;
+					if (tabbar && tab) {
+						tabbar.doSetTabVisible(tab, value);
+					}
+					tab._visible = value;
+				}
+			},
 
-            /**
-             * 该Tab所属的TabBar，由系统指定，擅自修改该属性会导致TabBar无法正常运行。
-             * @type dorado.widget.TabBar
-             * @attribute
-             */
-            parent: {
-	            skipRefresh: true
-            },
+			/**
+			 * 提示信息。
+			 * @type String
+			 * @attribute skipRefresh
+			 */
+			tip: {
+				skipRefresh: true
+			}
+		},
 
-            /**
-             * 用户自定义数据。
-             * @type Object
-             * @attribute
-             */
-            userData: {
-	            skipRefresh: true
-            },
+		EVENTS: /** @scope dorado.widget.tab.Tab.prototype */ {
+			/**
+			 * 在Tab关闭之前触发。
+			 *
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			beforeClose: {},
 
-	        /**
-	         * 提示信息。
-	         * @type String
-	         * @attribute skipRefresh
-	         */
-	        tip : {
-		        skipRefresh : true
-	        }
-        },
+			/**
+			 * 在Tab关闭之后触发。
+			 *
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onClose: {},
 
-	    EVENTS: /** @scope dorado.widget.tab.Tab.prototype */ {
-		    /**
-		     * 在Tab关闭之前触发。
-		     *
-		     * @param {Object} self 事件的发起者，即组件本身。
-		     * @param {Object} arg 事件参数。
-		     * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		     * @event
-		     */
-		    beforeClose: {},
+			/**
+			 * 当Tab被点击时触发的事件，一般情况下不推荐使用此事件，建议使用TabBar或者TabControl的onTabChange代替此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onClick: {}
+		},
 
-		    /**
-		     * 在Tab关闭之后触发。
-		     *
-		     * @param {Object} self 事件的发起者，即组件本身。
-		     * @param {Object} arg 事件参数。
-		     * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-		     * @event
-		     */
-		    onClose: {},
+		_createIconSpan: function() {
+			var tab = this, doms = tab._doms;
+			var iconEl = document.createElement("span");
+			iconEl.className = ICON_CLASS;
 
-            /**
-             * 当Tab被点击时触发的事件，一般情况下不推荐使用此事件，建议使用TabBar或者TabControl的onTabChange代替此事件。
-             * @param {Object} self 事件的发起者，即组件本身。
-             * @param {Object} arg 事件参数。
-             * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
-             * @event
-             */
-            onClick: {}
-	    },
+			doms.icon = iconEl;
 
-        constructor: function(config) {
-            $invokeSuper.call(this, arguments);
+			$fly(iconEl).prependTo(doms.tabLeft);
 
-            if (config) {
-                this.set(config);
-            }
-        },
+			$DomUtils.setBackgroundImage(iconEl, tab._icon);
+		},
 
-	    destroy: function() {
-		    dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
-		    var tab = this, dom = tab._dom, doms = tab._doms;
-		    if (dom) {
-			    doms.close && $fly(doms.close).unbind();
-			    $fly(dom).remove();
-		    }
-		    delete tab._dom;
-		    delete tab._doms;
-		    delete tab._parent;
-	    },
+		refreshDom: function(dom) {
+			var tab = this, closeable = tab._closeable, disabled = tab._disabled, visible = tab._visible, doms = tab._doms,
+				captionDom = doms.caption, closeEl = doms.close, width = tab._width, tabbar = tab._parent, tabMinWidth;
 
-        _createIconSpan: function() {
-            var tab = this, doms = tab._doms;
-            var iconEl = document.createElement("span");
-            iconEl.className = "icon";
+			$DomUtils.disableUserSelection(dom);
+			$fly(captionDom).text(tab._caption);
 
-            doms.icon = iconEl;
+			if (closeable) {
+				if (!closeEl) {
+					tab.createCloseDom(dom, doms);
+				}
+			}
+			else {
+				if (closeEl) {
+					$fly(closeEl).remove();
+					$fly(dom).removeClass(tab._className + TAB_CLOSEABLE_CLASS);
+				}
+			}
 
-            $fly(iconEl).prependTo(doms.tabLeft);
-        },
+			$fly(dom).css("display", visible ? "" : "none");
 
-        refreshDom: function(dom) {
-            var tab = this, closeable = tab._closeable, disabled = tab._disabled, visible = tab._visible, doms = tab._doms,
-                captionDom = doms.caption, closeEl = doms.close, width = tab._width, tabbar = tab._parent, tabMinWidth;
+			if (disabled) {
+				$fly(dom).addClass(tab._className + TAB_DISABLED_CLASS);
+			}
+			else {
+				$fly(dom).removeClass(tab._className + TAB_DISABLED_CLASS);
+			}
 
-            $DomUtils.disableUserSelection(dom);
-            $fly(captionDom).text(tab._caption);
+			jQuery(dom).addClassOnHover(tab._className + "-hover", null, function() {
+				return !tab._disabled;
+			});
 
-            if (closeable) {
-                if (!closeEl) {
-                    tab.createCloseDom(dom, doms);
-                }
-            } else {
-                if (closeEl) {
-                    $fly(closeEl).remove();
-                    $fly(dom).removeClass(tab._className + TAB_CLOSEABLE_CLASS);
-                }
-            }
+			if (tabbar && !width) {
+				tabMinWidth = tabbar._tabMinWidth;
+				if (dom.offsetWidth < tabMinWidth) {
+					width = tab._width = tabMinWidth;
+				}
+			}
 
-            $fly(dom).css("display", visible ? "" : "none");
+			var icon = tab._icon, iconCls = tab._iconClass;
 
-            if (disabled) {
-                $fly(dom).addClass(tab._className + TAB_DISABLED_CLASS);
-            } else {
-                $fly(dom).removeClass(tab._className + TAB_DISABLED_CLASS);
-            }
+			if (!icon && !iconCls && doms.icon) {
+				$fly(doms.icon).css("display", "none");
+			}
+			else {
+				if (doms.icon) {
+					$fly(doms.icon).prop("className", ICON_CLASS).css("display", "");
+				}
+				if ((icon || iconCls) && !doms.icon) {
+					tab._createIconSpan();
+				}
 
-            if (tabbar && !width) {
-                tabMinWidth = tabbar._tabMinWidth;
-                if (dom.offsetWidth < tabMinWidth) {
-                    width = tab._width = tabMinWidth;
-                }
-            }
+				if (icon) {
+					$DomUtils.setBackgroundImage(doms.icon, icon);
+				}
+				else if (doms.icon) {
+					$fly(doms.icon).css("background-image", "none");
+				}
 
-            var icon = tab._icon, iconCls = tab._iconClass;
+				if (iconCls) {
+					$fly(doms.icon).addClass(iconCls);
+				}
+			}
 
-            if (!icon && !iconCls && doms.icon) {
-                $fly(doms.icon).css("display", "none");
-            } else {
-                if (doms.icon) {
-                    $fly(doms.icon).prop("className", ICON_CLASS).css("display", "");
-                }
-                if ((icon || iconCls) && !doms.icon) {
-                    tab._createIconSpan();
-                }
+			if (this._tip && dorado.TipManager) {
+				this._currentTip = this._tip;
+				dorado.TipManager.initTip(dom, {
+					text: this._tip
+				});
+			}
+			else if (this._currentTip) {
+				dorado.TipManager.deleteTip(dom);
+			}
 
-                if (icon) {
-                    $DomUtils.setBackgroundImage(doms.icon, icon);
-                } else if (doms.icon) {
-                    $fly(doms.icon).css("background-image", "none");
-                }
+			if (width) {
+				tab.doOnResize();
+			}
+		},
 
-                if (iconCls) {
-                    $fly(doms.icon).addClass(iconCls);
-                }
-            }
+		/**
+		 * 关闭并移除该Tab。
+		 */
+		close: function() {
+			var tab = this, tabbar = tab._parent, eventArg = {};
+			if (tabbar) {
+				tab.fireEvent("beforeClose", tab, eventArg);
+				if (eventArg.processDefault === false) return;
+				tabbar.removeTab(tab);
+				tab.fireEvent("onClose", tab);
+			}
+		},
 
-	        if(this._tip && dorado.TipManager) {
-		        this._currentTip = this._tip;
-		        dorado.TipManager.initTip(dom, {
-			        text : this._tip
-		        });
-	        } else if(this._currentTip) {
-		        dorado.TipManager.deleteTip(dom);
-	        }
+		/**
+		 * 因为Tab的render需要按照顺序来render，所以重写了render方法。
+		 * @param {HtmlElement} ctEl 要附加到的Element。
+		 * @param {int} [index] 要添加到到的Element的索引。
+		 * @protected
+		 */
+		render: function(ctEl, index) {
+			var dom = this.getDom();
+			if (!dom) {
+				return;
+			}
+			if (!ctEl) {
+				ctEl = document.body;
+			}
+			if (dom.parentNode != ctEl) {
+				if (index != null) {
+					var refEl = ctEl.childNodes[index];
+					if (!refEl) {
+						ctEl.appendChild(dom);
+					}
+					else {
+						ctEl.insertBefore(dom, refEl);
+					}
+				}
+				else {
+					ctEl.appendChild(dom);
+				}
+			}
+			this._rendered = true;
+		},
 
-            if (width) {
-                tab.doOnResize();
-            }
-        },
+		createDom: function() {
+			var tab = this, doms = {}, dom = $DomUtils.xCreate({
+				tagName: "li",
+				className: tab._className,
+				content: [
+					{
+						tagName: "span",
+						className: "tab-left",
+						contextKey: "tabLeft",
+						content: {
+							tagName: "span",
+							className: "caption",
+							content: tab._caption,
+							contextKey: "caption"
+						}
+					},
+					{
+						tagName: "span",
+						className: "tab-right",
+						contextKey: "tabRight"
+					}
+				]
+			}, null, doms);
 
-        /**
-         * 关闭并移除该Tab。
-         */
-        close: function() {
-            var tab = this, tabbar = tab._parent, eventArg = {};
-	        if (tabbar) {
-		        tab.fireEvent("beforeClose", tab, eventArg);
-		        if (eventArg.processDefault === false) return;
-		        tabbar.removeTab(tab);
-		        tab.fireEvent("onClose", tab);
-	        }
-        },
+			tab._doms = doms;
 
-        /**
-         * 因为Tab的render需要按照顺序来render，所以重写了render方法。
-         * @param {HtmlElement} ctEl 要附加到的Element。
-         * @param {int} [index] 要添加到到的Element的索引。
-         * @protected
-         */
-        render: function(ctEl, index) {
-            var dom = this.getDom();
-            if (!dom) {
-                return;
-            }
-            if (!ctEl) {
-                ctEl = document.body;
-            }
-            if (dom.parentNode != ctEl) {
-                if (index != null) {
-                    var refEl = ctEl.childNodes[index];
-                    if (!refEl) {
-                        ctEl.appendChild(dom);
-                    } else {
-                        ctEl.insertBefore(dom, refEl);
-                    }
-                } else {
-                    ctEl.appendChild(dom);
-                }
-            }
-            this._rendered = true;
-        },
+			$fly(dom).click(function() {
+				var tabbar = tab._parent, disabled = tab._disabled;
+				if (tabbar) {
+					if (!disabled) {
+						tab.fireEvent("onClick", tab);
+						tabbar.doChangeCurrentTab(tab);
+					}
+				}
+			}).addClass(tab._exClassName ? tab._exClassName : "");
 
-        createDom: function() {
-            var tab = this, doms = {}, dom = $DomUtils.xCreate({
-                tagName: "li",
-                className: tab._className,
-                content: [
-                    {
-                        tagName: "span",
-                        className: "tab-left",
-                        contextKey: "tabLeft",
-                        content: {
-                            tagName: "span",
-                            className: "caption",
-                            content: tab._caption,
-                            contextKey: "caption"
-                        }
-                    },
-                    {
-                        tagName: "span",
-                        className: "tab-right",
-                        contextKey: "tabRight"
-                    }
-                ]
-            }, null, doms);
+			if (tab._closeable) {
+				tab.createCloseDom(dom, doms);
+			}
 
-            tab._doms = doms;
+			jQuery(dom).addClassOnHover(tab._className + "-hover", null,function() {
+				return !tab._disabled;
+			}).bind("contextmenu", function(event) {
+					event = jQuery.event.fix(event || window.event);
+					event.preventDefault();
+					event.returnValue = false;
+					var tabbar = tab._parent, arg = {
+						tab: tab,
+						event: event
+					};
+					tabbar._contextMenuTab = tab;
+					tabbar.fireEvent("onTabContextMenu", tabbar, arg);
 
-            $fly(dom).click(function() {
-                var tabbar = tab._parent, disabled = tab._disabled;
-                if (tabbar) {
-                    if (!disabled) {
-                        tab.fireEvent("onClick", tab);
-                        tabbar.doChangeCurrentTab(tab);
-                    }
-                }
-            }).addClass(tab._exClassName ? tab._exClassName : "");
+					return false;
+				});
 
-            if (tab._closeable) {
-                tab.createCloseDom(dom, doms);
-            }
+			if (tab._icon || tab._iconClass) {
+				tab._createIconSpan();
+			}
 
-            jQuery(dom).addClassOnHover(tab._className + "-hover", null, function() {
-                return !tab._disabled;
-            }).bind("contextmenu", function(event) {
-                event = jQuery.event.fix(event || window.event);
-                event.preventDefault();
-                event.returnValue = false;
-                var tabbar = tab._parent, arg = {
-                    tab: tab,
-                    event: event
-                };
-                tabbar._contextMenuTab = tab;
-                tabbar.fireEvent("onTabContextMenu", tabbar, arg);
+			return dom;
+		},
 
-                return false;
-            });
+		getControl: function() {
+			return (this.doGetControl) ? this.doGetControl() : null;
+		},
 
-            if (tab._icon || tab._iconClass) {
-                tab._createIconSpan();
-            }
+		doOnResize: function() {
+			var tab = this, dom = tab._dom, doms = tab._doms, width = tab._width;
+			if (tab._parent instanceof dorado.widget.TabColumn) return;
+			$fly(dom).outerWidth(width);
+			var leftEl = $fly(doms.tabLeft);
+			var leftWidth = jQuery(dom).width() - (parseInt(leftEl.css("margin-left"), 10) || 0) - (parseInt(leftEl.css("margin-right"), 10) || 0)
+				- (parseInt(leftEl.css("padding-left"), 10) || 0) - (parseInt(leftEl.css("padding-right"), 10) || 0);
+			leftEl.width(leftWidth);
 
-            return dom;
-        },
+			var captionEl = $fly(doms.caption);
+			captionEl.width(leftWidth - jQuery(doms.icon).outerWidth(true)
+				- (parseInt(captionEl.css("padding-left"), 10) || 0) - (parseInt(captionEl.css("padding-right"), 10) || 0));
+		},
 
-        getControl: function() {
-            return (this.doGetControl) ? this.doGetControl() : null;
-        },
+		createCloseDom: function(dom, doms) {
+			var tab = this, closeEl = $DomUtils.xCreate({
+				tagName: "span",
+				className: "close",
+				contextKey: "close"
+			}, null, doms);
 
-        getListenerScope: function() {
-            if (this._parent && this._parent._view) {
-                return this._parent._view;
-            }
-            return this;
-        },
+			if (tab._parent instanceof dorado.widget.TabBar) {
+				doms.tabLeft.appendChild(closeEl);
+			}
+			else {
+				dom.insertBefore(closeEl, doms.tabRight);
+			}
 
-        doOnResize: function() {
-            var tab = this, dom = tab._dom, doms = tab._doms, width = tab._width;
-            if (tab._parent instanceof dorado.widget.TabColumn) return;
-            $fly(dom).outerWidth(width);
-            var leftEl = $fly(doms.tabLeft);
-            var leftWidth = jQuery(dom).width() - (parseInt(leftEl.css("margin-left"), 10) || 0) - (parseInt(leftEl.css("margin-right"), 10) || 0)
-                - (parseInt(leftEl.css("padding-left"), 10) || 0) - (parseInt(leftEl.css("padding-right"), 10) || 0);
-            leftEl.width(leftWidth);
+			jQuery(closeEl).click(function(event) {
+				if (!tab._disabled) {
+					tab.close();
+				}
+				event.stopImmediatePropagation();
+			}).addClassOnHover("close-hover", null,function() {
+					return !tab._disabled;
+				}).addClassOnClick("close-click", null, function() {
+					return !tab._disabled;
+				});
 
-            var captionEl = $fly(doms.caption);
-            captionEl.width(leftWidth - jQuery(doms.icon).outerWidth(true)
-                - (parseInt(captionEl.css("padding-left"), 10) || 0) - (parseInt(captionEl.css("padding-right"), 10) || 0));
-        },
-
-        createCloseDom: function(dom, doms) {
-            var tab = this, closeEl = $DomUtils.xCreate({
-                tagName: "span",
-                className: "close",
-                contextKey: "close"
-            }, null, doms);
-
-            if (tab._parent instanceof dorado.widget.TabBar) {
-                doms.tabLeft.appendChild(closeEl);
-            } else {
-                dom.insertBefore(closeEl, doms.tabRight);
-            }
-
-            jQuery(closeEl).click(function(event) {
-                if (!tab._disabled) {
-                    tab.close();
-                }
-                event.stopImmediatePropagation();
-            }).addClassOnHover("close-hover", null, function() {
-                    return !tab._disabled;
-                }).addClassOnClick("close-click", null, function() {
-                    return !tab._disabled;
-                });
-
-            $fly(dom).addClass(tab._className + TAB_CLOSEABLE_CLASS);
-        }
-    });
+			$fly(dom).addClass(tab._className + TAB_CLOSEABLE_CLASS);
+		}
+	});
 
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -455,12 +426,12 @@
 				}
 			}
 		},
-		
+
 		destroy: function() {
 			this._control && this._control.destroy();
 			$invokeSuper.call(this);
 		},
-		
+
 		doGetControl: function() {
 			var result = this._control;
 			if (!result) {

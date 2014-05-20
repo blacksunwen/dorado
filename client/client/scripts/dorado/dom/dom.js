@@ -489,7 +489,7 @@
 		 * 如果仍然不能显示在屏幕范围内，我们就认为该组件的超出触发，会调用该组件的overflowHandler来处理组件的超出。
 		 * </p>
 		 * @param {HTMLElement} element 要停靠的DOM对象。
-		 *	 此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
+		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
 		 * @param {HTMLElement|window} fixedElement 固定位置的DOM对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。
 		 * @param {Object} options 以JSON方式定义的选项。
 		 * @param {String} [options.align=innerleft] 在水平方向上，停靠的DOM对象停靠在固定位置的DOM对象的位置。可选值为left、innerleft、center、innerright、top。
@@ -529,7 +529,7 @@
 					rect.top -= options.gapY;
 					rect.bottom += options.gapY;
 				}
-				
+
 				if (align) {
 					left = getLeft(rect, element, align);
 
@@ -562,7 +562,7 @@
 						}
 					}
 				}
-				
+
 				if (vAlign) {
 					top = getTop(rect, element, vAlign);
 
@@ -617,14 +617,14 @@
 					}
 				}
 			}
-			
+
 			//console.log("overflowTrigger:" + overflowTrigger);
 			options.align = align;
 			options.vAlign = vAlign;
 
 			var finalLeft = left + offsetLeft /**+ $fly(element.offsetParent).scrollLeft()*/,
 				finalTop = top + offsetTop /**+ $fly(element.offsetParent).scrollTop() */;
-			
+
 			$fly(element).offset({ left: finalLeft, top: finalTop });
 
 			finalLeft = parseInt($fly(element).css("left"), 10);
@@ -651,12 +651,12 @@
 				1: finalTop
 			};
 		},
-		
+
 		/**
 		 * 将一个绝对定位(style.position=absolute)的DOM对象放置在屏幕或另一个DOM对象的可见区域内。
 		 *
 		 * @param {HTMLElement} element 要放置的DOM对象。
-		 *	 此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
+		 *     此DOM对象是绝对定位的(style.position=absolute)并且其DOM树处于顶层位置(即其父节点是document.body)。
 		 * @param {Object} options 以JSON方式定义的选项。
 		 * @param {HTMLElement} options.parent 作为容器的DOM对象（并不是指DOM结构上的父节点，仅指视觉上的关系）。如果不指定此属性则表示放置在屏幕可见区域内。
 		 * @param {int} options.offsetLeft 水平偏移量，可以为正，可以为负。
@@ -674,13 +674,13 @@
 				offsetParentHeight = offsetParentEl.height(), adjustLeft, adjustTop, overflowTrigger = false, maxWidth, maxHeight,
 				position = options.position, left = position ? position.left : 0, top = position ? position.top : 0,
 				autoAdjustPosition = options.autoAdjustPosition;
-			
+
 			if (parent) {
 				var parentPos = $fly(parent).offset();
 				left += parentPos.left;
 				top += parentPos.top;
 			}
-			
+
 			if (!(autoAdjustPosition === false)) {
 				if (top < 0) {
 					top = 0;
@@ -717,7 +717,7 @@
 					}
 				}
 			}
-			
+
 			var finalLeft = left + offsetLeft, finalTop = top + offsetTop;
 			$fly(element).left(finalLeft).top(finalTop);
 

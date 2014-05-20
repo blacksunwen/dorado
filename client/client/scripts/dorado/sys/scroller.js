@@ -22,7 +22,7 @@
 		}
 	}
 
-	var Scroller = $class({
+	dorado.util.Dom.ThinScroller = $class({
 		// dom, doms, container, direction
 
 		constructor: function(container, direction, options) {
@@ -40,7 +40,7 @@
 		createDom: function() {
 			var scroller = this, doms = scroller.doms = {}, dom = scroller.dom = $DomUtils.xCreate({
 				tagName: "DIV",
-				className: "i-modern-scroller d-modern-scroller",
+				className: "d-modern-scroller",
 				style: "position: absolute",
 				content: [{
 					tagName: "DIV",
@@ -294,7 +294,7 @@
 		}
 	});
 
-	var ModernScrolled = $class({
+	var ModernScrolled = dorado.util.Dom.ModernScrolled = $class({
 		constructor: function(container, options) {
 			this.id = dorado.Core.newId();
 			this.container = container;
@@ -316,7 +316,7 @@
 		}
 	});
 
-	var DesktopModernScrolled = $extend(ModernScrolled, {
+	dorado.util.Dom.DesktopModernScroller = $extend(ModernScrolled, {
 		// container, xScroller, yScroller
 
 		constructor: function(container, options) {
@@ -331,11 +331,11 @@
 
 			if (!(overflowX == "hidden" || overflowX != "scroll" && (width == "" || width == "auto"))) {
 				$container.css("overflowX", "hidden");
-				xScroller = new Scroller(container, "h", options);
+				xScroller = new dorado.util.Dom.ThinScroller(container, "h", options);
 			}
 			if (!(overflowY == "hidden" || overflowY != "scroll" && (height == "" || height == "auto"))) {
 				$container.css("overflowY", "hidden");
-				yScroller = new Scroller(container, "v", options);
+				yScroller = new dorado.util.Dom.ThinScroller(container, "v", options);
 			}
 
 			if (!xScroller && !yScroller) throw new dorado.AbortException();
@@ -396,10 +396,10 @@
 					scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
 					clientWidth: container.clientWidth, clientHeight: container.clientHeight
 				};
-                $(container).trigger("modernScrolling", arg).trigger("modernScroll", arg);
+				$(container).trigger("modernScrolling", arg).trigger("modernScrolled", arg);
 			}).resize(function(evt) {
-				modernScrolled.update();
-			});
+					modernScrolled.update();
+				});
 		},
 
 		update: function() {
@@ -426,21 +426,24 @@
 		}
 	});
 
-	var TouchModernScrolled = $extend(ModernScrolled, {
+	dorado.util.Dom.IScrollerWrapper = $extend(ModernScrolled, {
 		// iscroll
 
 		constructor: function(container, options) {
 			var $container = $(container);
 			var overflowX = $container.css("overflowX"), overflowY = $container.css("overflowY");
 			var width = $container.css("width"), height = $container.css("height");
-
+			
+			options = options || {};
+			if (options.autoDisable === undefined) options.autoDisable = true;
+			
 			/*
 			if ((overflowX == "hidden" || overflowX != "scroll" && (width == "" || width == "auto")) &&
 				(overflowY == "hidden" || overflowY != "scroll" && (height == "" || height == "auto"))) {
 				throw new dorado.AbortException();
 			}
 			*/
-
+			
 			var onScrolling = function() {
 				var arg = {
 					scrollLeft: this.x * -1, scrollTop: this.y * -1,
@@ -462,10 +465,10 @@
 						scrollWidth: container.scrollWidth, scrollHeight: container.scrollHeight,
 						clientWidth: container.clientWidth, clientHeight: container.clientHeight
 					};
-					$container.trigger("modernScroll", arg);
+					$container.trigger("modernScrolled", arg);
 				}
 			}, options, false);
-
+			
 			$container.css("overflowX", "hidden").css("overflowY", "hidden");
 			setTimeout(function() {
 				modernScrolled.iscroll = new iScroll(container, modernScrolled.options);
@@ -487,9 +490,11 @@
 		update: function() {
 			if (!this.iscroll || this.destroyed || this.dragging) return;
 
+			var iscroll = this.iscroll;
 			if (this.options.autoDisable) {
 				var container = this.container;
-				if (container.scrollHeight > (container.clientHeight + 2) || container.scrollWidth > (container.clientWidth + 2)) {
+				if (container.scrollHeight - (iscroll.y || 0) > (container.clientHeight + 2) ||
+					container.scrollWidth - (iscroll.x || 0)> (container.clientWidth + 2)) {
 					this.iscroll.enable();
 					this.iscroll.refresh();
 				}
@@ -553,21 +558,24 @@
 	 */
 	dorado.util.Dom.modernScroll = function(container, options) {
 		var $container = $(container);
-		if ($container.data("modernScrolled")) return;
+		if ($container.data("modernScroller")) return;
 
 		try {
 			var modernScrolled;
-			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
-				modernScrolled = new TouchModernScrolled(container, options);;
-			}
-			else {
-				var parentDom = container.parentNode;
-				if (parentDom) {
-					modernScrolled = new DesktopModernScrolled(container, options);
+			var parentDom = container.parentNode;
+			if (parentDom) {
+				if (options && options.scrollerType) {
+					modernScrolled = new options.scrollerType(container, options);
+				}
+				else if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
+					modernScrolled = new dorado.util.Dom.IScrollerWrapper(container, options);
+				}
+				else {
+					modernScrolled = new dorado.util.Dom.DesktopModernScroller(container, options);
 				}
 			}
 
-			if (modernScrolled) $container.data("modernScrolled", modernScrolled);
+			if (modernScrolled) $container.data("modernScroller", modernScrolled);
 		}
 		catch (e) {
 			dorado.Exception.processException(e);
@@ -576,7 +584,7 @@
 	}
 
 	dorado.util.Dom.destroyModernScroll = function(container, options) {
-		var modernScrolled = $(container).data("modernScrolled");
+		var modernScrolled = $(container).data("modernScroller");
 		if (modernScrolled) modernScrolled.destroy();
 	}
 

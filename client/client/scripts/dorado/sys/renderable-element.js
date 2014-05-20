@@ -18,11 +18,11 @@
  */
 dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.RenderableElement.prototype */ {
 	$className: "dorado.RenderableElement",
-	
+
 	_ignoreRefresh: 0,
-	
+
 	ATTRIBUTES: /** @scope dorado.RenderableElement.prototype */ {
-	
+
 		/**
 		 * CSS类名。
 		 * @type String
@@ -31,7 +31,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		className: {
 			writeBeforeReady: true
 		},
-		
+
 		/**
 		 * 扩展CSS类名。
 		 * @type String
@@ -49,7 +49,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				}
 			}
 		},
-		
+
 		/**
 		 * 宽度。
 		 * @type int
@@ -60,7 +60,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				this._width = isFinite(v) ? parseInt(v) : v;
 			}
 		},
-		
+
 		/**
 		 * 高度。
 		 * @type int
@@ -71,7 +71,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				this._height = isFinite(v) ? parseInt(v) : v;
 			}
 		},
-		
+
 		/**
 		 * 用于简化DOM元素style属性设置过程的虚拟属性。
 		 * 此处用于赋值给style属性的对象是一个结构与HTMLElement的style相似的JavaScript对象。
@@ -92,12 +92,13 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			setter: function(v) {
 				if (typeof v == "string" || !this._style) {
 					this._style = v;
-				} else if (v) {
+				}
+				else if (v) {
 					dorado.Object.apply(this._style, v);
 				}
 			}
 		},
-		
+
 		/**
 		 * 指示此对象是否已经渲染过。
 		 * @type boolean
@@ -108,9 +109,9 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		}
 	},
 
-	destroy : function() {
+	destroy: function() {
 		var dom = this._dom;
-		if(dom) {
+		if (dom) {
 			delete this._dom;
 			if (dorado.windowClosed) {
 				$fly(dom).unbind();
@@ -122,7 +123,6 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		$invokeSuper.call(this);
 	},
 
-	
 	doSet: function(attr, value) {
 		$invokeSuper.call(this, [attr, value]);
 
@@ -131,7 +131,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", this.refresh, 50);
 		}
 	},
-	
+
 	/**
 	 * 创建对象对应的DOM元素。
 	 * <p>
@@ -143,7 +143,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	createDom: function() {
 		return document.createElement("DIV");
 	},
-	
+
 	/**
 	 * 根据对象自身的属性设定来刷新DOM元素。
 	 * <p>
@@ -172,9 +172,15 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			if (width < 0) {
 				this._currentWidth = null;
 				dom.style.width = "";
-			} else {
+			}
+			else {
 				this._currentWidth = width;
-				$dom.outerWidth(width);
+				if (this._useInnerWidth) {
+					$dom.width(width);
+				}
+				else {
+					$dom.outerWidth(width);
+				}
 			}
 			changed = true;
 		}
@@ -182,15 +188,21 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			if (height < 0) {
 				this._currentHeight = null;
 				dom.style.height = "";
-			} else {
+			}
+			else {
 				this._currentHeight = height;
-				$dom.outerHeight(height);
+				if (this._useInnerHeight) {
+					$dom.height(height);
+				}
+				else {
+					$dom.outerHeight(height);
+				}
 			}
 			changed = true;
 		}
 		return changed;
 	},
-	
+
 	/**
 	 * 获得渲染时实际应该采用的宽度值。
 	 * <p>
@@ -202,7 +214,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	getRealWidth: function() {
 		return (this._realWidth == null) ? this._width : this._realWidth;
 	},
-	
+
 	/**
 	 * 获得渲染时实际应该采用的高度值。
 	 * <p>
@@ -214,7 +226,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	getRealHeight: function() {
 		return (this._realHeight == null) ? this._height : this._realHeight;
 	},
-	
+
 	applyStyle: function(dom) {
 		if (this._style) {
 			var style = this._style;
@@ -228,7 +240,8 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 						var value = jQuery.trim(section.substring(i + 1));
 						if (dorado.Browser.msie && attr.toLowerCase() == "filter") {
 							dom.style.filter = value;
-						} else {
+						}
+						else {
 							map[attr] = value;
 						}
 					}
@@ -239,7 +252,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 			delete this._style;
 		}
 	},
-	
+
 	/**
 	 * 返回对象对应的DOM元素。
 	 * @return {HTMLElement} 控件对应的DOM元素。
@@ -248,36 +261,41 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		if (!this._dom) {
 			this._dom = this.createDom();
 			var $dom = $fly(this._dom);
-			
+
 			var className = (this._inherentClassName) ? this._inherentClassName : "";
 			if (this._className) className += (" " + this._className);
 			if (this._exClassName) className += (" " + this._exClassName);
 			if (className) $dom.addClass(className);
-			
+
 			this.applyStyle(this._dom);
 		}
 		return this._dom;
 	},
-	
+
 	doRenderToOrReplace: function(replace, element, nextChildElement) {
 		var dom = this.getDom();
 		if (!dom) return;
-		
+
 		if (replace) {
 			if (!element.parentNode) return;
 			element.parentNode.replaceChild(dom, element);
-		} else {
+		}
+		else {
 			if (!element) element = document.body;
 			if (dom.parentNode != element || (nextChildElement && dom.nextSibling != nextChildElement)) {
-				if (nextChildElement) element.insertBefore(dom, nextChildElement);
-				else element.appendChild(dom);
+				if (nextChildElement) {
+					element.insertBefore(dom, nextChildElement);
+				}
+				else {
+					element.appendChild(dom);
+				}
 			}
 		}
 
 		this.refreshDom(dom);
 		this._rendered = true;
 	},
-	
+
 	/**
 	 * 将本对象渲染到指定的DOM容器中。
 	 * @param {HTMLElement} containerElement 作为容器的DOM元素。如果此参数为空，将以document.body作为容器。
@@ -286,7 +304,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	render: function(containerElement, nextChildElement) {
 		this.doRenderToOrReplace(false, containerElement, nextChildElement);
 	},
-	
+
 	/**
 	 * 本对象并替换指定的DOM对象。
 	 * @param {HTMLElement} elmenent 要替换的DOM对象。
@@ -294,7 +312,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	replace: function(elmenent) {
 		this.doRenderToOrReplace(true, elmenent);
 	},
-	
+
 	/**
 	 * 将对象的DOM节点从其父节点中移除。
 	 */
@@ -302,7 +320,7 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 		var dom = this.getDom();
 		if (dom && dom.parentNode) dom.parentNode.removeChild(dom);
 	},
-	
+
 	/**
 	 * 刷新此对象的显示。
 	 * @param {boolean} delay 是否允许此次refresh动作延时执行。设置成true有利于系统对refresh动作进行优化处理。
@@ -314,7 +332,8 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 				dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
 				this.refreshDom(this.getDom());
 			}, 50);
-		} else {
+		}
+		else {
 			dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
 			this.refreshDom(this.getDom());
 		}

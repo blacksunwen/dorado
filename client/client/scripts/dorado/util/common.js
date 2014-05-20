@@ -17,6 +17,76 @@
  * @static
  */
 dorado.util.Common = {
+
+	/**
+	 * 用于注册URL预设变量的JSON对象。
+	 * @type {Object}
+	 * @see dorado.Toolkits.translateURL
+	 * @see $url
+	 */
+	URL_VARS: {},
+
+	concatURL: function () {
+		var url = "";
+		for (var i = 0; i < arguments.length; i++) {
+			var section = arguments[i];
+			if (typeof section == "string" && section) {
+				section = jQuery.trim(section);
+				var e = (url.charAt(url.length - 1) == '/');
+				var s = (section.charAt(0) == '/');
+				if (s == e) {
+					if (s) {
+						url += section.substring(1);
+					}
+					else {
+						url += '/' + section;
+					}
+				}
+				else {
+					url += section;
+				}
+			}
+		}
+		return url;
+	},
+
+	/**
+	 * 将一段给定URL转换为最终的可以使用的URL。
+	 * <p>
+	 * 此方法允许用户在定义一个URL时利用">"在URL中植入特定的内容。<br>
+	 * 例如：">images/loading.gif"表示应用的根路径下的"images/loading.gif"。
+	 * 如果此时应用的根路径是"/sampleApp"，那么此方法最终返回的URL将是"/sampleApp/images/loading.gif"。（应用的根路径通过{@link $setting}中的"common.contextPath"项设定）
+	 * </p>
+	 * <p>
+	 * 另外，此方法还支持在URL中植入预设变量。<br>
+	 * 例如："skin>button.css"表示系统当前皮肤根路径中的button.css。其中的"skin>"就代表一个名为skin的预设变量。此方法会将预设变量的值替换的URL中。<br>
+	 * 假设skin变量的值为"/sampleApp/skins/nature/"，那么上述URL的最终转换结果为"/sampleApp/skins/nature/button.css"。
+	 * </p>
+	 * <p>
+	 * 此方法中使用的预设变量都需要注册在{@link dorado.Toolkits.URL_VARS}中，系统默认情况下只提供一个名为skin的预设变量。开发人员可以根据自己的需要向URL_VARS中注册自己的预设变量。
+	 * </p>
+	 * @param {String} url 要转换的URL。
+	 * @return {String} 转换后得到的URL。
+	 * @see $url
+	 * @see dorado.Toolkits.URL_VARS
+	 */
+	translateURL: function (url) {
+		if (!url) return url;
+
+		var reg = /^.+\>/, m = url.match(reg);
+		if (m) {
+			m = m[0];
+			var varName = m.substring(0, m.length - 1);
+			if (varName.charAt(0) == '>') varName = varName.substring(1);
+			var s1 = this.URL_VARS[varName] || "", s2 = url.substring(m.length);
+			url = this.concatURL(s1, s2);
+		}
+		else if (url.charAt(0) == '>') {
+			url = this.concatURL($setting["common.contextPath"], url.substring(1));
+		}
+		return url;
+	},
+
 	parseExponential: function(n) {
 		n = n + '';
 		var cv = n.split("e-");
@@ -284,6 +354,19 @@ dorado.util.Common = {
 		return instance;
 	}
 };
+
+/**
+ * @name $url
+ * @function
+ * @description dorado.Toolkits.translateURL()方法的快捷方式。
+ * 详细用法请参考dorado.Toolkits.translateURL()的说明。
+ * @see dorado.Toolkits.translateURL
+ */
+window.$url = function (url) {
+	return dorado.util.Common.translateURL(url);
+};
+
+dorado.util.Common.URL_VARS.skin = $url($setting["widget.skinRoot"] + ($setting["widget.skin"] ? ($setting["widget.skin"] + '/') : ''));
 
 /**
  * @name $singleton

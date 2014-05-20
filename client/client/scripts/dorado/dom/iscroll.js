@@ -777,11 +777,11 @@
 		},
 
 		_bind: function (type, el, bubble) {
-			(el || this.element).addEventListener(type, this, !!bubble);
+			(el || this.options.eventElement || this.element).addEventListener(type, this, !!bubble);
 		},
 
 		_unbind: function (type, el, bubble) {
-			(el || this.element).removeEventListener(type, this, !!bubble);
+			(el || this.options.eventElement || this.element).removeEventListener(type, this, !!bubble);
 		},
 
 		_unbindScrollEvent: function() {

@@ -22,8 +22,6 @@
 dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widget.CaptionBar.prototype */ {
 	$className: "dorado.widget.CaptionBar",
 
-    _inherentClassName: "i-caption-bar",
-
 	ATTRIBUTES: /** @scope dorado.widget.CaptionBar.prototype */ {
 		className: {
 			defaultValue: "d-caption-bar"
@@ -64,7 +62,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 				}
 				if (!bar._buttons) {
 					bar._buttons = new dorado.util.KeyedArray(function(value) {
-						return value._id;
+						return value._uniqueId;
 					});
 				}
 				
@@ -96,7 +94,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 		
 		if (!bar._buttons) {
 			buttons = bar._buttons = new dorado.util.KeyedArray(function(value) {
-				return value._id;
+				return value._uniqueId;
 			});
 		}
 		
@@ -205,7 +203,6 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 	createDom: function() {
 		var bar = this, buttons = bar._buttons, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
-			className: "i-caption-bar " + bar._className,
 			content: [{
 				tagName: "div",
 				className: "caption",

@@ -32,7 +32,6 @@
 	 */
 	dorado.widget.Tip = $extend([dorado.widget.Control, dorado.widget.FloatControl], /** @scope dorado.widget.Tip.prototype */ {
 		$className: "dorado.widget.Tip",
-		_inherentClassName: "i-tip",
 		
 		ATTRIBUTES: /** @scope dorado.widget.Tip.prototype */ {			
 			className: {
@@ -48,7 +47,7 @@
 			},
 			
 			shadowMode: {
-				defaultValue: "drop",
+				defaultValue: "none",
 				skipRefresh: true
 			},
 			
@@ -152,77 +151,28 @@
 		
 		createDom: function() {
 			var tip = this, dom, doms = {};
-			if (dorado.Browser.msie) {
-				dom = $DomUtils.xCreate({
+			dom = $DomUtils.xCreate({
+				tagName: "div",
+				content: {
 					tagName: "div",
-					className: tip._className,
-					content: [{
-						tagName: "div",
-						className: "tip-tl",
-						content: {
-							tagName: "div",
-							className: "tip-tr"
-						}
-					}, {
-						tagName: "div",
-						className: "tip-cl",
-						content: {
-							tagName: "div",
-							className: "tip-cr",
-							content: {
-								tagName: "div",
-								className: "tip-cm",
-								contextKey: "tipCenter",
-								content: {
-									tagName: "div",
-									contextKey: "tipContent",
-									className: "tip-content",
-									content: [{
-										tagName: "span",
-										className: "tip-icon",
-										contextKey: "tipIcon"
-									}, {
-										tagName: "span",
-										className: "tip-text",
-										contextKey: "tipText"
-									}]
-								}
-							}
-						}
-					}, {
-						tagName: "div",
-						className: "tip-bl",
-						content: {
-							tagName: "div",
-							className: "tip-br"
-						}
-					}]
-				}, null, doms);
-			} else {
-				dom = $DomUtils.xCreate({
-					tagName: "div",
-					className: tip._className,
+					className: "tip-cm",
+					contextKey: "tipCenter",
 					content: {
 						tagName: "div",
-						className: "tip-cm",
-						contextKey: "tipCenter",
-						content: {
-							tagName: "div",
-							contextKey: "tipContent",
-							className: "tip-content",
-							content: [{
-								tagName: "span",
-								className: "tip-icon",
-								contextKey: "tipIcon"
-							}, {
-								tagName: "span",
-								className: "tip-text",
-								contextKey: "tipText"
-							}]
-						}
+						contextKey: "tipContent",
+						className: "tip-content",
+						content: [{
+							tagName: "span",
+							className: "tip-icon",
+							contextKey: "tipIcon"
+						}, {
+							tagName: "span",
+							className: "tip-text",
+							contextKey: "tipText"
+						}]
 					}
-				}, null, doms);
-			}
+				}
+			}, null, doms);
 			
 			tip._doms = doms;
 
@@ -286,27 +236,16 @@
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
 			
-			var tip = this, text = (tip._text == undefined) ? "" : tip._text, doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className, content = this._content;
-			
-			var classNames = [];
-			if (tip._inherentClassName) classNames.push(tip._inherentClassName);
-			if (tip._className) classNames.push(tip._className);
-			if (tip._floating) {
-				classNames.push("d-floating");
-				if (tip._className) classNames.push(tip._className + "-floating");
-				if (tip._floatingClassName) classNames.push(tip._floatingClassName);
-			}
-			if (classNames.length) $fly(dom).prop("className", classNames.join(' ') + " d-shadow-drop");
-			
+			var tip = this, text = (tip._text == undefined) ? "" : tip._text, doms = tip._doms, arrowDirection = tip._arrowDirection, cls = tip._className, content = this._content;			
 			var $tipText = $fly(doms.tipText);
 			if (content) {
 				if (typeof content == "string") {
 					$tipText.html(content);
 				} else if (content instanceof dorado.widget.Control) {
-					if (!content._rendered) {
-						$tipText.empty();
-						content.render(doms.tipText);
-					}
+                    if (!content._rendered) {
+                        $tipText.empty();
+                        content.render(doms.tipText);
+                    }
 				} else if (content.nodeType && content.nodeName) {
 					$tipText.empty().append(content);
 				} else {
@@ -320,6 +259,10 @@
 				}
 			}
 			
+			$fly(dom).shadow({
+				mode: tip._shadowMode
+			});
+			
 			if (arrowDirection && arrowDirection != "none") {
 				if (doms.arrow == null) {
 					var arrowEl = document.createElement("div");
@@ -328,21 +271,22 @@
 					doms.arrow = arrowEl;
 				}
 				
-				$fly(dom).addClass("i-tip-arrow-" + arrowDirection + " " + cls + "-arrow-" + arrowDirection);
+				$fly(dom).addClass("d-tip-arrow-" + arrowDirection);
 			} else {
-				$fly(dom).removeClass("i-tip-arrow-top " + cls + "-arrow-top").removeClass("i-tip-arrow-bottom " + cls + "-arrow-bottom").removeClass("i-tip-arrow-left " + cls + "-arrow-left").removeClass("i-tip-arrow-right " + cls + "-arrow-right");
+				$fly(dom).removeClass("d-tip-arrow-top").removeClass("d-tip-arrow-bottom").removeClass("d-tip-arrow-left").removeClass("d-tip-arrow-right");
 			}
 			
 			var captionDom = doms.caption;
 			
-			if (tip._caption) {
+			if (tip._caption || tip._closeable) {
+				var caption = tip._caption || $resource("dorado.baseWidget.DefaultTipCaption");
 				if (captionDom == null) {
 					doms.caption = captionDom = document.createElement("div");
 					captionDom.className = "caption";
 					$fly(doms.tipCenter).prepend(captionDom);
-					$fly(captionDom).html(tip._caption);
+					$fly(captionDom).html(caption);
 				} else {
-					$fly(captionDom).css("display", "").html(tip._caption);
+					$fly(captionDom).css("display", "").html(caption);
 				}
 			} else if (captionDom != null) {
 				$fly(captionDom).css("display", "none");
@@ -479,7 +423,7 @@
 			var attrs = ["caption" ,"text", "content", "icon", "iconClass", "arrowDirection", "arrowAlign", "arrowOffset"];
 			for (var i = 0, j = attrs.length; i < j; i++) {
 				var attr = attrs[i];
-				object["_" + attr] = undefined;
+				delete object["_" + attr];
 			}
 			object._showDuration = 3;
 			object._closeable = true;
@@ -540,7 +484,7 @@
 			options.caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "Dorado7"
 			if (options.autoHide === false) options.showDuration = 0;
 			delete options.autoHide;
-
+			
 			var tip = dorado.NotifyTipPool.borrowObject();
 			tip.set(options);
 			tip.show();

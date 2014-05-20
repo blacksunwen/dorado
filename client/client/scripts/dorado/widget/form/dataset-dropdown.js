@@ -118,34 +118,31 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 	open: function(editor) {
 		var dropdown = this, dataSet = dropdown._dataSet, superClass = $getSuperClass();
 		
-		var insertEmptyItem = function(self, arg) {
-			if (arg.pageNo == 1) {
-				var items = self.getData(self._dataPath);
-				if (items instanceof dorado.EntityList) {
-					var emptyItem = items.insert(null, "begin");
-					emptyItem.isEmptyItem = true;
-				}
-			}
-		};
-		var relocate = function() {
-			if (dropdown._duringShowAnimation) {
-				dropdown._shouldRelocate = true;
-			} else {
-				dropdown.locate();
-			}
-		};
-		
 		var doOpen = function(flush) {
 			if (dropdown._useDataBinding) {
 				if (dropdown._useDataBinding && dropdown._useEmptyItem) {
-					dataSet.addListener("onLoadData", insertEmptyItem);
+					dataSet.bind("onLoadData._insertEmptyItem", function(self, arg) {
+						if (arg.pageNo == 1) {
+							var items = self.getData(self._dataPath);
+							if (items instanceof dorado.EntityList) {
+								var emptyItem = items.insert(null, "begin");
+								emptyItem.isEmptyItem = true;
+							}
+						}
+					});
 				}
-				dataSet.addListener("onLoadData", relocate);
-				dropdown.addListener("onClose", function() {
-					if (dropdown._useDataBinding && dropdown._useEmptyItem) {
-						dataSet.removeListener("onLoadData", insertEmptyItem);
+				dataSet.bind("onLoadData._relocate", function() {
+					if (dropdown._duringShowAnimation) {
+						dropdown._shouldRelocate = true;
+					} else {
+						dropdown.locate();
 					}
-					dataSet.removeListener("onLoadData", relocate);
+				});
+				dropdown.bind("onClose", function() {
+					if (dropdown._useDataBinding && dropdown._useEmptyItem) {
+						dataSet.unbind("onLoadData._insertEmptyItem");
+					}
+					dataSet.unbind("onLoadData._relocate");
 				}, {
 					once: true
 				});

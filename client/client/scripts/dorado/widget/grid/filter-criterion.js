@@ -316,7 +316,7 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.grid.CriterionDropDown.prototype */ {
 			maxWidth: {
-				defaultValue: 328
+				defaultValue: 330
 			},
 			
 			/**
@@ -385,7 +385,7 @@
 			var containerElement = box.get("containerDom"), doms = {};
 			$fly(containerElement).xCreate({
 				tagName: "DIV",
-				className: "i-criterion-panel d-criterion-panel",
+				className: "d-criterion-panel",
 				content: [{
 					tagName: "DIV",
 					contextKey: "criterionsContainer"
@@ -401,7 +401,7 @@
 							contextKey: "junctionContainer"
 						}, {
 							tagName: "TD",
-							className: "i-buttons-container d-buttons-container",
+							className: "d-buttons-container",
 							contextKey: "buttonsContainer",
 							style: {
 								width: 150
@@ -435,7 +435,7 @@
 			
 			if (this._supportsMultiCriterions) {
 				var addButton = new dorado.widget.Button({
-					icon: "url(skin>common/icons.gif) -120px 0",
+					iconClass: "d-icon-add",
 					style: "margin-right:2px",
 					onClick: function() {
 						dropdown.addCriterion(box);
@@ -585,7 +585,7 @@
 		createDom: function() {
 			var criterionControl = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "TABLE",
-				className: "i-criterion d-criterion",
+				className: "d-criterion",
 				content: {
 					tagName: "TR",
 					content: [{

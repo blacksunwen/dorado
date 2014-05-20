@@ -36,6 +36,12 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 
 	ATTRIBUTES : /** @scope dorado.validator.Validator.prototype */
 	{
+		/**
+		 * 名称
+		 * @type String
+		 * @attribute
+		 */
+		name: {},
 
 		/**
 		 * 校验未通过时给出的信息的默认级别。
@@ -78,8 +84,7 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 
 	constructor : function(config) {
 		$invokeSuper.call(this, arguments);
-		if(config)
-			this.set(config);
+		if(config) this.set(config);
 	},
 	
 	getListenerScope : function() {
@@ -263,8 +268,8 @@ dorado.validator.RequiredValidator = $extend(dorado.validator.BaseValidator, /**
 		 * @attribute
 		 */
 		acceptZeroOrFalse : {
-            defaultValue : false
-        }
+			defaultValue : false
+		}
 	},
 
 	doValidate: function(data, arg) {
@@ -475,32 +480,32 @@ dorado.validator.RangeValidator = $extend(dorado.validator.BaseValidator, /** @s
 		var invalidMin, invalidMax, message = '', subMessage = '', data = ( typeof data == "number") ? data : parseFloat(data);
 		if(this._minValueValidateMode != "ignore") {
 			if(data == this._minValue && this._minValueValidateMode != "allowEquals") {
-                invalidMin = true;
+				invalidMin = true;
 			}
 			if(data < this._minValue) {
-                invalidMin = true;
+				invalidMin = true;
 			}
-            if (this._minValueValidateMode == "allowEquals")  {
-                subMessage = $resource("dorado.data.ErrorOrEqualTo");
-            } else {
-                subMessage = '';
-            }
+			if (this._minValueValidateMode == "allowEquals")  {
+				subMessage = $resource("dorado.data.ErrorOrEqualTo");
+			} else {
+				subMessage = '';
+			}
 			if(invalidMin) {
 				message += $resource("dorado.data.ErrorNumberTooLess", subMessage, this._minValue);
 			}
 		}
 		if(this._maxValueValidateMode != "ignore") {
 			if(data == this._maxValue && this._maxValueValidateMode != "allowEquals") {
-                invalidMax = true;
+				invalidMax = true;
 			}
 			if(data > this._maxValue) {
-                invalidMax = true;
+				invalidMax = true;
 			}
-            if (this._maxValueValidateMode == "allowEquals")  {
-                subMessage = $resource("dorado.data.ErrorOrEqualTo");
-            } else {
-                subMessage = '';
-            }
+			if (this._maxValueValidateMode == "allowEquals")  {
+				subMessage = $resource("dorado.data.ErrorOrEqualTo");
+			} else {
+				subMessage = '';
+			}
 			if(invalidMax) {
 				if(message) message += '\n';
 				message += $resource("dorado.data.ErrorNumberTooGreat", subMessage, this._maxValue);
@@ -596,11 +601,20 @@ dorado.validator.RegExpValidator = $extend(dorado.validator.BaseValidator, /** @
 		
 		if (typeof data != "string" || data == '') return;
 		var whiteRegExp = toRegExp(this._whiteRegExp), blackRegExp = toRegExp(this._blackRegExp);
+		var whiteMatch = whiteRegExp ? data.match(whiteRegExp) : false;
+		var blackMatch = blackRegExp ? data.match(blackRegExp) : false;
+		
 		var valid;
 		if (this._validateMode == "whiteBlack") {
-			valid = blackRegExp && !data.match(blackRegExp) || whiteRegExp && data.match(whiteRegExp);
+			valid = whiteRegExp ? whiteMatch : true;
+			if (valid && blackRegExp) {
+				valid = !blackMatch;
+			}
 		} else {
-			valid = whiteRegExp && data.match(whiteRegExp) || blackRegExp && !data.match(blackRegExp);
+			valid = blackRegExp ? !blackMatch : true;
+			if (valid && whiteRegExp) {
+				valid = whiteMatch;
+			}
 		}
 		if (!valid) return $resource("dorado.data.ErrorBadFormat", data);
 	}
@@ -632,7 +646,7 @@ dorado.validator.AjaxValidator = $extend(dorado.validator.RemoteValidator, /** @
 		 */
 		ajaxAction: {
 			setter: function(ajaxAction) {
-				this._ajaxAction = dorado.widget.Component.getComponentReference(this, "ajaxAction", ajaxAction);
+				this._ajaxAction = dorado.widget.ViewElement.getComponentReference(this, "ajaxAction", ajaxAction);
 			}
 		}
 	},

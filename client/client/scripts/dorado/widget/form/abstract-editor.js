@@ -342,7 +342,7 @@
 			var b = false;
 			if (this._dataSet) {
 				e.set(p, this.get("value"));
-				//this.timestamp = e.timestamp;
+				// this.timestamp = e.timestamp;
 				b = true;
 			} else {
 				if (e instanceof dorado.Entity) {

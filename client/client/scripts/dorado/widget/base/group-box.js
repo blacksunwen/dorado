@@ -20,7 +20,7 @@
  */
 dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.widget.FieldSet.prototype */{
 	$className: "dorado.widget.FieldSet",
-    _inherentClassName: "i-field-set",
+
     ATTRIBUTES: /** @scope dorado.widget.FieldSet.prototype */ {
 
         caption: {
@@ -60,7 +60,6 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	createDom: function() {
 		var fieldset = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "fieldset",
-			className: "i-field-set " + fieldset._className,
 			content: [{
 					tagName: "legend",
 					className: "field-set-legend",
@@ -90,27 +89,30 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 		fieldset._doms = doms;
 
 		fieldset.initButtons(dom);
-
-        if (fieldset._collapseable) {
-            fieldset._createCollapseButton();
-        }
-
+		
 		if (fieldset._collapsed) {
-			fieldset._children.each(function(child) {
-				if (child instanceof dorado.widget.Control) {
-					child.setActualVisible(false);
-				}
-			});
-			var buttons = fieldset._buttons;
-			if (buttons) {
-				for (var i = 0, j = buttons.length; i < j; i++) {
-					var button = buttons[i];
-					button.setActualVisible(false);
-				}
-			}
+			$fly(dom).addClass(fieldset._className + "-collapsed");
 			$fly(doms.body).css("display", "none");
 		}
-
+		if (fieldset._collapseable) {
+			fieldset._createCollapseButton();
+		}
+		 
+		// if (fieldset._collapsed) {
+		// fieldset._children.each(function(child) {
+		// if (child instanceof dorado.widget.Control) {
+		// child.setActualVisible(false);
+		// }
+		// });
+		// var buttons = fieldset._buttons;
+		// if (buttons) {
+		// for (var i = 0, j = buttons.length; i < j; i++) {
+		// var button = buttons[i];
+		// button.setActualVisible(false);
+		// }
+		// }
+		// $fly(doms.body).css("display", "none");
+		// }
 		return dom;
 	},
 
@@ -128,7 +130,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 
 	refreshDom: function(dom) {
 		var fieldset = this;
-	    $fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
+		$fly(dom)[fieldset._collapsed ? "addClass" : "removeClass"]("i-field-set-collapsed " + fieldset._className + "-collapsed");
 		$fly(fieldset._doms.caption).html(fieldset._caption || "&nbsp;");
 		$invokeSuper.call(this, arguments);
 	},
@@ -175,7 +177,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
  */
 dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.widget.GroupBox.prototype */{
     $className: "dorado.widget.GroupBox",
-    _inherentClassName: "i-group-box",
+
 	ATTRIBUTES: /** @scope dorado.widget.GroupBox.prototype */{
 		className: {
 			defaultValue: "d-group-box"
@@ -250,25 +252,29 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 
 		groupBox.initButtons(dom);
 
-        if (groupBox._collapseable) {
-            groupBox._createCollapseButton();
-        }
-
 		if (groupBox._collapsed) {
-			groupBox._children.each(function(child) {
-				if (child instanceof dorado.widget.Control) {
-					child.setActualVisible(false);
-				}
-			});
-			var buttons = groupBox._buttons;
-			if (buttons) {
-				for (var i = 0, j = buttons.length; i < j; i++) {
-					var button = buttons[i];
-					button.setActualVisible(false);
-				}
-			}
+			$fly(dom).addClass(groupBox._className + "-collapsed");
 			$fly(doms.body).css("display", "none");
 		}
+		if (groupBox._collapseable) {
+			groupBox._createCollapseButton();
+		}
+
+		// if (groupBox._collapsed) {
+		// groupBox._children.each(function(child) {
+		// if (child instanceof dorado.widget.Control) {
+		// child.setActualVisible(false);
+		// }
+		// });
+		// var buttons = groupBox._buttons;
+		// if (buttons) {
+		// for (var i = 0, j = buttons.length; i < j; i++) {
+		// var button = buttons[i];
+		// button.setActualVisible(false);
+		// }
+		// }
+		// $fly(doms.body).css("display", "none");
+		// }
 
 		return dom;
 	},
@@ -291,6 +297,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 	    $fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
 		$fly(groupBox._doms.caption).text(groupBox._caption);
         $invokeSuper.call(this, arguments);
+		groupBox._doOnResize();
 	},
 
 	_doOnResize: function(collapsed) {

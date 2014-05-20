@@ -11,12 +11,6 @@
  */
 
 ( function() {
-	function centerCover(dom, doms) {
-		var width = $fly(dom).width(), height = $fly(dom).height(), loadingCoverImg = doms.loadingCoverImg, imgWidth = $fly(
-				loadingCoverImg).outerWidth(), imgHeight = $fly(loadingCoverImg).outerHeight();
-		$fly(loadingCoverImg).left((width - imgWidth) / 2).top((height - imgHeight) / 2);
-	}
-
 	var BLANK_PATH = "about:blank";
 
 	/**
@@ -27,21 +21,21 @@
 	 */
 	dorado.widget.IFrame = $extend(dorado.widget.Control, /** @scope dorado.widget.IFrame.prototype */ {
 		$className: "dorado.widget.IFrame",
-		_inherentClassName: "i-iframe",
-		ATTRIBUTES: /** @scope dorado.widget.IFrame.prototype */ {
+
+		ATTRIBUTES: /** @scope dorado.widget.IFrame.prototype */
+		{
 			className: {
 				defaultValue: "d-iframe"
 			},
 
-			/**
-			 * <iframe>的name属性，用于部分需要设置该属性的场景，该属性需要在IFrame渲染完成之前设置。
-			 *
-			 * @type String
-			 * @attribute[writeBeforeReady]
-			 */
-			name: {
-				writeBeforeReady: true
-			},
+            /**
+             * <iframe>的name属性，用于部分需要设置该属性的场景，该属性需要在IFrame ready之前设置。
+             * @type String
+             * @attribute[writeBeforeReady]
+             */
+            name: {
+                writeBeforeReady: true
+            },
 
 			/**
 			 * IFrame对应的路径。
@@ -54,19 +48,18 @@
 				setter: function(value) {
 					var frame = this, oldPath = frame._path, dom = frame._dom, doms = frame._doms;
 
-					frame._path = value;
+                    frame._path = value;
 
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
 
 						frame.releaseCurrentPage();
 
-						$fly(doms.iframe).addClass("hidden");
-						if (oldPath != value) {
-							frame._loaded = false;
-						}
+                        $fly(doms.iframe).addClass("hidden");
+                        if (oldPath != value) {
+                            frame._loaded = false;
+                        }
 						frame.replaceUrl(value);
-						centerCover(dom, doms);
 					}
 				}
 			},
@@ -85,41 +78,42 @@
 			}
 		},
 
-		EVENTS: /** @scope dorado.widget.IFrame.prototype */ {
+		EVENTS: /** @scope dorado.widget.IFrame.prototype */
+		{
 			/**
 			 * 当iframe中的页面加载完毕后触发。
 			 * 
 			 * @param {Object}
-			 *			self 事件的发起者，即组件本身。
+			 *            self 事件的发起者，即组件本身。
 			 * @param {Object}
-			 *			arg 事件参数。
+			 *            arg 事件参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
 			onLoad: {}
 		},
 
-		getDomainInfo: function(domain) {
-			var regex = /^(http[s]?):\/\/([\w.]+)(:([\d]+))?/ig, result = regex.exec(domain);
-			if (result) {
-				return {
-					protocol: result[1],
-					domain: result[2],
-					port: result[4]
-				};
-			} else {
-				return {};
-			}
-		},
+        getDomainInfo: function(domain) {
+            var regex = /^(http[s]?):\/\/([\w.]+)(:([\d]+))?/ig, result = regex.exec(domain);
+            if (result) {
+                return {
+                    protocol: result[1],
+                    domain: result[2],
+                    port: result[4]
+                };
+            } else {
+                return {};
+            }
+        },
 
-		isSameDomain: function() {
-			var iframeSrc = $url(this._path);
-			if (/^(http[s]?):/ig.test(iframeSrc)) {
-				var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
-				return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
-			}
-			return true;
-		},
+        isSameDomain: function() {
+	        var iframeSrc = $url(this._path);
+            if (/^(http[s]?):/ig.test(iframeSrc)) {
+                var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
+                return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
+            }
+            return true;
+        },
 
 		releaseCurrentPage: function() {
 			var frame = this, doms = frame._doms;
@@ -157,84 +151,90 @@
 		createDom: function() {
 			var frame = this, doms = {}, dom = $DomUtils.xCreate( {
 				tagName: "div",
-				className: "i-iframe " + frame._className,
 				content: [ {
 					tagName: "iframe",
+					className: "iframe hidden",
 					contextKey: "iframe",
-					scrolling: dorado.Browser.isTouch ? "no" : "auto",
-					frameBorder: 0,
-					className: "hidden"
+		            scrolling: dorado.Browser.isTouch ? "no" : "auto",
+					frameBorder: 0
 				}, {
 					tagName: "div",
 					contextKey: "loadingCover",
 					className: "frame-loading-cover",
+					style: {
+						display: "none"
+					},
 					content: {
 						tagName: "div",
 						className: "frame-loading-image",
-						contextKey: "loadingCoverImg"
+						contextKey: "loadingCoverImg",
+						content: {
+							tagName: "div",
+							className: "spinner"
+						}
 					}
 				} ]
 			}, null, doms);
 
-			if (frame._name != undefined)
-				doms.iframe.name = frame._name || "";
+            if (frame._name != undefined)
+                doms.iframe.name = frame._name || "";
 
 			frame._doms = doms;
 
 			return dom;
 		},
 
-		doOnAttachToDocument: function() {
-			var frame = this, doms = frame._doms, iframe = doms.iframe;
-			$fly(iframe).load(function() {
-				$fly(doms.loadingCover).css("display", "none");
-				// fix ie 6 bug....
-				if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
-					$fly(iframe).removeClass("hidden");
-				}
+        doOnAttachToDocument: function() {
+	        var frame = this, doms = frame._doms, iframe = doms.iframe;
+	        $fly(iframe).load(function() {
+		        $fly(doms.loadingCover).css("display", "none");
+		        // fix ie 6 bug....
+		        if (!(dorado.Browser.msie && dorado.Browser.version == 6)) {
+			        $fly(iframe).removeClass("hidden");
+		        }
 				if (!frame.isActualVisible()) {
 					frame._notifyResizeOnVisible = true;
 					frame.onActualVisibleChange();
 				}
-				frame.fireEvent("onLoad", frame);
-				if (frame.isSameDomain()) {
-					if (frame._replacedUrl && frame._replacedUrl != BLANK_PATH) {
-						frame._loaded = true;
-					}
-				} else if (iframe.src && iframe.src != BLANK_PATH) {
-					frame._loaded = true;
-				}
-			});
-			frame.doLoad();
-		},
+		        frame.fireEvent("onLoad", frame);
+		        if (frame.isSameDomain()) {
+			        if (frame._replacedUrl && frame._replacedUrl != BLANK_PATH) {
+				        frame._loaded = true;
+			        }
+		        } else if (iframe.src && iframe.src != BLANK_PATH) {
+			        frame._loaded = true;
+		        }
+	        });
+	        frame.doLoad();
+        },
 		
 		replaceUrl: function(url) {
-			var frame = this, doms = frame._doms, replacedUrl = $url(url || BLANK_PATH);
+            var frame = this, doms = frame._doms, replacedUrl = $url(url || BLANK_PATH);
 			delete frame._notifyResizeOnVisible;
-			if (frame.isSameDomain()) {
-				frame._replacedUrl = replacedUrl;
-				if (frame.getIFrameWindow()) frame.getIFrameWindow().location.replace(replacedUrl);
-			} else {
-				$fly(doms.iframe).prop("src", replacedUrl);
-			}
+            if (frame.isSameDomain()) {
+	            frame._replacedUrl = replacedUrl;
+                if (frame.getIFrameWindow()) frame.getIFrameWindow().location.replace(replacedUrl);
+            } else {
+                $fly(doms.iframe).prop("src", replacedUrl);
+            }
 		},
 
-		doLoad: function() {
-			var frame = this, doms = frame._doms;
-			$fly(doms.loadingCover).css("display", "");
+        doLoad: function() {
+            var frame = this, doms = frame._doms;
+            $fly(doms.loadingCover).css("display", "");
 			this.replaceUrl(frame._path);
-		},
+        },
 
-		reloadIfNotLoaded: function() {
-			var frame = this;
-			if (!frame._loaded && frame._path) {
-				frame.doLoad();
-			}
-		},
+        reloadIfNotLoaded: function() {
+            var frame = this;
+            if (!frame._loaded && frame._path) {
+                frame.doLoad();
+            }
+        },
 
-		cancelLoad: function() {
+        cancelLoad: function() {
 			this.replaceUrl(BLANK_PATH);
-		},
+        },
 
 		doOnResize: function() {
 			if (dorado.Browser.isTouch) {
@@ -245,20 +245,15 @@
 			}
 		},
 
-		/**
-		 * 重新载入页面。
-		 */
-		reload: function() {
-			var frame = this;
-			frame.releaseCurrentPage();
-			frame.replaceUrl(null);
-			frame.replaceUrl(frame._path);
-		},
-
-		refreshDom: function(dom) {
-			$invokeSuper.call(this, [dom]);
-			centerCover(dom, this._doms);
-		},
+        /**
+         * 重新载入页面。
+         */
+        reload: function() {
+            var frame = this;
+	        frame.releaseCurrentPage();
+	        frame.replaceUrl(null);
+	        frame.replaceUrl(frame._path);
+        },
 		
 		onActualVisibleChange: function() {
 

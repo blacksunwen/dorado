@@ -336,6 +336,7 @@
 						entity = data;
 					} else {
 						entity = new dorado.Entity(data, this.getDataTypeRepository(), dataType);
+						entity.setState(dorado.Entity.STATE_NEW);
 					}
 					this.setData(entity);
 				}
@@ -839,7 +840,7 @@
 			else {
 				loadMode = options ? options.loadMode : undefined;
 			}
-			
+
 			var dataType = dorado.LazyLoadDataType.dataTypeGetter.call(this);
 			if (!dataType && this._data) dataType = this._data.dataType;
 

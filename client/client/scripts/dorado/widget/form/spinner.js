@@ -24,23 +24,31 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.SpinnerTrigger.prototype */ {
 			className: {
-				defaultValue: "d-spinner-trigger"
+				defaultValue: "d-trigger d-spinner-trigger"
 			}
 		},
 		
 		createTriggerButton: function(editor) {
 			var trigger = this, control = new dorado.widget.HtmlContainer({
-				exClassName: (trigger._inherentClassName || '') + " " + (trigger._className || ''),
+				exClassName: (trigger._className || ''),
 				content: {
 					tagName: "div",
 					content: [{
 						tagName: "div",
 						className: "up-button",
-						contextKey: "upButton"
+						contextKey: "upButton",
+						content: {
+							tagName: "div",
+							className: "icon"
+						}
 					}, {
 						tagName: "div",
 						className: "down-button",
-						contextKey: "downButton"
+						contextKey: "downButton",
+						content: {
+							tagName: "div",
+							className: "icon"
+						}
 					}]
 				}
 			});
@@ -157,7 +165,7 @@
 	 * @extends dorado.widget.Spinner
 	 */
 	dorado.widget.NumberSpinner = $extend(dorado.widget.Spinner, /** @scope dorado.widget.NumberSpinner.prototype */ {
-        $className: "dorado.widget.NumberSpinner",
+		$className: "dorado.widget.NumberSpinner",
 
 		ATTRIBUTES: /** @scope dorado.widget.NumberSpinner.prototype */ {
 		
@@ -853,7 +861,7 @@
 				range: [0, 23],
 				digit: 2,
 				defaultValue: 0,
-				prefix: " "
+				prefix: "|"
 			},
 			leading_hours: {
 				name: "hours",

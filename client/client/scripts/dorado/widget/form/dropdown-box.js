@@ -11,33 +11,34 @@
  */
 dorado.widget.DropDownBox = $extend(dorado.widget.FloatContainer, /** @scope dorado.widget.DropDownBox.prototype */ {
 	$className: "dorado.widget.DropDownBox",
-	_inherentClassName: "i-drop-down-box",
-	
+	_useInnerWidth: true,
+	_useInnerHeight: true,
+
 	ATTRIBUTES: /** @scope dorado.widget.DropDownBox.prototype */ {
 		className: {
 			defaultValue: "d-drop-down-box"
 		},
-		
+
 		showAnimateType: {
 			defaultValue: "safeSlide"
 		},
-		
+
 		hideAnimateType: {
 			defaultValue: "none"
 		},
-		
+
 		focusAfterShow: {
 			defaultValue: false
 		},
-		
+
 		continuedFocus: {
 			defaultValue: true
 		},
-		
+
 		editor: {},
-		
+
 		dropDown: {},
-		
+
 		control: {
 			writeOnce: true,
 			setter: function(control) {
@@ -48,19 +49,19 @@ dorado.widget.DropDownBox = $extend(dorado.widget.FloatContainer, /** @scope dor
 			}
 		}
 	},
-	
+
 	EVENTS: /** @scope dorado.widget.DropDownBox.prototype */ {
 		onDropDownBoxShow: {}
 	},
-	
+
 	constructor: function(config) {
 		$invokeSuper.call(this, arguments);
 		// this._contentOverflow = "visible"; Commented by Benny for ISSUE 5992
 		if (dorado.Browser.msie && dorado.Browser.version < 9) {
-			this._showAnimateType =  "none";
+			this._showAnimateType = "none";
 		}
 	},
-	
+
 	doAfterShow: function(editor) {
 		$invokeSuper.call(this, arguments);
 		this.fireEvent("onDropDownBoxShow", this);

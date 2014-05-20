@@ -29,14 +29,14 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		}
 	},
 
-	constructor: function () {
+	constructor: function() {
 		this._cardBook = new dorado.widget.CardBook();
 		this.registerInnerControl(this._cardBook);
 
 		$invokeSuper.call(this, arguments);
 	},
 
-	doOnTabChange: function (eventArg) {
+	doOnTabChange: function(eventArg) {
 		var tabControl = this, tabs = tabControl._tabs, tab = eventArg.newTab,
 			index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabControl._cardBook;
 
@@ -47,7 +47,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		$invokeSuper.call(this, arguments);
 	},
 
-	doChangeTabPlacement: function (value) {
+	doChangeTabPlacement: function(value) {
 		var result = $invokeSuper.call(this, arguments);
 
 		if (!result) {
@@ -60,13 +60,16 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 			if (dorado.Browser.msie && dorado.Browser.version == 6) {
 				if (value == "top") {
 					dom.appendChild(cardDom);
-				} else {
+				}
+				else {
 					dom.insertBefore(cardDom, tabbarDom);
 				}
-			} else {
+			}
+			else {
 				if (value == "top") {
 					dom.insertBefore(tabbarDom, cardDom);
-				} else {
+				}
+				else {
 					dom.appendChild(tabbarDom);
 				}
 			}
@@ -75,7 +78,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		return true;
 	},
 
-	doRemoveTab: function (tab) {
+	doRemoveTab: function(tab) {
 		var tabcontrol = this, tabs = tabcontrol._tabs, index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabcontrol._cardBook;
 
 		if (card) {
@@ -85,7 +88,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		$invokeSuper.call(this, arguments);
 	},
 
-	doAddTab: function (tab, index, current) {
+	doAddTab: function(tab, index, current) {
 		$invokeSuper.call(this, arguments);
 
 		var tabcontrol = this, card = tabcontrol._cardBook, tabs = tabcontrol._tabs;
@@ -99,7 +102,18 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		}
 	},
 
-	createDom: function () {
+	doOnAttachToDocument: function() {
+		var className = "";
+		if (this._ui) {
+			var uis = this._ui.split(',');
+			for(var i = 0; i < uis.length; i++) {
+				className += (" " + this._className + "-" + uis[i]);
+			}
+		}
+		if (className) $fly(this._tabbarDom).addClass(className);
+	},
+
+	createDom: function() {
 		var tabcontrol = this, card = tabcontrol._cardBook, dom = document.createElement("div"),
 			tabbarDom = $invokeSuper.call(this, arguments), tabPlacement = tabcontrol._tabPlacement;
 
@@ -110,7 +124,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		tabcontrol._tabbarDom = tabbarDom;
 
 		var controls = [], tabs = tabcontrol._tabs;
-		for (var i = 0, j = tabs.size; i < j; i++) {
+		for(var i = 0, j = tabs.size; i < j; i++) {
 			var tab = tabs.get(i);
 			controls.push(tab.getControl());
 		}
@@ -128,7 +142,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		return dom;
 	},
 
-	refreshDom: function (dom) {
+	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 
 		var tabcontrol = this, card = tabcontrol._cardBook, tabbarDom = tabcontrol._tabbarDom, cardDom = tabcontrol._cardBook._dom;
@@ -148,7 +162,7 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		card.refreshDom(cardDom);
 	},
 
-	getFocusableSubControls: function () {
+	getFocusableSubControls: function() {
 		return [this._cardBook];
 	}
 });
@@ -182,14 +196,14 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		}
 	},
 
-	constructor: function () {
+	constructor: function() {
 		this._cardBook = new dorado.widget.CardBook();
 		this.registerInnerControl(this._cardBook);
 
 		$invokeSuper.call(this, arguments);
 	},
 
-	doOnTabChange: function (eventArg) {
+	doOnTabChange: function(eventArg) {
 		var tabcolumnControl = this, tabs = tabcolumnControl._tabs, tab = eventArg.newTab,
 			index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabcolumnControl._cardBook;
 
@@ -200,7 +214,7 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		$invokeSuper.call(this, arguments);
 	},
 
-	doChangeTabPlacement: function (value) {
+	doChangeTabPlacement: function(value) {
 		var result = $invokeSuper.call(this, arguments);
 
 		if (!result) {
@@ -213,13 +227,16 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 			if (dorado.Browser.msie && dorado.Browser.version == 6) {
 				if (value == "left") {
 					dom.appendChild(cardDom);
-				} else {
+				}
+				else {
 					dom.insertBefore(cardDom, tabcolumnDom);
 				}
-			} else {
+			}
+			else {
 				if (value == "left") {
 					dom.insertBefore(tabcolumnDom, cardDom);
-				} else {
+				}
+				else {
 					dom.appendChild(tabcolumnDom);
 				}
 			}
@@ -228,7 +245,7 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		return true;
 	},
 
-	doRemoveTab: function (tab) {
+	doRemoveTab: function(tab) {
 		var tabcolumnControl = this, tabs = tabcolumnControl._tabs, index = typeof tab == "number" ? tab : tabs.indexOf(tab), card = tabcolumnControl._cardBook;
 
 		if (card) {
@@ -238,7 +255,7 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		$invokeSuper.call(this, arguments);
 	},
 
-	doAddTab: function (tab, index, current) {
+	doAddTab: function(tab, index, current) {
 		$invokeSuper.call(this, arguments);
 
 		var tabcolumnControl = this, card = tabcolumnControl._cardBook, tabs = tabcolumnControl._tabs;
@@ -252,7 +269,18 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		}
 	},
 
-	createDom: function () {
+	doOnAttachToDocument: function() {
+		var className = "";
+		if (this._ui) {
+			var uis = this._ui.split(',');
+			for(var i = 0; i < uis.length; i++) {
+				className += (" " + this._className + "-" + uis[i]);
+			}
+		}
+		if (className) $fly(this._tabcolumnDom).addClass(className);
+	},
+
+	createDom: function() {
 		var tabcolumnControl = this, card = tabcolumnControl._cardBook, dom = document.createElement("div"),
 			tabcolumnDom = $invokeSuper.call(this, arguments), tabPlacement = tabcolumnControl._tabPlacement;
 
@@ -275,7 +303,7 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		return dom;
 	},
 
-	refreshDom: function (dom) {
+	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		var tabcolumnControl = this, card = tabcolumnControl._cardBook, tabcolumnDom = tabcolumnControl._tabcolumnDom, cardDom = tabcolumnControl._cardBook._dom;
 
@@ -303,21 +331,21 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		card.refreshDom(cardDom);
 	},
 
-	getFocusableSubControls: function () {
+	getFocusableSubControls: function() {
 		return [this._cardBook];
 	},
 
-	setFocus: function () {
+	setFocus: function() {
 		// 放置在IE容器滚动条的意外滚动
 		var dom = this._tabcolumnDom;
 		if (dom) {
-//			setTimeout(function () {
-				try {
-					dom.focus();
-				}
-				catch (e) {
-				}
-//			}, 0);
+			//			setTimeout(function () {
+			try {
+				dom.focus();
+			}
+			catch(e) {
+			}
+			//			}, 0);
 		}
 	}
 });

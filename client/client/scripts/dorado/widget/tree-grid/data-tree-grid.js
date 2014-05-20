@@ -83,10 +83,10 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 				this._columnInited = false;
 				this._listeningDataTypeRepository = true;
 				var grid = this;
-				this.get("dataTypeRepository").addListener("onDataTypeRegister", function(self, arg) {
+				this.get("dataTypeRepository").bind("onDataTypeRegister", function(self, arg) {
 					var dataType = grid.getBindingDataType("never");
 					if (dataType) {
-						self.removeListener("onDataTypeRegister", arguments.callee);
+						self.unbind("onDataTypeRegister", arguments.callee);
 						grid._autoCreateColumns = true;
 						grid._listeningDataTypeRepository = false;
 						grid.initColumns(dataType);

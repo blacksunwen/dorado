@@ -22,34 +22,12 @@
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class 基础的菜单项。
-	 * @extends dorado.RenderableElement
-	 * @extends dorado.EventSupport
+	 * @extends dorado.widget.RenderableViewElement
 	 */
-	dorado.widget.menu.AbstractMenuItem = $extend([dorado.RenderableElement, dorado.EventSupport], /** @scope dorado.widget.menu.AbstractMenuItem.prototype */ {
+	dorado.widget.menu.AbstractMenuItem = $extend(dorado.widget.RenderableViewElement, /** @scope dorado.widget.menu.AbstractMenuItem.prototype */ {
 		$className: "dorado.widget.menu.AbstractMenuItem",
 
 		ATTRIBUTES: /** @scope dorado.widget.menu.AbstractMenuItem.prototype */ {
-
-			/**
-			 * 菜单项所属的Menu
-			 * @type dorado.widget.Menu
-			 * @attribute
-			 */
-			parent: {
-				setter: function(parent) {
-					this._parent = parent;
-					if (parent) {
-						this.set("view", parent._view);
-					}
-				}
-			},
-
-			/**
-			 * 菜单项所属的视图。
-			 * @type dorado.widget.View
-			 * @attribute readOnly
-			 */
-			view: {},
 
 			/**
 			 * 菜单项的name，可以不指定。但如果需要通过代码获得该菜单项，则必须指定。
@@ -73,20 +51,6 @@
 						dom.style.display = value ? "" : "none";
 					}
 				}
-			},
-
-			/**
-			 * 用户自定义数据。
-			 * @type Object
-			 * @attribute
-			 */
-			userData: {}
-		},
-
-		constructor: function(config) {
-			$invokeSuper.call(this, arguments);
-			if (config) {
-				this.set(config);
 			}
 		},
 
@@ -100,10 +64,6 @@
 				opener = parent ? parent.opener : null;
 			}
 			return result;
-		},
-
-		getListenerScope: function() {
-			return this.get("view") || $topView;
 		}
 	});
 
@@ -192,10 +152,7 @@
 			iconClass: {},
 			
 			action: {
-				setter: function(value) {
-					var action = dorado.widget.Component.getComponentReference(this, "action", value);
-					this._action = (action instanceof dorado.widget.Action) ? action : null;
-				}
+				componentReference: true
 			}
 		},
 
@@ -212,10 +169,11 @@
 
 		doOnRemove: function() {
 			this.set("action", null);
+			this._dom || $fly(this._dom).remove();
 		},
 
 		refreshDom: function(dom) {
-			var item = this, action = item._action || {}, disabled = item._disabled || action._disabled, icon = item._icon || action._icon, iconCls = item._iconClass || action._iconClass, doms = item._doms;
+			var item = this, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled, icon = item._icon || action._icon, iconCls = item._iconClass || action._iconClass, doms = item._doms;
 
 			$fly(dom)[disabled ? "addClass" : "removeClass"](MENU_ITEM_DISABLED_CLASS).css("display", item._visible ? "" : "none");
 			$fly(doms.caption).text(item._caption || action._caption);
@@ -224,7 +182,7 @@
 			} else {
 				$fly(doms.icon).css("background-image", "");
 			}
-			$fly(doms.icon).prop("className", "icon");
+			$fly(doms.icon).prop("className", "d-icon");
 			if (iconCls) {
 				$fly(doms.icon).addClass(iconCls);
 			}
@@ -240,7 +198,7 @@
 					contextKey: "itemContent",
 					content: [{
 						tagName: "span",
-						className: "icon",
+						className: "d-icon",
 						contextKey: "icon",
 						content: "&nbsp;"
 					}, {
@@ -250,7 +208,7 @@
 						contextKey: "caption"
 					}]
 				}
-			}, null, doms), disabled = item._disabled || action._disabled, icon = item._icon || action._icon;
+			}, null, doms), disabled = item._disabled || action._disabled || action._sysDisabled, icon = item._icon || action._icon;
 
 			item._doms = doms;
 
@@ -293,19 +251,23 @@
 			 */
 			control: {
 				setter: function(control) {
+					if (this._control) this.unregisterInnerViewElement(this._control);
+					
 					if (!(control instanceof dorado.widget.Control)) {
 						control = dorado.Toolkits.createInstance("widget", control, function(type) {
 							return dorado.Toolkits.getPrototype("widget");
 						});
 					}
-					control.set("view", this._view);
+
+					if (control) this.unregisterInnerViewElement(control);
 					this._control = control;
 				}
 			},
 
 			view: {
 				setter: function(view) {
-					this._view = view;
+					$invokeSuper.call(this, arguments);
+					
 					if (this._control) this._control.set("view", view);
 				}
 			}
@@ -338,7 +300,7 @@
 		},
 
 		onClick: function() {
-            var item = this, action = item._action || {}, disabled = item._disabled || action._disabled;
+            var item = this, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
             if (!disabled) {
                 action.execute && action.execute();
                 item.fireEvent("onClick", item);
@@ -395,17 +357,24 @@
 			 * 该Item对象的子菜单项
 			 * @type dorado.widget.Menu
 			 * @attribute
+			 * @private
 			 */
 			submenu: {
 				setter: function(value) {
+					if (this._submenu) this.unregisterInnerViewElement(this._submenu);
+					
+					var submenu;
 					if (!value) {
-						this._submenu = null;
+						submenu = null;
 					} else if (value.constructor == Object.prototype.constructor) {
-						this._submenu = new dorado.widget.Menu(value);
+						submenu = new dorado.widget.Menu(value);
 					} else if (value instanceof dorado.widget.Menu) {
-						this._submenu = value;
+						submenu = value;
 					}
-					if (this._submenu) this._submenu.set("view", this._view);
+					
+					if (submenu) this.registerInnerViewElement(submenu);
+					this._submenu = submenu;
+					
 
 					var dom = this._dom;
 					if (dom) {
@@ -427,19 +396,23 @@
 					return null;
 				},
 				setter: function(value) {
+					var parentItem = this, submenu = parentItem._submenu;
 					if (value.constructor == Array.prototype.constructor) {
-						this._submenu = new dorado.widget.Menu({
-							view: this._view,
-							items: value
+						var originSkipRefresh;
+						if (submenu) {
+							originSkipRefresh = submenu._skipRefresh;
+							submenu._skipRefresh = true;
+						}
+						
+						parentItem.clearItems();
+						value.each(function(item) {
+							parentItem.addItem(item);
 						});
+						
+						if (submenu) {
+							submenu._skipRefresh = originSkipRefresh;
+						}
 					}
-				}
-			},
-
-			view: {
-				setter: function(view) {
-					this._view = view;
-					if (this._submenu) this._submenu.set("view", view);
 				}
 			}
 		},
@@ -484,9 +457,8 @@
 			var menuItem = this, submenu = menuItem._submenu;
 			if (item) {
 				if (!submenu) {
-					this._submenu = submenu = new dorado.widget.Menu({
-						view: this._view
-					});
+					submenu = new dorado.widget.Menu();
+					menuItem.set("submenu", submenu);
 				}
 				submenu.addItem(item, index);
 			}
@@ -543,7 +515,7 @@
 						var handles = item._parent._events["onContextMenu"];
 						for (var i = 0, j = handles.length; i < j; i++) {
 							var handler = handles[i];
-							submenu.addListener("onContextMenu", handler.listener, handler.options);
+							submenu.bind("onContextMenu", handler.listener, handler.options);
 						}
 						submenu._inheritContextMenu = true;
 					}
@@ -564,7 +536,7 @@
 		},
 
 		onClick: function(event) {
-			var item = this, action = item._action || {}, disabled = item._disabled || action._disabled;
+			var item = this, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
 			if (!disabled) {
 				if (item.hasSubmenu()) {
 					action.execute && action.execute();
@@ -724,7 +696,7 @@
 		},
 
 		onClick: function() {
-			var item = this, parent = item._parent, action = item._action || {}, disabled = item._disabled || action._disabled;
+			var item = this, parent = item._parent, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
 			if (!disabled) {
 				if (item.hasSubmenu()) {
 					item.fireEvent("onClick", item);

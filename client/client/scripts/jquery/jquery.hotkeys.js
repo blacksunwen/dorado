@@ -97,7 +97,7 @@
 
 		/*
 		 * fixed by Benny 2010/11/16
-		 * reason: conflict with jquery 1.4.4
+		 * reson: conflict with jquery 1.4.4
 		 * old: if (jQuery.isFunction(data) || !handle){
 		 */
 		if (!data || jQuery.isFunction(data) || !handle) {

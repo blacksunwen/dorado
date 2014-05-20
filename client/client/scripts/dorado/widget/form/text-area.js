@@ -19,7 +19,6 @@
 	 */
 	dorado.widget.TextArea = $extend(dorado.widget.AbstractTextEditor, /** @scope dorado.widget.TextArea.prototype */ {
 		$className: "dorado.widget.TextArea",
-		_inherentClassName: "i-text-area",
 		
 		ATTRIBUTES: /** @scope dorado.widget.TextArea.prototype */ {
 			width: {
@@ -105,7 +104,7 @@
 			if (triggers) {
 				if (!triggerPanel) {
 					triggerPanel = this._triggerPanel = $create("DIV");
-					triggerPanel.className = "i-trigger-panel d-trigger-panel";
+					triggerPanel.className = "d-trigger-panel";
 					this._dom.appendChild(triggerPanel);
 				}
 				triggerPanel.style.display = "";
@@ -113,12 +112,9 @@
 				if (!(triggers instanceof Array)) triggers = [triggers];
 				var trigger;
 				this._triggerButtons = triggerButtons = [];
-				for (var i = triggers.length - 1; i >= 0; i--) {
+				for (var i = 0; i < triggers.length; i++) {
 					trigger = triggers[i];
 					triggerButton = trigger.createTriggerButton(this);
-					triggerButton.set("style", {
-						position: "absolute"
-					});
 					triggerButtons.push(triggerButton);
 					this.registerInnerControl(triggerButton);
 					triggerButton.render(triggerPanel);
@@ -141,18 +137,6 @@
 		resizeTextDom: function() {
 			if (!this._attached || !this.isActualVisible()) return;
 			
-			if (!this._triggersArranged) {
-				this._triggersArranged = true;
-				var triggerButtons = this._triggerButtons;
-				if (triggerButtons) {
-					var bottom = 0;
-					for (var i = 0; i < triggerButtons.length; i++) {
-						var triggerButton = triggerButtons[i], buttonDom = triggerButton.getDom();
-						buttonDom.style.bottom = bottom + "px";
-						bottom += buttonDom.offsetWidth;
-					}
-				}
-			}
 			var w = this._dom.clientWidth, h = this._dom.clientHeight;
 			if (this._triggerPanel) {
 				w -= this._triggerPanel.offsetWidth;

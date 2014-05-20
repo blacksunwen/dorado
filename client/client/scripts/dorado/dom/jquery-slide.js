@@ -13,36 +13,36 @@
 (function() {
 	// Commented by Benny
 	// 下面这段扩展在jQuery 1.7.1下似乎导致动画不能播放
-	
+
 	//fix jquery bug.jQuery不能保证动画队列中的前一个complete一定会在下一个动画的step之前执行。
 	/*
-	jQuery.extend({
-		speed: function( speed, easing, fn ) {
-			var opt = speed && typeof speed === "object" ? speed : {
-				complete: fn || !fn && easing ||
-					jQuery.isFunction( speed ) && speed,
-				duration: speed,
-				easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
-			};
+	 jQuery.extend({
+	 speed: function( speed, easing, fn ) {
+	 var opt = speed && typeof speed === "object" ? speed : {
+	 complete: fn || !fn && easing ||
+	 jQuery.isFunction( speed ) && speed,
+	 duration: speed,
+	 easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
+	 };
 
-			opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-				jQuery.fx.speeds[opt.duration] || jQuery.fx.speeds._default;
+	 opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
+	 jQuery.fx.speeds[opt.duration] || jQuery.fx.speeds._default;
 
-			// Queueing
-			opt.old = opt.complete;
-			opt.complete = function() {
-				if ( jQuery.isFunction( opt.old ) ) {
-					opt.old.call( this );
-				}
-				if ( opt.queue !== false ) {
-					jQuery(this).dequeue();
-				}
-			};
+	 // Queueing
+	 opt.old = opt.complete;
+	 opt.complete = function() {
+	 if ( jQuery.isFunction( opt.old ) ) {
+	 opt.old.call( this );
+	 }
+	 if ( opt.queue !== false ) {
+	 jQuery(this).dequeue();
+	 }
+	 };
 
-			return opt;
-		}
-	});
-	*/
+	 return opt;
+	 }
+	 });
+	 */
 
 	if (jQuery.Tween) {
 		var oldFn = jQuery.Tween.prototype.run;
@@ -503,19 +503,19 @@
 			width: isTypeIn ? 0 : elementEl.width(),
 			height: isTypeIn ? 0 : elementEl.height()
 		}).bringToFront().animate({
-			top: endTop,
-			left: endLeft,
-			width: isTypeIn ? elementEl.width() : 0,
-			height: isTypeIn ? elementEl.height() : 0
-		}, {
-			duration: options.animateDuration || 300,
-			easing: options.animateEasing,
-			complete: function() {
-				cover.style.display = "none";
-				zoomCoverPool.returnObject(cover);
-				options.complete.apply(null, []);
-			}
-		});
+				top: endTop,
+				left: endLeft,
+				width: isTypeIn ? elementEl.width() : 0,
+				height: isTypeIn ? elementEl.height() : 0
+			}, {
+				duration: options.animateDuration || 300,
+				easing: options.animateEasing,
+				complete: function() {
+					cover.style.display = "none";
+					zoomCoverPool.returnObject(cover);
+					options.complete.apply(null, []);
+				}
+			});
 	};
 
 	jQuery.fn.zoomIn = function(options) {
@@ -539,9 +539,9 @@
 	};
 
 	var vendor = (/webkit/i).test(navigator.appVersion) ? 'webkit' :
-		(/firefox/i).test(navigator.userAgent) ? 'moz' :
-			(/trident/i).test(navigator.userAgent) ? 'ms' :
-				'opera' in window ? 'o' : '', cssVendor = "-" + vendor + "-",
+			(/firefox/i).test(navigator.userAgent) ? 'moz' :
+				(/trident/i).test(navigator.userAgent) ? 'ms' :
+					'opera' in window ? 'o' : '', cssVendor = "-" + vendor + "-",
 		TRANSITION = cssVendor + "transition", TRANSFORM = cssVendor + "transform",
 		TRANSFORMORIGIN = cssVendor + "transform-origin", BACKFACEVISIBILITY = cssVendor + "backface-visibility";
 
@@ -759,28 +759,28 @@
 				top: jQuery(container).scrollTop() }
 				: jQuery(container).offset(),
 
-			// elem 相对 container 视窗的坐标
+		// elem 相对 container 视窗的坐标
 			diff = {
 				left: elemOffset["left"] - containerOffset["left"],
 				top: elemOffset["top"] - containerOffset["top"]
 			},
 
-			// container 视窗的高宽
+		// container 视窗的高宽
 			ch = isWin ? jQuery(window).height() : container.clientHeight,
 			cw = isWin ? jQuery(window).width() : container.clientWidth,
 
-			// container 视窗相对 container 元素的坐标
+		// container 视窗相对 container 元素的坐标
 			cl = jQuery(container).scrollLeft(),
 			ct = jQuery(container).scrollTop(),
 			cr = cl + cw,
 			cb = ct + ch,
 
-			// elem 的高宽
+		// elem 的高宽
 			eh = elem.offsetHeight,
 			ew = elem.offsetWidth,
 
-			// elem 相对 container 元素的坐标
-			// 注：diff.left 含 border, cl 也含 border, 因此要减去一个
+		// elem 相对 container 元素的坐标
+		// 注：diff.left 含 border, cl 也含 border, 因此要减去一个
 			l = diff.left + cl - (parseInt(jQuery(container).css('borderLeftWidth')) || 0),
 			t = diff.top + ct - (parseInt(jQuery(container).css('borderTopWidth')) || 0),
 			r = l + ew,

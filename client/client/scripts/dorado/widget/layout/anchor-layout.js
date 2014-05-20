@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function () {
+(function() {
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -72,23 +72,23 @@
 	dorado.widget.layout.AnchorLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.AnchorLayout.prototype */
 		{
 			$className: "dorado.widget.layout.AnchorLayout",
-			_className: "i-anchor-layout d-anchor-layout",
+			_className: "d-anchor-layout",
 
-			createDom: function () {
+			createDom: function() {
 				var dom = document.createElement("DIV");
 				dom.className = this._className;
 				return dom;
 			},
 
-			refreshDom: function (dom) {
+			refreshDom: function(dom) {
 				dom.style.width = "100%";
 				dom.style.height = "100%";
 				this.doRefreshDom(dom);
 			},
 
-			doRefreshDom: function (dom) {
+			doRefreshDom: function(dom) {
 				this._maxRagionRight = this._maxRagionBottom = 0;
-				for (var it = this._regions.iterator(); it.hasNext();) {
+				for(var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
 					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
@@ -99,7 +99,7 @@
 				if (this.processOverflow(dom)) this.calculateRegions();
 			},
 
-			recordMaxRange: function (region) {
+			recordMaxRange: function(region) {
 				var controlDom = region.control.getDom();
 				if (controlDom.style.position == "absolute") {
 					if (region.right === undefined) {
@@ -114,12 +114,12 @@
 				}
 			},
 
-			processOverflow: function (dom) {
+			processOverflow: function(dom) {
 				var overflowed = false, padding = parseInt(this._padding) || 0;
-				var containerSize = this._container.getContentContainerSize()
+				var containerSize = this._container.getContentContainerSize();
+				
 				var width = this._maxRagionRight;
 				if (width < dom.scrollWidth) width = dom.scrollWidth;
-
 				if (width > 0 && (width > containerSize[0] || (width == dom.offsetWidth && dom.style.width == ""))) {
 					dom.style.width = (width + padding) + "px";
 					overflowed = true;
@@ -134,9 +134,9 @@
 				return overflowed;
 			},
 
-			onAddControl: function (control) {
+			onAddControl: function(control) {
 				if (!this._attached) return;
-				var region = this._regions.get(control._id);
+				var region = this._regions.get(control._uniqueId);
 				if (region) {
 					var realignArg = this.adjustRegion(region, true);
 					if (this._disableRendering) return;
@@ -145,9 +145,9 @@
 				}
 			},
 
-			onRemoveControl: function (control) {
+			onRemoveControl: function(control) {
 				if (!this._attached) return;
-				var region = this._regions.get(control._id);
+				var region = this._regions.get(control._uniqueId);
 				if (region) {
 					this.getDom().removeChild(control.getDom());
 					if (this._disableRendering) return;
@@ -156,11 +156,11 @@
 				}
 			},
 
-			doOnControlSizeChange: function (control) {
+			doOnControlSizeChange: function(control) {
 				this.refreshControl(control);
 			},
 
-			doRefreshRegion: function (region) {
+			doRefreshRegion: function(region) {
 				var control = region.control, controlDom = control.getDom(), dom = this.getDom();
 				var hidden = (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT), visibilityChanged = false;
 				if (hidden) {
@@ -168,7 +168,8 @@
 						dom.removeChild(controlDom);
 						this.refresh();
 					}
-				} else {
+				}
+				else {
 					var oldWidth = region.realWidth, oldHeight = region.realHeight;
 					var $controlDom = $fly(controlDom);
 					if (controlDom.parentNode != dom || $controlDom.outerWidth() != oldWidth || $controlDom.outerHeight() != oldHeight) {
@@ -177,11 +178,11 @@
 				}
 			},
 
-			calculateRegions: function (fromRegion) {
+			calculateRegions: function(fromRegion) {
 				var regions = this._regions;
 				if (regions.size == 0) return;
 				var found = !fromRegion;
-				regions.each(function (region) {
+				regions.each(function(region) {
 					if (!found) {
 						found = (fromRegion == region);
 						if (!found) return;
@@ -192,15 +193,20 @@
 				}, this);
 			},
 
-			adjustRegion: function (region) {
+			adjustRegion: function(region) {
 
 				function getAnchorRegion(region, p) {
 					var anchor = constraint[p];
 					if (anchor) {
 						if (anchor.constructor == String) {
-							if (anchor == "previous") anchor = this.getPreviousRegion(region);
-							else anchor = null;
-						} else if (typeof anchor == "function") {
+							if (anchor == "previous") {
+								anchor = this.getPreviousRegion(region);
+							}
+							else {
+								anchor = null;
+							}
+						}
+						else if (typeof anchor == "function") {
 							anchor = anchor.call(this, region);
 						}
 					}
@@ -239,7 +245,8 @@
 						if (anchorRegion) {
 							var anchorDom = anchorRegion.control.getDom();
 							left = anchorDom.offsetLeft + anchorRegion.realWidth + regionPadding + parseInt(l);
-						} else {
+						}
+						else {
 							left = parseInt(l) + padding + regionPadding;
 						}
 					}
@@ -259,7 +266,8 @@
 						if (anchorRegion) {
 							var anchorDom = anchorRegion.control.getDom();
 							right = clientWidth - anchorDom.offsetLeft + regionPadding + parseInt(r);
-						} else {
+						}
+						else {
 							right = parseInt(r) + padding + regionPadding;
 						}
 					}
@@ -279,7 +287,8 @@
 						if (anchorRegion) {
 							var anchorDom = anchorRegion.control.getDom();
 							top = anchorDom.offsetTop + anchorRegion.realHeight + regionPadding + parseInt(t);
-						} else {
+						}
+						else {
 							top = parseInt(t) + padding + regionPadding;
 						}
 					}
@@ -299,7 +308,8 @@
 						if (anchorRegion) {
 							var anchorDom = anchorRegion.control.getDom();
 							bottom = clientHeight - anchorDom.offsetTop + regionPadding + parseInt(b);
-						} else {
+						}
+						else {
 							bottom = parseInt(b) + padding + regionPadding;
 						}
 					}
@@ -313,7 +323,8 @@
 						if (!isNaN(rate)) {
 							width = rate * realContainerWidth / 100;
 						}
-					} else {
+					}
+					else {
 						width = parseInt(w);
 					}
 
@@ -321,12 +332,14 @@
 						right = -1;
 						rp = false;
 					}
-				} else if (left >= 0 && right >= 0) {
+				}
+				else if (left >= 0 && right >= 0) {
 					if (lp && rp) {
 						width = clientWidth - left - right;
 						right = -1;
 						lp = rp = false;
-					} else {
+					}
+					else {
 						width = clientWidth;
 						if (lp) {
 							left = -1;
@@ -351,7 +364,8 @@
 						if (!isNaN(rate)) {
 							height = rate * realContainerHeight / 100;
 						}
-					} else {
+					}
+					else {
 						height = parseInt(h);
 					}
 
@@ -359,12 +373,14 @@
 						bottom = -1;
 						bp = false;
 					}
-				} else if (top >= 0 && bottom >= 0) {
+				}
+				else if (top >= 0 && bottom >= 0) {
 					if (tp && bp) {
 						height = clientHeight - top - bottom;
 						bottom = -1;
 						tp = bp = false;
-					} else {
+					}
+					else {
 						height = clientHeight;
 						if (tp) {
 							top = -1;
@@ -397,7 +413,8 @@
 						if ((left >= 0 || right >= 0) && top < 0 && bottom < 0) top = padding + regionPadding;
 						if ((top >= 0 || bottom >= 0) && left < 0 && right < 0) left = padding + regionPadding;
 					}
-				} else if (padding > 0) {
+				}
+				else if (padding > 0) {
 					left = top = padding + regionPadding;
 				}
 				region.left = (left >= 0) ? left + (parseInt(constraint.leftOffset) || 0) : undefined;
@@ -422,7 +439,8 @@
 					var $controlDom = $fly(controlDom);
 					region.realWidth = $controlDom.outerWidth();
 					region.realHeight = $controlDom.outerHeight();
-				} else {
+				}
+				else {
 					region.realWidth = region.control.getRealWidth() || 0;
 					region.realHeight = region.control.getRealHeight() || 0;
 				}
@@ -431,7 +449,7 @@
 				return realignArg;
 			},
 
-			realignRegion: function (region, realignArg) {
+			realignRegion: function(region, realignArg) {
 				var controlDom = region.control.getDom();
 
 				var left, right, width, top, bottom, height;
@@ -459,20 +477,22 @@
 				if (realignArg.left) {
 					left = Math.round((realContainerWidth - region.realWidth -
 						(region.right > 0 ? region.right : 0)) *
-						realignArg.left / 100) + padding + regionPadding;
-				} else if (realignArg.right) {
+						realignArg.left / 100) + padding + regionPadding + (parseInt(constraint.leftOffset) || 0);
+				}
+				else if (realignArg.right) {
 					right = Math.round((realContainerWidth - region.realWidth -
 						(region.left > 0 ? region.left : 0)) *
-						realignArg.right / 100) + padding + regionPadding;
+						realignArg.right / 100) + padding + regionPadding + (parseInt(constraint.rightOffset) || 0);
 				}
 				if (realignArg.top) {
 					top = Math.round((realContainerHeight - region.realHeight -
 						(region.bottom > 0 ? region.bottom : 0)) *
-						realignArg.top / 100) + padding + regionPadding;
-				} else if (realignArg.bottom) {
+						realignArg.top / 100) + padding + regionPadding + (parseInt(constraint.topOffset) || 0);
+				}
+				else if (realignArg.bottom) {
 					bottom = Math.round((realContainerHeight - region.realHeight -
 						(region.top > 0 ? region.top : 0)) *
-						realignArg.bottom / 100) + padding + regionPadding;
+						realignArg.bottom / 100) + padding + regionPadding + (parseInt(constraint.bottomOffset) || 0);
 				}
 
 				var style = controlDom.style;
@@ -494,7 +514,7 @@
 				}
 			},
 
-			resetControlDimension: function (region, layoutDom, autoWidth, autoHeight) {
+			resetControlDimension: function(region, layoutDom, autoWidth, autoHeight) {
 				var control = region.control, controlDom = control.getDom();
 				var style = controlDom.style;
 				if (region.left >= 0 || region.top >= 0 || region.right >= 0 || region.bottom >= 0) {
