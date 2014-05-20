@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="skinNames" value="default,skyline" />
+	<property name="skinNames" value="default,modern" />
 	
 	<target name="copySkin">
 		<property name="dist" value="${dist}/skins/${skinName}" />
