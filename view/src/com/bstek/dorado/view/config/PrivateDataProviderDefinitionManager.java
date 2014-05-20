@@ -26,13 +26,13 @@ import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-2-3
  */
-public class InnerDataProviderDefinitionManager extends
+public class PrivateDataProviderDefinitionManager extends
 		DataProviderDefinitionManager {
 
 	private String dataObjectIdPrefix;
 	private ViewConfigDefinition viewConfigDefinition;
 
-	public InnerDataProviderDefinitionManager(
+	public PrivateDataProviderDefinitionManager(
 			DefinitionManager<DataProviderDefinition> parent) {
 		super(parent);
 	}
@@ -70,8 +70,8 @@ public class InnerDataProviderDefinitionManager extends
 		super.registerDefinition(name, definition);
 	}
 
-	public InnerDataProviderDefinitionManager duplicate() {
-		InnerDataProviderDefinitionManager duplication = new InnerDataProviderDefinitionManager(
+	public PrivateDataProviderDefinitionManager duplicate() {
+		PrivateDataProviderDefinitionManager duplication = new PrivateDataProviderDefinitionManager(
 				getParent());
 		duplication.setDataObjectIdPrefix(dataObjectIdPrefix);
 		duplication.setViewConfigDefinition(viewConfigDefinition);

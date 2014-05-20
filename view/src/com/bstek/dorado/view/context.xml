@@ -90,53 +90,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.systemOptionalParametersFactory"
 		class="com.bstek.dorado.view.DefaultSystemOptionalParametersFactory" />
 
-	<!-- Services -->
-	<bean id="dorado.viewServiceResolver" class="com.bstek.dorado.view.resolver.ViewServiceResolver">
-		<property name="serviceProcessors">
-			<map>
-				<entry key="load-datatype" value-ref="dorado.loadDataTypeServiceProcessor" />
-				<entry key="load-data" value-ref="dorado.loadDataServiceProcessor" />
-				<entry key="resolve-data" value-ref="dorado.resolveDataServiceProcessor" />
-				<entry key="remote-service" value-ref="dorado.remoteServiceProcessor" />
-			</map>
-		</property>
-	</bean>
-	<bean id="dorado.viewServiceInterceptorRegister"
-		class="com.bstek.dorado.view.resolver.ViewServiceInterceptorRegister"
-		abstract="true">
-		<property name="viewServiceResolver" ref="dorado.viewServiceResolver" />
-	</bean>
-
-	<bean id="dorado.dataServiceProcessorSupport" abstract="true">
-		<property name="dataTypeManager" ref="dorado.dataTypeManager" />
-		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
-		<property name="dataOutputter" ref="dorado.dataOutputter" />
-		<property name="includeDataTypesOutputter">
-			<bean parent="dorado.objectOutputterDispatcher"
-				class="com.bstek.dorado.view.output.IncludeDataTypesOutputter" />
-		</property>
-	</bean>
-	<bean id="dorado.loadDataTypeServiceProcessor" parent="dorado.dataServiceProcessorSupport"
-		class="com.bstek.dorado.view.service.LoadDataTypeServiceProcessor" />
-	<bean id="dorado.loadDataServiceProcessor" parent="dorado.dataServiceProcessorSupport"
-		class="com.bstek.dorado.view.service.LoadDataServiceProcessor">
-		<property name="dataProviderManager" ref="dorado.dataProviderManager" />
-		<property name="filterCriterionParser" ref="dorado.filterCriterionParser" />
-	</bean>
-	<bean id="dorado.resolveDataServiceProcessor" parent="dorado.dataServiceProcessorSupport"
-		class="com.bstek.dorado.view.service.ResolveDataServiceProcessor">
-		<property name="dataResolverManager" ref="dorado.dataResolverManager" />
-		<property name="simplePropertyValueOnlyDataOutputter">
-			<bean parent="dorado.dataOutputter">
-				<property name="simplePropertyValueOnly" value="true" />
-			</bean>
-		</property>
-	</bean>
-	<bean id="dorado.remoteServiceProcessor" parent="dorado.dataServiceProcessorSupport"
-		class="com.bstek.dorado.view.service.RemoteServiceProcessor">
-		<property name="exposedServiceManager" ref="dorado.exposedServiceManager" />
-	</bean>
-
 	<!-- Others -->
 	<bean id="dorado.packagesConfigManager" class="com.bstek.dorado.view.loader.PackagesConfigManager">
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
@@ -186,6 +139,11 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
+	<bean id="dorado.skinSettingManager" class="com.bstek.dorado.view.resolver.SkinSettingManager" />
+	<bean id="dorado.skinResolver" class="com.bstek.dorado.view.resolver.DefaultSkinResolver">
+		<property name="skinSettingManager" ref="dorado.skinSettingManager" />
+	</bean>
+
 	<bean id="dorado.clientI18NFileRegistry" class="com.bstek.dorado.view.resolver.ClientI18NFileRegistry" />
 	<bean id="dorado.clientI18NFileRegister" class="com.bstek.dorado.view.resolver.ClientI18NFileRegister"
 		abstract="true">
@@ -227,7 +185,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<!-- Web -->
 	<bean id="dorado.bootPackagesResolver" class="com.bstek.dorado.view.resolver.BootPackagesResolver">
 		<property name="localeResolver" ref="dorado.localeResolver" />
 		<property name="bootFile" value="scripts/dorado/boot" />
@@ -236,5 +193,26 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.clientSettingsOutputterRegister" abstract="true"
 		class="com.bstek.dorado.view.resolver.ClientSettingsOutputterRegister">
 		<property name="pageHeaderOutputter" ref="dorado.pageHeaderOutputter" />
+	</bean>
+
+	<!-- socket -->
+	<bean id="dorado.longPollingManager" class="com.bstek.dorado.view.longpolling.LongPollingManager" />
+
+	<!-- async-task -->
+	<bean id="dorado.longTaskSocketServer" class="com.bstek.dorado.view.task.LongTaskSocketServer">
+		<property name="exposedServiceManager" ref="dorado.exposedServiceManager" />
+		<property name="longPollingManager" ref="dorado.longPollingManager" />
+	</bean>
+	<bean class="com.bstek.dorado.view.task.LongTaskAnnotationBeanPostProcessor">
+		<property name="exposedServiceManager" ref="dorado.exposedServiceManager" />
+	</bean>
+	<bean parent="dorado.exposedServiceRegister">
+		<property name="services">
+			<map>
+				<entry key="dorado.connectLongTask"
+					value="spring:dorado.longTaskSocketServer#connectLongTask" />
+				<entry key="dorado.startLongTask" value="spring:dorado.longTaskSocketServer#startLongTask" />
+			</map>
+		</property>
 	</bean>
 </beans>

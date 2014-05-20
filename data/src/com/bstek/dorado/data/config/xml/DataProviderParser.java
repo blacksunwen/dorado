@@ -59,8 +59,7 @@ public class DataProviderParser extends GenericObjectParser {
 
 		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
 				.getReferencedDataType(
-						DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE,
-						DataXmlConstants.RESULT_TYPE, element,
+						DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE, element,
 						(DataParseContext) context);
 		if (dataTypeRef != null) {
 			definition.setProperty(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE,

@@ -16,12 +16,14 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
+import com.bstek.dorado.spring.RemovableBean;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-9
  */
-public class DataResolverInterceptorRegister implements InitializingBean {
+public class DataResolverInterceptorRegister implements InitializingBean,
+		RemovableBean {
 	private DataResolverDefinitionManager dataResolverDefinitionManager;
 	private MethodInterceptor methodInterceptor;
 

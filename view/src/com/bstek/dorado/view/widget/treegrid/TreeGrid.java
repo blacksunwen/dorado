@@ -21,30 +21,27 @@ import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
-import com.bstek.dorado.view.widget.tree.Node;
+import com.bstek.dorado.view.widget.tree.BaseNode;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-8-10
  */
-@Widget(name = "TreeGrid", category = "Collection",
-		dependsPackage = "tree-grid")
+@Widget(name = "TreeGrid", category = "Collection", dependsPackage = "tree-grid")
 @ClientObject(prototype = "dorado.widget.TreeGrid", shortTypeName = "TreeGrid")
 public class TreeGrid extends AbstractTreeGrid {
+	private List<BaseNode> nodes;
 
-	private List<Node> nodes;
-
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Nodes",
-			icon = "/com/bstek/dorado/view/widget/treegrid/Nodes.png"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Nodes", icon = "/com/bstek/dorado/view/widget/treegrid/Nodes.png"))
 	@ClientProperty
 	@IdeProperty(highlight = 1)
-	public List<Node> getNodes() {
+	public List<BaseNode> getNodes() {
 		if (nodes == null)
-			nodes = new ArrayList<Node>();
+			nodes = new ArrayList<BaseNode>();
 		return nodes;
 	}
 
-	public void addNode(Node node) {
+	public void addNode(BaseNode node) {
 		getNodes().add(node);
 	}
 

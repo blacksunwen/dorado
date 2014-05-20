@@ -15,11 +15,14 @@ package com.bstek.dorado.web.loader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.servlet.ServletContext;
 
@@ -62,7 +65,6 @@ public class DoradoLoader {
 			.length();
 
 	private static final String DEFAULT_DORADO_HOME = "/WEB-INF/dorado-home";
-	private static final String WEB_CONFIGURE_LOCATION = "com/bstek/dorado/web/configure.properties";
 	private static final String RESOURCE_LOADER_PROPERTY = "core.resourceLoader";
 	private static final String BYTE_CODE_PROVIDER_PROPERTY = "core.defaultByteCodeProvider";
 
@@ -248,10 +250,6 @@ public class DoradoLoader {
 				return super.getResource(resourceLocation);
 			}
 		};
-
-		// 读取configure.properties
-		loadConfigureProperties(configureStore, resourceLoader,
-				WEB_CONFIGURE_LOCATION, true);
 
 		String runMode = null;
 		if (StringUtils.isNotEmpty(doradoHome)) {
@@ -531,7 +529,35 @@ public class DoradoLoader {
 
 		ConsoleStartedMessagesOutputter consoleStartedMessagesOutputter = (ConsoleStartedMessagesOutputter) DoradoContext
 				.getCurrent().getServiceBean("consoleStartedMessagesOutputter");
-		consoleStartedMessagesOutputter.output();
+		StringWriter buffer = new StringWriter();
+		try {
+			consoleStartedMessagesOutputter.output(buffer);
+		} finally {
+			buffer.close();
+		}
 		DoradoContext.dispose();
+
+		Timer timer = new Timer();
+		timer.schedule(new ConsoleMessageTimerTask(buffer.toString()), 500L);
+	}
+}
+
+class ConsoleMessageTimerTask extends TimerTask {
+	private static final Log logger = LogFactory
+			.getLog(ConsoleMessageTimerTask.class);
+
+	private String content;
+
+	public ConsoleMessageTimerTask(String content) {
+		this.content = content;
+	}
+
+	@Override
+	public void run() {
+		try {
+			System.out.print(content);
+		} catch (Exception e) {
+			logger.error(e, e);
+		}
 	}
 }

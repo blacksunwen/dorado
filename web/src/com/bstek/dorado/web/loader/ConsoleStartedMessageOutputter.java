@@ -14,11 +14,13 @@ package com.bstek.dorado.web.loader;
 
 import java.io.Writer;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-1-22
  */
-public abstract class ConsoleStartedMessageOutputter {
+public abstract class ConsoleStartedMessageOutputter implements RemovableBean {
 	private int order = 999;
 
 	public int getOrder() {

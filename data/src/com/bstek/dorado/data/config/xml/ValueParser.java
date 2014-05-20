@@ -52,7 +52,7 @@ public class ValueParser extends DataElementParserSupport {
 
 		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
 				.getReferencedDataType(DataXmlConstants.ATTRIBUTE_DATA_TYPE,
-						null, element, context);
+						element, context);
 		if (dataTypeRef == null) {
 			dataTypeRef = context.getCurrentDataType();
 		}

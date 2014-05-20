@@ -25,7 +25,11 @@ import com.bstek.dorado.web.WebConfigure;
 
 public class LibraryFileResolver extends PackageFileResolver {
 	private static final String I18N_PREFIX = "resources/i18n/";
+	private static final String SKIN_URI_PREFIX = "/dorado/client/skins/";
+
+	@Deprecated
 	private static final String INHERENT_SKIN = "inherent";
+
 	private static final String DEFAULT_SKIN = "default";
 	private static final String DEFAULT_SKIN_PREFIX = DEFAULT_SKIN + '.';
 	private static final String CURRENT_SKIN = "~current";
@@ -137,50 +141,55 @@ public class LibraryFileResolver extends PackageFileResolver {
 		boolean useMinJs = WebConfigure
 				.getBoolean("view.useMinifiedJavaScript");
 		boolean isSkinFile = fileName.startsWith(CURRENT_SKIN_PREFIX);
-		String cacheKey, skin = null;
-
+		String skin = null;
 		if (isSkinFile) {
 			skin = context.getRequest().getParameter("skin");
-			cacheKey = getFileCacheKey(resourcePrefix, fileName,
-					resourceSuffix, useMinJs, skin);
-		} else {
-			cacheKey = getFileCacheKey(resourcePrefix, fileName,
-					resourceSuffix, useMinJs);
 		}
 
-		synchronized (resourcesCache) {
-			Resource[] resources = resourcesCache.get(cacheKey);
-			if (resources == null) {
-				if (isSkinFile) {
-					fileName = fileName.replace(CURRENT_SKIN, skin);
-				}
-
+		Resource[] resources = null;
+		if (isSkinFile) {
+			String customSkinPath = WebConfigure.getString("view.skin." + skin);
+			if (StringUtils.isNotEmpty(customSkinPath)) {
+				resources = doGetJavaScriptResources(context, customSkinPath,
+						resourceSuffix,
+						fileName.substring(CURRENT_SKIN_PREFIX.length()), useMinJs);
+			} else {
 				resources = doGetJavaScriptResources(context, resourcePrefix,
-						resourceSuffix, fileName, useMinJs, resources);
-				if (isSkinFile && !resources[0].exists()) {
-					if (!skin.equals(DEFAULT_SKIN)
-							&& !skin.startsWith(DEFAULT_SKIN_PREFIX)) {
-						String defaultPlatformSkin = getDefaultPlatformSkin(skin);
-						fileName = fileInfo.getFileName().replace(CURRENT_SKIN,
-								defaultPlatformSkin);
-						resources = doGetJavaScriptResources(context,
-								resourcePrefix, resourceSuffix, fileName,
-								useMinJs, resources);
-					}
-				}
-				resourcesCache.put(cacheKey, resources);
+						resourceSuffix, fileName.replace(CURRENT_SKIN, skin),
+						useMinJs);
 			}
-			return resources;
+		} else {
+			resources = doGetJavaScriptResources(context, resourcePrefix,
+					resourceSuffix, fileName, useMinJs);
 		}
+		if (resources.length == 0 || !resources[0].exists()) {
+			resources = null;
+		}
+
+		if (isSkinFile && resources == null) {
+			if (!skin.equals(DEFAULT_SKIN)
+					&& !skin.startsWith(DEFAULT_SKIN_PREFIX)) {
+				String defaultPlatformSkin = getDefaultPlatformSkin(skin);
+				fileName = fileInfo.getFileName().replace(CURRENT_SKIN,
+						defaultPlatformSkin);
+				resources = doGetJavaScriptResources(context, resourcePrefix,
+						resourceSuffix, fileName, useMinJs);
+				if (resources.length == 0 || !resources[0].exists()) {
+					resources = null;
+				}
+			}
+		}
+		return resources;
 	}
 
 	private Resource[] doGetJavaScriptResources(DoradoContext context,
 			String resourcePrefix, String resourceSuffix, String fileName,
-			boolean useMinJs, Resource[] resources) throws Exception {
+			boolean useMinJs) throws Exception {
+		Resource[] resources = null;
 		if (useMinJs) {
 			resources = doGetResourcesByFileName(context, resourcePrefix,
 					fileName, MIN_JAVASCRIPT_SUFFIX);
-			if (!resources[0].exists()) {
+			if (resources.length == 0 || !resources[0].exists()) {
 				resources = null;
 			}
 		}
@@ -198,130 +207,181 @@ public class LibraryFileResolver extends PackageFileResolver {
 		String fileName = fileInfo.getFileName();
 
 		String uri = context.getRequest().getRequestURI();
-		int i2 = uri.lastIndexOf('/');
-		int i1 = uri.lastIndexOf('/', i2 - 1);
-		String skin = uri.substring(i1 + 1, i2);
+		String skin, subUri;
+		int i = uri.indexOf(SKIN_URI_PREFIX);
+		if (i >= 0) {
+			subUri = uri.substring(i + SKIN_URI_PREFIX.length());
+			i = subUri.indexOf(PathUtils.PATH_DELIM);
+			if (i > 0) {
+				skin = subUri.substring(0, i);
 
-		boolean useMinCss = WebConfigure
-				.getBoolean("view.useMinifiedStyleSheet");
-		String cacheKey = getFileCacheKey(resourcePrefix, fileName,
-				resourceSuffix, skin, useMinCss);
-		synchronized (resourcesCache) {
-			Resource[] resources = resourcesCache.get(cacheKey);
-			if (resources == null) {
-				String template = fileName;
-				if (template.indexOf(CURRENT_SKIN) >= 0) {
-					fileName = template.replace(CURRENT_SKIN, INHERENT_SKIN);
-					Resource inherentResource = null;
+				boolean useMinCss = WebConfigure
+						.getBoolean("view.useMinifiedStyleSheet");
+				String customSkinPath = WebConfigure.getString("view.skin."
+						+ skin);
+				String subSkinPath = fileName.substring(CURRENT_SKIN_PREFIX
+						.length());
+
+				return doGetStyleSheetResources(context, skin, resourcePrefix,
+						fileName, customSkinPath, subSkinPath, resourceSuffix,
+						useMinCss);
+			}
+		}
+		return null;
+	}
+
+	private Resource[] doGetStyleSheetResources(DoradoContext context,
+			String skin, String resourcePrefix, String fileName,
+			String customSkinPath, String subSkinPath, String resourceSuffix,
+			boolean useMinCss) throws Exception, FileNotFoundException {
+		Resource[] resources;
+		String originFileName = fileName;
+		if (originFileName.indexOf(CURRENT_SKIN) >= 0) {
+			fileName = originFileName.replace(CURRENT_SKIN, INHERENT_SKIN);
+			Resource[] inherentResources = null;
+			if (useMinCss) {
+				inherentResources = doGetResourcesByFileName(context,
+						resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+				if (inherentResources.length == 0
+						|| !inherentResources[0].exists()) {
+					inherentResources = null;
+				}
+			}
+			if (inherentResources == null) {
+				inherentResources = doGetResourcesByFileName(context,
+						resourcePrefix, fileName, resourceSuffix);
+			}
+
+			Resource[] concreteResources = null;
+			if (StringUtils.isEmpty(customSkinPath)) {
+				fileName = originFileName.replace(CURRENT_SKIN, skin);
+				if (useMinCss) {
+					concreteResources = doGetResourcesByFileName(context,
+							resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+					if (concreteResources.length == 0
+							|| !concreteResources[0].exists()) {
+						concreteResources = null;
+					}
+				}
+				if (concreteResources == null) {
+					concreteResources = doGetResourcesByFileName(context,
+							resourcePrefix, fileName, resourceSuffix);
+				}
+			} else {
+				if (useMinCss) {
+					concreteResources = doGetResourcesByFileName(context,
+							customSkinPath, subSkinPath, MIN_STYLESHEET_SUFFIX);
+					if (concreteResources.length == 0
+							|| !concreteResources[0].exists()) {
+						concreteResources = null;
+					}
+				}
+				if (concreteResources == null) {
+					concreteResources = doGetResourcesByFileName(context,
+							customSkinPath, subSkinPath, resourceSuffix);
+				}
+			}
+
+			Resource inherentResource = null;
+			if (inherentResources.length > 0 && inherentResources[0].exists()) {
+				inherentResource = inherentResources[0];
+			}
+			Resource concreteResource = null;
+			if (concreteResources.length > 0 && concreteResources[0].exists()) {
+				concreteResource = concreteResources[0];
+			}
+
+			if (!skin.equals(DEFAULT_SKIN) && concreteResource == null) {
+				boolean shouldTryDefaultSkin = true;
+				if (!skin.startsWith(DEFAULT_SKIN_PREFIX)) {
+					String defaultPlatformSkin = getDefaultPlatformSkin(skin);
+					fileName = originFileName.replace(CURRENT_SKIN,
+							defaultPlatformSkin);
+					Resource[] defaultResources = null;
 					if (useMinCss) {
-						inherentResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
-						if (!inherentResource.exists()) {
-							inherentResource = null;
+						defaultResources = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+						if (defaultResources.length == 0
+								|| !defaultResources[0].exists()) {
+							defaultResources = null;
 						}
 					}
-					if (inherentResource == null) {
-						inherentResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix)[0];
+					if (defaultResources == null) {
+						defaultResources = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix);
 					}
+					if (defaultResources.length > 0
+							&& defaultResources[0].exists()) {
+						shouldTryDefaultSkin = false;
+						concreteResource = defaultResources[0];
+					}
+				}
 
-					fileName = template.replace(CURRENT_SKIN, skin);
-					Resource concreteResource = null;
+				if (shouldTryDefaultSkin) {
+					fileName = originFileName.replace(CURRENT_SKIN,
+							DEFAULT_SKIN);
+					Resource[] defaultResources = null;
 					if (useMinCss) {
-						concreteResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
-					}
-					if (concreteResource == null) {
-						concreteResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix)[0];
-					}
-
-					if (!skin.equals(DEFAULT_SKIN)
-							&& !concreteResource.exists()) {
-						boolean shouldTryDefaultSkin = true;
-						if (!skin.startsWith(DEFAULT_SKIN_PREFIX)) {
-							String defaultPlatformSkin = getDefaultPlatformSkin(skin);
-							fileName = template.replace(CURRENT_SKIN,
-									defaultPlatformSkin);
-							Resource defaultResource = null;
-							if (useMinCss) {
-								defaultResource = doGetResourcesByFileName(
-										context, resourcePrefix, fileName,
-										MIN_STYLESHEET_SUFFIX)[0];
-								if (!defaultResource.exists()) {
-									defaultResource = null;
-								}
-							}
-							if (defaultResource == null) {
-								defaultResource = doGetResourcesByFileName(
-										context, resourcePrefix, fileName,
-										resourceSuffix)[0];
-							}
-							if (defaultResource.exists()) {
-								shouldTryDefaultSkin = false;
-								concreteResource = defaultResource;
-							}
-						}
-
-						if (shouldTryDefaultSkin) {
-							fileName = template.replace(CURRENT_SKIN,
-									DEFAULT_SKIN);
-							Resource defaultResource = null;
-							if (useMinCss) {
-								defaultResource = doGetResourcesByFileName(
-										context, resourcePrefix, fileName,
-										MIN_STYLESHEET_SUFFIX)[0];
-								if (!defaultResource.exists()) {
-									defaultResource = null;
-								}
-							}
-							if (defaultResource == null) {
-								defaultResource = doGetResourcesByFileName(
-										context, resourcePrefix, fileName,
-										resourceSuffix)[0];
-							}
-							if (defaultResource.exists()) {
-								concreteResource = defaultResource;
-							}
+						defaultResources = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+						if (defaultResources.length == 0
+								|| !defaultResources[0].exists()) {
+							defaultResources = null;
 						}
 					}
+					if (defaultResources == null) {
+						defaultResources = doGetResourcesByFileName(context,
+								resourcePrefix, fileName, resourceSuffix);
+					}
+					if (defaultResources.length > 0
+							&& defaultResources[0].exists()) {
+						concreteResource = defaultResources[0];
+					}
+				}
+			}
 
-					if (inherentResource.exists()) {
-						resources = new Resource[] { inherentResource,
-								concreteResource };
-					} else {
-						resources = new Resource[] { concreteResource };
+			if (concreteResource == null) {
+				throw new FileNotFoundException(
+						"Can not found a valid css resource for [" + fileName
+								+ "].");
+			}
+
+			if (inherentResource != null) {
+				resources = new Resource[] { inherentResource, concreteResource };
+			} else {
+				resources = new Resource[] { concreteResource };
+			}
+		} else {
+			Resource[] minCssResources = null, cssRresources = null;
+			if (useMinCss) {
+				minCssResources = doGetResourcesByFileName(context,
+						resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX);
+				if (minCssResources.length == 0 || !minCssResources[0].exists()) {
+					cssRresources = doGetResourcesByFileName(context,
+							resourcePrefix, fileName, resourceSuffix);
+					if (cssRresources.length == 0 || !cssRresources[0].exists()) {
+						throw new FileNotFoundException("Neither ["
+								+ PathUtils.concatPath(resourcePrefix,
+										fileName, resourceSuffix)
+								+ "] nor ["
+								+ PathUtils.concatPath(resourcePrefix,
+										fileName, MIN_STYLESHEET_SUFFIX)
+								+ "] could be found.");
 					}
 				} else {
-					Resource minResource = null, resource = null;
-					if (useMinCss) {
-						minResource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, MIN_STYLESHEET_SUFFIX)[0];
-						if (!minResource.exists()) {
-							resource = doGetResourcesByFileName(context,
-									resourcePrefix, fileName, resourceSuffix)[0];
-							if (!resource.exists()) {
-								throw new FileNotFoundException("Neither ["
-										+ minResource.getPath() + "] nor ["
-										+ resource.getPath()
-										+ "] could be found.");
-							}
-						} else {
-							resource = minResource;
-						}
-					} else {
-						resource = doGetResourcesByFileName(context,
-								resourcePrefix, fileName, resourceSuffix)[0];
-						if (!resource.exists()) {
-							throw new FileNotFoundException("File ["
-									+ resource.getPath() + "] not found.");
-						}
-					}
-					resources = new Resource[] { resource };
+					cssRresources = minCssResources;
 				}
-				resourcesCache.put(cacheKey, resources);
+			} else {
+				cssRresources = doGetResourcesByFileName(context,
+						resourcePrefix, fileName, resourceSuffix);
+				if (cssRresources.length == 0 || !cssRresources[0].exists()) {
+					throw new FileNotFoundException("File ["
+							+ PathUtils.concatPath(resourcePrefix, fileName,
+									resourceSuffix) + "] not found.");
+				}
 			}
-			return resources;
+			resources = cssRresources;
 		}
+		return resources;
 	}
 }

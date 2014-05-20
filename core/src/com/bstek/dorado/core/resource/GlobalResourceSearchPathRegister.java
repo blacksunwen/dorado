@@ -17,11 +17,14 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-5-11
  */
-public class GlobalResourceSearchPathRegister implements InitializingBean {
+public class GlobalResourceSearchPathRegister implements InitializingBean,
+		RemovableBean {
 	private DefaultGlobalResourceBundleManager globalResourceBundleManager;
 	private String searchPath;
 	private List<String> searchPaths;

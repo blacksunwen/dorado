@@ -226,7 +226,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 					writer.append("<request>\n");
 					writer.append("<response type=\"json\"><![CDATA[\n");
 					writer.setEscapeEnabled(true);
-					
+
 					String textContent = DomUtils.getTextContent(element);
 
 					ObjectNode objectNode = (ObjectNode) JsonUtils
@@ -234,7 +234,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 					try {
 						processTask(escapeWriter, objectNode, context);
 						writer.setEscapeEnabled(false);
-						
+
 						writer.append("\n]]></response>\n");
 					} catch (Exception e) {
 						Throwable t = e;
@@ -247,8 +247,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						if (t instanceof ClientRunnableException) {
 							writer.append("<exception type=\"runnable\"><![CDATA[");
 							writer.setEscapeEnabled(true);
-							writer.append(((ClientRunnableException) t)
-									.getScript());
+							writer.append("(function(){")
+									.append(((ClientRunnableException) t)
+											.getScript()).append("})");
 						} else {
 							writer.append("<exception><![CDATA[\n");
 							writer.setEscapeEnabled(true);
@@ -273,7 +274,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 			if (t instanceof ClientRunnableException) {
 				response.setContentType("text/runnable");
-				writer.write(((ClientRunnableException) t).getScript());
+				writer.append("(function(){")
+						.append(((ClientRunnableException) t).getScript())
+						.append("})");
 			} else {
 				response.setContentType("text/dorado-exception");
 				outputException(jsonBuilder, e);

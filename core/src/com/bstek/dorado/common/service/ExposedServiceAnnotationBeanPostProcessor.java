@@ -37,7 +37,7 @@ public class ExposedServiceAnnotationBeanPostProcessor extends
 			.getLog(ExposedServiceAnnotationBeanPostProcessor.class);
 
 	private ExposedServiceManager exposedServiceManager;
-	private Set<PendingDataObject> pendingDataObjects = new HashSet<PendingDataObject>();
+	private Set<PendingObject> pendingDataObjects = new HashSet<PendingObject>();
 
 	public void setExposedServiceManager(
 			ExposedServiceManager exposedServiceManager) {
@@ -58,7 +58,7 @@ public class ExposedServiceAnnotationBeanPostProcessor extends
 			if (!exposed) {
 				continue;
 			}
-			pendingDataObjects.add(new PendingDataObject(annotation, beanName,
+			pendingDataObjects.add(new PendingObject(annotation, beanName,
 					method.getName()));
 		}
 	}
@@ -73,24 +73,27 @@ public class ExposedServiceAnnotationBeanPostProcessor extends
 		return bean;
 	}
 
-	private String autoRegisterExposedServices(
-			PendingDataObject pendingDataObject) throws Exception {
-		String beanName = pendingDataObject.getBeanName();
-		String methodName = pendingDataObject.getMethodName();
+	private String autoRegisterExposedServices(PendingObject pendingObject)
+			throws Exception {
+		String beanName = pendingObject.getBeanName();
+		String methodName = pendingObject.getMethodName();
 
 		String serviceBeanName = "spring:" + beanName;
 		String serviceName = beanName + '#' + methodName;
-		ExposedService service = new ExposedService(serviceName,
-				serviceBeanName, methodName);
-		exposedServiceManager.registerService(service);
+
+		ExposedServiceDefintion exposedService = new ExposedServiceDefintion();
+		exposedService.setName(serviceName);
+		exposedService.setBean(serviceBeanName);
+		exposedService.setMethod(methodName);
+		exposedServiceManager.registerService(exposedService);
 		return serviceName;
 	}
 
 	@Override
 	public void onStartup() throws Exception {
 		StringBuffer servicesText = new StringBuffer();
-		for (PendingDataObject pendingDataObject : pendingDataObjects) {
-			String serviceName = autoRegisterExposedServices(pendingDataObject);
+		for (PendingObject pendingObject : pendingDataObjects) {
+			String serviceName = autoRegisterExposedServices(pendingObject);
 			if (StringUtils.isNotEmpty(serviceName)) {
 				if (servicesText.length() > 0) {
 					servicesText.append(',');
@@ -107,14 +110,13 @@ public class ExposedServiceAnnotationBeanPostProcessor extends
 	}
 }
 
-class PendingDataObject {
+class PendingObject {
 	private Expose annotation;
 	private String beanName;
 	private String methodName;
 	private String uniqueName;
 
-	public PendingDataObject(Expose annotation, String beanName,
-			String methodName) {
+	public PendingObject(Expose annotation, String beanName, String methodName) {
 		this.annotation = annotation;
 		this.beanName = beanName;
 		this.methodName = methodName;
@@ -135,11 +137,10 @@ class PendingDataObject {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof PendingDataObject))
+		if (obj == null || !(obj instanceof PendingObject))
 			return false;
 		return (uniqueName != null) ? uniqueName
-				.equals(((PendingDataObject) obj).uniqueName) : super
-				.equals(obj);
+				.equals(((PendingObject) obj).uniqueName) : super.equals(obj);
 	}
 
 	@Override

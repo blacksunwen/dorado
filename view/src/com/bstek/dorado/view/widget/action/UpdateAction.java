@@ -30,26 +30,15 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 13, 2009
  */
-@Widget(name = "UpdateAction", category = "Action",
-		dependsPackage = "base-widget", autoGenerateId = true)
-@ClientObject(prototype = "dorado.widget.UpdateAction",
-		shortTypeName = "UpdateAction")
+@Widget(name = "UpdateAction", category = "Action", dependsPackage = "base-widget", autoGenerateId = true)
+@ClientObject(prototype = "dorado.widget.UpdateAction", shortTypeName = "UpdateAction")
 @XmlNode(parser = "spring:dorado.updateActionParser")
 @ClientEvents({ @ClientEvent(name = "onGetUpdateData") })
-public class UpdateAction extends Action {
+public class UpdateAction extends AsyncAction {
 	private DataResolver dataResolver;
 	private List<UpdateItem> UpdateItems = new ArrayList<UpdateItem>();
 	private boolean alwaysExecute;
-	
-	public UpdateAction() {
-		setAsync(true);
-	}
 
-	@ClientProperty(escapeValue = "true")
-	public boolean isAsync() {
-		return super.isAsync();
-	}
-	
 	@Override
 	@ClientProperty(alwaysOutput = true)
 	public String getExecutingMessage() {

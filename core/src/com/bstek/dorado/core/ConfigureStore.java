@@ -61,18 +61,22 @@ public abstract class ConfigureStore {
 	/**
 	 * 根据给定的配置项的名称返回其值。
 	 * 
-	 * @param key
-	 *            配置项的名称
+	 * @param key 配置项的名称
 	 */
 	public abstract Object get(String key);
 
 	/**
+	 * 删除给定的配置项。
+	 * 
+	 * @param key 配置项的名称
+	 */
+	public abstract void remove(String key);
+
+	/**
 	 * 设置给定的配置项的值。
 	 * 
-	 * @param key
-	 *            配置项的名称
-	 * @param value
-	 *            值。
+	 * @param key 配置项的名称
+	 * @param value 值。
 	 */
 	public final void set(String key, Object value) {
 		fireBeforeConfigureChange(key, value);
@@ -103,10 +107,8 @@ public abstract class ConfigureStore {
 	/**
 	 * 以String形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
 	 * 
-	 * @param key
-	 *            配置项的名称
-	 * @param defaultValue
-	 *            默认值
+	 * @param key 配置项的名称
+	 * @param defaultValue 默认值
 	 */
 	public String getString(String key, String defaultValue) {
 		if (contains(key)) {
@@ -132,10 +134,8 @@ public abstract class ConfigureStore {
 	/**
 	 * 以boolean形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
 	 * 
-	 * @param key
-	 *            配置项的名称
-	 * @param defaultValue
-	 *            默认值
+	 * @param key 配置项的名称
+	 * @param defaultValue 默认值
 	 */
 	public boolean getBoolean(String key, boolean defaultValue) {
 		if (contains(key)) {
@@ -148,8 +148,7 @@ public abstract class ConfigureStore {
 	/**
 	 * 以long形式返回某配置项的值。
 	 * 
-	 * @param key
-	 *            配置项的名称
+	 * @param key 配置项的名称
 	 */
 	public long getLong(String key) {
 		Object value = get(key);
@@ -160,10 +159,8 @@ public abstract class ConfigureStore {
 	/**
 	 * 以long形式返回某配置项的值，如果该配置项不存在则返回给定的默认值。
 	 * 
-	 * @param key
-	 *            配置项的名称
-	 * @param defaultValue
-	 *            默认值
+	 * @param key 配置项的名称
+	 * @param defaultValue 默认值
 	 */
 	public long getLong(String key, long defaultValue) {
 		if (contains(key)) {

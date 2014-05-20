@@ -16,8 +16,8 @@ import java.util.List;
 
 public interface NodeHolder {
 
-	public abstract List<Node> getNodes();
+	public abstract List<BaseNode> getNodes();
 
-	public abstract void addNode(Node node);
+	public abstract void addNode(BaseNode node);
 
 }

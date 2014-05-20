@@ -19,6 +19,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNodeWrapper;
+import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.InnerElementList;
@@ -34,7 +35,10 @@ import com.bstek.dorado.view.widget.InnerElementList;
 @ClientEvents({ @ClientEvent(name = "beforeMaximize"),
 		@ClientEvent(name = "onMaximize") })
 public class Panel extends AbstractPanel {
+
+	@SuppressWarnings("deprecation")
 	private PanelBorder border = PanelBorder.normal;
+
 	private Boolean showCaptionBar;
 	private boolean maximizeable;
 	private boolean maximized;
@@ -52,10 +56,13 @@ public class Panel extends AbstractPanel {
 	}
 
 	@ClientProperty(escapeValue = "normal")
+	@XmlProperty(deprecated = true)
+	@Deprecated
 	public PanelBorder getBorder() {
 		return border;
 	}
 
+	@Deprecated
 	public void setBorder(PanelBorder border) {
 		this.border = border;
 	}
@@ -80,8 +87,7 @@ public class Panel extends AbstractPanel {
 		tools.add(tool);
 	}
 
-	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Tools",
-			icon = "/com/bstek/dorado/view/widget/base/Tools.png"))
+	@XmlSubNode(wrapper = @XmlNodeWrapper(nodeName = "Tools", icon = "/com/bstek/dorado/view/widget/base/Tools.png"))
 	@ClientProperty
 	public List<SimpleIconButton> getTools() {
 		return tools;

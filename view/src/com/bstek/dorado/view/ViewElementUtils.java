@@ -14,8 +14,6 @@ package com.bstek.dorado.view;
 
 import java.util.Collection;
 
-import com.bstek.dorado.view.widget.Component;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-4-25
@@ -24,37 +22,23 @@ public abstract class ViewElementUtils {
 	private ViewElementUtils() {
 	}
 
-	private static Component getParentComponent(ViewElement parent) {
-		while (parent != null && !(parent instanceof Component)) {
-			parent = parent.getParent();
-		}
-		return (parent instanceof Component) ? (Component) parent : null;
-	}
-
 	public static View getParentView(ViewElement parent) {
-		Component parentComponent = getParentComponent(parent);
-		if (parentComponent != null) {
-			if (parentComponent instanceof View) {
-				return (View) parentComponent;
-			} else {
-				return parentComponent.getView();
-			}
+		if (parent instanceof View) {
+			return (View) parent;
 		} else {
-			return null;
+			return parent.getView();
 		}
 	}
 
-	private static void unregisterFromView(ViewElement element,
-			View view) {
+	private static void unregisterFromView(ViewElement element, View view) {
 		Collection<ViewElement> innerElements = element.getInnerElements();
 		if (innerElements != null) {
 			for (ViewElement innerElement : innerElements) {
 				unregisterFromView(innerElement, view);
 			}
 		}
-		if (element instanceof Component) {
-			view.unregisterComponent((Component) element);
-		}
+
+		view.unregisterViewElement(element);
 	}
 
 	public static void clearParentViewElement(ViewElement element,
@@ -69,9 +53,8 @@ public abstract class ViewElementUtils {
 	}
 
 	private static void registerToView(ViewElement element, View view) {
-		if (element instanceof Component) {
-			view.registerComponent((Component) element);
-		}
+		view.registerViewElement(element);
+
 		Collection<ViewElement> innerElements = element.getInnerElements();
 		if (innerElements != null) {
 			for (ViewElement innerElement : innerElements) {

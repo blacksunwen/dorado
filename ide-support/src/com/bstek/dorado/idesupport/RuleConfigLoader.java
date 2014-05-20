@@ -19,17 +19,17 @@ import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.idesupport.initializer.RuleTemplateInitializer;
+import com.bstek.dorado.spring.RemovableBean;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-6-21
  */
-public class RuleConfigLoader implements InitializingBean {
+public class RuleConfigLoader implements InitializingBean, RemovableBean {
 	private RuleTemplateBuilder ruleTemplateBuilder;
 	private String configLocation;
 	private Map<String, RuleTemplateInitializer> initializerMap;
-	
-	
+
 	public void setRuleTemplateBuilder(RuleTemplateBuilder ruleTemplateBuilder) {
 		this.ruleTemplateBuilder = ruleTemplateBuilder;
 	}
@@ -43,6 +43,7 @@ public class RuleConfigLoader implements InitializingBean {
 
 	/**
 	 * 设置生成规则文件的拦截器
+	 * 
 	 * @param initializerMap
 	 */
 	public void setInitializerMap(
@@ -62,7 +63,7 @@ public class RuleConfigLoader implements InitializingBean {
 				ruleTemplateBuilder.setConfigTemplateFiles(configTemplateFiles);
 			}
 		}
-		
+
 		if (initializerMap != null) {
 			ruleTemplateBuilder.appendInitializerMap(initializerMap);
 		}

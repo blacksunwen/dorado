@@ -64,7 +64,6 @@ public class StandaloneRuleSetExporter {
 			.length();
 	private static final String HOME_PROPERTY = "core.doradoHome";
 	private static final String CONTEXT_CONFIG_PROPERTY = "core.contextConfigLocation";
-	private static final String WEB_CONFIGURE_LOCATION = "com/bstek/dorado/web/configure.properties";
 
 	private static final String HOME_COMPONENT_CONTEXT_FILE = HOME_LOCATION_PREFIX
 			+ "components-context.xml";
@@ -196,10 +195,6 @@ public class StandaloneRuleSetExporter {
 
 		// 创建一个临时的ResourceLoader
 		ResourceLoader resourceLoader = new BaseResourceLoader();
-
-		// 读取configure.properties
-		loadConfigureProperties(configureStore, resourceLoader,
-				WEB_CONFIGURE_LOCATION, true);
 
 		if (StringUtils.isNotEmpty(doradoHome)) {
 			String configureLocation = HOME_LOCATION_PREFIX

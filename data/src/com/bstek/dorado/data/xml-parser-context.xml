@@ -23,8 +23,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<!-- XML Parser -->
 	<bean id="dorado.dataObjectParseHelper" class="com.bstek.dorado.data.config.xml.DataObjectParseHelper">
 		<property name="dataTypeParser" ref="dorado.dataTypeParser" />
-		<property name="dataProviderParser" ref="dorado.dataProviderParserDispatcher" />
-		<property name="dataResolverParser" ref="dorado.dataResolverParserDispatcher" />
 	</bean>
 
 	<bean id="dorado.genericParser" abstract="true"

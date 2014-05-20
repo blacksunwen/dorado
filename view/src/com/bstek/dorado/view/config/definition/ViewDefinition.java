@@ -19,15 +19,14 @@ import java.util.Map;
 import com.bstek.dorado.config.definition.CreationContext;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.core.bean.Scope;
-import com.bstek.dorado.data.method.MethodAutoMatchingException;
 import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewElement;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
-import com.bstek.dorado.view.widget.Component;
 
 /**
  * 视图的配置声明对象。
@@ -93,7 +92,41 @@ public class ViewDefinition extends ContainerDefinition {
 		}
 
 		Object retval;
-		try {
+
+		if (methods.length == 1) {
+			Method method = methods[0];
+			ViewConfig viewConfig = view.getViewConfig();
+			String[] parameterNames = MethodAutoMatchingUtils
+					.getParameterNames(method);
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			Object[] args = new Object[parameterNames.length];
+			for (int i = 0; i < parameterNames.length; i++) {
+				String parameterName = parameterNames[i];
+				Class<?> parameterType = parameterTypes[i];
+				Object arg = null;
+				if (ViewElement.class.isAssignableFrom(parameterType)) {
+					if ("view".equals(parameterName)) {
+						arg = view;
+					} else {
+						arg = view.getViewElement(parameterName);
+					}
+				} else if (viewConfig != null) {
+					if (DataType.class.isAssignableFrom(parameterType)) {
+						arg = viewConfig.getDataType(parameterName);
+					} else if (DataProvider.class
+							.isAssignableFrom(parameterType)) {
+						arg = viewConfig.getDataProvider(parameterName);
+					} else if (DataResolver.class
+							.isAssignableFrom(parameterType)) {
+						arg = viewConfig.getDataResolver(parameterName);
+					} else if (ViewConfig.class.isAssignableFrom(parameterType)) {
+						arg = viewConfig;
+					}
+				}
+				args[i] = arg;
+			}
+			retval = method.invoke(interceptor, args);
+		} else {
 			Class<?>[] requiredTypes = null;
 			Object[] requiredArgs = null;
 			Class<?>[] exactTypes = null;
@@ -104,44 +137,6 @@ public class ViewDefinition extends ContainerDefinition {
 			retval = MethodAutoMatchingUtils.invokeMethod(methods, interceptor,
 					requiredTypes, requiredArgs, exactTypes, exactArgs,
 					optionalTypes, optionalArgs, returnType);
-		} catch (MethodAutoMatchingException e1) {
-			if (methods.length == 1) {
-				Method method = methods[0];
-				ViewConfig viewConfig = view.getViewConfig();
-				String[] parameterNames = MethodAutoMatchingUtils
-						.getParameterNames(method);
-				Class<?>[] parameterTypes = method.getParameterTypes();
-				Object[] args = new Object[parameterNames.length];
-				for (int i = 0; i < parameterNames.length; i++) {
-					String parameterName = parameterNames[i];
-					Class<?> parameterType = parameterTypes[i];
-					Object arg = null;
-					if (Component.class.isAssignableFrom(parameterType)) {
-						if ("view".equals(parameterName)) {
-							arg = view;
-						} else {
-							arg = view.getComponent(parameterName);
-						}
-					} else if (viewConfig != null) {
-						if (DataType.class.isAssignableFrom(parameterType)) {
-							arg = viewConfig.getDataType(parameterName);
-						} else if (DataProvider.class
-								.isAssignableFrom(parameterType)) {
-							arg = viewConfig.getDataProvider(parameterName);
-						} else if (DataResolver.class
-								.isAssignableFrom(parameterType)) {
-							arg = viewConfig.getDataResolver(parameterName);
-						} else if (ViewConfig.class
-								.isAssignableFrom(parameterType)) {
-							arg = viewConfig;
-						}
-					}
-					args[i] = arg;
-				}
-				retval = method.invoke(interceptor, args);
-			} else {
-				throw e1;
-			}
 		}
 
 		if (retval instanceof Boolean) {

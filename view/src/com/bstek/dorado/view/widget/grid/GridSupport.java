@@ -12,7 +12,6 @@
 
 package com.bstek.dorado.view.widget.grid;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.bstek.dorado.annotation.ClientEvent;
@@ -20,6 +19,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.ResourceInjection;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.widget.InnerElementList;
 import com.bstek.dorado.view.widget.list.RowList;
 
 /**
@@ -49,7 +49,7 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 	private String rowRenderer;
 	private StretchColumnsMode stretchColumnsMode = StretchColumnsMode.stretchableColumns;
 
-	private List<Column> columns = new ArrayList<Column>();
+	private List<Column> columns = new InnerElementList<Column>(this);
 
 	public void addColumn(Column column) {
 		columns.add(column);

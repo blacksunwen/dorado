@@ -31,9 +31,9 @@ import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.util.proxy.BeanExtender;
-import com.bstek.dorado.view.InnerDataProviderManager;
-import com.bstek.dorado.view.InnerDataResolverManager;
-import com.bstek.dorado.view.InnerDataTypeManager;
+import com.bstek.dorado.view.PrivateDataProviderManager;
+import com.bstek.dorado.view.PrivateDataResolverManager;
+import com.bstek.dorado.view.PrivateDataTypeManager;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewState;
 
@@ -53,9 +53,9 @@ public class ViewConfig implements Scopable, MetaDataSupport {
 	private Scope scope = Scope.thread;
 	private Map<String, Object> metaData;
 	private Map<String, Object> arguments = new HashMap<String, Object>();
-	private InnerDataTypeManager innerDataTypeManager;
-	private InnerDataProviderManager innerDataProviderManager;
-	private InnerDataResolverManager innerDataResolverManager;
+	private PrivateDataTypeManager innerDataTypeManager;
+	private PrivateDataProviderManager innerDataProviderManager;
+	private PrivateDataResolverManager innerDataResolverManager;
 	private View view;
 
 	public ViewConfig(String name) {
@@ -99,17 +99,17 @@ public class ViewConfig implements Scopable, MetaDataSupport {
 		return arguments;
 	}
 
-	public void setDataTypeManager(InnerDataTypeManager innerDataTypeManager) {
+	public void setDataTypeManager(PrivateDataTypeManager innerDataTypeManager) {
 		this.innerDataTypeManager = innerDataTypeManager;
 	}
 
 	public void setDataProviderManager(
-			InnerDataProviderManager innerDataProviderManager) {
+			PrivateDataProviderManager innerDataProviderManager) {
 		this.innerDataProviderManager = innerDataProviderManager;
 	}
 
 	public void setDataResolverManager(
-			InnerDataResolverManager innerDataResolverManager) {
+			PrivateDataResolverManager innerDataResolverManager) {
 		this.innerDataResolverManager = innerDataResolverManager;
 	}
 

@@ -282,6 +282,14 @@ public class DoradoContext extends SpringContextSupport {
 		}
 	}
 
+	public String getParameter(String paramName) {
+		if (request != null) {
+			return request.getParameter(paramName);
+		} else {
+			return null;
+		}
+	}
+
 	@Override
 	public void removeAttribute(String key) {
 		if (request != null) {

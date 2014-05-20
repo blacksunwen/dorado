@@ -35,6 +35,10 @@ import com.bstek.dorado.web.DoradoContext;
 public abstract class WebContextSupportedController extends AbstractController {
 	private static final char ESCAPED_PATH_DELIM = '^';
 
+	private String getContextPath(HttpServletRequest request) {
+		return request.getContextPath();
+	}
+
 	/**
 	 * 返回请求的相对URI，即相对于应用的ContentPath的URI。
 	 */
@@ -43,7 +47,7 @@ public abstract class WebContextSupportedController extends AbstractController {
 		String uri = (String) request.getAttribute("originalUrlPath");
 		if (uri == null) {
 			uri = request.getRequestURI().substring(
-					request.getContextPath().length());
+					getContextPath(request).length());
 		}
 		uri = StringUtils
 				.replaceChars(

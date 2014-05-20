@@ -60,7 +60,6 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private String id;
 	private Class<?> matchType;
 	private Class<?> creationType;
-	private boolean inner;
 	private boolean global;
 	private Map<String, PropertyDefDefinition> propertyDefs;
 	private boolean isAggregationType;
@@ -140,17 +139,6 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	 */
 	public void setCreationType(Class<?> creationType) {
 		this.creationType = creationType;
-	}
-
-	/**
-	 * 返回该DataType是否是一个全局对象。
-	 */
-	public boolean isInner() {
-		return inner;
-	}
-
-	void setInner(boolean inner) {
-		this.inner = inner;
 	}
 
 	public boolean isGlobal() {
@@ -416,7 +404,6 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 					if (parent instanceof DataTypeDefinition) {
 						DataTypeDefinition parentDataType = (DataTypeDefinition) parent;
 						if (!parentDataType.isGlobal()
-								|| parentDataType.isInner()
 								|| parentDataType.isAggregationType()) {
 							continue;
 						}
@@ -428,7 +415,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 					}
 				}
 
-				if (isGlobal() && !isInner() && !isAggregationType()) {
+				if (isGlobal() && !isAggregationType()) {
 					injectResourceStrings(this, entityDataType);
 				}
 			}

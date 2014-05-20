@@ -14,11 +14,14 @@ package com.bstek.dorado.view.resolver;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-1-15
  */
-public class ClientSettingsOutputterRegister implements InitializingBean {
+public class ClientSettingsOutputterRegister implements InitializingBean,
+		RemovableBean {
 	private PageHeaderOutputter pageHeaderOutputter;
 	private ClientSettingsOutputter clientSettingsOutputter;
 

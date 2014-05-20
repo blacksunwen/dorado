@@ -20,13 +20,9 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.common.Namable;
 import com.bstek.dorado.common.proxy.PatternMethodInterceptorFilter;
 import com.bstek.dorado.config.definition.CreationContext;
-import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.config.definition.DefinitionManagerAware;
-import com.bstek.dorado.config.definition.DefinitionReference;
-import com.bstek.dorado.config.definition.DefinitionUtils;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.DataModelObject;
-import com.bstek.dorado.data.config.xml.DataXmlConstants;
 import com.bstek.dorado.data.provider.DataProvider;
 import com.bstek.dorado.data.provider.DataProviderGetResultMethodInterceptor;
 import com.bstek.dorado.data.provider.manager.DataProviderInterceptorInvoker;
@@ -47,15 +43,8 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 	private String name;
 	private String id;
 
-	private boolean resultDataTypeParentAssigned;
-
 	public DataProviderDefinition() {
 		setCacheCreatedObject(true);
-	}
-
-	public DataProviderDefinition(String name) {
-		this();
-		setName(name);
 	}
 
 	public void setDefinitionManager(
@@ -129,49 +118,6 @@ public class DataProviderDefinition extends InterceptableDefinition implements
 	@Override
 	protected MethodInterceptor getInterceptorInvoker(String interceptor) {
 		return new DataProviderInterceptorInvoker(interceptor);
-	}
-
-	@Override
-	protected Object doCreate(CreationContext context, Object[] constructorArgs)
-			throws Exception {
-		// 当DataProvider继承自另一个DataProvider时，指定其中的ResultDataType也从父DataProvider的ResultDataType继承。
-		if (!resultDataTypeParentAssigned) {
-			DataTypeDefinition resultDataType = (DataTypeDefinition) DefinitionUtils
-					.getDefinition(getProperty(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
-			if (resultDataType != null && resultDataType.isInner()) {
-				DefinitionReference<? extends Definition>[] parentReferences = getParentReferences();
-				if (parentReferences != null) {
-					for (DefinitionReference<?> parentReference : parentReferences) {
-						Definition parent = parentReference.getDefinition();
-						if (!(parent instanceof DataProviderDefinition)) {
-							continue;
-						}
-
-						DataTypeDefinition parentResultDataType = (DataTypeDefinition) DefinitionUtils
-								.getDefinition(parent
-										.getProperty(DataXmlConstants.ATTRIBUTE_RESULT_DATA_TYPE));
-						if (parentResultDataType != null) {
-							Definition[] originParents = resultDataType
-									.getParents();
-
-							Definition[] newParents;
-							if (originParents == null) {
-								newParents = new Definition[] { parentResultDataType };
-							} else {
-								newParents = new Definition[originParents.length + 1];
-								newParents[0] = parentResultDataType;
-								System.arraycopy(originParents, 0, newParents,
-										1, originParents.length);
-							}
-							resultDataType.setParents(newParents);
-						}
-					}
-				}
-			}
-			resultDataTypeParentAssigned = true;
-		}
-
-		return super.doCreate(context, constructorArgs);
 	}
 
 	@Override

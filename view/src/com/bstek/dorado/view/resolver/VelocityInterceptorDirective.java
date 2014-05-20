@@ -28,7 +28,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
 import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.ViewElement;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -117,13 +117,13 @@ public class VelocityInterceptorDirective extends AbstractDirective {
 			} else if (Context.class.isAssignableFrom(parameterType)) {
 				/* Velocity Context */
 				parameters[i] = contextAdapter;
-			} else if (Component.class.isAssignableFrom(parameterType)) {
+			} else if (ViewElement.class.isAssignableFrom(parameterType)) {
 				/* Component or View */
 				String parameterName = parameterNames[i];
 				if ("view".equals(parameterName)) {
 					parameters[i] = view;
 				} else {
-					parameters[i] = view.getComponent(parameterName);
+					parameters[i] = view.getViewElement(parameterName);
 				}
 			} else if (parameterMap != null) {
 				/* from ParameterMap */

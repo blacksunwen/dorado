@@ -23,14 +23,10 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.common.Ignorable;
-import com.bstek.dorado.common.TagSupport;
 import com.bstek.dorado.common.event.ClientEvent;
 import com.bstek.dorado.common.event.ClientEventHolder;
-import com.bstek.dorado.common.event.ClientEventSupported;
-import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ClientEventSupportedElement;
 import com.bstek.dorado.view.ViewElement;
-import com.bstek.dorado.view.ViewElementUtils;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.InnerElementReference;
 
@@ -39,13 +35,9 @@ import com.bstek.dorado.view.widget.InnerElementReference;
  * @since 2010-8-9
  */
 @XmlNode
-@ClientObject(prototype = "dorado.widget.accordion.Section",
-		shortTypeName = "Section")
-@ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(
-		name = "onCaptionClick") })
-public class Section implements ClientEventSupported, Ignorable, TagSupport,
-		ViewElement {
-	private ViewElement parent;
+@ClientObject(prototype = "dorado.widget.accordion.Section", shortTypeName = "Section")
+@ClientEvents({ @com.bstek.dorado.annotation.ClientEvent(name = "onCaptionClick") })
+public class Section extends ClientEventSupportedElement {
 	private String name;
 	private String caption;
 	private String icon;
@@ -56,29 +48,12 @@ public class Section implements ClientEventSupported, Ignorable, TagSupport,
 	private boolean visible = true;
 	private boolean disabled;
 	private String tip;
-	private boolean ignored;
-	private String tags;
 
 	private InnerElementReference<Control> controlRef = new InnerElementReference<Control>(
 			this);
 	private Collection<ViewElement> innerElements = new HashSet<ViewElement>();
 
 	private ClientEventHolder clientEventHolder = new ClientEventHolder(this);
-
-	public ViewElement getParent() {
-		return parent;
-	}
-
-	public void setParent(ViewElement parent) {
-		ViewElementUtils.clearParentViewElement(this, this.parent);
-
-		this.parent = parent;
-
-		View view = ViewElementUtils.getParentView(parent);
-		if (view != null) {
-			ViewElementUtils.setParentViewElement(this, parent);
-		}
-	}
 
 	public void registerInnerElement(ViewElement element) {
 		innerElements.add(element);
@@ -172,22 +147,6 @@ public class Section implements ClientEventSupported, Ignorable, TagSupport,
 
 	public void setTip(String tip) {
 		this.tip = tip;
-	}
-
-	public boolean isIgnored() {
-		return ignored;
-	}
-
-	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
 	}
 
 	public void addClientEventListener(String eventName,

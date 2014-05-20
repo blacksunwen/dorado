@@ -23,7 +23,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -65,8 +64,6 @@ public class PackageFileResolver extends WebFileResolver {
 	protected static final String STYLESHEET_SUFFIX = ".css";
 	protected static final String MIN_JAVASCRIPT_SUFFIX = ".min.js";
 	protected static final String MIN_STYLESHEET_SUFFIX = ".min.css";
-
-	protected Map<String, Resource[]> resourcesCache = new HashMap<String, Resource[]>();
 
 	private static class I18NResource implements Resource {
 		protected Resource adapteeResource;
@@ -395,40 +392,15 @@ public class PackageFileResolver extends WebFileResolver {
 				resourceSuffix);
 	}
 
-	protected String getFileCacheKey(String resourcePrefix, String fileName,
-			String resourceSuffix, Object... params) {
-		StringBuffer key = new StringBuffer();
-		if (resourcePrefix != null) {
-			key.append(resourcePrefix);
-		}
-		key.append('+').append(fileName).append('+');
-		if (resourceSuffix != null) {
-			key.append(resourceSuffix).append('+');
-		}
-		key.append('|');
-		if (params != null && params.length > 0) {
-			key.append(StringUtils.join(params, '|'));
-		}
-		return key.toString();
-	}
-
 	protected Resource[] getI18NResources(DoradoContext context,
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
 		Locale locale = localeResolver.resolveLocale();
-		String cacheKey = getFileCacheKey(resourcePrefix,
+		Resource resource = getI18NResource(context, resourcePrefix,
 				fileInfo.getFileName(), resourceSuffix, locale);
-		synchronized (resourcesCache) {
-			Resource[] resources = resourcesCache.get(cacheKey);
-			if (resources == null) {
-				Resource resource = getI18NResource(context, resourcePrefix,
-						fileInfo.getFileName(), resourceSuffix, locale);
-				resources = new Resource[] { new I18NResource(context,
-						fileInfo.getPackageName(), resource) };
-				resourcesCache.put(cacheKey, resources);
-			}
-			return resources;
-		}
+		Resource[] resources = new Resource[] { new I18NResource(context,
+				fileInfo.getPackageName(), resource) };
+		return resources;
 	}
 
 	protected final Resource getI18NResource(DoradoContext context,
@@ -453,13 +425,21 @@ public class PackageFileResolver extends WebFileResolver {
 	protected Resource doGetI18NResource(DoradoContext context,
 			String resourcePrefix, String fileName, String localeSuffix)
 			throws Exception, FileNotFoundException {
-		Resource resource = doGetResourcesByFileName(context, resourcePrefix,
-				fileName, localeSuffix + I18N_FILE_SUFFIX)[0];
-		if (resource == null || !resource.exists()) {
+		Resource[] resources = doGetResourcesByFileName(context,
+				resourcePrefix, fileName, localeSuffix + I18N_FILE_SUFFIX);
+		if (resources.length == 0 || !resources[0].exists()) {
+			resources = null;
+		}
+
+		if (resources == null) {
 			if (StringUtils.isNotEmpty(localeSuffix)) {
-				resource = doGetResourcesByFileName(context, resourcePrefix,
-						fileName, I18N_FILE_SUFFIX)[0];
-				if (resource == null || !resource.exists()) {
+				resources = doGetResourcesByFileName(context, resourcePrefix,
+						fileName, I18N_FILE_SUFFIX);
+				if (resources.length == 0 || !resources[0].exists()) {
+					resources = null;
+				}
+
+				if (resources == null) {
 					throw new FileNotFoundException("File ["
 							+ PathUtils.concatPath(resourcePrefix, fileName)
 							+ localeSuffix + I18N_FILE_SUFFIX + "] or ["
@@ -472,7 +452,7 @@ public class PackageFileResolver extends WebFileResolver {
 						+ I18N_FILE_SUFFIX + "] not found.");
 			}
 		}
-		return resource;
+		return (resources != null) ? resources[0] : null;
 	}
 
 	protected Resource[] getJavaScriptResources(DoradoContext context,
@@ -481,28 +461,19 @@ public class PackageFileResolver extends WebFileResolver {
 		boolean useMinJs = WebConfigure
 				.getBoolean("view.useMinifiedJavaScript");
 		String fileName = fileInfo.getFileName();
-		String cacheKey = getFileCacheKey(resourcePrefix, fileName,
-				resourceSuffix, useMinJs);
-		synchronized (resourcesCache) {
-			Resource[] resources = resourcesCache.get(cacheKey);
-			if (resources == null) {
-				if (useMinJs) {
-					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileInfo.getFileName(),
-							MIN_JAVASCRIPT_SUFFIX);
-					if (!resources[0].exists()) {
-						resources = null;
-					}
-				}
-				if (resources == null) {
-					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileInfo.getFileName(),
-							resourceSuffix);
-				}
-				resourcesCache.put(cacheKey, resources);
+		Resource[] resources = null;
+		if (useMinJs) {
+			resources = doGetResourcesByFileName(context, resourcePrefix,
+					fileName, MIN_JAVASCRIPT_SUFFIX);
+			if (resources.length == 0 || !resources[0].exists()) {
+				resources = null;
 			}
-			return resources;
 		}
+		if (resources == null) {
+			resources = doGetResourcesByFileName(context, resourcePrefix,
+					fileName, resourceSuffix);
+		}
+		return resources;
 	}
 
 	protected Resource[] getStyleSheetResources(DoradoContext context,
@@ -511,27 +482,18 @@ public class PackageFileResolver extends WebFileResolver {
 		boolean useMinCss = WebConfigure
 				.getBoolean("view.useMinifiedStyleSheet");
 		String fileName = fileInfo.getFileName();
-		String cacheKey = getFileCacheKey(resourcePrefix, fileName,
-				resourceSuffix, useMinCss);
-		synchronized (resourcesCache) {
-			Resource[] resources = resourcesCache.get(cacheKey);
-			if (resources == null) {
-				if (useMinCss) {
-					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileInfo.getFileName(),
-							MIN_STYLESHEET_SUFFIX);
-					if (!resources[0].exists()) {
-						resources = null;
-					}
-				}
-				if (resources == null) {
-					resources = doGetResourcesByFileName(context,
-							resourcePrefix, fileInfo.getFileName(),
-							resourceSuffix);
-				}
-				resourcesCache.put(cacheKey, resources);
+		Resource[] resources = null;
+		if (useMinCss) {
+			resources = doGetResourcesByFileName(context, resourcePrefix,
+					fileName, MIN_STYLESHEET_SUFFIX);
+			if (resources.length == 0 || !resources[0].exists()) {
+				resources = null;
 			}
-			return resources;
 		}
+		if (resources == null) {
+			resources = doGetResourcesByFileName(context, resourcePrefix,
+					fileName, resourceSuffix);
+		}
+		return resources;
 	}
 }

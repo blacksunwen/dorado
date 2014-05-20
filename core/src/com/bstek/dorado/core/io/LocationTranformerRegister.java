@@ -14,13 +14,16 @@ package com.bstek.dorado.core.io;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * 
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-3-22
  */
-public class LocationTranformerRegister implements InitializingBean {
+public class LocationTranformerRegister implements InitializingBean,
+		RemovableBean {
 	private String protocal;
 	private LocationTransformer transformer;
 

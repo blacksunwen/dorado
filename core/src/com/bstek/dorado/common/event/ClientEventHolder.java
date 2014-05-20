@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.list.UnmodifiableList;
-
 /**
  * 用于实现单个对象对客户端事件的管理，简化事件管理的辅助类。
  * 
@@ -28,7 +26,7 @@ import org.apache.commons.collections.list.UnmodifiableList;
  */
 public class ClientEventHolder {
 	private Class<? extends ClientEventSupported> ownerType;
-	private Map<String, List<ClientEvent>> eventMap = new HashMap<String, List<ClientEvent>>();
+	private Map<String, List<ClientEvent>> eventMap;
 
 	/**
 	 * @param ownerType
@@ -47,7 +45,7 @@ public class ClientEventHolder {
 	}
 
 	private List<ClientEvent> getClientEventListenersInternal(String eventName) {
-		return eventMap.get(eventName);
+		return (eventMap != null) ? eventMap.get(eventName) : null;
 	}
 
 	/**
@@ -61,6 +59,10 @@ public class ClientEventHolder {
 	public void addClientEventListener(String eventName,
 			ClientEvent eventListener) {
 		checkEventAvailable(eventName);
+
+		if (eventMap == null) {
+			eventMap = new HashMap<String, List<ClientEvent>>();
+		}
 
 		List<ClientEvent> events = getClientEventListenersInternal(eventName);
 		if (events == null) {
@@ -90,9 +92,9 @@ public class ClientEventHolder {
 	public List<ClientEvent> getClientEventListeners(String eventName) {
 		List<ClientEvent> events = getClientEventListenersInternal(eventName);
 		if (events != null) {
-			return UnmodifiableList.decorate(events);
+			return events;
 		} else {
-			return Collections.emptyList();
+			return Collections.EMPTY_LIST;
 		}
 	}
 
@@ -114,8 +116,9 @@ public class ClientEventHolder {
 	 * 
 	 * @return 包含各种事件下所有事件监听器的Map集合。
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, List<ClientEvent>> getAllClientEventListeners() {
-		return eventMap;
+		return (eventMap != null) ? eventMap : Collections.EMPTY_MAP;
 	}
 
 }

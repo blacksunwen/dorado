@@ -12,10 +12,17 @@
 
 package com.bstek.dorado.view.resolver;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.WebConfigure;
+import com.bstek.dorado.web.resolver.HttpConstants;
 import com.bstek.dorado.web.resolver.WebFileResolver;
 
 /**
@@ -25,21 +32,12 @@ import com.bstek.dorado.web.resolver.WebFileResolver;
  * @since Sep 28, 2008
  */
 public class SkinFileResolver extends WebFileResolver {
-	private static final String CURRENT_SKIN = "~current";
-	private static final String CURRENT_SKIN_PREFIX = "skins/" + CURRENT_SKIN
-			+ '/';
+	private static final String SKIN_URI_PREFIX = "skins/";
 	private static final String DEFAULT_SKIN = "default";
 
 	public SkinFileResolver() {
 		setUseResourcesCache(true);
 		setCheckResourceType(true);
-	}
-
-	/**
-	 * 返回客户端使用的皮肤的名称。
-	 */
-	protected String getSkin() {
-		return WebConfigure.getString("view.skin");
 	}
 
 	@Override
@@ -51,19 +49,42 @@ public class SkinFileResolver extends WebFileResolver {
 					+ context.getRequest().getRequestURI() + "] forbidden.");
 		}
 
-		String realFileName = fileName;
-		String skin = getSkin();
-		boolean isSkinFile = fileName.startsWith(CURRENT_SKIN_PREFIX);
-		if (isSkinFile) {
-			realFileName = fileName.replace(CURRENT_SKIN, skin);
+		String originFileName = fileName, skin, subPath;
+		int i = originFileName.indexOf(SKIN_URI_PREFIX);
+		if (i >= 0) {
+			subPath = originFileName.substring(i + SKIN_URI_PREFIX.length());
+			i = subPath.indexOf(PathUtils.PATH_DELIM);
+			if (i > 0) {
+				skin = subPath.substring(0, i);
+				subPath = subPath.substring(i + 1);
+
+				Resource[] resources;
+				String customSkinPath = WebConfigure.getString("view.skin."
+						+ skin);
+				if (StringUtils.isNotEmpty(customSkinPath)) {
+					resources = super.getResourcesByFileName(context,
+							customSkinPath, subPath, resourceSuffix);
+				} else {
+					resources = super.getResourcesByFileName(context,
+							resourcePrefix, originFileName, resourceSuffix);
+				}
+				if (!skin.equals(DEFAULT_SKIN) && !resources[0].exists()) {
+					originFileName = PathUtils
+							.concatPath(DEFAULT_SKIN, subPath);
+					resources = super.getResourcesByFileName(context,
+							resourcePrefix, originFileName, resourceSuffix);
+				}
+				return resources;
+			}
 		}
-		Resource[] resources = super.getResourcesByFileName(context,
-				resourcePrefix, realFileName, resourceSuffix);
-		if (isSkinFile && !skin.equals(DEFAULT_SKIN) && !resources[0].exists()) {
-			realFileName = fileName.replace(CURRENT_SKIN, DEFAULT_SKIN);
-			resources = super.getResourcesByFileName(context, resourcePrefix,
-					realFileName, resourceSuffix);
-		}
-		return resources;
+		return EMPTY_RESOURCES;
+	}
+
+	@Override
+	protected ModelAndView doHandleRequest(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		response.addHeader(HttpConstants.CACHE_CONTROL, HttpConstants.MAX_AGE
+				+ WebConfigure.getLong("web.resourceMaxAge", 3600));
+		return super.doHandleRequest(request, response);
 	}
 }

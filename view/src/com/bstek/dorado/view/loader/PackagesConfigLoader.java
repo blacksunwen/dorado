@@ -14,13 +14,15 @@ package com.bstek.dorado.view.loader;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * 用于配置在Spring中以自动完成资源包配置文件装载的类。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 24, 2008
  */
-public class PackagesConfigLoader implements InitializingBean {
+public class PackagesConfigLoader implements InitializingBean, RemovableBean {
 	private PackagesConfigManager packagesConfigManager;
 	private String configLocation;
 

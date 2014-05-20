@@ -32,16 +32,10 @@ import com.bstek.dorado.view.widget.Component;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 19, 2008
  */
-@Widget(name = "DataSet", category = "General", dependsPackage = "widget",
-		autoGenerateId = true)
-@XmlNode(
-		nodeName = "DataSet",
-		definitionType = "com.bstek.dorado.view.config.definition.DataSetDefinition",
-		parser = "spring:dorado.dataSetParser", clientTypes = {
-				ClientType.DESKTOP, ClientType.TOUCH })
-@ClientObject(prototype = "dorado.widget.DataSet", shortTypeName = "DataSet",
-		properties = @ClientProperty(propertyName = "data",
-				outputter = "spring:dorado.dataSetDataPropertyOutputter"))
+@Widget(name = "DataSet", category = "General", dependsPackage = "widget", autoGenerateId = true)
+@XmlNode(nodeName = "DataSet", definitionType = "com.bstek.dorado.view.config.definition.DataSetDefinition", parser = "spring:dorado.dataSetParser", clientTypes = {
+		ClientType.DESKTOP, ClientType.TOUCH })
+@ClientObject(prototype = "dorado.widget.DataSet", shortTypeName = "DataSet", properties = @ClientProperty(propertyName = "data", outputter = "spring:dorado.dataSetDataPropertyOutputter"))
 @ClientEvents({ @ClientEvent(name = "beforeLoadData"),
 		@ClientEvent(name = "onLoadData"),
 		@ClientEvent(name = "onDataLoad", deprecated = true) })
@@ -152,9 +146,13 @@ public class DataSet extends Component {
 		this.cacheable = cacheable;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public Object getData() throws Exception {
-		if (data == null && dataProvider != null) {
+		return getData(true);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Object getData(boolean autoLoad) throws Exception {
+		if (autoLoad && data == null && dataProvider != null) {
 			if (pageSize > 0) {
 				data = new PagingList(dataProvider, dataType, parameter,
 						pageSize);
@@ -165,6 +163,14 @@ public class DataSet extends Component {
 		return data;
 	}
 
+	public void setData(Object data) {
+		this.data = data;
+		if (data != null && loadMode != LoadMode.preload) {
+			setLoadMode(LoadMode.preload);
+		}
+	}
+
+	@Deprecated
 	public void clearData() {
 		data = null;
 	}

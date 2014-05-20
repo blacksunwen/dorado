@@ -16,11 +16,6 @@ public final class DataObjectDefinitionUtils {
 	private DataObjectDefinitionUtils() {
 	}
 
-	public static void setDataTypeInner(DataTypeDefinition dataTypeDefinition,
-			boolean inner) {
-		dataTypeDefinition.setInner(inner);
-	}
-
 	@SuppressWarnings("deprecation")
 	public static void setDataTypeGlobal(DataTypeDefinition dataTypeDefinition,
 			boolean global) {

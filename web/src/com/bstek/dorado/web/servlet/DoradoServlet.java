@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import com.bstek.dorado.core.Configure;
+import com.bstek.dorado.spring.RemovableBeanUtils;
 import com.bstek.dorado.web.ConsoleUtils;
 import com.bstek.dorado.web.loader.DoradoLoader;
 
@@ -62,17 +63,30 @@ public class DoradoServlet extends DispatcherServlet {
 		try {
 			DoradoLoader doradoLoader = DoradoLoader.getInstance();
 			doradoLoader.load(getServletContext());
+
+			// System.gc();
+			// Runtime runtime = Runtime.getRuntime();
+			// System.out.println("freeMemory:" + runtime.freeMemory());
+			// System.out.println("totalMemory:" + runtime.totalMemory());
+
+			WebApplicationContext wac = getWebApplicationContext();
+			RemovableBeanUtils.destroyRemovableBeans(wac);
+
+			// System.gc();
+			// System.out.println("freeMemory:" + runtime.freeMemory());
+			// System.out.println("totalMemory:" + runtime.totalMemory());
 		} catch (Exception e) {
 			logger.error(e, e);
 		}
 	}
-	
+
 	@Override
-	protected HttpServletRequest checkMultipart(HttpServletRequest request) throws MultipartException {
+	protected HttpServletRequest checkMultipart(HttpServletRequest request)
+			throws MultipartException {
 		String servletName = request.getServletPath();
 		if (!"/dorado".equals(servletName)) {
 			return super.checkMultipart(request);
-		}else{
+		} else {
 			return request;
 		}
 	}

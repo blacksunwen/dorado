@@ -18,12 +18,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Constants;
 import com.bstek.dorado.core.resource.LocaleResolver;
 import com.bstek.dorado.data.variant.VariantUtils;
@@ -33,7 +32,6 @@ import com.bstek.dorado.view.config.attachment.JavaScriptContent;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.web.DoradoContext;
-import com.bstek.dorado.web.WebConfigure;
 import com.bstek.dorado.web.resolver.CacheBusterUtils;
 
 /**
@@ -45,6 +43,8 @@ public class PageHeaderOutputter implements Outputter {
 	private LocaleResolver localeResolver;
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
+	private SkinSettingManager skinSettingManager;
+	private SkinResolver skinResolver;
 	private List<ClientSettingsOutputter> clientSettingsOutputters = new ArrayList<ClientSettingsOutputter>();
 
 	public PageHeaderOutputter() {
@@ -72,26 +72,47 @@ public class PageHeaderOutputter implements Outputter {
 		this.styleSheetResourceManager = styleSheetResourceManager;
 	}
 
+	public void setSkinSettingManager(SkinSettingManager skinSettingManager) {
+		this.skinSettingManager = skinSettingManager;
+	}
+
+	public void setSkinResolver(SkinResolver skinResolver) {
+		this.skinResolver = skinResolver;
+	}
+
 	public void addClientSettingsOutputter(
 			ClientSettingsOutputter clientSettingsOutputter) {
 		clientSettingsOutputters.add(clientSettingsOutputter);
 	}
 
-	protected String getBasePackageNames(Object object, int clientType,
-			OutputContext context) throws Exception {
+	protected String getBasePackageNames(DoradoContext context, int clientType,
+			String skin) throws Exception {
 		String clientTypeName = ClientType.toString(clientType);
 
 		StringBuffer buf = new StringBuffer(12);
 		buf.append(clientTypeName).append("-support,");
 		buf.append("widget");
 
+		SkinSetting skinSetting = skinSettingManager.getSkinSetting(context,
+				skin);
+		if (skinSetting != null) {
+			String dependedPackages = skinSetting.getDependedPackages();
+			if (StringUtils.isNotEmpty(dependedPackages)) {
+				buf.append(',').append(dependedPackages);
+			}
+
+		}
+
 		return buf.toString();
 	}
 
 	public void output(Object object, OutputContext context) throws Exception {
+		DoradoContext doradoContext = DoradoContext.getCurrent();
 		View view = (View) object;
 
-		DoradoContext doradoContext = DoradoContext.getCurrent();
+		String skin = skinResolver.determineSkin(doradoContext, view);
+		doradoContext.setAttribute("view.skin", skin);
+
 		int currentClientType = VariantUtils.toInt(doradoContext
 				.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
 		if (currentClientType == 0) {
@@ -99,7 +120,6 @@ public class PageHeaderOutputter implements Outputter {
 		}
 
 		Writer writer = context.getWriter();
-		HttpServletRequest request = DoradoContext.getAttachedRequest();
 
 		writer.append(
 				"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")
@@ -112,13 +132,17 @@ public class PageHeaderOutputter implements Outputter {
 		}
 
 		Locale locale = localeResolver.resolveLocale();
+		String contextPath = Configure.getString("web.contextPath");
+		if (StringUtils.isEmpty(contextPath)) {
+			contextPath = DoradoContext.getAttachedRequest().getContextPath();
+		}
 		writer.append(
 				"<script language=\"javascript\" type=\"text/javascript\" charset=\"UTF-8\" src=\"")
-				.append(request.getContextPath())
+				.append(contextPath)
 				.append("/dorado/client/boot.dpkg?clientType=")
 				.append(ClientType.toString(currentClientType))
 				.append("&skin=")
-				.append(WebConfigure.getString("view.skin"))
+				.append(skin)
 				.append("&cacheBuster=")
 				.append(CacheBusterUtils
 						.getCacheBuster((locale != null) ? locale.toString()
@@ -133,7 +157,8 @@ public class PageHeaderOutputter implements Outputter {
 		writer.append("\n};\n");
 
 		writer.append("$import(\"")
-				.append(getBasePackageNames(object, currentClientType, context))
+				.append(getBasePackageNames(doradoContext, currentClientType,
+						skin))
 				.append("\");\n</script>\n")
 				.append("<script language=\"javascript\" type=\"text/javascript\">\n");
 		topViewOutputter.output(view, context);

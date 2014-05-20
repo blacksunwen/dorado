@@ -14,7 +14,6 @@ package com.bstek.dorado.view;
 
 import junit.framework.TestCase;
 
-import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Container;
 
 public class ViewTest extends TestCase {
@@ -39,20 +38,20 @@ public class ViewTest extends TestCase {
 		view.addChild(com4);
 		com2.addChild(com5);
 
-		Component com;
+		ViewElement com;
 
 		for (int i = 1; i < 5; i++) {
-			com = view.getComponent("com" + i);
+			com = view.getViewElement("com" + i);
 			assertNotNull(com);
 			assertEquals("com" + i, com.getId());
 		}
 
 		com2.removeChild(com3);
-		com = view.getComponent("com3");
+		com = view.getViewElement("com3");
 		assertNull(com);
 
 		view.removeChild(com4);
-		com = view.getComponent("com4");
+		com = view.getViewElement("com4");
 		assertNull(com);
 	}
 }

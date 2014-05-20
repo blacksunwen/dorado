@@ -24,6 +24,7 @@ import java.util.Set;
 import net.sf.cglib.beans.BeanMap;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +32,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.data.provider.Page;
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.CustomEntityDataType;
 import com.bstek.dorado.data.type.DataType;
@@ -134,6 +136,9 @@ public abstract class EntityUtils {
 	}
 
 	public static boolean isEntity(Object entity) {
+		if (entity.getClass().isPrimitive()) {
+			return false;
+		}
 		return getEntityEnhancer(entity) != null;
 	}
 
@@ -176,6 +181,97 @@ public abstract class EntityUtils {
 		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
 		if (entityEnhancer != null) {
 			entityEnhancer.setState(state);
+		} else {
+			throwNotValidEntity();
+		}
+	}
+
+	public static boolean isDirty(Object entity) {
+		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+		if (entityEnhancer != null) {
+			return entityEnhancer.getState() != EntityState.NONE;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean isCascadeDirty(Object entity) throws Exception {
+		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+		if (entityEnhancer != null) {
+			if (entityEnhancer.getState() != EntityState.NONE) {
+				return true;
+			} else {
+				try {
+					boolean isDirty;
+					for (String property : entityEnhancer.getPropertySet(
+							entity, false)) {
+						Object value = entityEnhancer.readProperty(entity,
+								property, true);
+						if (value != null) {
+							if (isEntity(value)) {
+								isDirty = isCascadeDirty(value);
+								if (isDirty) {
+									return true;
+								}
+							} else if (value instanceof Collection<?>) {
+								for (Object e : (Collection<?>) value) {
+									isDirty = isCascadeDirty(e);
+									if (isDirty) {
+										return true;
+									}
+								}
+							} else if (value instanceof Page<?>) {
+								for (Object e : ((Page<?>) value).getEntities()) {
+									isDirty = isCascadeDirty(e);
+									if (isDirty) {
+										return true;
+									}
+								}
+							}
+						}
+					}
+					return false;
+				} catch (Exception e) {
+					throw e;
+				} catch (Throwable t) {
+					throw new IllegalStateException(t);
+				}
+			}
+		} else {
+			return false;
+		}
+	}
+
+	public static <T> T newEntity(Class<? extends T> type) throws Exception {
+		return (T) newEntity(type, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T newEntity(EntityDataType entityDataType)
+			throws Exception {
+		Class<?> creationType = entityDataType.getCreationType();
+		if (creationType == null) {
+			creationType = entityDataType.getMatchType();
+		}
+		if (creationType == null) {
+			creationType = Record.class;
+		}
+		return (T) newEntity(creationType, entityDataType);
+	}
+
+	public static <T> T newEntity(Class<? extends T> type,
+			EntityDataType entityDataType) throws Exception {
+		T object = type.newInstance();
+		T entity = toEntity(object, entityDataType);
+		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+		entityEnhancer.setState(EntityState.NEW);
+		return entity;
+	}
+
+	public static void deleteEntity(Object entity) throws Exception {
+		EntityEnhancer entityEnhancer = getEntityEnhancer(entity);
+		if (entityEnhancer != null) {
+			entityEnhancer.setState(EntityState.DELETED);
 		} else {
 			throwNotValidEntity();
 		}
@@ -661,6 +757,55 @@ public abstract class EntityUtils {
 	public static boolean getOldBoolean(Object entity, String property) {
 		Object value = getOldValue(entity, property);
 		return getVariantConvertor().toBoolean(value);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void copyProperties(Object target, Object source)
+			throws Exception {
+		try {
+			EntityEnhancer sourceEnhancer = getEntityEnhancer(source);
+			EntityEnhancer targetEnhancer = getEntityEnhancer(target);
+
+			Map targetMap = null;
+			if (targetEnhancer == null) {
+				if (target instanceof Map) {
+					targetMap = (Map) target;
+				} else {
+					targetMap = BeanMap.create(target);
+				}
+			}
+
+			if (sourceEnhancer != null) {
+				for (String property : sourceEnhancer.getPropertySet(target,
+						false)) {
+					Object value = sourceEnhancer.readProperty(source,
+							property, false);
+					if (targetEnhancer != null) {
+						targetEnhancer.writeProperty(target, property, value);
+					} else {
+						targetMap.put(property, value);
+					}
+				}
+			} else if (targetEnhancer != null) {
+				Map sourceMap;
+				if (source instanceof Map) {
+					sourceMap = (Map) source;
+				} else {
+					sourceMap = BeanMap.create(source);
+				}
+
+				for (Object property : sourceMap.keySet()) {
+					targetEnhancer.writeProperty(source, (String) property,
+							sourceMap.get(property));
+				}
+			}else {
+				BeanUtils.copyProperties(target, source);
+			}
+		} catch (Exception e) {
+			throw e;
+		} catch (Throwable t) {
+			throw new IllegalStateException(t);
+		}
 	}
 
 }

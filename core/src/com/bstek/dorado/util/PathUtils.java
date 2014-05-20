@@ -40,7 +40,7 @@ public abstract class PathUtils {
 		return (StringUtils.isNotEmpty(text)) ? matcher.match(pattern, text)
 				: false;
 	}
-
+	
 	public static String concatPath(String... paths) {
 		StringBuffer result = new StringBuffer();
 		for (String path : paths) {

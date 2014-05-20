@@ -14,6 +14,8 @@ package com.bstek.dorado.core.bean;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * 用于配置在Spring文件中，自动初始化{@link com.bstek.dorado.core.bean.BeanFactoryUtils}的辅助类。
  * 
@@ -21,7 +23,8 @@ import org.springframework.beans.factory.InitializingBean;
  * @since Dec 26, 2007
  * @see com.bstek.dorado.core.bean.BeanFactoryUtils
  */
-public class BeanFactoryUtilsInitializer implements InitializingBean {
+public class BeanFactoryUtilsInitializer implements InitializingBean,
+		RemovableBean {
 	private BeanFactoryRegistry beanFactoryRegistry;
 	private ScopeManager scopeManager;
 

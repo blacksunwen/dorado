@@ -28,18 +28,18 @@ import com.bstek.dorado.view.annotation.Widget;
 @Widget(name = "Tree", category = "Collection", dependsPackage = "tree")
 @ClientObject(prototype = "dorado.widget.Tree", shortTypeName = "Tree")
 public class Tree extends AbstractTree implements NodeHolder {
-	private List<Node> nodes;
+	private List<BaseNode> nodes;
 
 	@XmlSubNode
 	@ClientProperty
 	@IdeProperty(highlight = 1)
-	public List<Node> getNodes() {
+	public List<BaseNode> getNodes() {
 		if (nodes == null)
-			nodes = new ArrayList<Node>();
+			nodes = new ArrayList<BaseNode>();
 		return nodes;
 	}
 
-	public void addNode(Node node) {
+	public void addNode(BaseNode node) {
 		getNodes().add(node);
 	}
 }

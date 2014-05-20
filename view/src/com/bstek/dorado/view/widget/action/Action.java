@@ -25,8 +25,7 @@ import com.bstek.dorado.view.widget.Component;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since May 13, 2009
  */
-@Widget(name = "Action", category = "Action", dependsPackage = "base-widget",
-		autoGenerateId = true)
+@Widget(name = "Action", category = "Action", dependsPackage = "base-widget", autoGenerateId = true)
 @ClientObject(prototype = "dorado.widget.Action", shortTypeName = "Action")
 @ClientEvents({ @ClientEvent(name = "beforeExecute"),
 		@ClientEvent(name = "onExecute"), @ClientEvent(name = "onSuccess"),
@@ -38,11 +37,8 @@ public class Action extends Component {
 	private String tip;
 	private boolean disabled;
 	private Object parameter;
-	private boolean async;
-	private boolean modal = true;
 	private String hotkey;
 	private String confirmMessage;
-	private String executingMessage;
 	private String successMessage;
 
 	public String getCaption() {
@@ -96,25 +92,7 @@ public class Action extends Component {
 		this.parameter = parameter;
 	}
 
-	public boolean isAsync() {
-		return async;
-	}
-
-	public void setAsync(boolean async) {
-		this.async = async;
-	}
-
-	@ClientProperty(escapeValue = "true")
-	public boolean isModal() {
-		return modal;
-	}
-
-	public void setModal(boolean modal) {
-		this.modal = modal;
-	}
-
-	@IdeProperty(
-			enumValues = "f1,f2,ctrl+s,alt+s,shift+s,ctrl+alt+shift+s,return,space,backspace,left,right,up,down")
+	@IdeProperty(enumValues = "f1,f2,ctrl+s,alt+s,shift+s,ctrl+alt+shift+s,return,space,backspace,left,right,up,down")
 	public String getHotkey() {
 		return hotkey;
 	}
@@ -129,14 +107,6 @@ public class Action extends Component {
 
 	public void setConfirmMessage(String confirmMessage) {
 		this.confirmMessage = confirmMessage;
-	}
-
-	public String getExecutingMessage() {
-		return executingMessage;
-	}
-
-	public void setExecutingMessage(String executingMessage) {
-		this.executingMessage = executingMessage;
 	}
 
 	public String getSuccessMessage() {

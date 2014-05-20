@@ -17,12 +17,14 @@ import java.util.Map;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-9-23
  */
 @Deprecated
-public class RobotRegister implements InitializingBean {
+public class RobotRegister implements InitializingBean, RemovableBean {
 	private RobotRegistry robotRegistry;
 
 	private String name;

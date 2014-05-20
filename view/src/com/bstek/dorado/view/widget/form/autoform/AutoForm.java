@@ -53,10 +53,6 @@ public class AutoForm extends Control implements FormConfig {
 	private boolean autoCreateElements;
 	private List<Control> elements = new InnerElementList<Control>(this);
 
-	private String width;
-	private String height;
-	private String className;
-	private String exClassName;
 	private String labelSeparator;
 	private boolean showLabel = true;
 	private int labelWidth;
@@ -177,46 +173,6 @@ public class AutoForm extends Control implements FormConfig {
 	@ClientProperty
 	public List<Control> getElements() {
 		return elements;
-	}
-
-	@Override
-	public String getWidth() {
-		return width;
-	}
-
-	@Override
-	public void setWidth(String width) {
-		this.width = width;
-	}
-
-	@Override
-	public String getHeight() {
-		return height;
-	}
-
-	@Override
-	public void setHeight(String height) {
-		this.height = height;
-	}
-
-	@Override
-	public String getClassName() {
-		return className;
-	}
-
-	@Override
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	@Override
-	public String getExClassName() {
-		return exClassName;
-	}
-
-	@Override
-	public void setExClassName(String exClassName) {
-		this.exClassName = exClassName;
 	}
 
 	public String getLabelSeparator() {

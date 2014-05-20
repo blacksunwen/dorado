@@ -22,18 +22,18 @@ import org.apache.commons.collections.map.UnmodifiableMap;
  * @since 2010-11-29
  */
 public class ExposedServiceManager {
-	private Map<String, ExposedService> serviceMap = new Hashtable<String, ExposedService>();
+	private Map<String, ExposedServiceDefintion> serviceMap = new Hashtable<String, ExposedServiceDefintion>();
 
-	public void registerService(ExposedService exposedService) {
+	public void registerService(ExposedServiceDefintion exposedService) {
 		serviceMap.put(exposedService.getName(), exposedService);
 	}
 
-	public ExposedService getService(String name) {
+	public ExposedServiceDefintion getService(String name) {
 		return serviceMap.get(name);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, ExposedService> getServices() {
+	public Map<String, ExposedServiceDefintion> getServices() {
 		return UnmodifiableMap.decorate(serviceMap);
 	}
 }

@@ -14,13 +14,14 @@ package com.bstek.dorado.view.resolver;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.util.Assert;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-5-4
  */
-public class ClientI18NFileRegister implements InitializingBean {
+public class ClientI18NFileRegister implements InitializingBean, RemovableBean {
 	private ClientI18NFileRegistry clientI18NFileRegistry;
 	private String packageName;
 	private String path;

@@ -19,7 +19,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.definition.DefinitionReference;
-import com.bstek.dorado.config.definition.DirectDefinitionReference;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.config.xml.XmlParserUtils;
@@ -30,7 +29,6 @@ import com.bstek.dorado.data.config.definition.DataResolverDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.data.type.property.PropertyDef;
-import com.bstek.dorado.util.xml.DomUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -38,8 +36,6 @@ import com.bstek.dorado.util.xml.DomUtils;
  */
 public class DataObjectParseHelper {
 	private XmlParser dataTypeParser;
-	private XmlParser dataProviderParser;
-	private XmlParser dataResolverParser;
 
 	/**
 	 * 设置全局DataType的解析器。
@@ -49,23 +45,7 @@ public class DataObjectParseHelper {
 	}
 
 	/**
-	 * 设置私有DataProvider的解析器。
-	 */
-	public void setDataProviderParser(XmlParser dataProviderParser) {
-		this.dataProviderParser = dataProviderParser;
-	}
-
-	/**
-	 * 设置私有DataResolver的解析器。
-	 */
-	public void setDataResolverParser(XmlParser dataResolverParser) {
-		this.dataResolverParser = dataResolverParser;
-	}
-
-	/**
 	 * 根据DataType的名称返回一个指向某DataType配置声明对象的引用。 <br>
-	 * 此方法与{@link #getDataTypeReference(String)}
-	 * 的区别在于，此方法会首先确认被引用的DataType配置声明是真实有效的。
 	 * 如果被引用的DataType确有定义但尚未被解析，那么此方法会立即尝试对该DataType的配置信息进行解析。
 	 * 
 	 * @param name
@@ -134,8 +114,7 @@ public class DataObjectParseHelper {
 	}
 
 	/**
-	 * 尝试获得一个XML节点引用到某个DataType，并返回指向该DataType配置声明的引用。<br>
-	 * 注意，此处所说的DataType可能是XML节点内部定义的私有DataType。
+	 * 尝试获得一个XML节点引用到某个DataType，并返回指向该DataType配置声明的引用。
 	 * 
 	 * @param propertyName
 	 *            可能定义DataType引用信息的属性名。
@@ -151,35 +130,14 @@ public class DataObjectParseHelper {
 	 * @throws Exception
 	 */
 	public DefinitionReference<DataTypeDefinition> getReferencedDataType(
-			String propertyName, String childTagName, Element element,
-			DataParseContext context) throws Exception {
+			String propertyName, Element element, DataParseContext context)
+			throws Exception {
 		DefinitionReference<DataTypeDefinition> definitionReference = null;
-		String name = null;
 		Node node = XmlParserUtils.getPropertyNode(element, propertyName);
 		if (node != null && XmlParserUtils.isSimpleValueProperty(node)) {
-			name = XmlParserUtils.getSimpleValue(node);
-		}
-		if (StringUtils.isNotEmpty(name)) {
-			definitionReference = getDataTypeByName(name, context, true);
-		} else {
-			Element dataTypeElement = null;
-			if (node != null) {
-				dataTypeElement = (Element) node;
-			}
-			if (StringUtils.isNotEmpty(childTagName)) {
-				dataTypeElement = DomUtils.getChildByTagName(element,
-						childTagName);
-			}
-			if (dataTypeElement != null) {
-				DataTypeDefinition dataType = (DataTypeDefinition) dataTypeParser
-						.parse(dataTypeElement, context);
-				if (dataType == null) {
-					throw new XmlParseException(
-							"Parse inner DataType element failed.",
-							dataTypeElement, context);
-				}
-				definitionReference = new DirectDefinitionReference<DataTypeDefinition>(
-						dataType);
+			String name = XmlParserUtils.getSimpleValue(node);
+			if (StringUtils.isNotEmpty(name)) {
+				definitionReference = getDataTypeByName(name, context, true);
 			}
 		}
 		return definitionReference;
@@ -203,35 +161,15 @@ public class DataObjectParseHelper {
 	 * @throws Exception
 	 */
 	public DefinitionReference<DataProviderDefinition> getReferencedDataProvider(
-			String propertyName, String childTagName, Element element,
-			DataParseContext context) throws Exception {
+			String propertyName, Element element, DataParseContext context)
+			throws Exception {
 		DefinitionReference<DataProviderDefinition> definitionReference = null;
-		String name = null;
 		Node node = XmlParserUtils.getPropertyNode(element, propertyName);
-		if (node != null && XmlParserUtils.isSimpleValueProperty(node)) {
-			name = XmlParserUtils.getSimpleValue(node);
-		}
-		if (StringUtils.isNotEmpty(name)) {
-			definitionReference = context.getDataProviderReference(name, context);
-		} else {
-			Element dataProviderElement = null;
-			if (node != null) {
-				dataProviderElement = (Element) node;
-			}
-			if (StringUtils.isNotEmpty(childTagName)) {
-				dataProviderElement = DomUtils.getChildByTagName(element,
-						childTagName);
-			}
-			if (dataProviderElement != null) {
-				DataProviderDefinition dataProvider = (DataProviderDefinition) dataProviderParser
-						.parse(dataProviderElement, context);
-				if (dataProvider == null) {
-					throw new XmlParseException(
-							"Parse inner DataProvider element failed.",
-							dataProviderElement, context);
-				}
-				definitionReference = new DirectDefinitionReference<DataProviderDefinition>(
-						dataProvider);
+		if (node != null) {
+			String name = XmlParserUtils.getSimpleValue(node);
+			if (StringUtils.isNotEmpty(name)) {
+				definitionReference = context.getDataProviderReference(name,
+						context);
 			}
 		}
 		return definitionReference;
@@ -255,35 +193,15 @@ public class DataObjectParseHelper {
 	 * @throws Exception
 	 */
 	public DefinitionReference<DataResolverDefinition> getReferencedDataResolver(
-			String propertyName, String childTagName, Element element,
-			DataParseContext context) throws Exception {
+			String propertyName, Element element, DataParseContext context)
+			throws Exception {
 		DefinitionReference<DataResolverDefinition> definitionReference = null;
-		String name = null;
 		Node node = XmlParserUtils.getPropertyNode(element, propertyName);
 		if (node != null && XmlParserUtils.isSimpleValueProperty(node)) {
-			name = XmlParserUtils.getSimpleValue(node);
-		}
-		if (StringUtils.isNotEmpty(name)) {
-			definitionReference = context.getDataResolverReference(name, context);
-		} else {
-			Element dataResolverElement = null;
-			if (node != null) {
-				dataResolverElement = (Element) node;
-			}
-			if (StringUtils.isNotEmpty(childTagName)) {
-				dataResolverElement = DomUtils.getChildByTagName(element,
-						childTagName);
-			}
-			if (dataResolverElement != null) {
-				DataResolverDefinition dataResolver = (DataResolverDefinition) dataResolverParser
-						.parse(dataResolverElement, context);
-				if (dataResolver == null) {
-					throw new XmlParseException(
-							"Parse inner DataProvider element failed.",
-							dataResolverElement, context);
-				}
-				definitionReference = new DirectDefinitionReference<DataResolverDefinition>(
-						dataResolver);
+			String name = XmlParserUtils.getSimpleValue(node);
+			if (StringUtils.isNotEmpty(name)) {
+				definitionReference = context.getDataResolverReference(name,
+						context);
 			}
 		}
 		return definitionReference;

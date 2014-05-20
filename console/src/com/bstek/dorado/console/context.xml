@@ -92,6 +92,4 @@
 		class="com.bstek.dorado.console.performance.DefaultExecuteLogOutputter" />
 	<bean id="dorado.console.CreateViewLogOutputter"
 		class="com.bstek.dorado.console.performance.CreateViewLogOutputter" />
-
-	
 </beans>

@@ -84,9 +84,9 @@ public class DelegatingFilterProxy implements Filter {
 	private PathMatcher getPathMatcher(ServletRequest request) {
 		if (pathMatcher == null) {
 			WebApplicationContext wac = getWebApplicationContext(request);
-			pathMatcher = (PathMatcher) wac.getBean("dorado.pathMatcher");
-
-			if (pathMatcher == null) {
+			if (wac.containsBean("dorado.pathMatcher")) {
+				pathMatcher = (PathMatcher) wac.getBean("dorado.pathMatcher");
+			} else {
 				pathMatcher = new AntPathMatcher();
 			}
 		}

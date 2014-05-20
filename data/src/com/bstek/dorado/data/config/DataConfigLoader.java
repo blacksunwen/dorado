@@ -16,13 +16,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * 用于配置在Spring中，定义要装载的数据配置文件的Bean。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
-public class DataConfigLoader implements InitializingBean {
+public class DataConfigLoader implements InitializingBean, RemovableBean {
 	private String configLocation;
 	private List<String> configLocations;
 	private ConfigurableDataConfigManager dataConfigManager;

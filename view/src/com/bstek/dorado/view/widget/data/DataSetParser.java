@@ -26,6 +26,7 @@ import com.bstek.dorado.view.widget.ComponentParser;
 
 /**
  * 数据集的解析器。
+ * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Jan 20, 2008
  */
@@ -40,15 +41,15 @@ public class DataSetParser extends ComponentParser {
 		DataSetDefinition dataSet = (DataSetDefinition) definition;
 		DefinitionReference<DataProviderDefinition> dataProviderRef = dataObjectParseHelper
 				.getReferencedDataProvider(
-						DataXmlConstants.ATTRIBUTE_DATA_PROVIDER,
-						DataXmlConstants.DATA_PROVIDER, element, viewContext);
+						DataXmlConstants.ATTRIBUTE_DATA_PROVIDER, element,
+						viewContext);
 		if (dataProviderRef != null) {
 			dataSet.setDataProvider(dataProviderRef);
 		}
 
 		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
 				.getReferencedDataType(DataXmlConstants.ATTRIBUTE_DATA_TYPE,
-						DataXmlConstants.DATA_TYPE, element, viewContext);
+						element, viewContext);
 		if (dataTypeRef != null) {
 			dataSet.setDataType(dataTypeRef);
 		}
