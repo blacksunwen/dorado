@@ -151,7 +151,27 @@
 			onClick: {}
 		},
 
-		_createIconSpan: function() {
+        constructor: function(config) {
+            $invokeSuper.call(this, arguments);
+
+            if (config) {
+                this.set(config);
+            }
+        },
+
+        destroy: function() {
+            dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
+            var tab = this, dom = tab._dom, doms = tab._doms;
+            if (dom) {
+                doms.close && $fly(doms.close).unbind();
+                $fly(dom).remove();
+            }
+            delete tab._dom;
+            delete tab._doms;
+            delete tab._parent;
+        },
+
+        _createIconSpan: function() {
 			var tab = this, doms = tab._doms;
 			var iconEl = document.createElement("span");
 			iconEl.className = ICON_CLASS;
