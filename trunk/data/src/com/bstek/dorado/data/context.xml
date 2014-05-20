@@ -107,6 +107,9 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.dataConfigLoader" abstract="true" class="com.bstek.dorado.data.config.DataConfigLoader">
 		<property name="dataConfigManager" ref="dorado.dataConfigManager" />
 	</bean>
+	<bean id="dorado.defaultDataConfigLoader" parent="dorado.dataConfigLoader">
+		<property name="configLocation" value="${model.root}/*.model.xml" />
+	</bean>
 
 	<!-- Proxy -->
 	<bean id="dorado.entityProxyMethodInterceptorFactory" class="com.bstek.dorado.data.entity.DefaultEntityProxyMethodInterceptorFactory" />
