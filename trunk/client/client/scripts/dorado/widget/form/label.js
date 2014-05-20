@@ -26,7 +26,6 @@ dorado.widget.LabelRenderer = $extend(dorado.Renderer, {
  */
 dorado.widget.Label = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl], /** @scope dorado.widget.Label.prototype */ {
 	$className: "dorado.widget.Label",
-    _inherentClassName: "i-label",
 	
 	ATTRIBUTES: /** @scope dorado.widget.Label.prototype */ {
 		className: {
@@ -178,7 +177,6 @@ dorado.widget.Link = $extend(dorado.widget.Label, /** @scope dorado.widget.Link.
  */
 dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl], /** @scope dorado.widget.Image.prototype */ {
 	$className: "dorado.widget.Image",
-    _inherentClassName: "i-image",
 	
 	ATTRIBUTES: /** @scope dorado.widget.Image.prototype */ {
 		className: {
@@ -313,7 +311,6 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
  */
 dorado.widget.TemplateField = $extend([dorado.widget.Control, dorado.widget.DataControl], /** @scope dorado.widget.TemplateField.prototype */ {
 	$className: "dorado.widget.TemplateField",
-    _inherentClassName: "i-template-field",
 	
 	ATTRIBUTES: /** @scope dorado.widget.TemplateField.prototype */ {
 		className: {

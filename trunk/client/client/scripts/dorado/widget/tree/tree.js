@@ -26,7 +26,6 @@
 	 */
 	dorado.widget.Tree = $extend(dorado.widget.AbstractTree, /** @scope dorado.widget.Tree.prototype */ {
 		$className: "dorado.widget.Tree",
-		_inherentClassName: "i-tree",
 		
 		ATTRIBUTES: /** @scope dorado.widget.Tree.prototype */ {
 			className: {
@@ -35,10 +34,6 @@
 			
 			width: {
 				defaultValue: 200
-			},
-			
-			rowHeight: {
-				defaultValue: dorado.Browser.isTouch ? 30 : 24
 			}
 		},
 		
@@ -49,12 +44,17 @@
 		},
 		
 		getCurrentItemId: function() {
-			return (this._currentNode) ? this._currentNode._id : null;
+			return (this._currentNode) ? this._currentNode._uniqueId : null;
 		},
 		
 		setCurrentItemDom: function(row) {
 			this.set("currentNode", row ? $fly(row).data("item") : null);
 			return true;
+		},
+
+		doRefreshItemDomData: function(row, node) {
+			$invokeSuper.call(this, arguments);
+			if (this._scrollMode != "viewport") node._dom = row;
 		},
 		
 		removeItemDom: function(row) {
@@ -67,6 +67,7 @@
 					$fly(row).remove();
 				}				
 			} else {
+				if (node) delete node._dom;
 				$invokeSuper.call(this, arguments);
 			}
 		},
@@ -125,17 +126,20 @@
 				(refRow) ? tbody.insertBefore(indicator, refRow) : tbody.appendChild(indicator);
 				
 				this._duringAnimation = true;
+				var highlightHoverRow = this._highlightHoverRow;
+				this._highlightHoverRow = false;
 				$fly(indicator).animate({
 					"height": "+=" + (self._rowHeight * count)
 				}, 200, "swing", function() {
 					$fly(indicator).remove();
 					it = new dorado.widget.tree.TreeNodeIterator(node);
 					while (it.hasNext()) {
-						var child = it.next(), childRow = self._itemDomMap[child._id];
+						var child = it.next(), childRow = self._itemDomMap[child._uniqueId];
 						if (childRow) childRow.style.display = "";
 					}
 					invokeCallback.call(self, refRow, callback, node);
 					self._duringAnimation = false;
+					self._highlightHoverRow = highlightHoverRow;
 				});
 			} else {
 				invokeCallback.call(this, refRow, callback, node);
@@ -146,14 +150,14 @@
 		
 			function invokeCallback(node, callback) {
 				if (this._forceRefreshRearRows !== false) {
-					var row = this._itemDomMap[node._id];
+					var row = this._itemDomMap[node._uniqueId];
 					if (row) this._refreshRearRows(row);
 				}
 				this.updateModernScroller();
 				this.notifySizeChange();
 				if (callback) $callback(callback, true, node);
 			}
-			
+	
 			var it = new dorado.widget.tree.TreeNodeIterator(node);
 			var rowsToRemove = [];
 			while (it.hasNext()) {
@@ -161,10 +165,9 @@
 				if (child == this._currentNode) {
 					this.set("currentNode", node);
 				}
-				var childRow = this._itemDomMap[child._id];
+				var childRow = this._itemDomMap[child._uniqueId];
 				if (childRow) rowsToRemove.push(childRow);
 			}
-			
 			if (rowsToRemove.length) {
 				if (animated && !this._duringAnimation) {
 					var indicator = this.createExpandingIndicator();
@@ -180,12 +183,15 @@
 				if (animated && !this._duringAnimation) {
 					var self = this;
 					this._duringAnimation = true;
+					var highlightHoverRow = this._highlightHoverRow;
+					this._highlightHoverRow = false;
 					$fly(indicator).animate({
 						"height": 0
 					}, 200, "swing", function() {
 						$fly(indicator).remove();
 						invokeCallback.call(self, node, callback);
 						self._duringAnimation = false;
+						self._highlightHoverRow = highlightHoverRow;
 					});
 				}
 			} else {
@@ -196,7 +202,7 @@
 		_refreshAndScroll: function(node, mode, parentNode, nodeIndex) {
 			var shouldScroll = false, itemModel = this._itemModel;
 			if (parentNode._expanded) {
-				var row = this._itemDomMap[node._id];
+				var row = this._itemDomMap[node._uniqueId];
 				if (!row) {
 					var index;
 					if (mode == "remove") {
@@ -269,7 +275,7 @@
 					}
 				}
 				if (refreshParent) {
-					var parentRow = this._itemDomMap[parentNode._id];
+					var parentRow = this._itemDomMap[parentNode._uniqueId];
 					if (parentRow) {
 						this._ignoreItemTimestamp = true;
 						this.refreshItemDomData(parentRow, parentNode);
@@ -293,7 +299,7 @@
 					this._insertChildNodes(node, null, this._getExpandingAnimated(), callback);
 					this.notifySizeChange();
 				} else {
-					var row = this._itemDomMap[node._id];
+					var row = this._itemDomMap[node._uniqueId];
 					if (row) {
 						this._insertChildNodes(node, row, this._getExpandingAnimated(), callback);
 						this.refreshItemDomData(row, node);
@@ -313,7 +319,7 @@
 			
 			if (this._scrollMode != "viewport") {
 				this._removeChildNodes(node, this._getExpandingAnimated(), callback);
-				var row = this._itemDomMap[node._id];
+				var row = this._itemDomMap[node._uniqueId];
 				if (row) this.refreshItemDomData(row, node);
 			} else {
 				this._refreshAndScroll(node, "collapse", node._parent);
@@ -340,7 +346,7 @@
 						finally {
 							node._expanded = originExpanded;
 						}
-						if (nextsibling) refRow = this._itemDomMap[nextsibling._id];
+						if (nextsibling) refRow = this._itemDomMap[nextsibling._uniqueId];
 						var newRow = this.createItemDom(node);
 						(refRow) ? tbody.insertBefore(newRow, refRow) : tbody.appendChild(newRow);
 						this.refreshItemDom(tbody, node, newRow.sectionRowIndex);
@@ -350,7 +356,7 @@
 				}
 				
 				if (parentNode && parentNode._nodes.size == 1) {
-					var parentRow = this._itemDomMap[parentNode._id];
+					var parentRow = this._itemDomMap[parentNode._uniqueId];
 					if (parentRow) {
 						this._ignoreItemTimestamp = true;
 						this.refreshItemDomData(parentRow, parentNode);
@@ -369,7 +375,7 @@
 						this._forceRefreshRearRows = false;
 						if (node._expanded) this._removeChildNodes(node);
 						this._forceRefreshRearRows = true;
-						var row = this._itemDomMap[node._id];
+						var row = this._itemDomMap[node._uniqueId];
 						if (row) {
 							var nextRow = row.nextSibling;
 							this.removeItemDom(row);
@@ -378,7 +384,7 @@
 					}
 					
 					if (!parentNode.get("hasChild")) {
-						var parentRow = this._itemDomMap[parentNode._id];
+						var parentRow = this._itemDomMap[parentNode._uniqueId];
 						if (parentRow) {
 							this._ignoreItemTimestamp = true;
 							this.refreshItemDomData(parentRow, parentNode);

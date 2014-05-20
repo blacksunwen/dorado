@@ -15,6 +15,13 @@
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 实体类型中的属性声明的抽象类。
+	 * <p>
+	 * 此对象的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
+	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
+	 * <ul>
+	 *    <li>当传入一个以#开头的字符串时，#后面的内容将被识别成数据校验器的名称，表示根据名称获取数据校验器。参考{@link dorado.PropertyDef#getValidator}。</li>
+	 * </ul>
+	 * </p>
 	 * @abstract
 	 * @shortTypeName Default
 	 * @extends dorado.AttributeSupport
@@ -310,6 +317,16 @@
 				}
 			}
 		},
+
+		doGet: function (attr) {
+			var c = attr.charAt(0);
+			if (c == '#' || c == '&') {
+				var validatorName = attr.substring(1);
+				return this.getValidator(validatorName);
+			} else {
+				return $invokeSuper.call(this, [attr]);
+			}
+		},
 		
 		getListenerScope: function() {
 			return this.get("view");
@@ -362,6 +379,19 @@
 			if (value == null) value = "${null}";
 			else if (value === '') value = "${empty}";
 			return this._mappingRevIndex[value + ''];
+		},
+
+		/**
+		 * 根据名称返回对应的Validator。
+		 * @param name 名称
+		 * @returns dorado.Validator
+		 */
+		getValidator: function(name) {
+			if (!this._validators) return null;
+			for (var i = 0; i < this._validators.length; i++) {
+				var validator = this._validators[i];
+				if (validator._name == name) return validator;
+			}
 		}
 	});
 	

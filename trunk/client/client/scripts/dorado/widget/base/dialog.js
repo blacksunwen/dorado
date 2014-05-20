@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function(){
+(function() {
 	var handleConfigMap = {
 		"dialog-header-left": { cursor: "nw-resize", horiStyle: "left width", vertStyle: "top height", widthRatio: -1, heightRatio: -1},
 		"dialog-header-right": { cursor: "ne-resize", horiStyle: "width", vertStyle: "top height", widthRatio: 1, heightRatio: -1 },
@@ -22,11 +22,12 @@
 		"dialog-footer-center": { cursor: "s-resize", horiStyle: "", vertStyle: "height", widthRatio: 1, heightRatio: 1 }
 	};
 
+	var useDraggingFakeDialog = (dorado.Browser.msie && dorado.Browser.version < 9);
 	var fakeDialog, fullWindowDialogs = [];
 
 	dorado.bindResize(function() {
 		var docWidth = jQuery(window).width(), docHeight = jQuery(window).height();
-		for (var i = 0, j = fullWindowDialogs.length; i < j; i++) {
+		for(var i = 0, j = fullWindowDialogs.length; i < j; i++) {
 			var dialog = fullWindowDialogs[i];
 			if (dialog && !dialog._maximizeTarget) {
 				dialog.set({ width: docWidth, height: docHeight });
@@ -46,7 +47,7 @@
 	 */
 	dorado.widget.Dialog = $extend(dorado.widget.FloatPanel, /** @scope dorado.widget.Dialog.prototype */ {
 		$className: "dorado.widget.Dialog",
-        _inherentClassName: "i-dialog",
+		_inherentClassName: "i-dialog",
 
 		ATTRIBUTES: /** @scope dorado.widget.Dialog.prototype */ {
 			className: {
@@ -110,11 +111,11 @@
 			dragOutside: {
 				defaultValue: false
 			},
-			
+
 			center: {
 				defaultValue: true
 			},
-			
+
 			modal: {
 				defaultValue: true
 			},
@@ -126,16 +127,7 @@
 			 * @type boolean
 			 */
 			resizeable: {
-				defaultValue: true,
-                setter: function(value) {
-                    this._resizeable = value;
-                    if (this._dom)
-                        if (this._resizeable) {
-                            $fly(this._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
-                        } else {
-                            $fly(this._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
-                        }
-                }
+				defaultValue: true
 			},
 
 			/**
@@ -158,14 +150,16 @@
 					dialog._minimizeable = value;
 					if (captionBar) {
 						if (value) {
-							button = captionBar.getButton(dialog._id + "_minimize");
+							button = captionBar.getButton(dialog._uniqueId + "_minimize");
 							if (button) {
 								$fly(button._dom).css("display", "");
-							} else {
+							}
+							else {
 								dialog._createMinimizeButton();
 							}
-						} else {
-							button = captionBar.getButton(dialog._id + "_minimize");
+						}
+						else {
+							button = captionBar.getButton(dialog._uniqueId + "_minimize");
 							if (button) {
 								$fly(button._dom).css("display", "none");
 							}
@@ -181,29 +175,31 @@
 			 * @type boolean
 			 */
 			minimized: {
-                setter: function(value) {
-                    this._minimized = value;
-                    if (this._minimizeable) {
-                        if (value)
-                            this.minimize();
-                        else
-                            this.show();
-                    }
-                }
-            },
+				setter: function(value) {
+					this._minimized = value;
+					if (this._minimizeable) {
+						if (value) {
+							this.minimize();
+						}
+						else {
+							this.show();
+						}
+					}
+				}
+			},
 
-            closeable: {
-			    defaultValue: true
-            },
+			closeable: {
+				defaultValue: true
+			},
 
 			shadowMode: {
 				defaultValue: "frame",
 				skipRefresh: true
 			},
 
-            animateType: {
-                defaultValue: dorado.Browser.msie ? "none" : "zoom"
-            }
+			animateType: {
+				defaultValue: dorado.Browser.msie ? "none" : "zoom"
+			}
 		},
 
 		EVENTS: /** @scope dorado.widget.Dialog.prototype */ {
@@ -250,22 +246,24 @@
 				//下面这句话有可能会导致IE8下无法bringToFront
 				try {
 					dialog._dom.focus();
-				} catch(e) {}
+				}
+				catch(e) {
+				}
 			}
 		},
-		
+
 		applyDraggable: function() {
 			// do nothing
 		},
 
-        doOnAttachToDocument: function() {
-            $invokeSuper.call(this, arguments);
-        },
+		doOnAttachToDocument: function() {
+			$invokeSuper.call(this, arguments);
+		},
 
-        doHandleOverflow: function(options) {
-            var dialog = this;
-            dialog._height = options.maxHeight;
-        },
+		doHandleOverflow: function(options) {
+			var dialog = this;
+			dialog._height = options.maxHeight;
+		},
 
 		maximizeRestore: function() {
 			var dialog = this, dom = dialog._dom, doms = dialog._doms;
@@ -280,13 +278,13 @@
 					dialog._top = dialog._originalTop;
 					dialog.refresh();
 
-                    if (dialog._left !== undefined && dialog._top !== undefined) {
-                        $fly(dom).css({ left: dialog._left, top: dialog._top });
-                    }
+					if (dialog._left !== undefined && dialog._top !== undefined) {
+						$fly(dom).css({ left: dialog._left, top: dialog._top });
+					}
 
 					var captionBar = dialog._captionBar;
 					if (captionBar) {
-						var button = captionBar.getButton(dialog._id + "_maximize");
+						var button = captionBar.getButton(dialog._uniqueId + "_maximize");
 						if (button) {
 							$fly(button._dom).prop("className", "d-maximize-button");
 							button._className = "d-maximize-button";
@@ -295,11 +293,11 @@
 
 					var $dom = jQuery(dom);
 					if (dialog._resizeable) {
-						$dom.addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+						$dom.addClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
 					}
 
 					if (dialog._draggable) {
-						$dom.addClass("i-dialog-draggable d-dialog-draggable").draggable("enable");
+						$dom.addClass("d-dialog-draggable").draggable("enable");
 					}
 
 					fullWindowDialogs.remove(dialog);
@@ -325,23 +323,26 @@
 				var maximizeTarget = dialog._maximizeTarget, originalMaimizeTarget = maximizeTarget;
 				if (maximizeTarget == "parent") {//为floating为false的Dialog提供最大化的功能。
 					maximizeTarget = dialog._dom.parentNode;
-				} else if (typeof maximizeTarget == "String") {
+				}
+				else if (typeof maximizeTarget == "String") {
 					maximizeTarget = jQuery(maximizeTarget)[0];
-				} else if (maximizeTarget && dorado.Object.isInstanceOf(maximizeTarget, dorado.RenderableElement)) {
+				}
+				else if (maximizeTarget && dorado.Object.isInstanceOf(maximizeTarget, dorado.RenderableElement)) {
 					maximizeTarget = maximizeTarget._dom;
 				}
 
 				if (maximizeTarget) {
 					dialog._width = $fly(maximizeTarget).outerWidth(true);
 					dialog._height = $fly(maximizeTarget).outerHeight(true);
-				} else {
+				}
+				else {
 					dialog._width = $fly(window).width();
 					dialog._height = $fly(window).height();
 				}
 
 				var captionBar = dialog._captionBar;
 				if (captionBar) {
-					var button = captionBar.getButton(dialog._id + "_maximize");
+					var button = captionBar.getButton(dialog._uniqueId + "_maximize");
 					if (button) {
 						$fly(button._dom).prop("className", "d-restore-button");
 						button._className = "d-restore-button";
@@ -352,7 +353,8 @@
 				var targetOffset;
 				if (originalMaimizeTarget == "parent") {
 					targetOffset = {left: 0, top: 0};
-				} else {
+				}
+				else {
 					targetOffset = $fly(maximizeTarget).offset() || {left: 0, top: 0};
 				}
 
@@ -363,10 +365,11 @@
 				domEl.css(targetOffset);
 
 				if (dialog._resizeable) {
-					domEl.removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+					domEl.removeClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
 				}
+
 				if (dialog._draggable) {
-					domEl.removeClass("i-dialog-draggable d-dialog-draggable").draggable("disable");
+					domEl.removeClass("d-dialog-draggable").draggable("disable");
 				}
 
 				dialog.refresh();
@@ -393,9 +396,10 @@
 			var dialog = this;
 			if (dialog._resizeable) {
 				if (collapsed) {
-					jQuery(dialog._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
-				} else {
-					jQuery(dialog._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+					jQuery(dialog._dom).removeClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+				}
+				else {
+					jQuery(dialog._dom).addClass("d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
 				}
 			}
 		},
@@ -406,7 +410,8 @@
 			if (typeof width == "string") {
 				if (width.indexOf("%") == -1) {
 					width = parseInt(width, 10);
-				} else {
+				}
+				else {
 					width = jQuery(window).width() * parseInt(width.replace("%", ""), 10) / 100;
 				}
 			}
@@ -414,7 +419,8 @@
 			if (typeof height == "string") {
 				if (height.indexOf("%") == -1) {
 					height = parseInt(height, 10);
-				} else {
+				}
+				else {
 					height = $fly(window).height() * parseInt(height.replace("%", ""), 10) / 100;
 				}
 			}
@@ -425,17 +431,18 @@
 				}
 				if (collapsed) {
 					$fly(dom).height("auto");
-				} else {
+				}
+				else {
 					var headerHeight = $fly(doms.header).outerHeight(true), footerHeight = $fly(doms.footer).outerHeight(true),
 						captionBarHeight = 0, buttonPanelHeight = 0;
 
-                    if (doms.captionBar) {
-                        captionBarHeight = $fly(doms.captionBar).outerHeight(true)
-                    }
+					if (doms.captionBar) {
+						captionBarHeight = $fly(doms.captionBar).outerHeight(true)
+					}
 
-                    if (doms.buttonPanel) {
-                        buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);
-                    }
+					if (doms.buttonPanel) {
+						buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);
+					}
 
 					$fly(doms.contentPanel).outerHeight(height - headerHeight - footerHeight - captionBarHeight - buttonPanelHeight);
 					//$fly(doms.bodyWrap).outerHeight(height - headerHeight - bottomHeight);
@@ -443,7 +450,8 @@
 						$fly([doms.bodyWrap, doms.header, dialog.footer, doms.headerCenter, doms.bodyLeft, doms.bodyRight]).css("zoom", "").css("zoom", 1);
 					}
 				}
-			} else {
+			}
+			else {
 				$fly(doms.contentPanel).css("height", "");
 				if (dorado.Browser.msie && dorado.Browser.version == 6) {
 					$fly([doms.bodyWrap, doms.header, dialog.footer, doms.headerCenter, doms.bodyLeft, doms.bodyRight]).css("zoom", "").css("zoom", 1);
@@ -460,13 +468,13 @@
 			var dialog = this, captionBar = dialog._captionBar;
 			if (captionBar) {
 				captionBar.addButton(new dorado.widget.SimpleButton({
-					id: dialog._id + "_minimize",
 					className: "d-minimize-button",
-					listener: {
-						onClick: function() {
-							if (!dialog._minimized) {
-								dialog.minimize();
-							}
+					onCreate: function() {
+						this._uniqueId = dialog._uniqueId + "_minimize";
+					},
+					onClick: function() {
+						if (!dialog._minimized) {
+							dialog.minimize();
 						}
 					}
 				}), 102);
@@ -560,22 +568,22 @@
 			var showCaptionBar = dialog._showCaptionBar;
 
 			if (showCaptionBar !== false) {
-                var tools = dialog._tools, toolButtons = [];
+				var tools = dialog._tools, toolButtons = [];
 
-                if (tools instanceof Array) {
-                    for (var i = 0, j = tools.length; i < j; i++) {
-                        var tool = tools[i];
-                        if (tool) {
-                            toolButtons.push(tool);
-                        }
-                    }
-                }
+				if (tools instanceof Array) {
+					for(var i = 0, j = tools.length; i < j; i++) {
+						var tool = tools[i];
+						if (tool) {
+							toolButtons.push(tool);
+						}
+					}
+				}
 
 				var captionBar = dialog._captionBar = new dorado.widget.CaptionBar({
 					className: "d-dialog-caption-bar",
 					caption: dialog.get("caption") || dialog._caption,
 					icon: dialog._icon,
-                    buttons: toolButtons
+					buttons: toolButtons
 				});
 				dialog.registerInnerControl(captionBar);
 				captionBar.render(doms.body.parentNode, doms.body);
@@ -608,58 +616,65 @@
 					addClasses: false,
 					handle: ".d-dialog-caption-bar",
 					cursor: "move",
-                    distance: 10,
+					distance: 10,
 					containment: dialog._dragOutside ? null : "parent",
 					helper: function() {
-						if (!fakeDialog) {
-							fakeDialog = new dorado.widget.Dialog({ exClassName: "i-dialog-helper d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
+						if (useDraggingFakeDialog) {
+							if (!fakeDialog) {
+								fakeDialog = new dorado.widget.Dialog({ exClassName: "d-dialog-helper", visible: true, animateType: "none", shadowMode: "none" });
+								fakeDialog.render(dialog._dom.parentNode);
+							}
 							fakeDialog.render(dialog._dom.parentNode);
-							fakeDialog.initObjectShimForIE();
-						}
-						fakeDialog.render(dialog._dom.parentNode);
-                        $fly(fakeDialog._dom).css("display", "");
+							$fly(fakeDialog._dom).css("display", "");
 
-						var height = dialog.getRealHeight();
-						if (height == null) {
-							height = $fly(dom).height();
+							var height = dialog.getRealHeight();
+							if (height == null) {
+								height = $fly(dom).height();
+							}
+							fakeDialog.set({
+								width: dom.offsetWidth,
+								height: height,
+								caption: dialog.get("caption"),
+								icon: dialog._icon,
+								iconClass: dialog._iconClass,
+								minimizeable: dialog._minimizeable,
+								maximizeable: dialog._maximizeable,
+								closeable: dialog._closeable,
+								collapseable: dialog._collapseable,
+								left: dialog._left,
+								top: dialog._top,
+								collapsed: dialog._collapsed
+							});
+							fakeDialog.refresh();
+							return fakeDialog._dom;
 						}
-						fakeDialog.set({
-							width: dom.offsetWidth,
-							height: height,
-							caption: dialog.get("caption"),
-							icon: dialog._icon,
-							iconClass: dialog._iconClass,
-							minimizeable: dialog._minimizeable,
-							maximizeable: dialog._maximizeable,
-							closeable: dialog._closeable,
-							collapseable: dialog._collapseable,
-							left: dialog._left,
-							top: dialog._top,
-			                collapsed: dialog._collapsed
-						});
-						fakeDialog.refresh();
-
-						return fakeDialog._dom;
+						else {
+							return dom;
+						}
 					},
 					start: function(event, ui) {
-						var helper = ui.helper;
-						helper.css({ display: "", visibility: "" }).bringToFront();
-						$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden");
+						if (useDraggingFakeDialog) {
+							var helper = ui.helper;
+							helper.css({ display: "", visibility: "" }).bringToFront();
+							$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden");
+						}
 					},
 					stop: function(event, ui) {
-						var helper = ui.helper, left = parseInt(helper.css("left"), 10), top = parseInt(helper.css("top"), 10);
-						$fly(dom).removeClass("d-dialog-dragging").css({
-							visibility: "",
-							left: left,
-							top: top
-						});
-						dialog._left = left;
-						dialog._top = top;
+						if (useDraggingFakeDialog) {
+							var helper = ui.helper, left = parseInt(helper.css("left"), 10), top = parseInt(helper.css("top"), 10);
+							$fly(dom).removeClass("d-dialog-dragging").css({
+								visibility: "",
+								left: left,
+								top: top
+							});
+							dialog._left = left;
+							dialog._top = top;
 
-                        /* this is the big hack that breaks encapsulation */
-                        $.ui.ddmanager.current.cancelHelperRemoval = true;
+							/* this is the big hack that breaks encapsulation */
+							$.ui.ddmanager.current.cancelHelperRemoval = true;
 
-                        ui.helper.css("display", "none");
+							ui.helper.css("display", "none");
+						}
 					}
 				});
 			}
@@ -667,7 +682,7 @@
 			if (dialog._resizeable) {
 				var dialogXY, dialogSize, dialogHelperOffset, bodyRect;
 
-				jQuery(dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
+				jQuery(dom).addClass("d-dialog-resizeable").find(".dialog-resize-handle").each(function(index, handle) {
 					var className = handle.className.split(" ")[0], config = handleConfigMap[className];
 					if (!config) return;
 					jQuery(handle).draggable({
@@ -677,7 +692,7 @@
 						containment: "parent",
 						helper: function() {
 							var proxy = document.createElement("div");
-							proxy.className = "i-dialog-drag-proxy d-dialog-drag-proxy";
+							proxy.className = "d-dialog-drag-proxy";
 							proxy.style.position = "absolute";
 
 							var $dom = $fly(dom);
@@ -720,7 +735,7 @@
 								top: $fly(dom).offset().top
 							};
 
-							var inst = jQuery.data(this, "draggable"), horiChange = event.pageX - inst.originalPageX,
+							var inst = jQuery.data(this, "ui-draggable"), horiChange = event.pageX - inst.originalPageX,
 								vertChange = event.pageY - inst.originalPageY, width, height, horiOverflowOffset, vertOverflowOffset;
 
 							var helper = ui.helper, position = ui.position, widthFlag = false, heightFlag = false;
@@ -761,7 +776,8 @@
 							if (horiStyle.indexOf("left") != -1) {
 								if (!widthFlag) {
 									position.left = dialogXY.left + horiChange;
-								} else {
+								}
+								else {
 									position.left = dialogXY.left + horiChange + horiOverflowOffset;
 								}
 							}
@@ -769,7 +785,8 @@
 							if (vertStyle.indexOf("top") != -1) {
 								if (!heightFlag) {
 									position.top = dialogXY.top + vertChange;
-								} else {
+								}
+								else {
 									position.top = dialogXY.top + vertChange + vertOverflowOffset;
 								}
 							}
@@ -785,14 +802,16 @@
 								if (helperRect.left < bodyRect.left) {
 									position.left = bodyRect.left;
 									width = helperRect.right - bodyRect.left;
-								} else if (helperRect.right >= bodyRect.right) {
+								}
+								else if (helperRect.right >= bodyRect.right) {
 									width = bodyRect.right - helperRect.left;
 								}
 
 								if (helperRect.top < bodyRect.top) {
 									position.top = bodyRect.top;
 									height = helperRect.bottom - bodyRect.top;
-								} else if (helperRect.bottom >= bodyRect.bottom) {
+								}
+								else if (helperRect.bottom >= bodyRect.bottom) {
 									height = bodyRect.bottom - helperRect.top;
 								}
 							}
@@ -819,13 +838,14 @@
 		},
 
 		getShowPosition: function(options) {
-			var panel = this;
-			if (panel._maximized) {
+			var dialog = this;
+			if (dialog._maximized) {
 				var result = { left: 0, top: 0 };
-				$fly(panel._dom).css(result);
+				$fly(dialog._dom).css(result);
 				return result;
-			} else {
-				return $invokeSuper.call(panel, arguments);
+			}
+			else {
+				return $invokeSuper.call(dialog, arguments);
 			}
 		}
 	});

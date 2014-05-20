@@ -25,10 +25,10 @@
 	 * <p>
 	 * 此控件仅在配合Dorado服务端的开发模式中有意义。
 	 * </p>
-	 * @extends dorado.widget.Action
+	 * @extends dorado.widget.AsyncAction
 	 * @see dorado.DataResolver
 	 */
-	dorado.widget.AjaxAction = $extend(dorado.widget.Action, /** @scope dorado.widget.AjaxAction.prototype */
+	dorado.widget.AjaxAction = $extend(dorado.widget.AsyncAction, /** @scope dorado.widget.AjaxAction.prototype */
 	{
 		$className : "dorado.widget.AjaxAction",
 
@@ -102,9 +102,9 @@
 				batchable : this._batchable
 			}, $setting["ajax.remoteServiceOptions"]);
 		},
-		
+
 		doExecuteSync : function() {
-			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
+			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.util.AjaxEngine.getInstance(ajaxOptions);
 			var result = ajax.requestSync(ajaxOptions);
 			if(result.success) {
 				var result = result.getJsonData(), dataTypeRepository = this.get("dataTypeRepository"), data;
@@ -125,9 +125,9 @@
 				throw result.exception;
 			}
 		},
-		
+
 		doExecuteAsync : function(callback) {
-			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.Toolkits.getAjax(ajaxOptions);
+			var ajaxOptions = this.getAjaxOptions(), ajax = dorado.util.AjaxEngine.getInstance(ajaxOptions);
 			ajax.request(ajaxOptions, {
 				scope : this,
 				callback : function(success, result) {
@@ -155,35 +155,14 @@
 	});
 
 	dorado.DataPath.registerInterceptor("CASCADE_DIRTY", function(data) {
-		function isDirty(entity) {
-			var dirty = (entity.state != dorado.Entity.STATE_NONE);
-			if(!dirty) {
-				var data = entity._data;
-				for(var p in data) {
-					var v = data[p];
-					if (v instanceof dorado.Entity) {
-						dirty = isDirty(v);
-					} else if (v instanceof dorado.EntityList) {
-						var it = v.iterator(true);
-						while(it.hasNext()) {
-							dirty = isDirty(it.next());
-							if(dirty) break;
-						}
-					}
-					if(dirty) break;
-				}
-			}
-			return dirty;
-		}
-
 		if (data instanceof dorado.Entity) {
-			if(!isDirty(data)) data = null;
+			if(!data.isCascadeDirty()) data = null;
 		} else if (data instanceof dorado.EntityList) {
 			var it = data.iterator(true);
 			var data = [];
 			while(it.hasNext()) {
 				var e = it.next();
-				if(isDirty(e)) data.push(e);
+				if(e.isCascadeDirty()) data.push(e);
 			}
 		} else {
 			data = null;
@@ -205,7 +184,7 @@
 				if (property.charAt(0) == '$') continue;
 				var propertyDef = (entity._propertyDefs) ? entity._propertyDefs.get(property) : null;
 				if (!propertyDef || !propertyDef._submittable) continue;
-				
+
 				var value = entity.get(property, "never");
 				if (value instanceof dorado.EntityList) {
 					var it = value.iterator(true);
@@ -236,7 +215,7 @@
 	}, function(dataType) {
 		return dataType;
 	});
-	
+
 	function filterCascadeDrityEntity(entity) {
 		return !CASCADE_NOT_DRITY_ENTITYS[entity.entityId];
 	}
@@ -245,10 +224,10 @@
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @component Action
 	 * @class 提交动作控件。
-	 * @extends dorado.widget.Action
+	 * @extends dorado.widget.AsyncAction
 	 * @see dorado.DataResolver
 	 */
-	dorado.widget.UpdateAction = $extend(dorado.widget.Action, /** @scope dorado.widget.UpdateAction.prototype */
+	dorado.widget.UpdateAction = $extend(dorado.widget.AsyncAction, /** @scope dorado.widget.UpdateAction.prototype */
 	{
 		$className : "dorado.widget.UpdateAction",
 
@@ -375,7 +354,7 @@
 					}
 				}
 			},
-			
+
 			executingMessage: {
 				defaultValue: $resource("dorado.baseWidget.SubmitingData")
 			}
@@ -444,7 +423,7 @@
 			this._updateItems = [];
 			$invokeSuper.call(this, arguments);
 		},
-		
+
 		getResolveContext : function() {
 
 			function mergeValidateContext(context, contextForMerge) {
@@ -461,20 +440,20 @@
 				context.executingValidationNum += contextForMerge.executingValidationNum;
 				return context;
 			}
-			
+
 			function validateEntity(validateContext, entity, validateOptions, validateSubEntities) {
 				if (entity.isDirty() && entity.state != dorado.Entity.STATE_DELETED) {
 					validateOptions.context = {};
 					entity.validate(validateOptions);
 					validateContext = mergeValidateContext(validateContext, validateOptions.context);
 				}
-				
+
 				if (validateSubEntities) {
 					for (var p in entity._data) {
 						if (p.charAt(0) == '$') continue;
 						var v = entity._data[p];
 						if (!v) continue;
-						
+
 						if (v instanceof dorado.Entity) {
 							validateContext = validateEntity(validateContext, v, validateOptions, validateSubEntities)
 						}
@@ -555,7 +534,7 @@
 						validateSimplePropertyOnly : updateItem.submitSimplePropertyOnly
 					};
 					var validateSubEntities = !updateItem.submitSimplePropertyOnly;
-					
+
 					if (data instanceof Array) {
 						for(var j = 0; j < data.length; j++) {
 							var entity = data[j];
@@ -607,7 +586,7 @@
 				var entities = [], context = {
 					entities : []
 				};
-				
+
 				if (data) {
 					if (data instanceof Array) {
 						var v = data, data = [];
@@ -650,7 +629,7 @@
 					}
 				}
 				dataItem.data = data;
-				
+
 				updateInfos.push({
 					alias : dataItem.alias,
 					refreshMode : updateItem.refreshMode,
@@ -670,11 +649,11 @@
 				hasUpdateData : hasUpdateData
 			};
 		},
-		
+
 		doExecuteSync : function() {
 			return this.doExecuteAsync();
 		},
-		
+
 		doExecuteAsync : function(callback) {
 			var confirmMessage = this._realConfirmMessage, executingMessage = this._realExecutingMessage;
 			if (this._executingMessage === null) {
@@ -743,7 +722,7 @@
 								}
 							}
 							delete entity._oldData;
-							
+
 							if (s == dorado.Entity.STATE_NONE) entity.resetState();
 							else entity.setState(s);
 						}
@@ -786,7 +765,7 @@
 					if (!dataSet && updateInfo.entities.length) {
 						dataSet = dorado.widget.DataSet.getOwnerDataSet(updateInfo.entities[0]);
 					}
-					
+
 					if (dataSet) dataSet.disableObservers();
 					try {
 						if(processUpdateInfo(updateInfos[i], entityStates) && dataSet) {
@@ -863,7 +842,7 @@
 					throw e;
 				}
 			}
-					
+
 			var dataResolverArg = context.dataResolverArg;
 			if(this._alwaysExecute || !this._updateItems.length || context.hasUpdateData) {
 				if (confirmMessage) {
@@ -885,7 +864,7 @@
 				if (!this._alwaysExecute && this._updateItems.length && !context.hasUpdateData) {
 					dorado.widget.NotifyTipManager.notify($resource("dorado.baseWidget.NoDataToSubmit"));
 				}
-				
+
 				if(callback) {
 					$callback(callback, false);
 				} else {
@@ -894,7 +873,7 @@
 			}
 		}
 	});
-	
+
 	dorado.widget.UpdateAction.ValidateException = $extend(dorado.Exception, {
 		constructor: function(message, validateContext) {
 			$invokeSuper.call(this, arguments);

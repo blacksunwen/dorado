@@ -1,8 +1,8 @@
 /*
  * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
- * 
+ *
  * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
+ *
  * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
  * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
  * 
@@ -26,7 +26,7 @@
  */
 dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado.widget.AbstractPanel.prototype */ {
 	$className: "dorado.widget.AbstractPanel",
-	_inherentClassName: "i-panel",
+
 	ATTRIBUTES: /** @scope dorado.widget.AbstractPanel.prototype */ {
 
 		/**
@@ -59,7 +59,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		buttonAlign: {
 			defaultValue: "center",
 			skipRefresh: true,
-			setter: function (value) {
+			setter: function(value) {
 				var panel = this, doms = panel._doms, oldValue = panel._buttonAlign;
 				if (doms) {
 					if (oldValue && oldValue != "center") {
@@ -82,19 +82,20 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * @attribute
 		 */
 		collapseable: {
-			setter: function (value) {
+			setter: function(value) {
 				var panel = this, captionBar = panel._captionBar, button;
 				panel._collapseable = value;
 				if (captionBar) {
+					button = captionBar.getButton(panel._uniqueId + "_collapse");
 					if (value) {
-						button = captionBar.getButton(panel._id + "_collapse");
 						if (button) {
 							$fly(button._dom).css("display", "");
-						} else {
+						}
+						else {
 							panel._createCollapseButton();
 						}
-					} else {
-						button = captionBar.getButton(panel._id + "_collapse");
+					}
+					else {
 						if (button) {
 							$fly(button._dom).css("display", "none");
 						}
@@ -111,11 +112,12 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * @attribute
 		 */
 		collapsed: {
-			getter: function (attr, value) {
+			getter: function(attr, value) {
 				var panel = this;
 				if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 					return panel._parent._collapsed;
-				} else {
+				}
+				else {
 					return panel._collapsed;
 				}
 			},
@@ -166,15 +168,15 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	/**
 	 * @private
 	 */
-	toggleCollapsed: function (animate) {
+	toggleCollapsed: function(animate) {
 		var panel = this, collapsed = panel.get("collapsed");
 		panel.doSetCollapsed(!collapsed, animate);
 	},
 
-	setContentContainerVisible: function (collapsed) {
+	setContentContainerVisible: function(collapsed) {
 		var panel = this, buttons = panel._buttons, doms = panel._doms;
 		if (buttons) {
-			for (var i = 0, j = buttons.length; i < j; i++) {
+			for(var i = 0, j = buttons.length; i < j; i++) {
 				var button = buttons[i];
 				button.setActualVisible(collapsed);
 			}
@@ -188,32 +190,16 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	/**
 	 * @private
 	 */
-	doSetCollapsed: function (collapsed, animate) {
+	doSetCollapsed: function(collapsed, animate) {
 		function beforeCollapsedChange(panel, collapsed) {
 			if (collapsed) {
 				panel._heightBeforeCollapse = panel.getRealHeight();
 			}
-			panel._doOnResize(collapsed);
-
-			if (panel._parent && collapsed === false) {
-				var layout = panel._parent._layout;
-				if (layout && layout instanceof dorado.widget.layout.AnchorLayout && layout._attached && layout.onControlSizeChange) {
-					layout.onControlSizeChange(panel);
-				}
-			}
-
-//			var buttons = panel._buttons;
-//			if (buttons) {
-//				for (var i = 0, j = buttons.length; i < j; i++) {
-//					var button = buttons[i];
-//					button.doOnResize();
-//				}
-//			}
+			panel.setContentContainerVisible(!collapsed);
 		}
 
 		function onCollapsedChange(panel, collapsed) {
 			panel._doOnResize(collapsed);
-			panel.setContentContainerVisible(!collapsed);
 			if (dorado.Browser.msie && !collapsed) {
 				$fly(panel.getContentContainer()).css("zoom", 1);
 			}
@@ -230,66 +216,71 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 				collapseButton.set("iconClass", collapsed ? ("expand-icon-" + direction) : ("collapse-icon-" + direction));
 			}
 			if (!panel._splitPanelCascade) {
-				panel._parent.doSetCollapsed(collapsed, function () {
+				panel._parent.doSetCollapsed(collapsed, function() {
 					beforeCollapsedChange(panel, collapsed);
 					onCollapsedChange(panel, collapsed);
 				}, true);
 			}
-		} else {
+		}
+		else {
 			panel._collapsed = collapsed;
 
 			var orginalZIndex;
 			if (panel._rendered) {
 				if (collapsed) {
 					if (animate === false || animate === undefined) {
-						$fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
+						$fly(dom).addClass(panel._className + "-collapsed");
 						if (collapseButton) {
 							collapseButton.set("iconClass", "expand-icon");
 						}
 						beforeCollapsedChange(panel, collapsed);
 						$fly(doms.body).css("display", "none");
 						onCollapsedChange(panel, collapsed);
-					} else {
+					}
+					else {
 						$fly(doms.body).safeSlideOut({
 							direction: "b2t",
-							start: function () {
+							start: function() {
 								orginalZIndex = dom.style.zIndex;
-								$fly(dom).bringToFront();
-								beforeCollapsedChange(panel, collapsed);
-							},
-							step: function () {
-							},
-							complete: function () {
-								$fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
+								$fly(dom).bringToFront().addClass(panel._className + "-collapsed");
 								if (collapseButton) {
 									collapseButton.set("iconClass", "expand-icon");
 								}
+								;
+								beforeCollapsedChange(panel, collapsed);
+							},
+							step: function() {
+							},
+							complete: function() {
 								onCollapsedChange(panel, collapsed);
 								dom.style.zIndex = orginalZIndex || "";
 								orginalZIndex = null;
 							}
 						});
 					}
-				} else {
+				}
+				else {
 					if (animate === false || animate === undefined) {
-						$fly(dom).removeClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
+						$fly(dom).removeClass(panel._className + "-collapsed");
 						if (collapseButton) {
 							collapseButton.set("iconClass", "collapse-icon");
 						}
 						beforeCollapsedChange(panel, collapsed);
 						$fly(doms.body).css("display", "");
 						onCollapsedChange(panel, collapsed);
-					} else {
-						$fly(doms.body).safeSlideIn({
+					}
+					else {
+						var $body = jQuery(doms.body).css("display", "");
+						beforeCollapsedChange(panel, collapsed);
+						$body.safeSlideIn({
 							direction: "t2b",
-							start: function () {
+							start: function() {
 								orginalZIndex = dom.style.zIndex;
-								$fly(dom).bringToFront().removeClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
-								beforeCollapsedChange(panel, collapsed);
+								$fly(dom).bringToFront().removeClass(panel._className + "-collapsed");
 							},
-							step: function () {
+							step: function() {
 							},
-							complete: function () {
+							complete: function() {
 								if (collapseButton) {
 									collapseButton.set("iconClass", "collapse-icon");
 								}
@@ -304,25 +295,26 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		}
 	},
 
-	_createButtonPanel: function (dom) {
+	_createButtonPanel: function(dom) {
 		var panel = this, doms = panel._doms, buttonPanel = document.createElement("div");
 		buttonPanel.className = "button-panel";
 
 		doms.buttonPanel = buttonPanel;
 		if (doms.body) {
 			$fly(doms.body).append(buttonPanel);
-		} else {
+		}
+		else {
 			$fly(dom).append(buttonPanel);
 		}
 		return buttonPanel;
 	},
 
-	initButtons: function (dom) {
+	initButtons: function(dom) {
 		var panel = this, doms = panel._doms;
 		if (panel._buttons) {
 			var buttons = panel._buttons, button, buttonPanel;
 			buttonPanel = panel._createButtonPanel(dom);
-			for (var i = 0, j = buttons.length; i < j; i++) {
+			for(var i = 0, j = buttons.length; i < j; i++) {
 				button = buttons[i];
 				panel.registerInnerControl(button);
 				button.render(buttonPanel);
@@ -334,7 +326,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		}
 	},
 
-	getFocusableSubControls: function () {
+	getFocusableSubControls: function() {
 		var controls = this._children.toArray();
 		return controls.concat(this._buttons);
 	}
@@ -386,6 +378,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @attribute
 		 * @default "normal"
 		 * @type String
+		 * @deprecated
 		 */
 		border: {
 			writeOnce: true,
@@ -397,6 +390,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 *
 		 * @attribute
 		 * @type String
+		 * @deprecated
 		 */
 		background: {},
 
@@ -452,19 +446,20 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @type boolean
 		 */
 		maximizeable: {
-			setter: function (value) {
+			setter: function(value) {
 				var panel = this, captionBar = panel._captionBar, button;
 				panel._maximizeable = value;
 				if (captionBar) {
+					button = captionBar.getButton(panel._uniqueId + "_maximize");
 					if (value) {
-						button = captionBar.getButton(panel._id + "_maximize");
 						if (button) {
 							$fly(button._dom).css("display", "");
-						} else {
+						}
+						else {
 							panel._createMaximizeButton();
 						}
-					} else {
-						button = captionBar.getButton(panel._id + "_maximize");
+					}
+					else {
 						if (button) {
 							$fly(button._dom).css("display", "none");
 						}
@@ -481,15 +476,18 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @type boolean
 		 */
 		maximized: {
-			setter: function (value) {
+			setter: function(value) {
 				this._maximized = value;
 				if (this._maximizeable && this._rendered) {
 					if (this.isActualVisible()) {
-						if (value)
+						if (value) {
 							this.maximize();
-						else
+						}
+						else {
 							this.maximizeRestore();
-					} else {
+						}
+					}
+					else {
 						this._maximizedDirty = true;
 					}
 				}
@@ -503,19 +501,20 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * @type boolean
 		 */
 		closeable: {
-			setter: function (value) {
+			setter: function(value) {
 				var panel = this, captionBar = panel._captionBar, button;
 				panel._closeable = value;
 				if (captionBar) {
+					button = captionBar.getButton(panel._uniqueId + "_close");
 					if (value) {
-						button = captionBar.getButton(panel._id + "_close");
 						if (button) {
 							$fly(button._dom).css("display", "");
-						} else {
+						}
+						else {
 							panel._createCloseButton();
 						}
-					} else {
-						button = captionBar.getButton(panel._id + "_close");
+					}
+					else {
 						if (button) {
 							$fly(button._dom).css("display", "none");
 						}
@@ -585,7 +584,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		onClose: {}
 	},
 
-	doOnAttachToDocument: function () {
+	doOnAttachToDocument: function() {
 		/* 似乎不需要此代码 Benny 13/2/19
 		 if (this._collapseable && this._collapsed) {
 		 this.doSetCollapsed(true, false);
@@ -597,86 +596,36 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		$invokeSuper.call(this, arguments);
 	},
 
-	onActualVisibleChange: function () {
+	onActualVisibleChange: function() {
 		$invokeSuper.call(this, arguments);
 		if (this.isActualVisible() && this._maximizeable && this._maximizedDirty) {
 			if (this._maximized) {
 				this.maximize();
-			} else {
+			}
+			else {
 				this.maximizeRestore();
 			}
 			this._maximizedDirty = false;
 		}
 	},
 
-	createDom: function () {
-		var panel = this, doms = {}, border = panel._border, dom;
-		if ((dorado.Browser.msie || !$setting["widget.panel.useCssCurveBorder"]) && border == "curve") {
-			dom = $DomUtils.xCreate({
+	createDom: function() {
+		var panel = this, doms = {}, dom;
+		dom = $DomUtils.xCreate({
+			tagName: "div",
+			content: {
 				tagName: "div",
-				className: panel._className,
-				content: [
-					{
-						tagName: "div",
-						className: "panel-header-left",
-						contextKey: "header",
-						content: {
-							tagName: "div",
-							className: "panel-header-right"
-						}
-					},
-					{
-						tagName: "div",
-						className: "panel-body-left",
-						contextKey: "body",
-						content: {
-							tagName: "div",
-							className: "panel-body-right",
-							content: [
-								{
-									tagName: "div",
-									className: "panel-body",
-									contextKey: "body",
-									content: {
-										tagName: "div",
-										className: "content-panel",
-										contextKey: "contentPanel"
-									}
-								}
-							]
-						}
-					},
-					{
-						tagName: "div",
-						className: "panel-footer-left",
-						contextKey: "footer",
-						content: {
-							tagName: "div",
-							className: "panel-footer-right"
-						}
-					}
-				]
-			}, null, doms);
-
-			panel._doms = doms;
-		} else {
-			dom = $DomUtils.xCreate({
-				tagName: "div",
-				className: panel._className,
+				className: "panel-body",
+				contextKey: "body",
 				content: {
 					tagName: "div",
-					className: "panel-body",
-					contextKey: "body",
-					content: {
-						tagName: "div",
-						className: "content-panel",
-						contextKey: "contentPanel"
-					}
+					className: "content-panel",
+					contextKey: "contentPanel"
 				}
-			}, null, doms);
+			}
+		}, null, doms);
 
-			panel._doms = doms;
-		}
+		panel._doms = doms;
 
 		var caption = panel._caption, showCaptionBar = panel._showCaptionBar;
 
@@ -685,7 +634,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			var tools = panel._tools, toolButtons = [];
 
 			if (tools instanceof Array) {
-				for (var i = 0, j = tools.length; i < j; i++) {
+				for(var i = 0, j = tools.length; i < j; i++) {
 					var tool = tools[i];
 					if (tool) {
 						toolButtons.push(tool);
@@ -701,7 +650,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 			if (doms.body) {
 				captionBar.render(doms.body.parentNode, doms.body);
-			} else {
+			}
+			else {
 				captionBar.render(dom, doms.contentPanel);
 			}
 
@@ -719,10 +669,8 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 		panel.initButtons(dom);
 
-		$fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
-
 		if (panel._collapsed) {
-			$fly(dom).addClass(panel._inherentClassName + "-collapsed " + panel._className + "-collapsed");
+			$fly(dom).addClass(panel._className + "-collapsed");
 		}
 
 		if (panel._closeable) {
@@ -732,19 +680,24 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		if (panel._maximizeable) {
 			panel._createMaximizeButton();
 		}
+
+		panel._modernScrolled = $DomUtils.modernScroll(doms.contentPanel);
 		return dom;
 	},
 
-	_createCollapseButton: function () {
+	_createCollapseButton: function() {
 		var panel = this;
 		if (!panel._captionBar) {
 			return;
 		}
 
 		var collapseButton = panel._collapseButton = new dorado.widget.SimpleIconButton({
-			id: panel._id + "_collapse",
+			exClassName: "d-collapse-button",
 			iconClass: panel._collapsed ? "expand-icon" : "collapse-icon",
-			onClick: function () {
+			onCreate: function(self) {
+				self._uniqueId = panel._uniqueId + "_collapse";
+			},
+			onClick: function() {
 				panel.toggleCollapsed(true);
 			}
 		});
@@ -757,15 +710,15 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		panel._captionBar.addButton(collapseButton, 101);
 	},
 
-	_createCloseButton: function () {
+	_createCloseButton: function() {
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
 			captionBar.addButton(new dorado.widget.SimpleButton({
-				id: panel._id + "_close",
-				listener: {
-					onClick: function () {
-						panel.close();
-					}
+				onCreate: function(self) {
+					self._uniqueId = panel._uniqueId + "_close";
+				},
+				onClick: function() {
+					panel.close();
 				},
 				className: "d-close-button"
 			}), 104);
@@ -775,34 +728,27 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	/**
 	 * 关闭面板。
 	 */
-	close: function () {
+	close: function() {
 		var panel = this, eventArg = {};
 		panel.fireEvent("beforeClose", panel, eventArg);
 		if (eventArg.processDefault === false) return;
-		if (panel.hide) {
-			panel.hide();
-		} else {
-			panel.set("visible", false);
-		}
+		panel.hide && panel.hide();
+		panel.fireEvent("onClose", panel);
 		if (panel._closeAction == "close") {
 			panel.destroy();
 		}
-		panel.fireEvent("onClose", panel);
 	},
 
-	_doOnResize: function (collapsed) {
-		var panel = this, border = panel._border, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
+	_doOnResize: function(collapsed) {
+		var panel = this, dom = panel._dom, doms = panel._doms, height = panel.getRealHeight();
 		if (typeof height == "number" && height > 0) {
 			if (collapsed == undefined) {
 				collapsed = panel._collapsed;
 			}
 			if (collapsed) {
-				if (border == "curve") {
-					if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
-						$fly(doms.body).height("auto");
-					}
-				}
-			} else {
+				$fly(dom).height("auto");
+			}
+			else {
 				if (collapsed === false && panel._heightBeforeCollapse) {
 					height = panel._heightBeforeCollapse;
 					panel._heightBeforeCollapse = null;
@@ -816,33 +762,23 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				if (doms.captionBar) {
 					captionBarHeight = $fly(doms.captionBar).outerHeight(true);
 				}
-				if (border == "curve") {
-					var headerHeight = doms.header ? jQuery(doms.header).outerHeight() : 0;
-					var footerHeight = dom.footer ? jQuery(doms.footer).outerHeight() : 0;
-					var bodyHeight = height - headerHeight - footerHeight - captionBarHeight;
-					$fly(doms.body).outerHeight(bodyHeight);
-					$fly(doms.contentPanel).outerHeight(bodyHeight - buttonPanelHeight);
-				} else {
-					$fly(doms.contentPanel).outerHeight(height - captionBarHeight - buttonPanelHeight);
-				}
+				$fly(doms.contentPanel).outerHeight(height - captionBarHeight - buttonPanelHeight);
+				$fly(dom).height("auto");
 			}
-			$fly(dom).height("auto");
 		}
 	},
 
-	refreshDom: function (dom) {
-		var panel = this, doms = panel._doms, border = panel._border;
+	refreshDom: function(dom) {
+		var panel = this, doms = panel._doms;
 
 		$invokeSuper.call(this, arguments);
 
 		if (this._background) {
 			doms.contentPanel.style.background = this._background;
 		}
-
-		$fly(dom).toggleClass("i-panel-normalborder " + panel._className + "-normalborder", border == "normal").toggleClass("i-panel-curveborder " + panel._className + "-curveborder", border == "curve");
 	},
 
-	getContentContainer: function () {
+	getContentContainer: function() {
 		return this._doms.contentPanel;
 	},
 
@@ -850,7 +786,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	 * 使Panel从最大化状态恢复到普通状态。
 	 * @protected
 	 */
-	maximizeRestore: function () {
+	maximizeRestore: function() {
 		var panel = this, dom = panel._dom, doms = panel._doms;
 		if (dom) {
 			$fly(doms.contentPanel).css("display", "");
@@ -858,7 +794,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			if (panel._maximizedDirty || panel._maximized) {
 
 				$fly(dom).unfullWindow({
-					callback: function () {
+					callback: function() {
 						panel._maximized = false;
 						panel._width = panel._originalWidth;
 						panel._height = panel._originalHeight;
@@ -879,7 +815,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 				var captionBar = panel._captionBar;
 				if (captionBar) {
-					var button = captionBar.getButton(panel._id + "_maximize");
+					var button = captionBar.getButton(panel._uniqueId + "_maximize");
 					if (button) {
 						$fly(button._dom).prop("className", "d-maximize-button");
 						button._className = "d-maximize-button";
@@ -893,7 +829,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	 * 使Panel从普通状态到最大化状态。
 	 * @protected
 	 */
-	maximize: function () {
+	maximize: function() {
 		var panel = this, dom = panel._dom;
 		if (dom) {
 			var eventArg = {};
@@ -911,7 +847,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 			var captionBar = panel._captionBar;
 			if (captionBar) {
-				var button = captionBar.getButton(panel._id + "_maximize");
+				var button = captionBar.getButton(panel._uniqueId + "_maximize");
 				if (button) {
 					$fly(button._dom).prop("className", "d-restore-button");
 					button._className = "d-restore-button";
@@ -920,7 +856,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 			$fly(dom).fullWindow({
 				modifySize: false,
-				callback: function (docSize) {
+				callback: function(docSize) {
 					panel._maximized = true;
 					panel._width = docSize.width;
 					panel._height = docSize.height;
@@ -937,19 +873,20 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		}
 	},
 
-	_createMaximizeButton: function () {
+	_createMaximizeButton: function() {
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
 			captionBar.addButton(new dorado.widget.SimpleButton({
-				id: panel._id + "_maximize",
 				className: "d-maximize-button",
-				listener: {
-					onClick: function () {
-						if (!panel._maximized) {
-							panel.maximize();
-						} else {
-							panel.maximizeRestore();
-						}
+				onCreate: function(self) {
+					self._uniqueId = panel._uniqueId + "_maximize";
+				},
+				onClick: function() {
+					if (!panel._maximized) {
+						panel.maximize();
+					}
+					else {
+						panel.maximizeRestore();
 					}
 				}
 			}), 103);

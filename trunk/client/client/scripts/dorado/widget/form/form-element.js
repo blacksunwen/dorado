@@ -10,9 +10,9 @@
  * at http://www.bstek.com/contact.
  */
 
-(function () {
+(function() {
 
-	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly"];
+	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly", "style"];
 
 	var DEFAULT_OK_MESSAGES = [
 		{
@@ -200,7 +200,6 @@
 				defaultValue: true
 			},
 
-
 			/**
 			 * 提示信息区的宽度。
 			 * @type int
@@ -275,7 +274,7 @@
 	 * @abstract
 	 */
 	dorado.widget.FormProfileSupport = $class(/** @scope dorado.widget.FormProfileSupport.prototype */{
-		onProfileChange: function () {
+		onProfileChange: function() {
 			var formProfile = this._formProfile;
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 				var readOnly = formProfile.get("readOnly");
@@ -322,41 +321,41 @@
 			 * @see dorado.widget.AbstractEditor#attribute:entity
 			 */
 			entity: {
-				defaultValue: function () {
+				defaultValue: function() {
 					return new dorado.widget.FormProfile.DefaultEntity();
 				}
 			}
 		},
 
-		constructor: function () {
+		constructor: function() {
 			this._bindingElements = new dorado.ObjectGroup();
 			$invokeSuper.call(this, arguments);
-			this.addListener("onAttributeChange", function (self, arg) {
+			this.bind("onAttributeChange", function(self, arg) {
 				var attr = arg.attribute;
 				if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
 					dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
 					if (self._config) delete self._config;
-					dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function () {
+					dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
 						self._bindingElements.invoke("onProfileChange");
 					}, 20);
 				}
 			});
 		},
 
-		addBindingElement: function (element) {
+		addBindingElement: function(element) {
 			this._bindingElements.objects.push(element);
 		},
 
-		removeBindingElement: function (element) {
+		removeBindingElement: function(element) {
 			this._bindingElements.objects.push(element);
 		},
 
-		getConfig: function () {
+		getConfig: function() {
 			if (this._config) return this._config;
 
 			var formProfile = this;
 			var attrs = formProfile.ATTRIBUTES, attrWatcher = formProfile.getAttributeWatcher(), config = formProfile._config = {};
-			for (var attr in attrs) {
+			for(var attr in attrs) {
 				if (!attrs.hasOwnProperty(attr)) {
 					continue;
 				}
@@ -430,7 +429,7 @@
 			 */
 			formProfile: {
 				componentReference: true,
-				setter: function (formProfile) {
+				setter: function(formProfile) {
 					if (this._formProfile === formProfile) return;
 
 					if (dorado.Object.isInstanceOf(this._formProfile, dorado.widget.FormProfile)) {
@@ -449,7 +448,7 @@
 			},
 
 			dataSet: {
-				setter: function (dataSet, attr) {
+				setter: function(dataSet, attr) {
 					dorado.widget.DataControl.prototype.ATTRIBUTES.dataSet.setter.call(this, dataSet, attr);
 					delete this._propertyDef;
 					this.resetBinding();
@@ -457,7 +456,7 @@
 			},
 
 			dataPath: {
-				setter: function (v) {
+				setter: function(v) {
 					this._dataPath = v;
 					delete this._propertyDef;
 					this.resetBinding();
@@ -472,7 +471,7 @@
 			 */
 			property: {
 				writeBeforeReady: true,
-				setter: function (v) {
+				setter: function(v) {
 					this._property = v;
 					delete this._propertyDef;
 					this.resetBinding();
@@ -489,7 +488,7 @@
 			if (formProfile) this.set("formProfile", formProfile);
 		},
 
-		destroy: function () {
+		destroy: function() {
 			if (this._destroyed) return;
 			this.set("formProfile", null);
 			$invokeSuper.call(this, arguments);
@@ -513,7 +512,6 @@
 	 */
 	dorado.widget.FormElement = $extend([dorado.widget.AbstractFormElement, dorado.widget.FormConfig], /** @scope dorado.widget.FormElement.prototype */ {
 		$className: "dorado.widget.FormElement",
-		_inherentClassName: "i-form-element",
 
 		ATTRIBUTES: /** @scope dorado.widget.FormElement.prototype */ {
 			/**
@@ -562,7 +560,7 @@
 			 * @attribute
 			 */
 			hint: {
-				setter: function (hint) {
+				setter: function(hint) {
 
 					function trimSingleHint(hint) {
 						if (!hint) return null;
@@ -573,7 +571,8 @@
 									text: hint
 								}
 							];
-						} else {
+						}
+						else {
 							hint.state = hint.state || "info";
 							hint = [hint];
 						}
@@ -584,13 +583,14 @@
 						if (!hint) return null;
 						if (hint instanceof Array) {
 							var array = [];
-							for (var i = 0; i < hint.length; i++) {
+							for(var i = 0; i < hint.length; i++) {
 								var h = trimSingleHint(hint[i]);
 								if (!h) continue;
 								array.push(h);
 							}
 							hint = (array.length) ? array : null;
-						} else {
+						}
+						else {
 							hint = trimSingleHint(hint);
 						}
 						return hint;
@@ -642,7 +642,7 @@
 			},
 
 			entity: {
-				setter: function (entity) {
+				setter: function(entity) {
 					this._entity = entity;
 					if (this._rendered) {
 						var hintControl = this.getHintControl(false);
@@ -655,14 +655,14 @@
 
 			readOnly: {
 				skipRefresh: true,
-				setter: function (v) {
+				setter: function(v) {
 					this._readOnly = v;
 					this.resetEditorReadOnly();
 				}
 			}
 		},
 
-		createDom: function () {
+		createDom: function() {
 			var attrWatcher = this.getAttributeWatcher();
 			if (!this._formProfile && attrWatcher.getWritingTimes("formProfile") == 0) {
 				var view = this.get("view") || dorado.widget.View.TOP;
@@ -680,7 +680,8 @@
 						tagName: "DIV",
 						className: "form-label form-label-top" + labelClass
 					});
-				} else {
+				}
+				else {
 					config.push({
 						contextKey: "labelEl",
 						tagName: "DIV",
@@ -697,7 +698,8 @@
 					content: content
 				};
 				config.push(contentConfig);
-			} else {
+			}
+			else {
 				var contentConfig = {
 					contextKey: "contentEl",
 					tagName: "DIV",
@@ -713,7 +715,8 @@
 					tagName: "DIV",
 					className: "form-editor form-editor-top"
 				});
-			} else {
+			}
+			else {
 				content.push({
 					contextKey: "editorEl",
 					tagName: "DIV",
@@ -728,7 +731,8 @@
 						tagName: "DIV",
 						className: "form-hint form-hint-bottom"
 					});
-				} else {
+				}
+				else {
 					content.push({
 						contextKey: "hintEl",
 						tagName: "DIV",
@@ -748,7 +752,7 @@
 			return dom;
 		},
 
-		setFocus: function () {
+		setFocus: function() {
 			var editor = this.getEditor(false);
 			if (editor) {
 				editor.setFocus();
@@ -758,19 +762,19 @@
 			}
 		},
 
-		createEditor: function (editorType) {
-			var editor = dorado.Toolkits.createInstance("widget", editorType, function () {
+		createEditor: function(editorType) {
+			var editor = dorado.Toolkits.createInstance("widget", editorType, function() {
 				return dorado.Toolkits.getPrototype("widget", editorType) || dorado.widget.TextEditor;
 			});
 			return editor;
 		},
 
-		getEditor: function (create) {
+		getEditor: function(create) {
 			var control = this._editor;
 			if (this._controlRegistered) {
 				var config1 = {}, config2 = {}, attrs = control.ATTRIBUTES;
 				this.initEditorConfig(config1);
-				for (var attr in config1) {
+				for(var attr in config1) {
 					if (!attrs[attr] || attrs[attr].writeOnly) continue;
 					if (config1[attr] != null) config2[attr] = config1[attr];
 				}
@@ -825,21 +829,22 @@
 				this._controlRegistered = true;
 				if (this._showHint && control instanceof dorado.widget.AbstractEditor) {
 					if (control instanceof dorado.widget.AbstractTextBox) {
-						control.addListener("onValidationStateChange", $scopify(this, this.onEditorStateChange));
-						control.addListener("onPost", $scopify(this, this.onEditorPost));
+						control.bind("onValidationStateChange", $scopify(this, this.onEditorStateChange));
+						control.bind("onPost", $scopify(this, this.onEditorPost));
 					}
-					control.addListener("onPostFailed", $scopify(this, this.onEditorPostFailed));
+					control.bind("onPostFailed", $scopify(this, this.onEditorPostFailed));
 				}
 			}
 			return control;
 		},
 
-		getHintControl: function (create) {
+		getHintControl: function(create) {
 			var control = this._hintControl;
 			if (!control && create) {
 				var config = {
 					width: this._hintWidth,
-					showIconOnly: !this._showHintMessage
+					showIconOnly: !this._showHintMessage,
+					messages: this._hint
 				};
 				if (this._dataPath) config.dataPath = this._dataPath;
 				if (this._dataSet && this._property) {
@@ -857,31 +862,32 @@
 			return control;
 		},
 
-		initEditorConfig: function (config) {
+		initEditorConfig: function(config) {
 			if (this._trigger !== undefined) config.trigger = this._trigger;
 			if (this._editable !== undefined) config.editable = this._editable;
 			config.readOnly = this._readOnly || this._realReadOnly;
 			if (this._dataSet && this._property) {
 				config.dataSet = this._dataSet;
-			} else if (this._entity) {
+			}
+			else if (this._entity) {
 				config.entity = this._entity;
 			}
 			if (this._dataPath) config.dataPath = this._dataPath;
 			if (this._property) config.property = this._property;
 		},
 
-		resetEditorReadOnly: function () {
+		resetEditorReadOnly: function() {
 			if (this._editor && this._editor instanceof dorado.widget.AbstractEditor) {
 				this._editor.set("readOnly", this._readOnly || this._realReadOnly);
 			}
 		},
 
-		onEditorStateChange: function (editor, arg) {
+		onEditorStateChange: function(editor, arg) {
 			var hintControl = this.getHintControl(false);
 			if (hintControl) hintControl.set("messages", editor.get("validationMessages"));
 		},
 
-		onEditorPost: function (editor, arg) {
+		onEditorPost: function(editor, arg) {
 			var hintControl = this.getHintControl(false);
 			if (hintControl) {
 				messages = editor.get("validationMessages");
@@ -889,7 +895,7 @@
 			}
 		},
 
-		onEditorPostFailed: function (editor, arg) {
+		onEditorPostFailed: function(editor, arg) {
 			if (!this._dataSet && !this._property) {
 				var exception = arg.exception;
 				if (exception instanceof dorado.widget.editor.PostException) {
@@ -900,7 +906,7 @@
 			arg.processDefault = false;
 		},
 
-		getBindingPropertyDef: function () {
+		getBindingPropertyDef: function() {
 			var p = this._propertyDef;
 			if (p === undefined) {
 				this._propertyDef = p = ($invokeSuper.call(this) || null);
@@ -908,7 +914,7 @@
 			return p;
 		},
 
-		getLabel: function () {
+		getLabel: function() {
 			var label = this._label;
 			if (!label && this._dataSet && this._property) {
 				var p = this.getBindingPropertyDef();
@@ -917,7 +923,7 @@
 			return label || this._property || "";
 		},
 
-		isRequired: function () {
+		isRequired: function() {
 			var p;
 			if (this._dataSet && this._property) p = this.getBindingPropertyDef();
 			var required = p ? p._required : false;
@@ -930,7 +936,7 @@
 			return required;
 		},
 
-		resetBinding: function () {
+		resetBinding: function() {
 			if (!this._ready) return;
 
 			var config = {
@@ -943,7 +949,7 @@
 			if (hintControl) hintControl.set(config);
 		},
 
-		refreshDom: function (dom) {
+		refreshDom: function(dom) {
 			var height = this._height || this._realHeight;
 			$invokeSuper.call(this, arguments);
 
@@ -1013,34 +1019,38 @@
 					}
 					editor._realWidth = (editorWidth > 0) ? editorWidth : editorEl.offsetWidth;
 				}
-                if (this._editorWidth > 0 && editor._realWidth > 0 && this._editorWidth < editor._realWidth) {
-                    editor._realWidth = this._editorWidth;
-                }
+				if (this._editorWidth > 0 && editor._realWidth > 0 && this._editorWidth < editor._realWidth) {
+					editor._realWidth = this._editorWidth;
+				}
 				if (autoHeight) editor._realHeight = editorEl.offsetHeigh; // 可能导致IE9下自定义Editor的高度异常
 
-				if (!editor.get("rendered")) editor.render(editorEl);
-				else editor.refresh();
+				if (!editor.get("rendered")) {
+					editor.render(editorEl);
+				}
+				else {
+					editor.refresh();
+				}
 			}
 		},
 
-		refreshData: function () {
+		refreshData: function() {
 			var editor = this.getEditor(false);
 			if (editor != null && dorado.Object.isInstanceOf(editor, dorado.widget.AbstractEditor)) {
 				editor.refreshData();
 			}
 		},
 
-		isFocusable: function () {
+		isFocusable: function() {
 			var editor = this._editor;
 			return $invokeSuper.call(this) && editor && editor.isFocusable();
 		},
 
-		getFocusableSubControls: function () {
+		getFocusableSubControls: function() {
 			return [this._editor];
 		}
 	});
 
-	dorado.widget.View.registerDefaultComponent("defaultFormProfile", function () {
+	dorado.widget.View.registerDefaultComponent("defaultFormProfile", function() {
 		return new dorado.widget.FormProfile();
 	});
 

@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function () {
+(function() {
 
 	dorado.AttributeException = $extend(dorado.ResourceException, {
 		$className: "dorado.AttributeException"
@@ -97,14 +97,17 @@
 				 * @see dorado.TagManager
 				 */
 				tags: {
-					setter: function (tags) {
-						if (typeof tags == "string")
+					setter: function(tags) {
+						if (typeof tags == "string") {
 							tags = tags.split(',');
-						if (this._tags)
+						}
+						if (this._tags) {
 							dorado.TagManager.unregister(this);
+						}
 						this._tags = tags;
-						if (tags)
+						if (tags) {
 							dorado.TagManager.register(this);
+						}
 					}
 				}
 			},
@@ -129,9 +132,9 @@
 				onAttributeChange: {}
 			},
 
-			constructor: function () {
+			constructor: function() {
 				var defs = this.ATTRIBUTES;
-				for (var p in defs) {
+				for(var p in defs) {
 					var def = defs[p];
 					if (def && def.defaultValue != undefined && this['_' + p] == undefined) {
 						var dv = def.defaultValue;
@@ -145,9 +148,10 @@
 			 *
 			 * @return {dorado.AttributeWatcher} 属性观察者。
 			 */
-			getAttributeWatcher: function () {
-				if (!this.attributeWatcher)
+			getAttributeWatcher: function() {
+				if (!this.attributeWatcher) {
 					this.attributeWatcher = new dorado.AttributeWatcher();
+				}
 				return this.attributeWatcher;
 			},
 
@@ -172,7 +176,7 @@
 			 * // 如果address的属性值是一个dorado.AttributeSupport的实例，那么此行命令的效果相当于oop.get("address").get("postCode")。
 			 * // 如果address的属性值是一个JSON对象，那么此行命令的效果相当于oop.get("address").postCode
 			 */
-			get: function (attr) {
+			get: function(attr) {
 				var i = attr.indexOf('.');
 				if (i > 0) {
 					var result = this.doGet(attr.substring(0, i));
@@ -180,9 +184,10 @@
 						var subAttr = attr.substring(i + 1);
 						if (typeof result.get == "function") {
 							result = result.get(subAttr);
-						} else {
+						}
+						else {
 							var as = subAttr.split('.');
-							for (var i = 0; i < as.length; i++) {
+							for(var i = 0; i < as.length; i++) {
 								var a = as[i];
 								result = (typeof result.get == "function") ? result.get(a) : result[a];
 								if (!result) break;
@@ -196,7 +201,7 @@
 				}
 			},
 
-			doGet: function (attr) {
+			doGet: function(attr) {
 				var def = this.ATTRIBUTES[attr] || (this.PRIVATE_ATTRIBUTES && this.PRIVATE_ATTRIBUTES[attr]);
 				if (def) {
 					if (def.writeOnly) {
@@ -207,13 +212,15 @@
 					var result;
 					if (def.getter) {
 						result = def.getter.call(this, attr);
-					} else if (def.path) {
+					}
+					else if (def.path) {
 						var sections = def.path.split('.'), owner = this;
-						for (var i = 0; i < sections.length; i++) {
+						for(var i = 0; i < sections.length; i++) {
 							var section = sections[i];
 							if (section.charAt(0) != '_' && typeof owner.get == "function") {
 								owner = owner.get(section);
-							} else {
+							}
+							else {
 								owner = owner[section];
 							}
 							if (owner == null || i == sections.length - 1) {
@@ -221,13 +228,14 @@
 								break;
 							}
 						}
-					} else {
+					}
+					else {
 						result = this['_' + attr];
 					}
 					return result;
-				} else {
-					throw new dorado.AttributeException(
-						"dorado.core.UnknownAttribute", attr);
+				}
+				else {
+					throw new dorado.AttributeException("dorado.core.UnknownAttribute", attr);
 				}
 			},
 
@@ -400,24 +408,26 @@
 			 *            [skipUnknownAttribute] 是否忽略未知的属性。
 			 * @protected
 			 */
-			doSet: function (attr, value, skipUnknownAttribute, lockWritingTimes) {
+			doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
 				if (attr.charAt(0) == '$') return;
 
 				var path, def;
 				if (attr.indexOf('.') > 0) {
 					path = attr;
-				} else {
+				}
+				else {
 					def = this.ATTRIBUTES[attr] || (this.PRIVATE_ATTRIBUTES && this.PRIVATE_ATTRIBUTES[attr]);
 					if (def) path = def.path;
 				}
 
 				if (path) {
 					var sections = path.split('.'), owner = this;
-					for (var i = 0; i < sections.length - 1 && owner != null; i++) {
+					for(var i = 0; i < sections.length - 1 && owner != null; i++) {
 						var section = sections[i];
 						if (section.charAt(0) !== '_' && typeof owner.get === "function") {
 							owner = owner.get(section);
-						} else {
+						}
+						else {
 							owner = owner[section];
 						}
 					}
@@ -429,7 +439,8 @@
 					else {
 						this['_' + attr] = value;
 					}
-				} else {
+				}
+				else {
 					if (def) {
 						if (def.readOnly) {
 							throw new dorado.AttributeException("dorado.core.AttributeReadOnly", attr);
@@ -446,7 +457,8 @@
 
 						if (def.setter) {
 							def.setter.call(this, value, attr);
-						} else {
+						}
+						else {
 							this['_' + attr] = value;
 						}
 
@@ -456,11 +468,15 @@
 								value: value
 							});
 						}
-					} else {
+					}
+					else {
 						if (value instanceof Object && this.EVENTS && (this.EVENTS[attr] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[attr]))) {
-							if (typeof value === "function") this.addListener(attr, value);
+							if (typeof value === "function") {
+								this.addListener(attr, value);
+							}
 							else if (value.listener) this.addListener(attr, value.listener, value.options);
-						} else if (!skipUnknownAttribute) {
+						}
+						else if (!skipUnknownAttribute) {
 							throw new dorado.AttributeException("dorado.core.UnknownAttribute", attr);
 						}
 					}
@@ -474,10 +490,11 @@
 			 *            tag 要判断的标签值。
 			 * @return {boolean} 是否具有该标签值。
 			 */
-			hasTag: function (tag) {
+			hasTag: function(tag) {
 				if (this._tags) {
 					return this._tags.indexOf(tag) >= 0;
-				} else {
+				}
+				else {
 					return false;
 				}
 			}
@@ -497,17 +514,16 @@
 		 *            attr 属性名
 		 * @return {int} 属性的被写入次数。
 		 */
-		getWritingTimes: function (attr) {
+		getWritingTimes: function(attr) {
 			return this[attr] || 0;
 		},
-		incWritingTimes: function (attr) {
+		incWritingTimes: function(attr) {
 			this[attr] = (this[attr] || 0) + 1;
 		},
-		setWritingTimes: function (attr, n) {
+		setWritingTimes: function(attr, n) {
 			this[attr] = n;
 		}
 	});
-
 
 	function overrideDefinition(targetDefs, def, name) {
 		if (!def) return;

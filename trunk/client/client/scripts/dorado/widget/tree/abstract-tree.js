@@ -20,13 +20,14 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 		var icon = document.createElement("LABEL");
 		icon.className = "node-icon";
 		icon.style.display = "inline-block";
+		icon.innerHTML = "&nbsp;";
 		return icon;
 	},
 
 	/**
 	 * 返回树节点的文本标签值。
 	 * @protected
-	 * @param {dorado.widget.tree.Node} node 树节点。
+	 * @param {dorado.widget.tree.BaseNode} node 树节点。
 	 * @return {String} 文本标签值。
 	 */
 	getLabel: function(node, arg) {
@@ -38,7 +39,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * @protected
 	 * @param {HTMLElement} labelDom 对应的DOM对象。
 	 * @param {String} label 树节点的文本标签值。
-	 * @param {dorado.widget.tree.Node} node 树节点。
+	 * @param {dorado.widget.tree.BaseNode} node 树节点。
 	 */
 	renderLabel: function(labelDom, label, node) {
 		var tree = node._tree, arg = {
@@ -72,7 +73,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * @name dorado.widget.tree.TreeNodeRenderer#doRender
 	 * @protected
 	 * @param {HTMLElement} dom 对应的DOM对象。
-	 * @param {dorado.widget.tree.Node} node 树节点。
+	 * @param {dorado.widget.tree.BaseNode} node 树节点。
 	 * 内部的渲染方法，供复写。
 	 */
 	doRender: function(cell, node, arg) {
@@ -161,7 +162,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 
 		var iconDomIndex = buttonDomIndex + 1;
 		if (container.doradoHasIcon) {
-			if (!icon) {
+			if (!icon && !iconClass) {
 				$fly(container.childNodes[iconDomIndex]).remove();
 				container.doradoHasIcon = false;
 			}
@@ -175,12 +176,12 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 			$DomUtils.setBackgroundImage(iconDom, icon);
 		}
 		else if (iconClass) {
-			$fly(iconDom).addClass(iconClass);
+			iconDom.className = "node-icon " + iconClass;
 		}
 
 		var checkable = node.get("checkable"), checkbox;
 		if (container.subCheckboxId) {
-			checkbox = dorado.widget.Component.ALL[container.subCheckboxId];
+			checkbox = dorado.widget.ViewElement.ALL[container.subCheckboxId];
 			if (!checkable) {
 				checkbox.destroy();
 				container.subCheckboxId = null;
@@ -204,7 +205,7 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 * <p><b>如有需要应在子类中复写doRender方法，而不是此方法。</b></p>
 	 * @param {HTMLElement} dom 表格行对应的DOM对象。
 	 * @param {HTMLElement} dom 对应的DOM对象。
-	 * @param {dorado.widget.tree.Node} node 树节点。
+	 * @param {dorado.widget.tree.BaseNode} node 树节点。
 	 * @see dorado.widget.tree.TreeNodeRenderer#doRender
 	 */
 	render: function(row, node, arg) {
@@ -224,9 +225,16 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	selectable: false,
 
 	ATTRIBUTES: /** @scope dorado.widget.AbstractTree.prototype */ {
+		
+		rowHeight: {
+			defaultValue: dorado.Browser.isTouch ? 
+					($setting["touch.Tree.defaultRowHeight"] || 30) : 
+					($setting["widget.Tree.defaultRowHeight"] || 22)
+		},
+		
 		/**
 		 * 根节点。此节点时树状列表内部的顶层节点，其不可显示。
-		 * @type dorado.widget.tree.Node
+		 * @type dorado.widget.tree.BaseNode
 		 * @attribute readOnly
 		 */
 		root: {
@@ -242,12 +250,12 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * <li>
 		 * 当写入时用于向树状列表中添加子节点。<br>
 		 * 此处数组中既可以放入子节点的实例，又可以放入JSON对象。
-		 * 具体请参考{@link dorado.widget.tree.Node#addNodes}。
+		 * 具体请参考{@link dorado.widget.tree.BaseNode#addNodes}。
 		 * </li>
 		 * </ul>
 		 * </p>
-		 * @type dorado.util.KeyedList|[Object]|[dorado.widget.tree.Node]
-		 * @see dorado.widget.tree.Node#addNodes
+		 * @type dorado.util.KeyedList|[Object]|[dorado.widget.tree.BaseNode]
+		 * @see dorado.widget.tree.BaseNode#addNodes
 		 * @attribute
 		 */
 		nodes: {
@@ -262,7 +270,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 		/**
 		 * 当前节点。
-		 * @type dorado.widget.tree.Node
+		 * @type dorado.widget.tree.BaseNode
 		 * @attribute skipRefresh
 		 */
 		currentNode: {
@@ -281,7 +289,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 				this.fireEvent("onCurrentChange", this, eventArg);
 				if (this._rendered) {
 					$setTimeout(this, function() {
-						var row = node ? this._itemDomMap[node._id] :null;
+						var row = node ? this._itemDomMap[node._uniqueId] :null;
 						this.setCurrentRow(row);
 						if (row) this.scrollCurrentIntoView();
 					}, 50);
@@ -392,13 +400,30 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 		/**
 		 * 返回树中的第一个有效节点。
-		 * @type dorado.widget.tree.Node
+		 * @type dorado.widget.tree.BaseNode
 		 * @attribute readOnly
 		 */
 		firstNode: {
 			readOnly: true,
 			getter: function() {
 				return this._root.get("firstNode");
+			}
+		},
+
+		view: {
+			setter: function (view) {
+				if (this._view == view) return;
+
+				$invokeSuper.call(this, [view]);
+
+				var nodes = this._identifiedNodes, oldView = this._view;
+				for (var p in nodes) {
+					if (nodes.hasOwnProperty(p)) {
+						var node = nodes[p];
+						if (oldView) oldView.unregisterViewElement(node._id);
+						if (view) view.registerViewElement(node._id, node);
+					}
+				}
 			}
 		}
 	},
@@ -409,7 +434,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当一个节点将被展开之前触发的事件。
 		 * <p>
 		 * 此事件比较常见的使用场景是用于在节点展开之前为该节点创建下级子节点，以达到动态构造树结构的目的。<br>
-		 * 不过，由于节点的展开动作有同步和异步两种执行方式（见{@link dorado.widget.tree.Node#expand}、{@link dorado.widget.tree.Node#expandAsync}）。
+		 * 不过，由于节点的展开动作有同步和异步两种执行方式（见{@link dorado.widget.tree.BaseNode#expand}、{@link dorado.widget.tree.BaseNode#expandAsync}）。
 		 * 因此如果要让自己的事件代码支持异步的执行方式，就必须在代码中提供一些特别的异步操作支持。
 		 * 主要是必须在异步过程结束之后主动的激活系统提供arg.callback回调对象，见示例代码。<br>
 		 * <b>需要特别注意的是，不论自己的异步过程的执行成功与否你都应该激活系统提供的arg.callback回调对象，否则系统会一直认为该节点的展开过程没有结束。</b>
@@ -417,7 +442,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
 		 * @param {boolean} arg.async 是否正以异步方式执行展开操作。
-		 * @param {dorado.widget.tree.Node} arg.node 要展开的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 要展开的节点。
 		 * @param {Function} arg.callDefault 直接调用此事件的系统后续处理逻辑，在同步方式的执行过程中此参数无效。<br>
 		 * 此处的arg.callDefault方法还支持两个传入参数：
 		 * @param {boolean} [arg.callDefault.success=true] 用于通知系统本次展开节点的操作是否成功。
@@ -425,12 +450,12 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成节点展开的后续动作。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @see dorado.widget.AbstractTree#attribute:expandingMode
-		 * @see dorado.widget.tree.Node#expand
-		 * @see dorado.widget.tree.Node#expandAsync
+		 * @see dorado.widget.tree.BaseNode#expand
+		 * @see dorado.widget.tree.BaseNode#expandAsync
 		 * @event
 		 *
 		 * @example
-		 * tree.addListener("beforeExpand", function(self, arg) {
+		 * tree.bind("beforeExpand", function(self, arg) {
 		 * 	var ajaxOptions = {
 		 * 		url: "/get-nodes.do",
 		 * 		method: "POST",
@@ -463,7 +488,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当一个节点将被展开之后触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 展开的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 展开的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -473,7 +498,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当一个节点将被收缩之前触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 相关的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 相关的节点。
 		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成节点收起的后续动作。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
@@ -484,7 +509,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当一个节点将被收缩之后触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 相关的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 相关的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -494,7 +519,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当一个节点被附着到树状列表之后触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 相关的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 相关的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -504,7 +529,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当一个节点离开树状列表（即失去附着状态）之后触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 相关的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 相关的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -514,8 +539,8 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当前节点改变之前触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.oldCurrent 目前的当前节点。
-		 * @param {dorado.widget.tree.Node} arg.newCurrent 新的的当前节点，将要被设置为当前节点的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.oldCurrent 目前的当前节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.newCurrent 新的的当前节点，将要被设置为当前节点的节点。
 		 * @param {boolean} #arg.processDefault=true 用于通知系统是否要继续完成设置当前节点的后续动作。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
@@ -526,8 +551,8 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当前节点改变之后触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.oldCurrent 目前的当前节点。
-		 * @param {dorado.widget.tree.Node} arg.newCurrent 新的的当前节点，将要被设置为当前节点的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.oldCurrent 目前的当前节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.newCurrent 新的的当前节点，将要被设置为当前节点的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -539,7 +564,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * @param {Object} arg 事件参数。
 		 * @param {HTMLElement} arg.dom 树节点对应的DOM对象。
 		 * @param {String} arg.label 节点标题文本。
-		 * @param {dorado.widget.tree.Node} arg.node 渲染的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 渲染的节点。
 		 * @param {boolean} #arg.processDefault 是否在事件结束后继续使用系统默认的渲染逻辑。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
@@ -550,7 +575,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当某个树节点的勾选状态将要被改变时触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 相应的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 相应的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -560,7 +585,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		 * 当某个树节点的勾选状态将要被改变后触发的事件。
 		 * @param {Object} self 事件的发起者，即组件本身。
 		 * @param {Object} arg 事件参数。
-		 * @param {dorado.widget.tree.Node} arg.node 相应的节点。
+		 * @param {dorado.widget.tree.BaseNode} arg.node 相应的节点。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -568,11 +593,14 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	},
 
 	constructor: function() {
+		this._identifiedNodes = {};
+
 		var root = this._root = this.createRootNode();
 		root._setTree(this);
 		root._expanded = true;
 
 		this._autoRefreshLock = 0;
+		this._expandingCounter = 0;
 		$invokeSuper.call(this, arguments);
 	},
 
@@ -582,7 +610,9 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	},
 
 	createRootNode: function() {
-		return new dorado.widget.tree.Node("<ROOT>");
+		return new dorado.widget.tree.BaseNode({
+			label: "<ROOT>"
+		});
 	},
 	
 	/**
@@ -618,7 +648,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		var tree = node._tree, rowHeight = tree._rowHeight + "px";
 		var cellConfig = {
 			tagName: "TD",
-			className: "i-tree-node d-tree-node",
+			className: "d-tree-node",
 			vAlign: "center",
 			content: {
 				tagName: "DIV",
@@ -635,6 +665,10 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 					style: {
 						display: "inline-block",
 						position: "relative"
+					},
+					content: {
+						tagName: "div",
+						className: "spinner"
 					}
 				}, {
 					tagName: "LABEL",
@@ -728,12 +762,12 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 	/**
 	 * 刷新某树节点的显示。
-	 * @param {dorado.widget.tree.Node} node 要刷新的节点。
+	 * @param {dorado.widget.tree.BaseNode} node 要刷新的节点。
 	 */
 	refreshNode: function(node) {
 		if (node) dorado.Toolkits.cancelDelayedAction(node, "$refreshDelayTimerId");
 		if (this._autoRefreshLock > 0 || !this._itemDomMap) return;
-		var row = this._itemDomMap[node._id];
+		var row = this._itemDomMap[node._uniqueId];
 		if (row) this.refreshItemDomData(row, node);
 	},
 
@@ -756,7 +790,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	 * 根据传入的DHTML Event返回相应的树节点。
 	 * <p>此方法一般用于onMouseDown、onClick等事件，用于获得此时鼠标实际操作的树节点。</p>
 	 * @param {Event} event DHTML中的Event对象。
-	 * @return {dorado.widget.tree.Node} 相应的树节点。
+	 * @return {dorado.widget.tree.BaseNode} 相应的树节点。
 	 */
 	getNodeByEvent: function(event) {
 		var row = this.findItemDomByEvent(event);
@@ -766,7 +800,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 	/**
 	 * 返回树中所有被勾选选中的节点的数组。
 	 * @param {boolean} [includeHalfChecked] 是否包含那些半选状态的节点。
-	 * @return {dorado.widget.tree.Node[]} 节点数组。
+	 * @return {dorado.widget.tree.BaseNode[]} 节点数组。
 	 */
 	getCheckedNodes: function(includeHalfChecked) {
 		var it = new dorado.widget.tree.TreeNodeIterator(this._root, {
@@ -787,14 +821,14 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 
 	/**
 	 * 高亮指定的树节点。
-	 * @param {dorado.widget.tree.Node} [node] 要高亮的树节点，如果不指定此参数则表示要高亮当前树节点。
+	 * @param {dorado.widget.tree.BaseNode} [node] 要高亮的树节点，如果不指定此参数则表示要高亮当前树节点。
 	 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 	 * @param {Object} [speed] 动画速度。
 	 */
 	highlightItem: function(node, options, speed) {
 		node = node || this.get("currentNode");
 		if (!node || node._tree != this) return;
-		var row = this._itemDomMap[node._id];
+		var row = this._itemDomMap[node._uniqueId];
 		if (row) {
 			$fly(row.firstChild).effect("highlight", options|| {
 					color: "#FFFF80"
@@ -901,7 +935,7 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 		var targetObject = draggingInfo.get("targetObject");
 		var insertMode = draggingInfo.get("insertMode");
 		var refObject = draggingInfo.get("refObject");
-		if (object instanceof dorado.widget.tree.Node && targetObject instanceof dorado.widget.tree.Node) {
+		if (object instanceof dorado.widget.tree.BaseNode && targetObject instanceof dorado.widget.tree.BaseNode) {
 			this._skipProcessCurrentNode = (object._tree == this);
 			object.remove();
 			delete this._skipProcessCurrentNode;

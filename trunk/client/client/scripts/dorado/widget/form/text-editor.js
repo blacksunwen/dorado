@@ -52,7 +52,6 @@
 	 */
 	dorado.widget.AbstractTextBox = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.AbstractTextBox.prototype */ {
 		$className: "dorado.widget.AbstractTextBox",
-		_inherentClassName: "i-text-box",
 		_triggerChanged: true,
 		_realEditable: true,
 
@@ -227,6 +226,7 @@
 		createDom: function() {
 			var textDom = this._textDom = this.createTextDom();
 			textDom.style.width = "100%";
+			textDom.style.height = "100%";
 
 			var dom = $DomUtils.xCreate({
 				tagName: "div",
@@ -276,8 +276,18 @@
 					}
 				}
 			}
+		},
 
-			this._editorWrapper.style.marginRight = triggersWidth + "px";
+		getTriggerButton: function(trigger) {
+			var triggerButtons = this._triggerButtons, triggerButton;
+			if (triggerButtons) {
+				for(var i = 0; i < triggerButtons.length; i++) {
+					triggerButton = triggerButtons[i];
+					if (triggerButton._trigger == trigger) {
+						return triggerButton;
+					}
+				}
+			}
 		},
 
 		refreshDom: function(dom) {
@@ -370,7 +380,7 @@
 		},
 
 		doSetFocus: function() {
-			if (/**!dorado.Browser.isTouch &&*/ this._textDom) this._textDom.focus();
+			if (/*!dorado.Browser.isTouch && */this._textDom) this._textDom.focus();
 		},
 
 		doOnFocus: function() {
@@ -421,7 +431,7 @@
 			var readOnly = !!(this._readOnly || this._readOnly2);
 
 			this._realReadOnly = readOnly;
-			$fly(this.getDom()).toggleClass(this._className + "-readonly", readOnly);
+			$fly(this.getDom()).toggleClass("d-readonly " + this._className + "-readonly", readOnly);
 
 			if (readOnly && !this._realEditable == readOnly) {
 				return;
@@ -557,7 +567,7 @@
 					if (!dirtyFlag) {
 						this._dirtyFlag = dirtyFlag = $DomUtils.xCreate({
 							tagName: "LABEL",
-							className: "dirty-flag"
+							className: "d-dirty-flag"
 						});
 						this._dom.appendChild(dirtyFlag);
 					}
@@ -808,7 +818,7 @@
 					text: $resource("dorado.data.ErrorContentRequired")
 				});
 			}
-			if (text && text.length) {
+			if (text.length) {
 				var validator = $singleton(dorado.validator.LengthValidator);
 				validator.set({
 					minLength: this._minLength,

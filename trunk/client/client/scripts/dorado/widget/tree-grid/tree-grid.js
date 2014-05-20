@@ -73,11 +73,11 @@
 		},
 		
 		doRender: function(dom, arg) {
-			if (!dom.firstChild || dom.firstChild.className != "i-tree-node d-tree-node") {
+			if (!dom.firstChild || dom.firstChild.className != "d-tree-node") {
 				var tree = arg.grid, rowHeight = tree._rowHeight + "px";
 				var cellConfig = {
 					tagName: "DIV",
-					className: "i-tree-node d-tree-node",
+					className: "d-tree-node",
 					style: {
 						position: "relative",
 						overflowX: "hidden",
@@ -200,8 +200,40 @@
 		$className: "dorado.widget.TreeGrid",
 		
 		ATTRIBUTES: /** @scope dorado.widget.TreeGrid.prototype */ {
+			/**
+			 * 默认的行高。
+			 * @type int
+			 * @attribute
+			 * @default 18
+			 */
 			rowHeight: {
-				defaultValue: 22
+				defaultValue: dorado.Browser.isTouch ? 
+						($setting["touch.Grid.defaultRowHeight"] || 30) : 
+						($setting["widget.Grid.defaultRowHeight"] || 22)
+			},
+
+			/**
+			 * 默认的标题栏行高。
+			 * @type int
+			 * @attribute
+			 * @default 22
+			 */
+			headerRowHeight: {
+				defaultValue: dorado.Browser.isTouch ? 
+						($setting["touch.Grid.defaultRowHeight"] || 30) : 
+						($setting["widget.Grid.defaultRowHeight"] || 22)
+			},
+
+			/**
+			 * 默认的页脚栏行高。
+			 * @type int
+			 * @attribute
+			 * @default 22
+			 */
+			footerRowHeight: {
+				defaultValue: dorado.Browser.isTouch ? 
+						($setting["touch.Grid.defaultRowHeight"] || 30) : 
+						($setting["widget.Grid.defaultRowHeight"] || 22)
 			},
 			
 			/**
@@ -215,7 +247,7 @@
 			
 			/**
 			 * 当前节点。
-			 * @type dorado.widget.tree.Node
+			 * @type dorado.widget.tree.BaseNode
 			 * @attribute skipRefresh
 			 */
 			currentNode: {
@@ -280,12 +312,14 @@
 		},
 		
 		constructor: function() {
+			this._identifiedNodes = {};
 			this._entityMap = {};
 			this._root = this.createRootNode();
 			this._root._setTree(this);
 			this._root._expanded = true;
 			
 			this._autoRefreshLock = 0;
+			this._expandingCounter = 0;
 			$invokeSuper.call(this, arguments);
 		},
 		
@@ -486,7 +520,7 @@
 		_refreshAndScroll: function(node, mode, parentNode, nodeIndex) {
 			var itemModel = this._itemModel;
 			if (parentNode._expanded) {
-				var row = this._innerGrid._itemDomMap[node._id];
+				var row = this._innerGrid._itemDomMap[node._uniqueId];
 				if (!row) {
 					var index;
 					if (mode == "remove") {
@@ -687,14 +721,14 @@
 					
 					// 确保先让fixedInnerGrid执行刷新动作，以便于更高效的完成与innerGrid之间的行高同步
 					if (this._rendered && this._itemDomMap) {
-						var row = currentNode ? this._itemDomMap[currentNode._id] : null;
+						var row = currentNode ? this._itemDomMap[currentNode._uniqueId] : null;
 						this.setCurrentRow(row);
 						if (row) this.scrollCurrentIntoView();
 					}
 					
 					var grid = this.grid;
 					grid.fireEvent("onCurrentChange", grid);
-					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._id : null);
+					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._uniqueId : null);
 				}
 			}
 		},
@@ -708,7 +742,7 @@
 		},
 		
 		getCurrentItemId: function() {
-			return this._currentNode ? this._currentNode._id : null;
+			return this._currentNode ? this._currentNode._uniqueId : null;
 		},
 		
 		setCurrentItemDom: function(row) {

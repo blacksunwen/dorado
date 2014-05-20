@@ -68,10 +68,11 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 {
 	$className : "dorado.util.AjaxEngine",
 
-	constructor : function() {
-		$invokeSuper.call(this, arguments);
+	constructor : function(options) {
 		this._requests = [];
 		this._connectionPool = dorado.util.AjaxConnectionPool;
+		$invokeSuper.call(this);
+		if (options) this.set(options);
 	},
 	
 	ATTRIBUTES : /** @scope dorado.util.AjaxEngine.prototype */
@@ -170,7 +171,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @return {boolean} result  是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		onRequest : {},
+		onResponse : {},
 
 		/**
 		 * 当AjaxEngine将要与服务器建立连接时触发的事件。
@@ -192,7 +193,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @return {boolean} result  是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
-		onConnect : {}
+		onDisconnect : {}
 	},
 
 	/**
@@ -345,6 +346,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			this.requestAsync(options, callback);
 		}
 	},
+
 	_requestBatch : function() {
 		if(this._batchTimerId) {
 			clearTimeout(this._batchTimerId);
@@ -352,8 +354,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		}
 
 		var requests = this._requests;
-		if(requests.length == 0)
-			return;
+		if(requests.length == 0) return;
 		this._requests = [];
 
 		var batchCallback = {
@@ -393,7 +394,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 						}
 						$callback(request.callback, success, result);
 
-						this.fireEvent("onRequest", this, {
+						this.fireEvent("onResponse", this, {
 							async : true,
 							result : result
 						});
@@ -409,7 +410,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 						result._setException(batchResult.exception);
 						$callback(request.callback, false, result);
 
-						this.fireEvent("onRequest", this, {
+						this.fireEvent("onResponse", this, {
 							async : true,
 							result : result
 						});
@@ -505,9 +506,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 						result : result
 					};
 
-					this.fireEvent("onConnect", this, eventArg);
+					this.fireEvent("onDisconnect", this, eventArg);
 					if(options == null || !options.isBatch) {
-						this.fireEvent("onRequest", this, eventArg);
+						this.fireEvent("onResponse", this, eventArg);
 					}
 				} finally {
 					this._connectionPool.returnObject(connObj);
@@ -528,14 +529,14 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 						async : true,
 						result : result
 					};
-					this.fireEvent("onConnect", this, eventArg);
+					this.fireEvent("onDisconnect", this, eventArg);
 
 					$callback(callback, result.success, result, {
 						scope : this
 					});
 
 					if(options == null || !options.isBatch) {
-						this.fireEvent("onRequest", this, eventArg);
+						this.fireEvent("onResponse", this, eventArg);
 					}
 				} finally {
 					this._connectionPool.returnObject(connObj);
@@ -686,8 +687,8 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				async : true,
 				result : result
 			};
-			this.fireEvent("onConnect", this, eventArg);
-			this.fireEvent("onRequest", this, eventArg);
+			this.fireEvent("onDisconnect", this, eventArg);
+			this.fireEvent("onResponse", this, eventArg);
 
 			if(!alwaysReturn && exception != null) {
 				throw exception;
@@ -733,7 +734,7 @@ dorado.util.AjaxEngine._parseXml = function(xml) {
 dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.AjaxException.prototype */ {
 	$className : "dorado.util.AjaxException",
 
-	constuctor : function(message, description, connObj) {
+	constructor : function(message, description, connObj) {
 		/**
 		 * 异常消息。
 		 * @type String
@@ -893,6 +894,9 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 					exception = new dorado.AbortException();
 				} else {
 					exception = new dorado.util.AjaxException("HTTP " + conn.status + " " + conn.statusText, null, connObj);
+					if (conn.status == 0) {
+						exception._processDelay = 1000;
+					}
 				}
 			}
 			if(exception) this._setException(exception);
@@ -984,6 +988,26 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		return jsonData;
 	}
 });
+
+dorado.util.AjaxEngine.SHARED_INSTANCES = {};
+
+dorado.util.AjaxEngine.getInstance = function(options) {
+	var defaultOptions = $setting["ajax.defaultOptions"];
+	if (defaultOptions) {
+		defaultOptions = dorado.Object.apply({}, defaultOptions);
+		options = dorado.Object.apply(defaultOptions, options);
+	}
+	var key = (options.url || "#EMPTY") + '|' + (options.autoBatchEnabled || false);
+	var ajax = dorado.util.AjaxEngine.SHARED_INSTANCES[key];
+	if (ajax === undefined) {
+		ajax = new dorado.util.AjaxEngine({
+			defaultOptions: options,
+			autoBatchEnabled: options.autoBatchEnabled
+		});
+		dorado.util.AjaxEngine.SHARED_INSTANCES[key] = ajax;
+	}
+	return ajax;
+}
 
 /**
  * @name $ajax

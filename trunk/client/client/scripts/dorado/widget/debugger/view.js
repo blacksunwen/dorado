@@ -229,9 +229,8 @@ dorado.debug.initProcedures.push(function() {
 			mixIf(config, {
 				caption: "View",
 				tools: [{
-					//TODO css
 					$type: "SimpleIconButton",
-					icon: "url(>skin>common/icons.gif) -60px -20px",
+					iconClass: "d-debugger-view-export-icon",
 					listener: {
 						onClick: function() {
 							var current = controlsTree.get("currentNode");
@@ -250,7 +249,7 @@ dorado.debug.initProcedures.push(function() {
 					}
 				}, {
 					$type: "SimpleIconButton",
-					icon: "url(>skin>common/icons.gif) -40px -240px",
+					iconClass: "d-debugger-view-refresh-icon",
 					listener: {
 						onClick: function() {
 							panel.reload();
@@ -510,14 +509,14 @@ dorado.debug.initProcedures.push(function() {
 				border: "none",
 				tools: [{
 					$type: "SimpleIconButton",
-					icon: "url(>skin>common/icons.gif) -120px 0",
+					iconClass: "d-debugger-view-add-icon",
 					listener: {
 						onClick: function() {
 							var current = eventsTree.get("currentNode");
 							if ( current && current.get("level") == 1) {
 								var name = current.get("label"), object = current.get("data.object");
-								dorado.MessageBox.promptMultiline($resource("dorado.baseWidget.DebuggerInputListenerCode"), function(text) {
-									object.addListener(name, new Function("self", "arg", text));
+								dorado.MessageBox.promptMultiLines($resource("dorado.baseWidget.DebuggerInputListenerCode"), function(text) {
+									object.bind(name, new Function("self", "arg", text));
 
 									current.clearChildren();
 									current.addNodes(panel.getEventNodes(current.get("data.value")));
@@ -527,7 +526,7 @@ dorado.debug.initProcedures.push(function() {
 					}
 				}, {
 					$type: "SimpleIconButton",
-					icon: "url(>skin>common/icons.gif) -140px 0",
+					iconClass: "d-debugger-view-delete-icon",
 					listener: {
 						onClick: function() {
 							var current = eventsTree.get("currentNode");
@@ -535,14 +534,14 @@ dorado.debug.initProcedures.push(function() {
 								var fn = current.get("data.value"), parent = current.get("parent"),
 									name = parent.get("label"), object = parent.get("data.object");
 
-								object.removeListener(name, fn.listener);
+								object.unbind(name, fn.listener);
 								current.remove();
 							}
 						}
 					}
 				}, {
 					$type: "SimpleIconButton",
-					icon: "url(>skin>common/icons.gif) -200px 0",
+					iconClass: "d-debugger-view-edit-icon",
 					listener: {
 						onClick: function() {
 							var current = eventsTree.get("currentNode");
@@ -550,7 +549,7 @@ dorado.debug.initProcedures.push(function() {
 								var fn = current.get("data.value"), parent = current.get("parent"),
 									object = parent.get("data.object");
 
-								dorado.MessageBox.promptMultiline($resource("dorado.baseWidget.DebuggerInputListenerCode"), {
+								dorado.MessageBox.promptMultiLines($resource("dorado.baseWidget.DebuggerInputListenerCode"), {
 									callback: function(text) {
 										fn.listener = new Function("self", "arg", text);
 										var preview = panel._eventPreviewPanel;
@@ -659,7 +658,6 @@ dorado.debug.initProcedures.push(function() {
 								$type: "Dock",
 								regionPadding: 1
 							},
-							style: "border:1px #B0B0B0 solid",
 							children: [eventsPanel, eventPreviewPanel]
 						}
 					}]

@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function () {
+(function() {
 	var MIN_COL_WIDTH = 8;
 
 	function getEntityValue(entity, property) {
@@ -30,7 +30,8 @@
 				var subProperty = property.substring(i + 1);
 				entity = dataPath.evaluate(entity);
 				return entity ? entity.getText(subProperty) : "";
-			} else {
+			}
+			else {
 				return dorado.DataPath.create(property).evaluate(entity, true) || "";
 			}
 		}
@@ -40,15 +41,17 @@
 	}
 
 	GroupedItemIterator = $extend(dorado.util.Iterator, {
-		constructor: function (groups, showFooter, nextIndex) {
+		constructor: function(groups, showFooter, nextIndex) {
 			this.groups = groups;
 			this.showFooter = showFooter;
 			if (nextIndex > 0) {
 				nextIndex--;
 				var g;
-				for (var i = 0; i < groups.length; i++) {
+				for(var i = 0; i < groups.length; i++) {
 					g = groups[i], gs = g.entities.length + 1 + (showFooter ? 1 : 0);
-					if (gs <= nextIndex) nextIndex -= gs;
+					if (gs <= nextIndex) {
+						nextIndex -= gs;
+					}
 					else {
 						this.groupIndex = i;
 						this.entityIndex = nextIndex - 1;
@@ -57,10 +60,13 @@
 						break;
 					}
 				}
-			} else this.first();
+			}
+			else {
+				this.first();
+			}
 		},
 
-		first: function () {
+		first: function() {
 			this.groupIndex = 0;
 			this.entityIndex = -2;
 			this.isFirst = true;
@@ -68,7 +74,7 @@
 			this.currentGroup = this.groups[this.groupIndex];
 		},
 
-		last: function () {
+		last: function() {
 			this.groupIndex = this.groups.length - 1;
 			this.entityIndex = this.currentGroup.length + (this.showFooter ? 1 : 0);
 			this.isFirst = (this.groups.length == 0);
@@ -76,53 +82,63 @@
 			this.currentGroup = this.groups[this.groupIndex];
 		},
 
-		hasPrevious: function () {
+		hasPrevious: function() {
 			if (this.isFirst || this.groups.length == 0) return false;
 			if (this.groupIndex <= 0 && this.entityIndex <= -1) return false;
 			return true;
 		},
 
-		hasNext: function () {
+		hasNext: function() {
 			if (this.isLast || this.groups.length == 0) return false;
 			var maxEntityIndex = this.currentGroup.entities.length + (this.showFooter ? 0 : -1);
 			if (this.groupIndex >= this.groups.length - 1 && this.entityIndex >= maxEntityIndex) return false;
 			return true;
 		},
 
-		current: function () {
-			if (this.entityIndex == -1) return this.currentGroup.headerEntity;
-			else if (this.entityIndex >= this.currentGroup.entities.length) return this.currentGroup.footerEntity;
-			else return this.currentGroup.entities[this.entityIndex];
+		current: function() {
+			if (this.entityIndex == -1) {
+				return this.currentGroup.headerEntity;
+			}
+			else if (this.entityIndex >= this.currentGroup.entities.length) {
+				return this.currentGroup.footerEntity;
+			}
+			else {
+				return this.currentGroup.entities[this.entityIndex];
+			}
 		},
 
-		previous: function () {
+		previous: function() {
 			if (this.entityIndex >= 0) {
 				this.entityIndex--;
-			} else if (this.groupIndex > 0) {
+			}
+			else if (this.groupIndex > 0) {
 				this.currentGroup = this.groups[--this.groupIndex];
 				this.entityIndex = this.currentGroup.entities.length + (this.showFooter ? 0 : -1);
-			} else {
+			}
+			else {
 				this.isFirst = true;
 				this.entityIndex = -1;
 			}
 			return (this.isFirst) ? null : this.current();
 		},
 
-		next: function () {
+		next: function() {
 			var maxEntityIndex = this.currentGroup.entities.length + (this.showFooter ? 0 : -1);
 			if (this.entityIndex < maxEntityIndex) {
 				this.entityIndex++;
-			} else if (this.groupIndex < this.groups.length - 1) {
+			}
+			else if (this.groupIndex < this.groups.length - 1) {
 				this.currentGroup = this.groups[++this.groupIndex];
 				this.entityIndex = -1;
-			} else {
+			}
+			else {
 				this.isLast = true;
 				this.entityIndex = maxEntityIndex + 1;
 			}
 			return (this.isLast) ? null : this.current();
 		},
 
-		createBookmark: function () {
+		createBookmark: function() {
 			return {
 				groupIndex: this.groupIndex,
 				entityIndex: this.entityIndex,
@@ -132,7 +148,7 @@
 			};
 		},
 
-		restoreBookmark: function (bookmark) {
+		restoreBookmark: function(bookmark) {
 			this.groupIndex = bookmark.groupIndex;
 			this.entityIndex = bookmark.entityIndex;
 			this.currentEntity = bookmark.currentEntity;
@@ -151,7 +167,7 @@
 	dorado.widget.grid.ItemModel = $extend(dorado.widget.list.ItemModel, /** @scope dorado.widget.grid.ItemModel.prototype */ {
 		resetFilterEntityOnSetItem: true,
 
-		constructor: function (grid) {
+		constructor: function(grid) {
 			this.grid = grid;
 
 			var items = this._items, footerData = {};
@@ -162,7 +178,7 @@
 			footerEntity.disableEvents = true;
 			footerEntity._setObserver({
 				grid: grid,
-				entityMessageReceived: function (messageCode, arg) {
+				entityMessageReceived: function(messageCode, arg) {
 					if (messageCode == 0 ||
 						messageCode == dorado.Entity._MESSAGE_DATA_CHANGED ||
 						messageCode == dorado.Entity._MESSAGE_REFRESH_ENTITY) {
@@ -181,7 +197,7 @@
 			filterEntity.disableEvents = true;
 			filterEntity._setObserver({
 				grid: grid,
-				entityMessageReceived: function (messageCode, arg) {
+				entityMessageReceived: function(messageCode, arg) {
 					if (messageCode == 0 ||
 						messageCode == dorado.Entity._MESSAGE_DATA_CHANGED ||
 						messageCode == dorado.Entity._MESSAGE_REFRESH_ENTITY) {
@@ -194,10 +210,10 @@
 			});
 
 			var oldSet = filterEntity._set;
-			filterEntity._set = function (property, value) {
+			filterEntity._set = function(property, value) {
 				if (typeof value == "string") {
 					var dataColumns = grid.get("dataColumns"), column;
-					for (var i = 0; i < dataColumns.length; i++) {
+					for(var i = 0; i < dataColumns.length; i++) {
 						if (dataColumns[i]._name == property) {
 							column = dataColumns[i];
 							break;
@@ -211,11 +227,11 @@
 			$invokeSuper.call(this, arguments);
 		},
 
-		getItems: function () {
+		getItems: function() {
 			return this._originItems || this._items;
 		},
 
-		setItems: function (items) {
+		setItems: function(items) {
 			if ((this._originItems || this._items) == items) return;
 
 			if (this.resetFilterEntityOnSetItem) {
@@ -230,7 +246,7 @@
 			this.refreshItems();
 		},
 
-		clearSortFlags: function () {
+		clearSortFlags: function() {
 			var grid = this.grid;
 			if (grid._skipClearSortFlags) {
 				delete grid._skipClearSortFlags;
@@ -238,69 +254,74 @@
 			}
 			if (grid._columnsInfo) {
 				var columns = grid._columnsInfo.dataColumns;
-				for (var i = 0; i < columns.length; i++) {
+				for(var i = 0; i < columns.length; i++) {
 					columns[i].set("sortState", null);
 				}
 			}
 		},
 
-		refreshItems: function () {
+		refreshItems: function() {
 			var grid = this.grid;
 			if (grid._rendered) {
 				this.clearSortFlags();
-				grid.setDirtyMode(false);
-				if (grid._groupProperty) this.group();
-				else this.refreshSummary();
+				if (grid._groupProperty) {
+					this.group();
+				}
+				else {
+					this.refreshSummary();
+				}
 			}
 		},
 
-		extractSummaryColumns: function (dataColumns) {
+		extractSummaryColumns: function(dataColumns) {
 			var columns = [];
-			for (var i = 0; i < dataColumns.length; i++) {
+			for(var i = 0; i < dataColumns.length; i++) {
 				var column = dataColumns[i];
 				if (!column._summaryType || column._property == "none") continue;
 				var cal = dorado.SummaryCalculators[column._summaryType];
-				if (cal) columns.push({
-					name: column._name,
-					property: column._property,
-					calculator: cal
-				});
+				if (cal) {
+					columns.push({
+						name: column._name,
+						property: column._property,
+						calculator: cal
+					});
+				}
 			}
 			return columns.length ? columns : null;
 		},
 
-		initSummary: function (summary) {
+		initSummary: function(summary) {
 			var columns = this._summaryColumns;
-			for (var i = 0; i < columns.length; i++) {
+			for(var i = 0; i < columns.length; i++) {
 				var col = columns[i], cal = col.calculator;
 				summary[col.property] = (typeof cal == "function") ? 0 : cal.getInitialValue();
 			}
 		},
 
-		accumulate: function (entity, summary) {
+		accumulate: function(entity, summary) {
 			var columns = this._summaryColumns;
-			for (var i = 0; i < columns.length; i++) {
+			for(var i = 0; i < columns.length; i++) {
 				var col = columns[i], cal = col.calculator;
 				summary[col.property] = ((typeof cal == "function") ? cal : cal.accumulate)(summary[col.property], entity, col.property);
 			}
 		},
 
-		finishSummary: function (summary) {
+		finishSummary: function(summary) {
 			var columns = this._summaryColumns;
-			for (var i = 0; i < columns.length; i++) {
+			for(var i = 0; i < columns.length; i++) {
 				var col = columns[i], cal = col.calculator;
 				if (typeof cal != "function") summary[col.property] = cal.getFinalValue(summary[col.property]);
 			}
 			delete summary.$expired;
 		},
 
-		group: function () {
+		group: function() {
 
 			function getGroupSysEntityObserver(grid) {
 				if (!grid._groupSysEntityObserver) {
 					grid._groupSysEntityObserver = {
 						grid: grid,
-						entityMessageReceived: function (messageCode, arg) {
+						entityMessageReceived: function(messageCode, arg) {
 							if (messageCode == 0 ||
 								messageCode == dorado.Entity._MESSAGE_DATA_CHANGED ||
 								messageCode == dorado.Entity._MESSAGE_REFRESH_ENTITY) {
@@ -320,9 +341,11 @@
 			var grid = this.grid, groupProperty = grid._groupProperty;
 			var isArray = items instanceof Array;
 			var entities = isArray ? items.slice(0) : items.toArray();
-			if (grid._groupOnSort) dorado.DataUtil.sort(entities, {
-				property: groupProperty
-			});
+			if (grid._groupOnSort) {
+				dorado.DataUtil.sort(entities, {
+					property: groupProperty
+				});
+			}
 			this.entityCount = entities.length;
 
 			var columns = this._summaryColumns;
@@ -330,7 +353,7 @@
 			var entity, groupValue, curGroupValue, curGroup, groupEntities, headerEntity, footerEntity, summary, totalSummary = this.footerEntity._data;
 			if (columns) this.initSummary(totalSummary);
 
-			for (var i = 0; i < entities.length; i++) {
+			for(var i = 0; i < entities.length; i++) {
 				entity = entities[i];
 				groupValue = getEntityText(entity, groupProperty);
 				if (curGroupValue != groupValue) {
@@ -388,31 +411,31 @@
 			this.clearSortFlags();
 		},
 
-		ungroup: function () {
+		ungroup: function() {
 			delete this.groups;
 			delete this.groupMap;
 			delete this.entityMap;
 			this.clearSortFlags();
 		},
 
-		filter: function (criterions, customFilter) {
+		filter: function(criterions, customFilter) {
 			var hasParam = (criterions && criterions.length > 0);
 			if (hasParam) this.ungroup();
 			$invokeSuper.call(this, arguments);
 			if (hasParam) this.refreshSummary();
 		},
 
-		refreshSummary: function () {
+		refreshSummary: function() {
 			if (!this._summaryColumns) return;
 			var totalSummary = this.footerEntity._data;
 			if (this.groups) {
 				var groups = this.groups, columns = this._summaryColumns, summary, entity;
 				this.initSummary(totalSummary);
-				for (var i = 0; i < groups.length; i++) {
+				for(var i = 0; i < groups.length; i++) {
 					var group = groups[i], entities = group.entities, headerEntity = group.headerEntity, footerEntity = group.footerEntity;
 					summary = (footerEntity.get("$expired")) ? footerEntity._data : null;
 					if (summary) this.initSummary(summary);
-					for (var j = 0; j < entities.length; j++) {
+					for(var j = 0; j < entities.length; j++) {
 						entity = entities[j];
 						if (summary) this.accumulate(entity, summary);
 						this.accumulate(entity, totalSummary);
@@ -427,16 +450,18 @@
 					}
 				}
 				this.finishSummary(totalSummary);
-			} else {
+			}
+			else {
 				this.initSummary(totalSummary);
 				if (this._items) {
 					var self = this;
 					if (this._items instanceof Array) {
-						jQuery.each(this._items, function (i, entity) {
+						jQuery.each(this._items, function(i, entity) {
 							self.accumulate(entity, totalSummary);
 						});
-					} else {
-						for (var it = this._items.iterator({ currentPage: true }); it.hasNext();) {
+					}
+					else {
+						for(var it = this._items.iterator({ currentPage: true }); it.hasNext();) {
 							self.accumulate(it.next(), totalSummary);
 						}
 					}
@@ -447,50 +472,56 @@
 			this.footerEntity.sendMessage(0);
 		},
 
-		iterator: function () {
+		iterator: function() {
 			if (this.groups) {
 				return new GroupedItemIterator(this.groups, this.grid._showGroupFooter, this._startIndex || 0);
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
 
-		getItemCount: function () {
+		getItemCount: function() {
 			if (this.groups) {
 				return this.entityCount + this.groups.length * (this.grid._showGroupFooter ? 2 : 1);
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
 
-		getItemAt: function (index) {
+		getItemAt: function(index) {
 			if (this.groups) {
 				var grid = this.grid, groupProperty = grid.groupProperty, groups = this.groups, showFooter = grid._showGroupFooter, g;
-				for (var i = 0; i < groups.length; i++) {
+				for(var i = 0; i < groups.length; i++) {
 					g = groups[i], gs = g.entities.length + 1 + (showFooter ? 1 : 0);
-					if (gs <= index) index -= gs;
+					if (gs <= index) {
+						index -= gs;
+					}
 					else {
 						if (index == 0) return g.headerEntity;
 						if (index <= g.entities.length) return g.entities[index - 1];
 						return g.footerEntity;
 					}
 				}
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
 
-		getItemIndex: function (item) {
+		getItemIndex: function(item) {
 			if (this.groups) {
 				var grid = this.grid, groupProperty = grid._groupProperty, groups = this.groups, showFooter = grid._showGroupFooter;
 				var groupValue;
 				if (item.rowType) {
 					groupValue = item.get("$groupValue");
-				} else {
+				}
+				else {
 					groupValue = ((item instanceof dorado.Entity) ? this.entityMap[item.entityId] : item[groupProperty]) + '';
 				}
 				var group = this.groupMap[groupValue], index = 0;
-				for (var i = 0; i < groups.length; i++) {
+				for(var i = 0; i < groups.length; i++) {
 					var g = groups[i];
 					if (g == group) break;
 					index += g.entities.length + 1;
@@ -500,47 +531,51 @@
 				if (i < 0) i = (item.rowType == "header" ? -1 : group.entities.length);
 				index += i + 1;
 				return index;
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
 
-		sort: function (sortParams, comparator) {
+		sort: function(sortParams, comparator) {
 			if (!this.getItemCount()) return;
 
 			if (!(sortParams instanceof Array)) sortParams = [sortParams];
 			var grid = this.grid, columns = grid._columnsInfo.dataColumns, sortParamMap = {};
-			for (var i = 0; i < sortParams.length; i++) {
+			for(var i = 0; i < sortParams.length; i++) {
 				var sortParam = sortParams[i];
 				if (sortParam.property) sortParamMap[sortParam.property] = !!sortParam.desc;
 			}
-			for (var i = 0; i < columns.length; i++) {
+			for(var i = 0; i < columns.length; i++) {
 				var column = columns[i], desc = sortParamMap[column._property];
 				if (desc === undefined) {
 					column.set("sortState", null);
-				} else {
+				}
+				else {
 					column.set("sortState", desc ? "desc" : "asc");
 				}
 			}
 
 			if (this.groups) {
 				var groups = this.groups;
-				for (var i = 0; i < groups.length; i++) {
+				for(var i = 0; i < groups.length; i++) {
 					var group = groups[i];
 					dorado.DataUtil.sort(group.entities, sortParams, comparator);
 				}
-			} else {
+			}
+			else {
 				var items = this._items;
 				if (items instanceof Array) {
 					$invokeSuper.call(this, arguments);
-				} else {
-					for (var i = 1; i <= items.pageCount; i++) {
+				}
+				else {
+					for(var i = 1; i <= items.pageCount; i++) {
 						if (!items.isPageLoaded(i)) continue;
 						var page = items.getPage(i);
 						var array = page.toArray();
 						dorado.DataUtil.sort(array, sortParams, comparator);
 						var entry = page.first, j = 0;
-						while (entry != null) {
+						while(entry != null) {
 							entry.data = array[j];
 							page._registerEntry(entry);
 							entry = entry.next;
@@ -552,9 +587,9 @@
 			}
 		},
 
-		getAllDataEntities: function () {
+		getAllDataEntities: function() {
 			var v = [];
-			for (var it = this.iterator(); it.hasNext();) {
+			for(var it = this.iterator(); it.hasNext();) {
 				var entity = it.next();
 				if (!entity.rowType) v.push(entity);
 			}
@@ -562,18 +597,18 @@
 		}
 	});
 
-
 	var overrides = {
-		constructor: function (itemModel) {
+		constructor: function(itemModel) {
 			this._itemModel = itemModel;
 		}
 	};
 	var dp = ["setStartIndex", "setItemDomSize", "setScrollPos", "setItems"];
-	dorado.Object.eachProperty(dorado.widget.list.ItemModel.prototype, function (p, v) {
+	dorado.Object.eachProperty(dorado.widget.list.ItemModel.prototype, function(p, v) {
 		if (typeof v == "function" && p != "constructor") {
 			if (dp.indexOf(p) >= 0) {
 				overrides[p] = dorado._NULL_FUNCTION;
-			} else {
+			}
+			else {
 				overrides[p] = new Function("return this._itemModel." + p +
 					".apply(this._itemModel, arguments)");
 			}
@@ -602,7 +637,6 @@
 	 */
 	dorado.widget.AbstractGrid = $extend([dorado.widget.AbstractList, dorado.widget.grid.ColumnModel], /** @scope dorado.widget.AbstractGrid.prototype */ {
 		$className: "dorado.widget.AbstractGrid",
-		_inherentClassName: "i-grid",
 
 		ATTRIBUTES: /** @scope dorado.widget.AbstractGrid.prototype */ {
 
@@ -619,7 +653,7 @@
 			highlightCurrentRow: {
 				defaultValue: true,
 				skipRefresh: true,
-				setter: function (v) {
+				setter: function(v) {
 					this._highlightCurrentRow = v;
 					if (this._innerGrid) this._innerGrid.set("highlightCurrentRow", v);
 					if (this._fixedInnerGrid) this._fixedInnerGrid.set("highlightCurrentRow", v);
@@ -653,7 +687,9 @@
 			 * @default 18
 			 */
 			rowHeight: {
-				defaultValue: dorado.Browser.isTouch ? 30 : 18
+				defaultValue: (dorado.Browser.isTouch || $setting["common.simulateTouch"]) ?
+					($setting["touch.Grid.defaultRowHeight"] || 30) :
+					($setting["widget.Grid.defaultRowHeight"] || 22)
 			},
 
 			/**
@@ -663,7 +699,9 @@
 			 * @default 22
 			 */
 			headerRowHeight: {
-				defaultValue: dorado.Browser.isTouch ? 30 : 22
+				defaultValue: (dorado.Browser.isTouch || $setting["common.simulateTouch"]) ?
+					($setting["touch.Grid.defaultRowHeight"] || 30) :
+					($setting["widget.Grid.defaultRowHeight"] || 22)
 			},
 
 			/**
@@ -673,7 +711,9 @@
 			 * @default 22
 			 */
 			footerRowHeight: {
-				defaultValue: dorado.Browser.isTouch ? 30 : 22
+				defaultValue: (dorado.Browser.isTouch || $setting["common.simulateTouch"]) ?
+					($setting["touch.Grid.defaultRowHeight"] || 30) :
+					($setting["widget.Grid.defaultRowHeight"] || 22)
 			},
 
 			/**
@@ -750,7 +790,7 @@
 			 * @attribute
 			 */
 			cellRenderer: {
-				setter: function (value) {
+				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
 					this._cellRenderer = value;
 				}
@@ -762,7 +802,7 @@
 			 * @attribute
 			 */
 			headerRenderer: {
-				setter: function (value) {
+				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
 					this._headerRenderer = value;
 				}
@@ -774,7 +814,7 @@
 			 * @attribute
 			 */
 			footerRenderer: {
-				setter: function (value) {
+				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
 					this._footerRenderer = value;
 				}
@@ -786,7 +826,7 @@
 			 * @attribute
 			 */
 			filterBarRenderer: {
-				setter: function (value) {
+				setter: function(value) {
 					if (typeof value == "string") value = eval("new " + value + "()");
 					this._filterBarRenderer = value;
 				}
@@ -820,7 +860,7 @@
 			 */
 			currentColumn: {
 				skipRefresh: true,
-				setter: function (column) {
+				setter: function(column) {
 					if (!(column instanceof dorado.widget.grid.Column)) {
 						column = this.getColumn(column);
 					}
@@ -835,7 +875,7 @@
 			 * @attribute readOnly
 			 */
 			dataColumns: {
-				getter: function () {
+				getter: function() {
 					return this._columnsInfo ? this._columnsInfo.dataColumns : [];
 				},
 				readOnly: true
@@ -851,7 +891,7 @@
 				defaultValue: true,
 				readOnly: true,
 				skipRefresh: true,
-				getter: function (p, v) {
+				getter: function(p, v) {
 					return this._editing;
 				}
 			},
@@ -870,7 +910,7 @@
 			 */
 			allowNoCurrent: {
 				skipRefresh: true,
-				setter: function (v) {
+				setter: function(v) {
 					this._allowNoCurrent = v;
 					if (this._fixedInnerGrid) this._fixedInnerGrid.set("allowNoCurrent", v);
 					if (this._innerGrid) this._innerGrid.set("allowNoCurrent", v);
@@ -894,7 +934,7 @@
 			selectionMode: {
 				defaultValue: "none",
 				skipRefresh: true,
-				setter: function (v) {
+				setter: function(v) {
 					if (this._innerGrid) this._innerGrid.set("selectionMode", v);
 					this._selectionMode = v;
 				}
@@ -906,8 +946,10 @@
 			 * @attribute
 			 */
 			selection: {
-				getter: function () {
-					if (this._innerGrid) return this._innerGrid.get("selection");
+				getter: function() {
+					if (this._innerGrid) {
+						return this._innerGrid.get("selection");
+					}
 					else if (this._selection) {
 						return this._selection;
 					}
@@ -915,7 +957,7 @@
 						return ("multiRows" == this._selectionMode) ? [] : null;
 					}
 				},
-				setter: function (selection) {
+				setter: function(selection) {
 					if (selection == null && ["multiRows", "multiCells"].indexOf(this._selectionMode) >= 0) selection = [];
 					if (this._innerGrid) {
 						this._innerGrid.set("selection", selection);
@@ -931,11 +973,15 @@
 			 * @type String
 			 */
 			groupProperty: {
-				setter: function (v) {
+				setter: function(v) {
 					if (this._groupProperty == v) return;
 					this._groupProperty = v;
-					if (v != null) this._itemModel.group();
-					else this._itemModel.ungroup();
+					if (v != null) {
+						this._itemModel.group();
+					}
+					else {
+						this._itemModel.ungroup();
+					}
 				}
 			},
 
@@ -965,7 +1011,7 @@
 			 */
 			footerEntity: {
 				readOnly: true,
-				getter: function (p) {
+				getter: function(p) {
 					return this._itemModel.footerEntity;
 				}
 			},
@@ -985,7 +1031,7 @@
 			 */
 			filterEntity: {
 				readOnly: true,
-				getter: function (p) {
+				getter: function(p) {
 					return this._itemModel.filterEntity;
 				}
 			},
@@ -1150,28 +1196,29 @@
 			onCellValueEdit: {}
 		},
 
-		constructor: function () {
+		constructor: function() {
 			this._columns = new dorado.widget.grid.ColumnList(this, dorado._GET_NAME);
 			this._grid = this; // for ColumnModel
 			$invokeSuper.call(this, arguments);
 		},
 
-		destroy: function () {
+		destroy: function() {
 			this._columns.destroy();
 			$invokeSuper.call(this);
 		},
 
-		doGet: function (attr) {
+		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#' || c == '&') {
 				var col = attr.substring(1);
 				return this.getColumn(col);
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, [attr]);
 			}
 		},
 
-		createItemModel: function () {
+		createItemModel: function() {
 			return new dorado.widget.grid.ItemModel(this);
 		},
 
@@ -1179,24 +1226,25 @@
 		 * 返回当前行所对应的数据。
 		 * @return {Object|dorado.Entity} 当前子元素所对应的数据。
 		 */
-		getCurrentItem: function () {
+		getCurrentItem: function() {
 			return this._innerGrid.getCurrentItem();
 		},
 
-		notifySizeChange: function () {
+		notifySizeChange: function() {
 			if (!this.xScroll || !this.yScroll) $invokeSuper.call(this, arguments);
 		},
 
-		createDom: function () {
+		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
-			$fly(dom).mousewheel($scopify(this, function (evt, delta) {
+			$fly(dom).mousewheel($scopify(this, function(evt, delta) {
 				var divScroll = this._divScroll;
 				if (!divScroll) return;
 				if (divScroll.scrollHeight > divScroll.clientHeight) {
 					var scrollTop = divScroll.scrollTop - delta * this._rowHeight * 2;
 					if (scrollTop <= 0) {
 						scrollTop = 0;
-					} else if (scrollTop + divScroll.clientHeight > divScroll.scrollHeight) {
+					}
+					else if (scrollTop + divScroll.clientHeight > divScroll.scrollHeight) {
 						scrollTop = divScroll.scrollHeight - divScroll.clientHeight;
 					}
 					if (scrollTop != divScroll.scrollTop) {
@@ -1210,7 +1258,7 @@
 			return dom;
 		},
 
-		refreshDom: function (dom) {
+		refreshDom: function(dom) {
 
 			function getDivScroll() {
 
@@ -1219,7 +1267,7 @@
 				}
 
 				var style;
-				if (dorado.Browser.isTouch) {
+				if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
 					style = {
 						width: "100%",
 						height: "100%",
@@ -1228,7 +1276,8 @@
 						left: -99999,
 						top: -99999
 					};
-				} else {
+				}
+				else {
 					style = {
 						overflow: "scroll",
 						width: "100%",
@@ -1246,18 +1295,18 @@
 				dom.appendChild(div);
 
 				this._modernScrolled = $DomUtils.modernScroll(div);
-				$fly(div).bind("modernScroll", $scopify(this, this.onScroll));
+				$fly(div).bind("modernScrolled", $scopify(this, this.onScroll));
 				return div;
 			}
 
 			function registerInnerControl(innerGrid) {
 
 				function findColumnByEvent(grid, innerGrid, event) {
-					var column = null, row = $DomUtils.findParent(event.target, function (parentNode) {
+					var column = null, row = $DomUtils.findParent(event.target, function(parentNode) {
 						return (parentNode.parentNode == innerGrid._dataTBody);
 					});
 					if (row) {
-						var cell = $DomUtils.findParent(event.target, function (parentNode) {
+						var cell = $DomUtils.findParent(event.target, function(parentNode) {
 							return parentNode.parentNode == row;
 						}, true);
 						column = grid._columnsInfo.idMap[cell.colId];
@@ -1266,13 +1315,13 @@
 				}
 
 				var grid = this;
-				innerGrid.addListener("onDataRowClick", function (self, arg) {
+				innerGrid.bind("onDataRowClick", function(self, arg) {
 					if (grid.getListenerCount("onDataRowClick")) {
 						arg.column = findColumnByEvent(grid, innerGrid, arg.event);
 						grid.fireEvent("onDataRowClick", grid, arg);
 					}
 				});
-				innerGrid.addListener("onDataRowDoubleClick", function (self, arg) {
+				innerGrid.bind("onDataRowDoubleClick", function(self, arg) {
 					if (grid.getListenerCount("onDataRowDoubleClick")) {
 						arg.column = findColumnByEvent(grid, innerGrid, arg.event);
 						grid.fireEvent("onDataRowDoubleClick", grid, arg);
@@ -1286,10 +1335,10 @@
 				var innerGrid = this._fixedInnerGrid = this.createInnerGrid(true), self = this;
 				innerGrid.set({
 					allowNoCurrent: this._allowNoCurrent,
-					beforeSelectionChange: function (innerGrid, arg) {
+					beforeSelectionChange: function(innerGrid, arg) {
 						self.fireEvent("beforeSelectionChange", self, arg);
 					},
-					onSelectionChange: function (innerGrid, arg) {
+					onSelectionChange: function(innerGrid, arg) {
 						self.fireEvent("onSelectionChange", self, arg);
 					}
 				});
@@ -1304,13 +1353,13 @@
 					allowNoCurrent: this._allowNoCurrent,
 					selectionMode: this._selectionMode,
 					selection: this._selection,
-					onCurrentChange: function (innerGrid, arg) {
+					onCurrentChange: function(innerGrid, arg) {
 						self.fireEvent("onCurrentChange", self, arg);
 					},
-					beforeSelectionChange: function (innerGrid, arg) {
+					beforeSelectionChange: function(innerGrid, arg) {
 						self.fireEvent("beforeSelectionChange", self, arg);
 					},
-					onSelectionChange: function (innerGrid, arg) {
+					onSelectionChange: function(innerGrid, arg) {
 						self.fireEvent("onSelectionChange", self, arg);
 					}
 				});
@@ -1325,7 +1374,7 @@
 				var wrapper = this._fixedInnerGridWrapper;
 				if (!wrapper) {
 					var wrapper = this._fixedInnerGridWrapper = document.createElement("DIV");
-					with (wrapper.style) {
+					with(wrapper.style) {
 						overflowX = "visible";
 						position = "absolute";
 						left = top = 0;
@@ -1340,7 +1389,7 @@
 				var wrapper = this._innerGridWrapper;
 				if (!wrapper) {
 					var wrapper = this._innerGridWrapper = document.createElement("DIV");
-					with (wrapper.style) {
+					with(wrapper.style) {
 						position = "absolute";
 						left = top = 0;
 						height = "100%";
@@ -1364,7 +1413,8 @@
 
 			if (!this.hasRealWidth() || /*!this.hasRealHeight() || */this._groupProperty) {
 				this._realFixedColumnCount = 0;
-			} else {
+			}
+			else {
 				this._realFixedColumnCount = this._fixedColumnCount;
 				if (this._realFixedColumnCount > this._columns.size) this._realFixedColumnCount = this._columns.size;
 			}
@@ -1374,7 +1424,7 @@
 			if (columnsInfo) {
 				var cols = columnsInfo.dataColumns;
 				// this._forceRefreshRearRows = false;	// TODO: 如果未来为List、Grid提供pianoKey选项，则此处的默认值应考虑改为false
-				for (var i = 0; i < cols.length; i++) {
+				for(var i = 0; i < cols.length; i++) {
 					var col = cols[i];
 					col._realWidth = parseInt(col._realWidth || col._width) || 80;
 					// if (col instanceof dorado.widget.grid.RowNumColumn) {
@@ -1400,7 +1450,8 @@
 			var domMode;
 			if (this._realFixedColumnCount > 0) {
 				domMode = xScroll ? 2 : 0;
-			} else {
+			}
+			else {
 				domMode = yScroll ? 1 : 0;
 			}
 
@@ -1412,17 +1463,16 @@
 
 			if (this._domMode != domMode) {
 				this._domMode = domMode;
-				switch (domMode) {
+				switch(domMode) {
 					case 0:
 					{ // no scroller, 1 innerGrid, no width, no height
-						with (dom.style) {
-							overflowX = overflowY = xScroll ? "auto" : "visible";
-							// position = "relative";	// 不明白当初为什么这里要设置成'', 经实测未发现此代码保留的必要性，故被转移至createDom中
+						with(dom.style) {
+							overflowX = overflowY = "hidden";
 						}
 						if (divScroll) $fly(divScroll).hide();
 						if (fixedInnerGridWrapper) $fly(fixedInnerGridWrapper).hide();
 
-						with (this._innerGridDom.style) {
+						with(this._innerGridDom.style) {
 							position = top = left = width = height = '';
 						}
 						innerGrid.render(dom);
@@ -1430,9 +1480,8 @@
 					}
 					case 1:
 					{ // scroller, 1 innerGrid
-						with (dom.style) {
+						with(dom.style) {
 							overflowX = overflowY = xScroll ? "hidden" : "visible";
-							// position = "relative";
 						}
 						divScroll = getDivScroll.call(this);
 						$fly(divScroll).show();
@@ -1441,7 +1490,7 @@
 						var innerGridWrapper = getInnerGridWrapper.call(this);
 						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
 						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
-						with (this._innerGridDom.style) {
+						with(this._innerGridDom.style) {
 							position = top = left = width = '';
 						}
 						innerGrid.render(innerGridWrapper);
@@ -1449,11 +1498,10 @@
 					}
 					case 2:
 					{ // scroller, 2 innerGrids
-						with (dom.style) {
+						with(dom.style) {
 							overflowX = "hidden";
 							// 即使overflow，只要height=100%，也会产生visible的效果，这样设计的目的是为了避免当height为空时，最右侧出现滚动条宽度的白边
 							overflowY = "hidden";	//yScroll ? "hidden" : "visible";
-							// position = "relative";
 						}
 						divScroll = getDivScroll.call(this);
 						$fly(divScroll).show();
@@ -1468,7 +1516,7 @@
 						innerGridWrapper = getInnerGridWrapper.call(this);
 						innerGridWrapper.style.overflowX = (this.hasRealWidth()) ? "hidden" : "visible";
 						innerGridWrapper.style.overflowY = (this.hasRealHeight()) ? "hidden" : "visible";
-						with (this._innerGridDom.style) {
+						with(this._innerGridDom.style) {
 							position = top = left = width = '';
 						}
 						innerGrid.render(innerGridWrapper);
@@ -1485,7 +1533,7 @@
 
 			// 开始刷新内容
 			if (domMode == 2) {
-				with (fixedInnerGridWrapper.style) {
+				with(fixedInnerGridWrapper.style) {
 					overflowX = width = '';
 				}
 
@@ -1502,20 +1550,22 @@
 
 				var scrollLeft = ((dorado.Browser.msie && dorado.Browser.version < 7) ? fixedInnerGridWrapper.firstChild : fixedInnerGridWrapper).offsetWidth;
 				if (scrollLeft >= divScroll.clientWidth) {
-					with (fixedInnerGridWrapper.style) {
+					with(fixedInnerGridWrapper.style) {
 						overflowX = "hidden";
 						width = divScroll.clientWidth + "px";
 					}
 					innerGridWrapper.style.width = 0;
-				} else {
-					with (innerGridWrapper.style) {
+				}
+				else {
+					with(innerGridWrapper.style) {
 						width = (divScroll.clientWidth - scrollLeft) + "px";
 					}
 					innerGridWrapper.style.left = scrollLeft + "px";
 				}
-			} else {
+			}
+			else {
 				if (innerGridWrapper) {
-					with (innerGridWrapper.style) {
+					with(innerGridWrapper.style) {
 						left = 0;
 						width = divScroll.clientWidth + "px";
 					}
@@ -1525,7 +1575,8 @@
 			if (domMode != 2) {
 				this.stretchColumnsToFit();
 				if (innerGrid._itemModel instanceof PassiveItemModel) innerGrid._itemModel = itemModel;
-			} else {
+			}
+			else {
 				if (!(innerGrid._itemModel instanceof PassiveItemModel)) innerGrid._itemModel = new PassiveItemModel(itemModel);
 			}
 			innerGrid._scrollMode = this._scrollMode;
@@ -1540,12 +1591,12 @@
 
 			if (!this._groupProperty && itemModel.footerEntity && itemModel.footerEntity.get("$expired")) this.refreshSummary();
 
-			if (!this.xScroll && oldWidth != dom.offsetWidth || !this.yScroll && oldHeight != dom.offsetHeight) {
+			if ((!this.xScroll || !this.yScroll) && oldWidth != dom.offsetWidth && oldHeight != dom.offsetHeight) {
 				this.notifySizeChange();
 			}
 		},
 
-		stretchColumnsToFit: function () {
+		stretchColumnsToFit: function() {
 			var WIDTH_ADJUST = 6;
 
 			var stretchColumnsMode = this._realStretchColumnsMode;
@@ -1555,22 +1606,23 @@
 			if (!columns.length) return;
 
 			var clientWidth = (this._domMode == 0) ? this._dom.clientWidth : this._divScroll.clientWidth;
-			if (!clientWidth && dorado.Browser.msie && dorado.Browser.version < 9) {
-				clientWidth = (this._domMode == 0) ? ($fly(this._dom).width()) : this._divScroll.offsetWidth;
-			}
 			if (!clientWidth) return;
 
 			var totalWidth = 0, column;
-			switch (stretchColumnsMode) {
+			switch(stretchColumnsMode) {
 				case "stretchableColumns":
 				{
 					var stretchableColumns = [];
-					for (var i = 0; i < columns.length; i++) {
+					for(var i = 0; i < columns.length; i++) {
 						column = columns[i];
-						if (column._width == '*') stretchableColumns.push(column);
-						else totalWidth += (columns[i]._realWidth || 80) + WIDTH_ADJUST;
+						if (column._width == '*') {
+							stretchableColumns.push(column);
+						}
+						else {
+							totalWidth += (columns[i]._realWidth || 80) + WIDTH_ADJUST;
+						}
 					}
-					for (var i = 0; i < stretchableColumns.length; i++) {
+					for(var i = 0; i < stretchableColumns.length; i++) {
 						column = stretchableColumns[i];
 						var w = Math.round((clientWidth - totalWidth) / (stretchableColumns.length - i)) - WIDTH_ADJUST;
 						if (w < MIN_COL_WIDTH) w = MIN_COL_WIDTH;
@@ -1581,27 +1633,31 @@
 				}
 				case "lastColumn":
 				{
-					for (var i = 0; i < columns.length; i++) {
+					for(var i = 0; i < columns.length; i++) {
 						column = columns[i];
 						if (i == columns.length - 1) {
 							column._realWidth = clientWidth - totalWidth - WIDTH_ADJUST;
 							if (column._realWidth < MIN_COL_WIDTH) column._realWidth = MIN_COL_WIDTH;
-						} else totalWidth += (column._realWidth + WIDTH_ADJUST);
+						}
+						else {
+							totalWidth += (column._realWidth + WIDTH_ADJUST);
+						}
 					}
 					break;
 				}
 				case "allColumns":
 				{
 					var totalWeight = 0;
-					for (var i = 0; i < columns.length; i++) {
+					for(var i = 0; i < columns.length; i++) {
 						totalWeight += (columns[i]._realWidth || 80) + WIDTH_ADJUST;
 					}
 					var assignedWidth = 0;
-					for (var i = 0; i < columns.length; i++) {
+					for(var i = 0; i < columns.length; i++) {
 						var column = columns[i], weight = (parseInt(column._realWidth) || 80) + WIDTH_ADJUST;
 						if (i == columns.length - 1) {
 							column._realWidth = clientWidth - assignedWidth - WIDTH_ADJUST;
-						} else {
+						}
+						else {
 							var w = Math.round(clientWidth * weight / totalWeight) - WIDTH_ADJUST;
 							if (w < MIN_COL_WIDTH) w = MIN_COL_WIDTH;
 							column._realWidth = w;
@@ -1613,19 +1669,20 @@
 				case "allResizeableColumns":
 				{
 					var totalWeight = 0;
-					for (var i = 0; i < columns.length; i++) {
+					for(var i = 0; i < columns.length; i++) {
 						var column = columns[i];
 						if (!column._resizeable) continue;
 						totalWeight += (column._realWidth || 80) + WIDTH_ADJUST;
 					}
 					var assignedWidth = 0;
-					for (var i = 0; i < columns.length; i++) {
+					for(var i = 0; i < columns.length; i++) {
 						var column = columns[i];
 						if (!column._resizeable) continue;
 						var weight = (parseInt(column._realWidth) || 80) + WIDTH_ADJUST;
 						if (i == columns.length - 1) {
 							column._realWidth = clientWidth - assignedWidth - WIDTH_ADJUST;
-						} else {
+						}
+						else {
 							var w = Math.round(clientWidth * weight / totalWeight) - WIDTH_ADJUST;
 							if (w < MIN_COL_WIDTH) w = MIN_COL_WIDTH;
 							column._realWidth = w;
@@ -1637,14 +1694,14 @@
 			}
 		},
 
-		syncroRowHeights: function (scrollInfo) {
+		syncroRowHeights: function(scrollInfo) {
 			if (this._domMode == 2) this._fixedInnerGrid.syncroRowHeights(scrollInfo);
 		},
 
-		updateScroller: function (info) {
+		updateScroller: function(info) {
 			if (this._divScroll) {
 				var divScroll = this._divScroll, divViewPort = this._divViewPort;
-				var ratio = info.clientHeight ? (divScroll.clientHeight / (info.clientHeight || 1)) : 0;
+				var ratio = info.clientHeight ? (divScroll.clientHeight / (info.clientHeight || 1)) : 1;
 				if (this.yScroll) {
 					divViewPort.style.height = Math.round(info.scrollHeight * ratio) + "px";
 				}
@@ -1662,26 +1719,27 @@
 						var viewPortWidth = Math.round(innerGridWrapper.scrollWidth * ratio);
 						divViewPort.style.width = viewPortWidth + "px";
 						divScroll.scrollLeft = this._scrollLeft = Math.round(innerGridWrapper.scrollLeft * ratio);
-					} else {
+					}
+					else {
 						divViewPort.style.width = divScroll.scrollLeft = 0;
 					}
 				}
 			}
 
-			if (dorado.Browser.isTouch && this._scroller) {
-				this._scroller.refresh();
+			if (dorado.Browser.isTouch && this._modernScrolled) {
+				this._modernScrolled.update();
 			}
 		},
 
 		onClick: dorado._NULL_FUNCTION,
 		onDoubleClick: dorado._NULL_FUNCTION,
 
-		doOnResize: function () {
+		doOnResize: function() {
 			if (!this._ready) return;
 			if (this._domMode != 0) this.refresh(true);
 		},
 
-		_watchScroll: function () {
+		_watchScroll: function() {
 			delete this._watchScrollTimerId;
 			if (this._scrollMode == "simple") return;
 
@@ -1771,9 +1829,9 @@
 			}
 		},
 
-		doOnKeyDown: function (evt) {
+		doOnKeyDown: function(evt) {
 			var retValue = true;
-			switch (evt.keyCode) {
+			switch(evt.keyCode) {
 				case 37: // left
 					if (evt.ctrlKey && this._currentColumn) {
 						var columns = this._columnsInfo.dataColumns;
@@ -1812,7 +1870,7 @@
 			return retValue;
 		},
 
-		doInnerGridSetCurrentRow: function (innerGrid, itemId) {
+		doInnerGridSetCurrentRow: function(innerGrid, itemId) {
 			if (this._processingCurrentRow) return;
 			this.hideCellEditor();
 
@@ -1827,22 +1885,22 @@
 			this._processingCurrentRow = false;
 		},
 
-		onMouseDown: function (evt) {
+		onMouseDown: function(evt) {
 			this._disableCellEditor = true;
 		},
 
-		onClick: function (evt) {
-			dorado.Toolkits.cancelDelayedAction(this, "$refreshPanelTimerId");
+		onClick: function(evt) {
 			this._disableCellEditor = false;
 
 			var tbody1 = this._innerGrid._dataTBody, tbody2 = (this._domMode == 2) ? this._fixedInnerGrid._dataTBody : null;
 			var self = this, innerGrid;
-			var row = $DomUtils.findParent(evt.target, function (parentNode) {
+			var row = $DomUtils.findParent(evt.target, function(parentNode) {
 				var p = parentNode.parentNode;
 				if (p == tbody1) {
 					innerGrid = self._innerGrid;
 					return true;
-				} else if (tbody2 && p == tbody2) {
+				}
+				else if (tbody2 && p == tbody2) {
 					innerGrid = self._fixedInnerGrid;
 					return true;
 				}
@@ -1852,7 +1910,7 @@
 				this._editing = true;
 				var column = null;
 				if (innerGrid.getCurrentItemDom() == row) {
-					var cell = $DomUtils.findParent(evt.target, function (parentNode) {
+					var cell = $DomUtils.findParent(evt.target, function(parentNode) {
 						return parentNode.parentNode == row;
 					}, true);
 					if (cell) {
@@ -1860,12 +1918,14 @@
 
 						if (this._currentColumn == column && column) {
 							this.showCellEditor(column);
-						} else {
+						}
+						else {
 							this.setCurrentColumn(column);
 						}
 					}
 				}
-			} else {
+			}
+			else {
 				var clickOnCellEditor = false;
 				if (this._currentCellEditor) {
 					var cellEditorDom = this._currentCellEditor.getDom();
@@ -1880,9 +1940,9 @@
 			return $invokeSuper.call(this, arguments);
 		},
 
-		_getCellByEvent: function (event) {
+		_getCellByEvent: function(event) {
 			var tbody1 = this._innerGrid._dataTBody, tbody2 = (this._domMode == 2) ? this._fixedInnerGrid._dataTBody : null;
-			return $DomUtils.findParent(event.target, function (parentNode) {
+			return $DomUtils.findParent(event.target, function(parentNode) {
 				var p = parentNode.parentNode;
 				if (!p) return;
 				p = p.parentNode;
@@ -1897,7 +1957,7 @@
 		 * @param {Event} event DHTML中的Event对象。
 		 * @return {Object|dorado.Entity} 相应的数据实体。
 		 */
-		getEntityByEvent: function (event) {
+		getEntityByEvent: function(event) {
 			var cell = this._getCellByEvent(event);
 			return (cell) ? $fly(cell.parentNode).data("item") : null;
 		},
@@ -1909,30 +1969,30 @@
 		 * @param {Event} event DHTML中的Event对象。
 		 * @return {dorado.widget.grid.DataColumn} 相应的列。
 		 */
-		getColumnByEvent: function (event) {
+		getColumnByEvent: function(event) {
 			var cell = this._getCellByEvent(event);
 			return (cell) ? this._columnsInfo.idMap[cell.colId] : null;
 		},
 
-		doOnFocus: function () {
+		doOnFocus: function() {
 			if (this._currentColumn) {
-				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function () {
+				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
 					if (this._currentColumn && !this._currentCellEditor) this.showCellEditor(this._currentColumn);
 				}, 300);
 			}
 		},
 
-		doOnBlur: function () {
+		doOnBlur: function() {
 			if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
 			this.hideCellEditor();
 		},
 
-		shouldEditing: function (column) {
+		shouldEditing: function(column) {
 			return column && !column.get("readOnly") && !this.get("readOnly") &&
 				column._property && column._property != "none" && column._property != this._groupProperty;
 		},
 
-		setCurrentColumn: function (column) {
+		setCurrentColumn: function(column) {
 			if (this._currentColumn != column) {
 				if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
 				this.hideCellEditor();
@@ -1941,24 +2001,24 @@
 			}
 		},
 
-		showCellEditor: function (column) {
+		showCellEditor: function(column) {
 			if (this._disableCellEditor) return;
 			if (this._domMode == 2) this._fixedInnerGrid.showCellEditor(column);
 			this._innerGrid.showCellEditor(column);
 		},
 
-		hideCellEditor: function (post) {
+		hideCellEditor: function(post) {
 			if (this._currentCellEditor) {
 				this._currentCellEditor.hide(post);
 				delete this._currentCellEditor;
 			}
 		},
 
-		getCellEditor: function (column, entity) {
+		getCellEditor: function(column, entity) {
 			if (entity) {
 				var cellEditorCache = this._cellEditorCache;
 				if (!cellEditorCache) this._cellEditorCache = cellEditorCache = {};
-				var cellEditor = cellEditorCache[column._id];
+				var cellEditor = cellEditorCache[column._uniqueId];
 
 				if (cellEditor === undefined) {
 					cellEditor = column._cellEditor;
@@ -1966,10 +2026,12 @@
 						cellEditor = new dorado.widget.grid.DefaultCellEditor();
 					}
 					cellEditor.bindColumn(column);
-				} else if (cellEditor) {
+				}
+				else if (cellEditor) {
 					if (cellEditor.column) {
 						if (cellEditor.column != column) throw new ResourceException("dorado.grid.CellEditorShareError");
-					} else {
+					}
+					else {
 						cellEditor.bindColumn(column);
 					}
 				}
@@ -1987,7 +2049,7 @@
 				this.fireEvent("onGetCellEditor", this, eventArg);
 
 				cellEditor = eventArg.cellEditor;
-				if (cellEditor && cellEditor.cachable) cellEditorCache[column._id] = cellEditor;
+				if (cellEditor && cellEditor.cachable) cellEditorCache[column._uniqueId] = cellEditor;
 
 				if (cellEditor) cellEditor.data = entity;
 				return cellEditor;
@@ -2006,7 +2068,7 @@
 		 * </p>
 		 * @param {boolean} [desc] 是否倒序排序。
 		 */
-		sort: function (column, desc) {
+		sort: function(column, desc) {
 			var sortParams;
 			if (typeof column == "string") {
 				column = this.getColumn(column);
@@ -2067,18 +2129,19 @@
 		 * ];
 		 * grid.filter(criterions);
 		 */
-		filter: function (criterions) {
+		filter: function(criterions) {
 
 			function verifyCriterion(criterion, column) {
 				if (criterion.junction) {
 					var criterions = criterion.criterions;
 					if (criterions && criterions.length) {
-						for (var i = 0; i < criterions.length; i++) {
+						for(var i = 0; i < criterions.length; i++) {
 							var c = criterions[i];
 							if (c != null) verifyCriterion(c, column);
 						}
 					}
-				} else {
+				}
+				else {
 					verifyCriterion.property = column._property;
 				}
 			}
@@ -2087,7 +2150,7 @@
 				criterions = [];
 				var filterEntity = this._itemModel.filterEntity;
 				var dataColumns = this._columnsInfo.dataColumns;
-				for (var i = 0; i < dataColumns.length; i++) {
+				for(var i = 0; i < dataColumns.length; i++) {
 					var column = dataColumns[i];
 					if (!column._property || column._property == "none") continue;
 					var criterion = filterEntity.get(column._property);
@@ -2095,7 +2158,8 @@
 						verifyCriterion(criterion, column);
 						if (criterion.junction && criterion.junction != "or") {
 							criterions = criterions.concat(criterion.criterions);
-						} else {
+						}
+						else {
 							criterions.push(criterion);
 						}
 					}
@@ -2111,13 +2175,13 @@
 		 * @param {Object} [options] 高亮选项。见jQuery ui相关文档中关于highlight方法的说明。
 		 * @param {Object} [speed] 动画速度。
 		 */
-		highlightItem: function (entity, options, speed) {
+		highlightItem: function(entity, options, speed) {
 
 			function highlight(row) {
 				if (!row) return;
 				$fly(row).addClass("highlighting-row").effect("highlight", options || {
 					color: "#FFFF80"
-				}, speed || 1500, function () {
+				}, speed || 1500, function() {
 					$fly(row).removeClass("highlighting-row");
 				});
 			}
@@ -2137,7 +2201,7 @@
 			}
 			else if (!entity._disableDelayHighlight) {
 				var self = this;
-				setTimeout(function () {
+				setTimeout(function() {
 					entity._disableDelayHighlight = true;
 					self.highlightItem(entity, options, speed);
 					entity._disableDelayHighlight = false;
@@ -2145,7 +2209,7 @@
 			}
 		},
 
-		setHoverHeaderColumn: function (column) {
+		setHoverHeaderColumn: function(column) {
 			if (this._headerHoverColumn == column) return;
 			var oldColumn = this._headerHoverColumn;
 			if (oldColumn) {
@@ -2158,14 +2222,14 @@
 
 				var $cell = jQuery(column.headerCell);
 				$cell.addClass("hover-header");
-				if (!$cell.data("draggable")) {
+				if (!$cell.data("ui-draggable")) {
 					var grid = this;
 					var options = dorado.Object.apply({
 						appendTo: "body",
-						helper: function (evt) {
+						helper: function(evt) {
 							return getColumnDragHelper(evt, this);
 						},
-						draggingInfo: function () {
+						draggingInfo: function() {
 							var column = grid._columnsInfo.idMap[this.colId];
 							return new dorado.DraggingInfo({
 								object: column,
@@ -2174,7 +2238,7 @@
 								tags: ["grid-column"]
 							});
 						},
-						start: function () {
+						start: function() {
 							var column = grid._columnsInfo.idMap[this.colId];
 							grid.hideHeaderOptionButton(column);
 						}
@@ -2185,7 +2249,7 @@
 			}
 		},
 
-		showHeaderOptionButton: function (column) {
+		showHeaderOptionButton: function(column) {
 			if (!column || !column._supportsOptionMenu || column._property == "none") return;
 			var cell = column.headerCell, $cell = jQuery(cell);
 			$cell.addClass("menu-open-header");
@@ -2201,18 +2265,18 @@
 			}).outerHeight(cell.offsetHeight - 2);
 		},
 
-		hideHeaderOptionButton: function (column) {
+		hideHeaderOptionButton: function(column) {
 			$fly(column.headerCell).removeClass("menu-open-header");
 			var button = this.getHeaderOptionButton(column);
 			if (button) button.style.display = "none";
 		},
 
-		getHeaderOptionButton: function (column) {
+		getHeaderOptionButton: function(column) {
 			var cell = column.headerCell, button = cell.lastChild;
-			if ((!button || button.className != "d-grid-header-option-button") && cell) {
+			if ((!button || button.className != "header-option-button") && cell) {
 				button = $DomUtils.xCreate({
 					tagName: "DIV",
-					className: "d-grid-header-option-button",
+					className: "header-option-button",
 					style: {
 						display: "none",
 						position: "absolute"
@@ -2221,18 +2285,19 @@
 				$DomUtils.disableUserSelection(button);
 
 				var self = this;
-				$fly(button).mousedown(function (evt) {
+				$fly(button).mousedown(function(evt) {
 					return false;
-				}).click(function () {
+				}).click(function() {
 						var menu = self.getHeaderOptionMenu(true);
 						if (menu.get("visible")) {
 							menu.hide();
-						} else {
+						}
+						else {
 							var column = $fly(button).data("gridColumn");
 							self.initHeaderOptionMenu(menu, column);
 
 							menu._gridColumn = column;
-							menu.addListener("onHide", function () {
+							menu.bind("onHide", function() {
 								var col = self._headerMenuOpenColumn;
 								if (col && col != self._headerHoverColumn) {
 									self.hideHeaderOptionButton(col);
@@ -2257,7 +2322,7 @@
 			return button;
 		},
 
-		getHeaderOptionMenu: function (create) {
+		getHeaderOptionMenu: function(create) {
 			var menu = this._headerOptionMenu, grid = this;
 			if (!menu && create) {
 				this._headerOptionMenu = menu = new dorado.widget.Menu({
@@ -2265,8 +2330,8 @@
 						{
 							name: "sortAsc",
 							caption: $resource("dorado.grid.OptionMenuSortAscending"),
-							icon: "url(skin>common/icons.gif) -280px -181px",
-							onClick: function (self) {
+							iconClass: "d-grid-menu-sort-asc",
+							onClick: function(self) {
 								if (menu._gridColumn instanceof dorado.widget.grid.DataColumn) {
 									grid.sort(menu._gridColumn, false);
 								}
@@ -2275,8 +2340,8 @@
 						{
 							name: "sortDesc",
 							caption: $resource("dorado.grid.OptionMenuSortDescending"),
-							icon: "url(skin>common/icons.gif) -300px -181px",
-							onClick: function (self) {
+							iconClass: "d-grid-menu-sort-desc",
+							onClick: function(self) {
 								if (menu._gridColumn instanceof dorado.widget.grid.DataColumn) {
 									grid.sort(menu._gridColumn, true);
 								}
@@ -2288,15 +2353,15 @@
 						{
 							name: "fix",
 							caption: $resource("dorado.grid.OptionMenuFix"),
-							icon: "url(skin>common/icons.gif) -60px -141px",
-							onClick: function (self) {
+							iconClass: "d-grid-menu-fix",
+							onClick: function(self) {
 								grid.set("fixedColumnCount", menu._columnIndex + 1);
 							}
 						},
 						{
 							name: "unfix",
 							caption: $resource("dorado.grid.OptionMenuUnfix"),
-							onClick: function (self) {
+							onClick: function(self) {
 								grid.set("fixedColumnCount", 0);
 							}
 						},
@@ -2306,8 +2371,8 @@
 						{
 							name: "group",
 							caption: $resource("dorado.grid.OptionMenuGroup"),
-							icon: "url(skin>common/icons.gif) -80px -181px",
-							onClick: function (self) {
+							iconClass: "d-grid-menu-group",
+							onClick: function(self) {
 								var column = menu._gridColumn, grid = column._grid;
 								grid.set("groupProperty", column.get("property"));
 								grid.refresh();
@@ -2316,7 +2381,7 @@
 						{
 							name: "ungroup",
 							caption: $resource("dorado.grid.OptionMenuUngroup"),
-							onClick: function (self) {
+							onClick: function(self) {
 								var column = menu._gridColumn, grid = column._grid;
 								grid.set("groupProperty", null);
 								grid.refresh();
@@ -2330,7 +2395,7 @@
 							name: "toggleFilterBar",
 							caption: $resource("dorado.grid.OptionMenuToggleFilterBar"),
 							checked: !!grid.get("showFilterBar"),
-							onClick: function (self) {
+							onClick: function(self) {
 								grid.set("showFilterBar", !grid.get("showFilterBar"));
 							}
 						},
@@ -2340,8 +2405,8 @@
 						{
 							name: "groupColumn",
 							caption: $resource("dorado.grid.OptionMenuGroupColumn"),
-							onClick: function (self) {
-								dorado.MessageBox.prompt($resource("dorado.grid.InputNewGroupName"), function (text) {
+							onClick: function(self) {
+								dorado.MessageBox.prompt($resource("dorado.grid.InputNewGroupName"), function(text) {
 									var column = menu._gridColumn, parentColumn = column._parent, grid = column._grid;
 									var i = parentColumn.get("columns").remove(column);
 									if (i >= 0) {
@@ -2357,11 +2422,11 @@
 						{
 							name: "ungroupColumns",
 							caption: $resource("dorado.grid.OptionMenuUngroupColumns"),
-							onClick: function (self) {
+							onClick: function(self) {
 								var column = menu._gridColumn, parentColumn = column._parent, grid = column._grid;
 								var i = parentColumn.get("columns").remove(column);
 								if (i >= 0) {
-									column.get("columns").each(function (subColumn) {
+									column.get("columns").each(function(subColumn) {
 										parentColumn.addColumn(subColumn, i);
 										i++;
 									});
@@ -2376,7 +2441,7 @@
 						{
 							name: "columns",
 							caption: $resource("dorado.grid.OptionMenuColumns"),
-							icon: "url(skin>common/icons.gif) -120px -181px",
+							iconClass: "d-grid-menu-column",
 							items: []
 						}
 					]
@@ -2386,16 +2451,16 @@
 			return menu;
 		},
 
-		initHeaderOptionMenu: function (menu, column) {
+		initHeaderOptionMenu: function(menu, column) {
 
 			function crreateColumnItems(columnsItem, columns) {
-				columns.each(function (column) {
+				columns.each(function(column) {
 					var item = new dorado.widget.menu.CheckableMenuItem({
 						$type: "Checkable",
 						caption: column.get("caption") || column.get("name"),
 						checked: column.get("visible"),
 						hideOnClick: false,
-						onCheckedChange: function (self) {
+						onCheckedChange: function(self) {
 							var col = self._column;
 							col.set("visible", !col.get("visible"));
 							col._grid.refresh();
@@ -2436,12 +2501,12 @@
 		 * 全选。
 		 * 此方法仅在selectionMode为"multiRows"有效。
 		 */
-		selectAll: function () {
+		selectAll: function() {
 			if (this._selectionMode != "multiRows") return;
 			var added = this._itemModel.getAllDataEntities();
 			var selection = this.get("selection");
 			if (selection.length && added.length) {
-				for (var i = 0; i < selection.length; i++) {
+				for(var i = 0; i < selection.length; i++) {
 					added.remove(selection[i]);
 				}
 			}
@@ -2451,7 +2516,7 @@
 		/**
 		 * 全部不选。
 		 */
-		unselectAll: function () {
+		unselectAll: function() {
 			this._innerGrid.replaceSelection(this.get("selection"), null);
 		},
 
@@ -2459,12 +2524,16 @@
 		 * 反向选择。
 		 * 此方法仅在selectionMode为"multiRows"有效。
 		 */
-		selectInvert: function () {
+		selectInvert: function() {
 			if (this._selectionMode != "multiRows") return;
 			var selection = this.get("selection"), removed = [], added = [];
-			jQuery.each(this._itemModel.getAllDataEntities(), function (i, item) {
-				if (selection.indexOf(item) >= 0) removed.push(item);
-				else added.push(item);
+			jQuery.each(this._itemModel.getAllDataEntities(), function(i, item) {
+				if (selection.indexOf(item) >= 0) {
+					removed.push(item);
+				}
+				else {
+					added.push(item);
+				}
 			});
 			this._innerGrid.replaceSelection(removed, added);
 		},
@@ -2472,21 +2541,22 @@
 		/**
 		 * 刷新（即重新计算）表格中的汇总数据。
 		 */
-		refreshSummary: function () {
+		refreshSummary: function() {
 			this._itemModel.footerEntity.set("$expired", true);
-			dorado.Toolkits.setDelayedAction(this, "$refreshSummaryTimerId", function () {
+			dorado.Toolkits.setDelayedAction(this, "$refreshSummaryTimerId", function() {
 				this._itemModel.refreshSummary();
 			}, 300);
 		},
 
-		onEntityChanged: function (entity, property) {
+		onEntityChanged: function(entity, property) {
 			var itemModel = this._itemModel;
 			if (itemModel.groups) {
 				var groupProperty = this._groupProperty;
 				var groupValue = ((entity instanceof dorado.Entity) ? itemModel.entityMap[entity.entityId] : entity[groupProperty]) + '';
-				if (property == groupProperty && entity instanceof dorado.Entity &&
-					entity.getText(groupProperty) != groupValue) {
-					this.setDirtyMode(true);
+				if (property == groupProperty && entity instanceof dorado.Entity && entity.getText(groupProperty) != groupValue) {
+					this._itemModel.refreshItems();
+					this.refresh(true);
+					return false;
 				}
 
 				var group = itemModel.groupMap[groupValue];
@@ -2495,81 +2565,10 @@
 					group.footerEntity.set("$expired", true);
 				}
 			}
+			return true;
 		},
 
-		getFloatRefreshPanel: function () {
-			var floatRefreshPanel = this._floatRefreshPanel;
-			if (!floatRefreshPanel) {
-				this._floatRefreshPanel = floatRefreshPanel = $DomUtils.xCreate({
-					tagName: "DIV",
-					className: "float-refresh-panel"
-				});
-				var self = this;
-				$fly(floatRefreshPanel).mouseenter(function () {
-					self.maximizeFloatRefreshPanel();
-				}).mouseleave(function () {
-						if (self._dirtyMode) {
-							dorado.Toolkits.setDelayedAction(self, "$refreshPanelTimerId", self.minimizeFloatRefreshPanel, 500);
-						}
-					});
-
-				var button = new dorado.widget.SimpleButton({
-					className: "button",
-					onClick: function () {
-						self._itemModel.refreshItems();
-						self.refresh();
-					}
-				});
-				this.registerInnerControl(button);
-				button.render(floatRefreshPanel);
-
-				this.getDom().appendChild(floatRefreshPanel);
-				floatRefreshPanel._minTop = parseInt($fly(floatRefreshPanel).css("top"));
-			}
-			return floatRefreshPanel;
-		},
-
-		setDirtyMode: function (dirtyMode) {
-			if (!!this._dirtyMode == dirtyMode) return;
-			this._dirtyMode = dirtyMode;
-			var floatButton = this.getFloatRefreshPanel();
-			floatButton.style.display = dirtyMode ? '' : "none";
-			if (dirtyMode) {
-				this.maximizeFloatRefreshPanel();
-				dorado.Toolkits.setDelayedAction(this, "$refreshPanelTimerId", this.minimizeFloatRefreshPanel, 3000);
-			} else {
-				$fly(floatButton).top(floatButton._minTop);
-			}
-		},
-
-		maximizeFloatRefreshPanel: function () {
-			if (!dorado.Toolkits.cancelDelayedAction(this, "$refreshPanelTimerId")) {
-				var floatButton = this.getFloatRefreshPanel();
-				$fly(floatButton).animate({
-					"top": "+=" + Math.abs(floatButton._minTop)
-				}, {
-					duration: "slow",
-					specialEasing: {
-						top: "easeOutBack"
-					}
-				});
-			}
-		},
-
-		minimizeFloatRefreshPanel: function ($floatButton) {
-			dorado.Toolkits.cancelDelayedAction(this, "$refreshPanelTimerId");
-			var floatButton = this.getFloatRefreshPanel();
-			$fly(floatButton).animate({
-				"top": "-=" + Math.abs(floatButton._minTop)
-			}, {
-				duration: "slow",
-				specialEasing: {
-					top: "easeInOutBack"
-				}
-			});
-		},
-
-		getFloatFilterPanel: function () {
+		getFloatFilterPanel: function() {
 			var floatFilterPanel = this._floatFilterPanel;
 			if (!floatFilterPanel) {
 				this._floatFilterPanel = floatFilterPanel = $DomUtils.xCreate({
@@ -2577,17 +2576,16 @@
 					className: "float-filter-panel"
 				});
 				var self = this;
-				$fly(floatFilterPanel).mouseenter(function () {
+				$fly(floatFilterPanel).mouseenter(function() {
 					self.showFilterPanel();
-				}).mouseleave(function () {
+				}).mouseleave(function() {
 						dorado.Toolkits.setDelayedAction(self, "$filterPanelTimerId", self.hideFilterPanel, 500);
 					});
 
 				var button;
 				button = new dorado.widget.SimpleIconButton({
-					className: "filter-button",
-					exClassName: "d-icon-button",
-					onClick: function () {
+					exClassName: "filter-button",
+					onClick: function() {
 						self.filter();
 					}
 				});
@@ -2595,9 +2593,8 @@
 				button.render(floatFilterPanel);
 
 				button = new dorado.widget.SimpleIconButton({
-					className: "reset-button",
-					exClassName: "d-icon-button",
-					onClick: function () {
+					exClassName: "reset-button",
+					onClick: function() {
 						self.get("filterEntity").clearData();
 						self.filter();
 					}
@@ -2610,7 +2607,7 @@
 			return floatFilterPanel;
 		},
 
-		showFilterPanel: function () {
+		showFilterPanel: function() {
 			if (!dorado.Toolkits.cancelDelayedAction(this, "$filterPanelTimerId")) {
 				var panel = this.getFloatFilterPanel(), filterBar = this._innerGrid._filterBarRow;
 				var $panel = $fly(panel);
@@ -2624,7 +2621,7 @@
 			}
 		},
 
-		hideFilterPanel: function () {
+		hideFilterPanel: function() {
 			dorado.Toolkits.cancelDelayedAction(this, "$filterPanelTimerId");
 			var panel = this.getFloatFilterPanel(), filterBar = this._innerGrid._filterBarRow;
 			if (dorado.Browser.msie && dorado.Browser.version < 7) {
@@ -2635,7 +2632,7 @@
 			}
 		},
 
-		getDraggableOptions: function (dom) {
+		getDraggableOptions: function(dom) {
 			var options = $invokeSuper.call(this, arguments);
 			if (dom == this._dom) {
 				options.handle = ":first-child";
@@ -2643,12 +2640,12 @@
 			return options;
 		},
 
-		findItemDomByEvent: function (evt) {
+		findItemDomByEvent: function(evt) {
 			var target = evt.srcElement || evt.target;
 			var target = target || evt;
 			var innerTbody = this._innerGrid._dataTBody, fixedInnerTBody;
 			if (this._domMode == 2) fixedInnerTBody = this._fixedInnerGrid._dataTBody;
-			return $DomUtils.findParent(target, function (parentNode) {
+			return $DomUtils.findParent(target, function(parentNode) {
 				return parentNode.parentNode == innerTbody ||
 					(fixedInnerTBody && parentNode.parentNode == fixedInnerTBody);
 			});
@@ -2656,17 +2653,17 @@
 
 		getDraggingInsertIndicator: dorado.widget.AbstractList.prototype.getDraggingInsertIndicator,
 
-		onDragStart: function () {
+		onDragStart: function() {
 			$invokeSuper.call(this, arguments);
 			this.hideCellEditor();
 		},
 
-		findItemDomByPosition: function (pos) {
+		findItemDomByPosition: function(pos) {
 			pos.y -= this._innerGrid._frameTBody.offsetTop - this._innerGrid._container.scrollTop;
 			return this._innerGrid.findItemDomByPosition.call(this._innerGrid, pos);
 		},
 
-		showDraggingInsertIndicator: function (draggingInfo, insertMode, itemDom) {
+		showDraggingInsertIndicator: function(draggingInfo, insertMode, itemDom) {
 			var insertIndicator = dorado.widget.AbstractList.getDraggingInsertIndicator();
 			if (insertMode) {
 				var dom = this._dom;
@@ -2676,12 +2673,13 @@
 				if (dom.firstChild.clientWidth < width) width = dom.firstChild.clientWidth;
 				$fly(insertIndicator).width(width).height(2).left(0).top(top - 1).show();
 				dom.appendChild(insertIndicator);
-			} else {
+			}
+			else {
 				$fly(insertIndicator).hide();
 			}
 		},
 
-		setDraggingOverItemDom: function (itemDom) {
+		setDraggingOverItemDom: function(itemDom) {
 			this._innerGrid.setDraggingOverItemDom(itemDom);
 			if (this._fixedInnerGrid) {
 				if (itemDom) itemDom = this._fixedInnerGrid._itemDomMap[itemDom._itemId];
@@ -2689,10 +2687,10 @@
 			}
 		},
 
-		onHeaderDragMove: function (draggingInfo, evt) {
+		onHeaderDragMove: function(draggingInfo, evt) {
 
 			function findDropPosition(columns) {
-				for (var i = 0; i < columns.length; i++) {
+				for(var i = 0; i < columns.length; i++) {
 					var column = columns[i];
 					var cell = column.headerCell;
 					if (!cell || !column.get("visible")) continue;
@@ -2725,7 +2723,8 @@
 				if (dropPosition != null) {
 					if (dropPosition.column == column) {
 						dropPosition = null;
-					} else {
+					}
+					else {
 						var oldColumns = column._parent._columns;
 						if (dropPosition.column == oldColumns.items[oldColumns.indexOf(column) + (dropPosition.before ? 1 : -1)]) {
 							dropPosition = null;
@@ -2738,7 +2737,7 @@
 			}
 		},
 
-		onDraggingSourceMove: function (draggingInfo, evt) {
+		onDraggingSourceMove: function(draggingInfo, evt) {
 			var pos = this.getMousePosition(evt);
 			if (pos.y < this._innerGrid._frameTBody.offsetTop) {
 				var column = draggingInfo.get("object");
@@ -2749,7 +2748,8 @@
 				else {
 					draggingInfo.set("accept", false);
 				}
-			} else {
+			}
+			else {
 				hideColumnDropIndicator();
 				return dorado.widget.AbstractList.prototype.onDraggingSourceMove.apply(this, arguments);
 			}
@@ -2757,12 +2757,12 @@
 
 		doOnDraggingSourceMove: dorado.widget.AbstractList.prototype.doOnDraggingSourceMove,
 
-		onDraggingSourceOut: function (draggingInfo, evt) {
+		onDraggingSourceOut: function(draggingInfo, evt) {
 			hideColumnDropIndicator();
 			return dorado.widget.AbstractList.prototype.onDraggingSourceOut.apply(this, arguments);
 		},
 
-		onHeaderDragDrop: function (draggingInfo, evt) {
+		onHeaderDragDrop: function(draggingInfo, evt) {
 			var dropPosition = draggingInfo.dropPosition;
 			if (dropPosition) {
 				var ind = window._colDropIndicator;
@@ -2775,12 +2775,11 @@
 					var oldColumns = column._parent._columns;
 					var columns = refColumn._parent._columns;
 					if (columns != oldColumns && oldColumns.size <= 1) {
-						setTimeout(function () {
-							throw new dorado.ResourceException("dorado.grid.RemoveTheOnlyColumn", grid._id);
+						setTimeout(function() {
+							throw new dorado.ResourceException("dorado.grid.RemoveTheOnlyColumn", (grid._id || grid._uniqueId));
 						}, 100);
 						return;
 					}
-
 
 					var oldGrid = column.get("grid");
 					oldColumns.remove(column);
@@ -2794,27 +2793,29 @@
 						oldGrid.refresh();
 					}
 				}
-			} else {
+			}
+			else {
 				hideColumnDropIndicator();
 			}
 			return true;
 		},
 
-		onDraggingSourceDrop: function (draggingInfo, evt) {
+		onDraggingSourceDrop: function(draggingInfo, evt) {
 			var pos = this.getMousePosition(evt);
 			if (pos.y < this._innerGrid._frameTBody.offsetTop) {
 				this.onHeaderDragDrop(draggingInfo, evt);
-			} else {
+			}
+			else {
 				dorado.widget.AbstractList.prototype.onDraggingSourceDrop.apply(this, arguments);
 			}
 		},
 
 		processItemDrop: dorado.widget.AbstractList.prototype.processItemDrop,
 
-		initDraggingIndicator: function () {
+		initDraggingIndicator: function() {
 		},
 
-		beforeCellValueEdit: function (entity, column, value) {
+		beforeCellValueEdit: function(entity, column, value) {
 			var arg = {
 				entity: entity,
 				column: column,
@@ -2825,7 +2826,7 @@
 			return arg.processDefault;
 		},
 
-		onCellValueEdit: function (entity, column) {
+		onCellValueEdit: function(entity, column) {
 			this.fireEvent("onCellValueEdit", this, {
 				entity: entity,
 				column: column
@@ -2843,8 +2844,10 @@
 
 		ATTRIBUTES: {
 			selection: {
-				getter: function (p, v) {
-					if (this.fixed) return this.grid.get(p);
+				getter: function(p, v) {
+					if (this.fixed) {
+						return this.grid.get(p);
+					}
 					else {
 						if (this._selectionMode == "multiRows") {
 							return this._selection ? this._selection.slice(0) : [];
@@ -2857,7 +2860,7 @@
 			}
 		},
 
-		constructor: function (grid, fixed) {
+		constructor: function(grid, fixed) {
 			this.grid = grid;
 			this.fixed = fixed;
 
@@ -2869,14 +2872,15 @@
 				this._className = "fixed-inner-grid";
 				this._skipProcessBlankRows = true;
 				this.setScrollingIndicator = dorado._NULL_FUNCTION;
-			} else {
+			}
+			else {
 				this._className = "inner-grid";
 			}
 		},
 
 		createItemModel: dorado._NULL_FUNCTION,
 
-		createDom: function () {
+		createDom: function() {
 			this._container = $DomUtils.xCreate({
 				tagName: "DIV",
 				style: {
@@ -2909,7 +2913,7 @@
 			return tableFrame;
 		},
 
-		refreshDom: function (dom) {
+		refreshDom: function(dom) {
 			if (!this._columnsInfo) return;
 			dorado.widget.Control.prototype.refreshDom.apply(this, arguments);
 
@@ -2932,7 +2936,7 @@
 				delete grid._skipScrollCurrentIntoView;
 
 				if (grid._rowHeightInfos) {
-					with (grid._rowHeightInfos) {
+					with(grid._rowHeightInfos) {
 						var p = (dorado.Browser.mozilla || dorado.Browser.opera) ? "offsetHeight" : "clientHeight";
 						if (this._beginBlankRow) rows["beginBlankRow"] = (this._beginBlankRow.parentNode.style.display == "none") ? 0 : this._beginBlankRow.firstChild[p];
 						if (this._endBlankRow) rows["endBlankRow"] = (this._endBlankRow.parentNode.style.display == "none") ? 0 : this._endBlankRow.firstChild[p];
@@ -2946,7 +2950,7 @@
 			}
 		},
 
-		refreshFrameHeader: function () {
+		refreshFrameHeader: function() {
 			var grid = this.grid, tableFrameHeader = this._frameTHead;
 			var $tableFrameHeader = jQuery(tableFrameHeader);
 			if (grid._showHeader) {
@@ -2977,9 +2981,9 @@
 					headerTBody = this._headerTBody = headerTable.tBodies[0];
 
 					var self = this;
-					$fly(headerTBody).mousemove(function () {
+					$fly(headerTBody).mousemove(function() {
 						return self.onHeaderMouseMove.apply(self, arguments);
-					}).mouseleave(function () {
+					}).mouseleave(function() {
 							return self.onHeaderMouseLeave.apply(self, arguments);
 						});
 
@@ -2995,9 +2999,9 @@
 				headerTable.columnModelTimestamp = grid._columnModelTimestamp;
 
 				var structure = this._columnsInfo.structure;
-				for (var i = 0; i < structure.length; i++) {
+				for(var i = 0; i < structure.length; i++) {
 					var cellInfos = structure[i];
-					var row = $DomUtils.getOrCreateChild(headerTBody, i, function () {
+					var row = $DomUtils.getOrCreateChild(headerTBody, i, function() {
 						var row = document.createElement("TR"), offset = 0;
 						;
 						$DomUtils.disableUserSelection(row);
@@ -3012,12 +3016,12 @@
 					});
 
 					var self = this;
-					for (var j = 0; j < cellInfos.length; j++) {
+					for(var j = 0; j < cellInfos.length; j++) {
 						var cellInfo = cellInfos[j];
 						var col = cellInfo.column;
-						var cell = col.headerCell = $DomUtils.getOrCreateChild(row, j, function () {
+						var cell = col.headerCell = $DomUtils.getOrCreateChild(row, j, function() {
 							var cell = self.createCell();
-							$fly(cell).click(function () {
+							$fly(cell).click(function() {
 								var column = grid._columnsInfo.idMap[cell.colId];
 								if (column) {
 									var eventArg = {
@@ -3036,7 +3040,7 @@
 											try {
 												grid.sort(column, !(sortState == null || sortState == "desc"));
 											}
-											catch (e) {
+											catch(e) {
 												dorado.Exception.removeException(e);
 											}
 										}
@@ -3063,9 +3067,10 @@
 						if (col instanceof dorado.widget.grid.DataColumn) {
 							if (col.get("sortState")) $fly(cell).addClass("sorted-header");
 							label.style.width = col._realWidth + "px";
-						} else {
+						}
+						else {
 							var w = 0;
-							col._columns.each(function (subCol) {
+							col._columns.each(function(subCol) {
 								if (subCol._visible) w += (subCol._realWidth || 0);
 							});
 							if (w) label.style.width = w + "px";
@@ -3094,7 +3099,7 @@
 								});
 							}
 						}
-						cell.colId = col._id;
+						cell.colId = col._uniqueId;
 						if (grid._headerMenuOpenColumn == col) grid.showHeaderOptionButton(col);
 					}
 					$DomUtils.removeChildrenFrom(row, cellInfos.length);
@@ -3108,20 +3113,22 @@
 						tFoot = document.createElement("TFOOT");
 						this._filterBarRow = filterBarRow = document.createElement("TR");
 						filterBarRow.className = "filter-bar";
-						$fly(filterBarRow).mouseenter(function () {
+						$fly(filterBarRow).mouseenter(function() {
 							grid.showFilterPanel();
-						}).mouseleave(function () {
+						}).mouseleave(function() {
 								dorado.Toolkits.setDelayedAction(grid, "$filterPanelTimerId", grid.hideFilterPanel, 500);
 							});
 						tFoot.appendChild(filterBarRow);
 						headerTable.appendChild(tFoot);
-					} else {
+					}
+					else {
 						tFoot = filterBarRow.parentNode;
 						$fly(tFoot).show();
 					}
 					this.refreshFilterBar();
 					filterBarHeight = tFoot.offsetHeight;
-				} else if (tFoot) {
+				}
+				else if (tFoot) {
 					$fly(tFoot).hide();
 				}
 
@@ -3131,15 +3138,16 @@
 				 }
 				 */
 				$tableFrameHeader.show();
-			} else {
+			}
+			else {
 				$tableFrameHeader.hide();
 			}
 		},
 
-		refreshFilterBar: function () {
+		refreshFilterBar: function() {
 			var grid = this.grid, filterBarRow = this._filterBarRow, filterEntity = grid._itemModel.filterEntity;
 			var dataColumns = this._columnsInfo.dataColumns;
-			for (var i = 0; i < dataColumns.length; i++) {
+			for(var i = 0; i < dataColumns.length; i++) {
 				var column = dataColumns[i];
 				var cell = $DomUtils.getOrCreateChild(filterBarRow, i, this.createCell), label = cell.firstChild;
 				cell.className = "filter-bar-cell";
@@ -3152,12 +3160,12 @@
 					data: filterEntity,
 					column: column
 				});
-				cell.colId = column._id;
+				cell.colId = column._uniqueId;
 			}
 			$DomUtils.removeChildrenFrom(filterBarRow, dataColumns.length);
 		},
 
-		refreshFrameFooter: function () {
+		refreshFrameFooter: function() {
 			var grid = this.grid, tableFrameFooter = this._frameTFoot;
 			var $tableFrameFooter = jQuery(tableFrameFooter);
 			if (grid._showFooter) {
@@ -3194,7 +3202,7 @@
 				footerTable.columnModelTimestamp = grid._columnModelTimestamp;
 
 				var dataColumns = this._columnsInfo.dataColumns;
-				for (var i = 0; i < dataColumns.length; i++) {
+				for(var i = 0; i < dataColumns.length; i++) {
 					var col = dataColumns[i];
 					var cell = $DomUtils.getOrCreateChild(footerRow, i, this.createCell);
 					cell.className = "footer";
@@ -3235,21 +3243,23 @@
 							});
 						}
 					}
-					cell.colId = col._id;
+					cell.colId = col._uniqueId;
 				}
 				$DomUtils.removeChildrenFrom(footerRow, dataColumns.length);
 
 				$tableFrameFooter.show();
-			} else {
+			}
+			else {
 				$tableFrameFooter.hide();
 			}
 		},
 
-		refreshFrameBody: function (container) {
+		refreshFrameBody: function(container) {
 			this._cols = this._columnsInfo.dataColumns.length;
 			if (this._scrollMode == "viewport") {
 				this.refreshViewPortContent(container);
-			} else {
+			}
+			else {
 				this.refreshContent(container);
 			}
 			if (this._scrollMode && this._scrollMode != this._scrollMode && !this.getCurrentItemId()) {
@@ -3257,7 +3267,7 @@
 			}
 		},
 
-		updateContainerHeight: function (container) {
+		updateContainerHeight: function(container) {
 			if (this.grid.hasRealHeight()) {
 				var tableFrame = this.getDom();
 				var h = (tableFrame.parentNode.offsetHeight -
@@ -3270,12 +3280,12 @@
 			}
 		},
 
-		notifySizeChange: function () {
+		notifySizeChange: function() {
 			if (!this._parent || !this._rendered || this.fixed) return;
 			this.grid.notifySizeChange();
 		},
 
-		doRefreshItemDomData: function (row, entity) {
+		doRefreshItemDomData: function(row, entity) {
 			var grid = this.grid, processDefault = true;
 			if (grid.getListenerCount("onRenderRow")) {
 				var arg = {
@@ -3291,9 +3301,11 @@
 				var renderer;
 				if (entity.rowType == "header") {
 					renderer = grid._groupHeaderRenderer || $singleton(dorado.widget.grid.GroupHeaderRenderer);
-				} else if (entity.rowType == "footer") {
+				}
+				else if (entity.rowType == "footer") {
 					renderer = grid._groupFooterRenderer || $singleton(dorado.widget.grid.GroupFooterRenderer);
-				} else {
+				}
+				else {
 					renderer = grid._rowRenderer || $singleton(dorado.widget.grid.DefaultRowRenderer);
 				}
 				dorado.Renderer.render(renderer, row, {
@@ -3304,7 +3316,7 @@
 			}
 		},
 
-		createCell: function () {
+		createCell: function() {
 			var label = document.createElement("DIV");
 			label.className = "cell";
 			label.style.overflow = "hidden";
@@ -3313,7 +3325,7 @@
 			return cell;
 		},
 
-		createItemDom: function (item) {
+		createItemDom: function(item) {
 			var grid = this.grid;
 			var row = document.createElement("TR");
 			row.className = "row";
@@ -3324,11 +3336,11 @@
 			return row;
 		},
 
-		createItemDomDetail: function (row, item) {
+		createItemDomDetail: function(row, item) {
 			row.style.height = '';
 		},
 
-		refreshItemDoms: function (tbody, reverse, fn) {
+		refreshItemDoms: function(tbody, reverse, fn) {
 			var grid = this.grid;
 			if (this.fixed) {
 				grid._rowHeightInfos = {
@@ -3342,17 +3354,19 @@
 				var rows;
 				if (this.fixed) {
 					rows = $invokeSuper.call(this, arguments);
-				} else {
+				}
+				else {
 					var i = 0;
 					var visibleRows = grid._rowHeightInfos ? grid._rowHeightInfos.visibleRows : Number.MAX_VALUE;
-					rows = $invokeSuper.call(this, [tbody, reverse, (function (row) {
+					rows = $invokeSuper.call(this, [tbody, reverse, (function(row) {
 						var b = fn ? fn(row) : true;
 						return b && ((++i) < visibleRows);
 					})]);
 				}
 				if (grid._rowHeightInfos) grid._rowHeightInfos.visibleRows = rows;
 				return rows;
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, arguments);
 			}
 		},
@@ -3367,31 +3381,35 @@
 			}
 		},
 
-		doOnKeyDown: function () {
+		doOnKeyDown: function() {
 			return true;
 		},
 
-		syncroRowHeights: function (scrollInfo) {
-			with (this.grid._rowHeightInfos) {
+		syncroRowHeights: function(scrollInfo) {
+			with(this.grid._rowHeightInfos) {
 				if (this.grid._dynaRowHeight) {
-					for (var i = 0; i < unmatched.length; i++) {
+					for(var i = 0; i < unmatched.length; i++) {
 						var row = this._itemDomMap[unmatched[i]];
 						if (row) {
 							var h = rows[unmatched[i]];
 							if (dorado.Browser.msie && dorado.Browser.version == 8) {
 								row.style.height = h + "px";
 								$fly(row).toggleClass("fix-row-bug");
-							} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-								row.firstChild.style.height = h + "px";
-							} else {
+							}
+							else {
 								row.style.height = h + "px";
 							}
+							/*
+							 else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+							 row.firstChild.style.height = h + "px";
+							 }
+							 */
 						}
 					}
 					unmatched = [];
 
 					if (this._itemDomCount > visibleRows) {
-						for (var itemId in unfound) {
+						for(var itemId in unfound) {
 							if (unfound.hasOwnProperty(itemId)) {
 								var row = this._itemDomMap[itemId];
 								if (row) this.removeItemDom(row);
@@ -3402,25 +3420,27 @@
 				}
 
 				if (this._beginBlankRow) {
-					with (this._beginBlankRow) {
+					with(this._beginBlankRow) {
 						var beginBlankRow = rows["beginBlankRow"];
 						if (beginBlankRow) {
 							firstChild.colSpan = this._cols;
 							firstChild.style.height = beginBlankRow + "px";
 							parentNode.style.display = "";
-						} else {
+						}
+						else {
 							parentNode.style.display = "none";
 						}
 					}
 				}
 				if (this._endBlankRow) {
-					with (this._endBlankRow) {
+					with(this._endBlankRow) {
 						var endBlankRow = rows["endBlankRow"];
 						if (endBlankRow) {
 							firstChild.colSpan = this._cols;
 							firstChild.style.height = endBlankRow + "px";
 							parentNode.style.display = "";
-						} else {
+						}
+						else {
 							parentNode.style.display = "none";
 						}
 					}
@@ -3433,18 +3453,22 @@
 			}
 		},
 
-		syncroRowHeight: function (itemId) {
+		syncroRowHeight: function(itemId) {
 			var row = this._itemDomMap[itemId];
 			if (!row) return;
 			var h = this.grid._rowHeightInfos.rows[itemId];
 			if (dorado.Browser.msie && dorado.Browser.version == 8) {
 				row.style.height = h + "px";
 				$fly(row).toggleClass("fix-row-bug");
-			} else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-				row.firstChild.style.height = h + "px";
-			} else {
+			}
+			else {
 				row.style.height = h + "px";
 			}
+			/*
+			 else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+			 row.firstChild.style.height = h + "px";
+			 }
+			 */
 		},
 
 		setYScrollPos: function (ratio) {
@@ -3460,13 +3484,13 @@
 			}
 		},
 
-		setScrollingIndicator: function (text) {
+		setScrollingIndicator: function(text) {
 			var indicator = this.getScrollingIndicator();
 			$fly(indicator).text(text).show();
 			$DomUtils.placeCenterElement(indicator, this.grid.getDom());
 		},
 
-		setHoverRow: function (row) {
+		setHoverRow: function(row) {
 			if (row && row.rowType) row = null;
 
 			row = (row == null) ? null : ((row && row.nodeType) ? row : this._itemDomMap[row]);
@@ -3483,15 +3507,15 @@
 			grid._processingSetHoverRow = false;
 		},
 
-		showCellEditor: function (column) {
+		showCellEditor: function(column) {
 			var grid = this.grid;
 			var row = this._currentRow;
 			if (!row) return;
 
 			if (grid._currentCell) $fly(grid._currentCell).removeClass("current-cell");
-			for (var i = 0; i < row.cells.length; i++) {
+			for(var i = 0; i < row.cells.length; i++) {
 				var cell = row.cells[i];
-				if (cell.colId == column._id) {
+				if (cell.colId == column._uniqueId) {
 					if (grid._divScroll) {
 						var offset1 = $fly(grid._divScroll).offset(), offset2 = $fly(cell).offset();
 						var t = offset2.top - offset1.top;
@@ -3505,22 +3529,25 @@
 					if (gridDom.scrollWidth > gridDom.clientWidth ||
 						gridDom.scrollHeight > gridDom.clientHeight) {
 						var offset1 = $fly(gridDom).offset(), offset2 = $fly(cell).offset();
-						with (gridDom) {
+						with(gridDom) {
 							var l = offset2.left - offset1.left;
 							if ((l + cell.offsetWidth) > clientWidth) {
 								scrollLeft -= clientWidth - (l + cell.offsetWidth);
-							} else if (l < 0) {
+							}
+							else if (l < 0) {
 								scrollLeft += l;
 							}
 						}
-					} else if (grid._divScroll) {
+					}
+					else if (grid._divScroll) {
 						var container = this.getDom().parentNode;
 						if (container.scrollWidth > container.clientWidth) {
 							var scrollPos = -1, ratio;
-							with (container) {
+							with(container) {
 								if ((cell.offsetLeft + cell.offsetWidth) > (scrollLeft + clientWidth)) {
 									scrollPos = cell.offsetLeft + cell.offsetWidth - clientWidth;
-								} else if (cell.offsetLeft < scrollLeft) {
+								}
+								else if (cell.offsetLeft < scrollLeft) {
 									scrollPos = cell.offsetLeft;
 								}
 								ratio = scrollPos / (scrollWidth - clientWidth);
@@ -3541,11 +3568,13 @@
 							if (cellEditor.shouldShow()) {
 								cellEditor.show(this, cell);
 							}
-						} else {
+						}
+						else {
 							var fc = dorado.widget.findFocusableControlInElement(cell);
 							if (fc) {
 								if (!fc.get("focused")) fc.setFocus();
-							} else {
+							}
+							else {
 								if (!grid.get("focused")) grid.setFocus();
 							}
 						}
@@ -3555,13 +3584,13 @@
 			}
 		},
 
-		onHeaderMouseMove: function (evt) {
+		onHeaderMouseMove: function(evt) {
 			if ($DomUtils.isDragging()) return;
 			var grid = this.grid, headerTable = this._headerTable;
 			var offset = $fly(headerTable).offset(), action;
 
 			var dataColumns = this._columnsInfo.dataColumns;
-			for (var i = 0; i < dataColumns.length; i++) {
+			for(var i = 0; i < dataColumns.length; i++) {
 				var col = dataColumns[i];
 				var headerCell = col.headerCell;
 				if (col._resizeable && Math.abs((headerCell.offsetLeft + headerCell.offsetWidth) - (evt.pageX - offset.left)) < 2 &&
@@ -3573,7 +3602,7 @@
 			}
 
 			if (!action) {
-				var headerCell = $DomUtils.findParent(evt.target, function (node) {
+				var headerCell = $DomUtils.findParent(evt.target, function(node) {
 					return node.nodeName == "TD" && node.parentNode.parentNode.parentNode == headerTable;
 				}, true);
 				if (headerCell) {
@@ -3586,24 +3615,32 @@
 			return !action;
 		},
 
-		onHeaderMouseLeave: function () {
+		onHeaderMouseLeave: function() {
 			if ($DomUtils.isDragging()) return;
 			var grid = this.grid;
 			grid.setHoverHeaderColumn(null);
 			return true;
 		},
 
-		getSelection: function () {
-			if (this.fixed) return this.grid._innerGrid.getSelection();
-			else return $invokeSuper.call(this);
+		getSelection: function() {
+			if (this.fixed) {
+				return this.grid._innerGrid.getSelection();
+			}
+			else {
+				return $invokeSuper.call(this);
+			}
 		},
 
-		setSelection: function (selection) {
-			if (this.fixed) this.grid._innerGrid._selection = selection;
-			else this._selection = selection;
+		setSelection: function(selection) {
+			if (this.fixed) {
+				this.grid._innerGrid._selection = selection;
+			}
+			else {
+				this._selection = selection;
+			}
 		},
 
-		toggleItemSelection: function (item, selected) {
+		toggleItemSelection: function(item, selected) {
 			var grid = this.grid;
 			if (!grid._highlightSelectedRow) return;
 
@@ -3687,7 +3724,7 @@
 			window._colDropIndicator = ind = [ind1, ind2, ind3];
 		}
 
-		var cacheId = dropPosition.column._id + dropPosition.before;
+		var cacheId = dropPosition.column._uniqueId + dropPosition.before;
 		if (cacheId != window._colDropPosition) {
 			window._colDropPosition = cacheId;
 
@@ -3701,8 +3738,8 @@
 			var top2 = $fly(cell.offsetParent).offset().top + cell.offsetParent.offsetHeight;
 			$fly(ind[1]).top(top2);
 			var widthAdj = dropPosition.before ? 0 : cell.offsetWidth;
-			$fly([ind[0], ind[1]]).left(offset.left + widthAdj - parseInt(arrowHeight / 2));
-			$fly(ind[2]).position(offset.left + widthAdj - parseInt(ind[2].offsetWidth / 2), offset.top).height(top2 - offset.top);
+			$fly([ind[0], ind[1]]).left(offset.left - 1 + widthAdj - parseInt(arrowHeight / 2));
+			$fly(ind[2]).position(offset.left - 1 + widthAdj - parseInt(ind[2].offsetWidth / 2), offset.top).height(top2 - offset.top);
 
 			if (ind[0].parentNode != document.body) {
 				document.body.appendChild(ind[0]);
@@ -3731,7 +3768,7 @@
 					width: 6,
 					tabIndex: -1
 				},
-				onmouseleave: function () {
+				onmouseleave: function() {
 					$fly(handler).hide();
 				}
 			});
@@ -3741,7 +3778,7 @@
 				distence: 3,
 				helper: getColumnResizeHelper,
 				axis: "x",
-				start: function (evt, ui) {
+				start: function(evt, ui) {
 					var column = $fly(handler).data("column");
 					var grid = column.get("grid");
 					if (grid._currentCellEditor) {
@@ -3760,13 +3797,13 @@
 					var height = ((grid._domMode == 0) ? (grid.getDom()) : (grid._divScroll)).clientHeight - cellOffsetTop;
 					ui.helper.show().bringToFront().position(this._originLeft, cellOffset.top).height(height);
 				},
-				drag: function (evt, ui) {
+				drag: function(evt, ui) {
 					ui.position.left = this._originLeft;
 					if (evt.pageX - this._originLeft > minSize) {
 						ui.helper.width(evt.pageX - this._originLeft);
 					}
 				},
-				stop: function (evt, ui) {
+				stop: function(evt, ui) {
 					var width = evt.pageX - this._originLeft;
 					if (width < minSize) width = minSize;
 					if (width != this._originWidth) {

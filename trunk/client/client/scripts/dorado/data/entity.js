@@ -21,7 +21,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		invalid : 1,
 		executing : 2
 	};
-
+	
 	function addMessage2Context(context, entity, property, message) {
 		var state = message.state || "error";
 		context[state].push({
@@ -31,13 +31,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			text : message.text
 		});
 	}
-
+	
 	function addMessages2Context(context, entity, property, messages) {
 		for (var i = 0; i < messages.length; i++) {
 			addMessage2Context(context, entity, property, messages[i]);
 		}
 	}
-
+	
 	function mergeValidationContext(context, state, subContext) {
 		var subContextMessages = subContext[state];
 		if (!subContextMessages) return;
@@ -45,7 +45,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			context[state].push(subContextMessages[i]);
 		}
 	}
-
+	
 	function mergeValidationContexts(context, subContext) {
 		mergeValidationContext(context, "info", subContext);
 		mergeValidationContext(context, "ok", subContext);
@@ -57,75 +57,66 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 实体对象。
-	 * <p>
-	 * 在创建一个实体对象时，我们既可以为其指定实体数据类型，也可以不指定。<br>
-	 * 如果指定了实体数据类型，那么访问该实体对象的属性，这些属性必须存在于{@link dorado.EntityDataType}的{@link dorado.PropertyDef}中。<br>
-	 * 如果为指定实体数据类型，就可以随意的访问实体对象中的任意属性。
-	 * </p>
-	 * <p>
-	 * 为实体对象指定实体数据类型的方法有两种:<br>
-	 * 一是利用构造方法中的dataType参数直接指定，此时dorado.Entity的三个构造参数中只有dataType是必须指定的。<br>
-	 * 二是利用被封装的JSON对象中的$dataType属性，此时dorado.Entity的三个构造参数中的data和dataTypeRepository是必须指定的。
-	 * 例如以下的JSON对象说明其对应的数据类型应为"Employee"。
+	 *        <p>
+	 *        在创建一个实体对象时，我们既可以为其指定实体数据类型，也可以不指定。<br>
+	 *        如果指定了实体数据类型，那么访问该实体对象的属性，这些属性必须存在于{@link dorado.EntityDataType}的{@link dorado.PropertyDef}中。<br>
+	 *        如果为指定实体数据类型，就可以随意的访问实体对象中的任意属性。
+	 *        </p>
+	 *        <p>
+	 *        为实体对象指定实体数据类型的方法有两种:<br>
+	 *        一是利用构造方法中的dataType参数直接指定，此时dorado.Entity的三个构造参数中只有dataType是必须指定的。<br>
+	 *        二是利用被封装的JSON对象中的$dataType属性，此时dorado.Entity的三个构造参数中的data和dataTypeRepository是必须指定的。
+	 *        例如以下的JSON对象说明其对应的数据类型应为"Employee"。
+	 * 
 	 * <pre class="symbol-example code">
 	 * <code class="javascript">
 	 * {
-	 *	 $dataType : "Employee",
-	 *	 id : "0001",
-	 *	 name : "John",
-	 *	 sex : true
+	 * 	$dataType : &quot;Employee&quot;,
+	 * 	id : &quot;0001&quot;,
+	 * 	name : &quot;John&quot;,
+	 * 	sex : true
 	 * }
 	 * </code>
 	 * </pre>
+	 * 
 	 * </p>
-	 * <p>
-	 * 注意：一旦我们将某个JSON数据对象封装为实体对象，那么这个JSON数据对象将将会被实际对象完全接管。
-	 * 实体对象会根据自己的需要修改其中的属性、甚至增加属性。因此该JSON数据对象的有效性和完整性将不再得到保障。
-	 * </p>
-	 * @param {Object} [data] 要封装JSON数据对象。
-	 * @param {dorado.DataTypeRepository} [dataTypeRepository] 数据类型的管理器。
-	 * @param {dorado.EntityDataType} [dataType] 实体对象的数据类型。
-	 *
-	 * @example
-	 * // 创建一个空的实体对象，由于未指定实体数据类型，我们可以随意的访问实体对象中的任意属性。
-	 * var entity = new dorado.Entity();
-	 * entity.set("property1, "value1");
-	 *
-	 * @example
-	 * // 将一个JSON对象封装为实体对象，同时利用$dataType指定实体数据类型。
-	 * var employee = {
-	 *	 $dataType : "Employee",
-	 *	 id : "0001",
-	 *	 name : "John",
-	 *	 sex : true
-	 * };
-	 * var entity = new dorado.Entity(employee, view.dataTypeRepository);
-	 * entity.get("name"); // 只能访问Employee类型中存在属性。
-	 *
-	 * @example
-	 * var employee = {
-	 *	 id : "0001",
-	 *	 name : "John",
-	 *	 sex : true
-	 * };
-	 *
+	 *        <p>
+	 *        注意：一旦我们将某个JSON数据对象封装为实体对象，那么这个JSON数据对象将将会被实际对象完全接管。
+	 *        实体对象会根据自己的需要修改其中的属性、甚至增加属性。因此该JSON数据对象的有效性和完整性将不再得到保障。
+	 *        </p>
+	 * @param {Object}
+	 *            [data] 要封装JSON数据对象。
+	 * @param {dorado.DataTypeRepository}
+	 *            [dataTypeRepository] 数据类型的管理器。
+	 * @param {dorado.EntityDataType}
+	 *            [dataType] 实体对象的数据类型。
+	 * 
+	 * @example // 创建一个空的实体对象，由于未指定实体数据类型，我们可以随意的访问实体对象中的任意属性。 var entity = new
+	 *          dorado.Entity(); entity.set("property1, "value1");
+	 * 
+	 * @example // 将一个JSON对象封装为实体对象，同时利用$dataType指定实体数据类型。 var employee = {
+	 *          $dataType : "Employee", id : "0001", name : "John", sex : true };
+	 *          var entity = new dorado.Entity(employee,
+	 *          view.dataTypeRepository); entity.get("name"); //
+	 *          只能访问Employee类型中存在属性。
+	 * 
+	 * @example var employee = { id : "0001", name : "John", sex : true };
+	 * 
 	 * var Employee = new EntityDataType("Employee");
 	 * Employee.addPropertyDef(new PropertyDef("id"));
 	 * Employee.addPropertyDef(new PropertyDef("name"));
 	 * Employee.addPropertyDef(new PropertyDef("sex"));
-	 *
-	 * // 将一个JSON对象封装为实体对象，同时利用dataType参数指定实体数据类型。
-	 * var entity = new dorado.Entity(employee, null, Employee);
-	 * entity.get("name"); // 只能访问Employee类型中存在属性。
-	 *
-	 * // 创建一个空的、类型为Employee的实体对象。
-	 * var entity = new dorado.Entity(null, null, Employee);
-	 * entity.set("name", "Mike"); // 只能访问Employee类型中存在属性。
+	 *  // 将一个JSON对象封装为实体对象，同时利用dataType参数指定实体数据类型。 var entity = new
+	 * dorado.Entity(employee, null, Employee); entity.get("name"); //
+	 * 只能访问Employee类型中存在属性。
+	 *  // 创建一个空的、类型为Employee的实体对象。 var entity = new dorado.Entity(null, null,
+	 * Employee); entity.set("name", "Mike"); // 只能访问Employee类型中存在属性。
 	 */
 	dorado.Entity = function(data, dataTypeRepository, dataType) {
 
 		/**
 		 * 实体对象的id。
+		 * 
 		 * @type long
 		 */
 		this.entityId = dorado.Core.getTimestamp() + '';
@@ -136,16 +127,18 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * 每当实体对象中的数据或状态发生了改变，实体对象都会更新自己的时间戳，
 		 * 因此，时间戳可以可以用来判断实体对象中的数据或状态在一段时间内有没有被修改过。
 		 * </p>
+		 * 
 		 * @type int
 		 */
 		this.timestamp = dorado.Core.getTimestamp();
 
 		/**
 		 * 该实体对象中的数据类型所属的数据类型管理器。
+		 * 
 		 * @type dorad.DataRepository
 		 */
 		this.dataTypeRepository = dataTypeRepository;
-
+		
 		this._propertyInfoMap = {};
 		if (data) {
 			this._data = data;
@@ -162,6 +155,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 		/**
 		 * 该实体对象对应的实体数据类型。
+		 * 
 		 * @type dorado.EntityDataType
 		 */
 		this.dataType = dataType;
@@ -195,34 +189,38 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.acceptUnknownProperty = (dataType) ? dataType._acceptUnknownProperty : true;
 		}
 	};
-
+	
 	/**
 	 * 实体对象的状态常量 - 无状态。
+	 * 
 	 * @type int
 	 */
 	dorado.Entity.STATE_NONE = 0;
 
 	/**
 	 * 实体对象的状态常量 - 新增状态。
+	 * 
 	 * @type int
 	 */
 	dorado.Entity.STATE_NEW = 1;
 
 	/**
 	 * 实体对象的状态常量 - 已修改状态。
+	 * 
 	 * @type int
 	 */
 	dorado.Entity.STATE_MODIFIED = 2;
 
 	/**
 	 * 实体对象的状态常量 - 已删除状态。
+	 * 
 	 * @type int
 	 */
 	dorado.Entity.STATE_DELETED = 3;
 
 	/**
-	 * 实体对象的状态常量 - 被移动状态。
-	 * 通产指该对象被从一个位置移动到了另一个位置，这包括其父对象的改变或仅仅是顺序被改变。
+	 * 实体对象的状态常量 - 被移动状态。 通产指该对象被从一个位置移动到了另一个位置，这包括其父对象的改变或仅仅是顺序被改变。
+	 * 
 	 * @type int
 	 */
 	dorado.Entity.STATE_MOVED = 4;
@@ -230,7 +228,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 	dorado.Entity._MESSAGE_DATA_CHANGED = 3;
 	dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED = 4;
 	dorado.Entity._MESSAGE_REFRESH_ENTITY = 5;
-
+	
 	dorado.Entity._MESSAGE_LOADING_START = 10;
 	dorado.Entity._MESSAGE_LOADING_END = 11;
 
@@ -256,6 +254,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 		/**
 		 * 实体对象的状态。
+		 * 
 		 * @type int
 		 * @default dorado.Entity.STATE_NONE
 		 */
@@ -278,7 +277,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			}
 		},
-
+		
 		/**
 		 * 禁止dorado.Entity将消息发送给其观察者。
 		 * <p>
@@ -289,30 +288,32 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		disableObservers: function() {
 			this._disableObserversCounter++;
 		},
-
+		
 		/**
 		 * 允许dorado.Entity将消息发送给其观察者。
 		 */
 		enableObservers: function() {
 			if (this._disableObserversCounter > 0) this._disableObserversCounter--;
 		},
-
+		
 		/**
 		 * 通知dorado.Entity的观察者刷新数据。
 		 */
 		notifyObservers: function() {
 			this.sendMessage(0);
 		},
-
+		
 		sendMessage: function(messageCode, arg) {
 			if (this._disableObserversCounter == 0 && this._observer) {
 				this._observer.entityMessageReceived(messageCode, arg);
 			}
 		},
-
+		
 		/**
 		 * 设置实体对象的状态。
-		 * @param {int} state 状态。
+		 * 
+		 * @param {int}
+		 *            state 状态。
 		 */
 		setState: function(state) {
 			if (this.state == state) return;
@@ -335,7 +336,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 			this.state = state;
 			this.timestamp = dorado.Core.getTimestamp();
-
+			
 			var entityList = this.parent;
 			if (entityList && entityList instanceof dorado.EntityList) {
 				var page = this.page;
@@ -350,16 +351,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (dataType && !this.disableEvents) dataType.fireEvent("onStateChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED, eventArg);
 		},
-
+		
 		_get: function(property, propertyDef, callback, loadMode) {
 
 			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
 				if (value && typeof (value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent == entity) return value;
-
+				
 				var dataType = propertyDef.get("dataType");
 				if (dataType == null) return value;
 
-				var originValue = value;
+				var originValue = value; 
 				value = dataType.parse(originValue, propertyDef.get("typeFormat"));
 				replaceValue = replaceValue &&
 					((value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent !== entity);
@@ -385,7 +386,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 
 						entity._data[propertyDef._name] = value;
 					}
-
+					
 					var eventArg = {};
 					if (value instanceof dorado.Entity) {
 						eventArg.entity = value;
@@ -403,7 +404,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 				return value;
 			}
-
+			
 			var value = this._data[property], invokeCallback = true;
 			if (value === undefined) {
 				if (propertyDef) {
@@ -428,7 +429,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 								if (callback) $callback(callback, false);
 								return;
 							}
-							
+
 							if (callback || loadMode == "auto") {
 								var isNewPipe = (pipe.runningProcNum == 0);
 								pipe.getAsync({
@@ -443,7 +444,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 										if (isNewPipe) {
 											this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, eventArg);
 										}
-
+												
 										if (success) {
 											eventArg.data = result;
 
@@ -483,11 +484,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 										if (callback) $callback(callback, success, result);
 									}
 								});
-
+								
 								this._data[property] = dataPipeWrapper = {
 									isDataPipeWrapper : true,
 									pipe : pipe
-								};
+								};	
 								if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, eventArg);
 								invokeCallback = false;
 							} else {
@@ -506,7 +507,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (aggregationDataType instanceof dorado.AggregationDataType) {
 							value = transferAndReplaceIf(this, propertyDef, [], false);
 							value.isNull = true;;
-
+							
 							if (dataPipeWrapper) {
 								dataPipeWrapper.value = value;
 							} else if (loadMode != "never") {
@@ -527,11 +528,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (pipe.runningProcNum > 0 && !shouldAbortAsyncProcedures) {
 							throw new dorado.ResourceException("dorado.data.GetDataDuringLoading", "Entity");
 						}
-
+						
 						try {
 							value = pipe.get();
 							pipe.abort(true, value);
-						}
+						} 
 						catch (e) {
 							pipe.abort(false, e);
 							throw e;
@@ -564,10 +565,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (invokeCallback && callback) $callback(callback, true, value);
 			return value;
 		},
-
+		
 		/**
 		 * 根据名称返回某属性对应的PropertyDef。
-		 * @param {String} property
+		 * 
+		 * @param {String}
+		 *            property
 		 * @return {dorado.PropertyDef} 得到的属性值。
 		 */
 		getPropertyDef: function(property) {
@@ -580,21 +583,24 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return propertyDef;
 		},
-
+		
 		/**
 		 * 获取属性值。
 		 * <p>
 		 * 此方法还支持迭代式的属性读取，及通过"."来分割一组属性名，交由此方法一层层向下挖掘并返回最终结果。<br>
 		 * 当进行迭代式的读取时，系统会自动判断前一个属性返回的对象是dorado.Entity的派生类还是普通JSON对象，并藉此决定如何进一步执行读取操作。
 		 * </p>
-		 * @param {String} property 要获取的属性名。
-		 * @param {String} [loadMode="always"] 数据装载模式。<br>
-		 * 包含下列三种取值:
-		 * <ul>
-		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
-		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
-		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
-		 * </ul>
+		 * 
+		 * @param {String}
+		 *            property 要获取的属性名。
+		 * @param {String}
+		 *            [loadMode="always"] 数据装载模式。<br>
+		 *            包含下列三种取值:
+		 *            <ul>
+		 *            <li>always - 如果有需要总是装载尚未装载的延时数据。</li>
+		 *            <li>auto - 如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
+		 *            <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
+		 *            </ul>
 		 * @return {Object} 得到的属性值。
 		 */
 		get: function(property, loadMode) {
@@ -618,22 +624,26 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return result;
 		},
-
+		
 		/**
 		 * 以异步操作的方式获取属性值。
 		 * <p>
 		 * 此方法还支持迭代式的属性读取，及通过"."来分割一组属性名，交由此方法一层层向下挖掘并返回最终结果。<br>
 		 * 当进行迭代式的读取时，系统会自动判断前一个属性返回的对象是dorado.Entity的派生类还是普通JSON对象，并藉此决定如何进一步执行读取操作。
 		 * </p>
-		 * @param {String} property 要获取的属性名。
-		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为得到的属性值。
-		 * @param {String} [loadMode="always"] 数据装载模式。<br>
-		 * 包含下列三种取值:
-		 * <ul>
-		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
-		 * <li>auto	-	对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
-		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
-		 * </ul>
+		 * 
+		 * @param {String}
+		 *            property 要获取的属性名。
+		 * @param {Function|dorado.Callback}
+		 *            callback 回调对象，传入回调对象的参数即为得到的属性值。
+		 * @param {String}
+		 *            [loadMode="always"] 数据装载模式。<br>
+		 *            包含下列三种取值:
+		 *            <ul>
+		 *            <li>always - 如果有需要总是装载尚未装载的延时数据。</li>
+		 *            <li>auto - 对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
+		 *            <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
+		 *            </ul>
 		 */
 		getAsync: function(property, callback, loadMode) {
 
@@ -671,7 +681,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			_getAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
-
+		
 		doGetText: function(property, callback, loadMode) {
 			function toText(value, propertyDef) {
 				var text;
@@ -715,20 +725,23 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return text;
 			}
 		},
-
+		
 		/**
 		 * 获取属性的文本值。
 		 * <p>
 		 * 该值可用于界面显示，例如：对于一个日期类型属性，是此方法可以得到经格式化处理之后的日期字符串。 具体的格式化方式由相应{@link dorado.PropertyDef}中的displayFormat属性决定。
 		 * </p>
-		 * @param {String} property 要获取的属性名。
-		 * @param {String} [loadMode="always"] 数据装载模式。<br>
-		 * 包含下列三种取值:
-		 * <ul>
-		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
-		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
-		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
-		 * </ul>
+		 * 
+		 * @param {String}
+		 *            property 要获取的属性名。
+		 * @param {String}
+		 *            [loadMode="always"] 数据装载模式。<br>
+		 *            包含下列三种取值:
+		 *            <ul>
+		 *            <li>always - 如果有需要总是装载尚未装载的延时数据。</li>
+		 *            <li>auto - 如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
+		 *            <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
+		 *            </ul>
 		 * @return {String} 属性的文本值。
 		 */
 		getText: function(property, loadMode) {
@@ -750,18 +763,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return result;
 		},
-
+		
 		/**
 		 * 以异步方式获取属性的文本值。
-		 * @param {String} property 要获取的属性名。
-		 * @param {Function|dorado.Callback} callback 回调对象，传入回调对象的参数即为得到的属性的文本值。
-		 * @param {String} [loadMode="always"] 数据装载模式。<br>
-		 * 包含下列三种取值:
-		 * <ul>
-		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
-		 * <li>auto	-	对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
-		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
-		 * </ul>
+		 * 
+		 * @param {String}
+		 *            property 要获取的属性名。
+		 * @param {Function|dorado.Callback}
+		 *            callback 回调对象，传入回调对象的参数即为得到的属性的文本值。
+		 * @param {String}
+		 *            [loadMode="always"] 数据装载模式。<br>
+		 *            包含下列三种取值:
+		 *            <ul>
+		 *            <li>always - 如果有需要总是装载尚未装载的延时数据。</li>
+		 *            <li>auto - 对于异步操作而言此选项没有实际意义，系统内部的处理方法将与always完全一致。</li>
+		 *            <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
+		 *            </ul>
 		 * @see dorado.Entity#getText
 		 */
 		getTextAsync: function(property, callback, loadMode) {
@@ -800,7 +817,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			loadMode = loadMode || "always";
 			_getTextAsync(this, property, callback || dorado._NULL_FUNCTION, loadMode);
 		},
-
+		
 		storeOldData: function() {
 			if (this._oldData) return;
 			var data = this._data, oldData = this._oldData = {};
@@ -812,7 +829,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			}
 		},
-
+		
 		_validateProperty: function(dataType, propertyDef, propertyInfo, value, preformAsyncValidator) {
 			var messages = [], property = propertyDef._name, validating, propertyDataType = propertyDef.get("dataType");
 			if (propertyDef._required && !dataType._validatorsDisabled) {
@@ -825,10 +842,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				}
-
+				
 				if (!hasRequiredValidator) {
 					if (typeof value == "string") value = jQuery.trim(value);
-					var blank = false;
+					var blank = false;				
 					if (value === undefined || value === null || value === "") {
 						if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
 							blank = !value;
@@ -840,7 +857,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					else if (value instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
 						blank = !value.entityCount;
 					}
-
+					
 					if (blank) {
 						messages.push({
 							state: "error",
@@ -859,13 +876,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					});
 				}
 			}
-
+			
 			if (propertyDef._validators && !dataType._validatorsDisabled) {
 				var entity = this, currentValue = value, validateArg = {
 					property: property,
 					entity: entity
 				}, oldData = this._oldData;
-
+				
 				var valueForValidator = entity.get(property, "never");
 				propertyInfo.validating = propertyInfo.validating || 0;
 				for (var i = 0; i < propertyDef._validators.length; i++) {
@@ -873,22 +890,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (!validator._revalidateOldValue && oldData && currentValue == oldData[property]) {
 						continue;
 					}
-
+					
 					if (validator instanceof dorado.validator.RemoteValidator && validator._async && preformAsyncValidator) {
 						propertyInfo.validating++;
 						validator.validate(valueForValidator, validateArg, {
 							callback: function(success, result) {
 								if (propertyInfo.validating <= 0) return;
-
+								
 								propertyInfo.validating--;
 								if (propertyInfo.validating <= 0) {
 									propertyInfo.validating = 0;
 									propertyInfo.validated = true;
 								}
-
+								
 								if (success) {
 									if (entity._data[property] != currentValue) return;
-
+									
 									var originMessages = propertyInfo.messages;
 									var messages = dorado.Toolkits.trimMessages(result, DEFAULT_VALIDATION_RESULT_STATE);
 									if (originMessages) {
@@ -896,7 +913,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 									}
 									entity.doSetMessages(property, messages);
 								}
-
+								
 								if (entity._data[property] == currentValue) {
 									entity.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, {
 										entity: entity,
@@ -919,22 +936,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
-
+			
 			this.doSetMessages(property, messages);
-
+			
 			if (!propertyInfo.validating) {
 				propertyInfo.validated = true;
 			}
 			return messages;
 		},
-
+		
 		_set: function(property, value, propertyDef) {
 			var oldValue = this._data[property];
 			if (oldValue && oldValue instanceof dorado.Entity && value && !(value instanceof dorado.Entity) && typeof value == "object") {
 				oldValue.set(value);
 				return;
 			}
-
+			
 			var eventArg = {
 				entity : this,
 				property : property,
@@ -975,7 +992,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else {
 				var ov = this._oldData ? this._oldData[property] : oldValue;
 				propertyInfo.isDirty = (ov != value);
-
+				
 				if (value && typeof value == "object" && value.$state === undefined && propertyDef && propertyDef.get("dataType") instanceof dorado.EntityDataType) {
 					value = dorado.Object.apply({
 						$state: dorado.Entity.STATE_NEW
@@ -1006,7 +1023,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						state : "ok"
 					}];
 				}
-				this.doSetMessages(property, messages);
+				this.doSetMessages(property, messages);				
 
 				if (this.state == dorado.Entity.STATE_NONE) {
 					this.setState(dorado.Entity.STATE_MODIFIED);
@@ -1016,7 +1033,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
-
+		
 		_dispatchOperationToSubEntity: function(property, create, method, args) {
 			var i = property.indexOf('.');
 			var property1 = property.substring(0, i), property2 = property.substring(i + 1);
@@ -1026,45 +1043,48 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return subEntity[method].apply(subEntity, [property2].concat(args));
 			}
 		},
-
+		
 		/**
 		 * 设置属性值。
-		 * @param {String} property 此参数具有下列两种设置方式：
-		 * <ul>
-		 * 	<li>当property为String时，系统会将property的作为要设置属性名处理。属性值为value参数代表的值。</li>
-		 * 	<li>
-		 * 	当property为Object时，系统会将忽略value参数。此时，可以通过attr参数的JSON对象定义一组要设置的属性值。
-		 * 	<p>
-		 * 	在此种使用方法中，有一种情况需要注意。见下面的这种代码：
-		 * 	<pre class="symbol-example code">
+		 * 
+		 * @param {String}
+		 *            property 此参数具有下列两种设置方式：
+		 *            <ul>
+		 *            <li>当property为String时，系统会将property的作为要设置属性名处理。属性值为value参数代表的值。</li>
+		 *            <li>
+		 *            当property为Object时，系统会将忽略value参数。此时，可以通过attr参数的JSON对象定义一组要设置的属性值。
+		 *            <p>
+		 *            在此种使用方法中，有一种情况需要注意。见下面的这种代码：
+		 * 
+		 * <pre class="symbol-example code">
 		 * 	<code class="javascript">
-		 * 	employee.set({
-		 * 		name: "John",
-		 * 		contact: {
-		 * 			mobile:	"253466-436",
-		 * 			msn: "asgee@xmail.com"
-		 * 		}
-		 * 	});
-		 * 	</code>
+		 * employee.set({
+		 * 	name : &quot;John&quot;,
+		 * 	contact : {
+		 * 		mobile : &quot;253466-436&quot;,
+		 * 		msn : &quot;asgee@xmail.com&quot;
+		 * 	}
+		 * });
+		 * </code>
 		 * 	</pre>
-		 * 	<ul>
-		 * 		<li>
-		 * 		如果当前employee的contact属性为null，那么Dorado会自动添加一个新的Contact实体，并设置好其中的mobile和msn这两个子属性的值。
-		 * 		完成后，子Contact对象的状态将是NEW。
-		 * 		</li>
-		 * 		<li>
-		 * 		如果当前employee的contact属性不为null，那么Dorado会直接修改这个已存在的Contact实体的mobile和msn这两个子属性的值。
-		 * 		完成后，子Contact对象的状态将是MODIFIED或NEW。
-		 * 		</li>
-		 * 	</ul>
-		 * 	</p>
-		 * 	</li>
-		 * </ul>
-		 * @param {Object} value 要设置的属性值。
+		 * 
+		 * <ul>
+		 *            <li>
+		 *            如果当前employee的contact属性为null，那么Dorado会自动添加一个新的Contact实体，并设置好其中的mobile和msn这两个子属性的值。
+		 *            完成后，子Contact对象的状态将是NEW。 </li>
+		 *            <li>
+		 *            如果当前employee的contact属性不为null，那么Dorado会直接修改这个已存在的Contact实体的mobile和msn这两个子属性的值。
+		 *            完成后，子Contact对象的状态将是MODIFIED或NEW。 </li>
+		 *            </ul>
+		 *            </p>
+		 *            </li>
+		 *            </ul>
+		 * @param {Object}
+		 *            value 要设置的属性值。
 		 * @return
 		 */
 		set: function(property, value) {
-
+			
 			function doSet(entity, property, value) {
 				if (!entity.ignorePropertyPath && property.indexOf('.') > 0) {
 					entity._dispatchOperationToSubEntity(property, true, "set", [value]);
@@ -1079,7 +1099,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					entity._set(property, value, propertyDef);
 				}
 			}
-
+			
 			if (property.constructor != String) {
 				this.disableObservers();
 				try {
@@ -1101,14 +1121,17 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return this;
 		},
-
+		
 		/**
 		 * 以文本方式设置属性的值。
 		 * <p>
 		 * 此处的文本值是指用于界面显示的文本，例如：对于一个日期类型属性，通过此方法设置时应传入与displayFormat属性匹配的日期格式文本。
 		 * </p>
-		 * @param {String} property 要设置的属性名。
-		 * @param {String} text 要设置的属性值。
+		 * 
+		 * @param {String}
+		 *            property 要设置的属性名。
+		 * @param {String}
+		 *            text 要设置的属性值。
 		 */
 		setText: function(property, text) {
 			if (!this.ignorePropertyPath && property.indexOf('.') > 0) {
@@ -1126,7 +1149,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this._set(property, value, propertyDef);
 			}
 		},
-
+		
 		/**
 		 * 取消对当前数据实体的各种数据操作。
 		 * <ul>
@@ -1136,10 +1159,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * <li>如果此数据实体的状态是dorado.Entity.STATE_NONE，那么什么都不会发生。</li>
 		 * <li>如果此数据实体的状态是dorado.Entity.STATE_MOVED，那么此操作将会还原数据实体，但不会重置状态。</li>
 		 * </ul>
-		 * @param {boolean} deep 是否执行深度撤销。即一并撤销所有子实体（包括子实体中的子实体）的修改。
+		 * 
+		 * @param {boolean}
+		 *            deep 是否执行深度撤销。即一并撤销所有子实体（包括子实体中的子实体）的修改。
 		 */
 		cancel: function(deep) {
-
+			
 			function deepCancel(entity) {
 				var data = entity._data;
 				for(var p in data) {
@@ -1151,7 +1176,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
-
+			
 			if (this.state == dorado.Entity.STATE_NEW) {
 				this.remove();
 			} else if (this.state != dorado.Entity.STATE_NONE) {
@@ -1170,11 +1195,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				}
-
+				
 				var oldState = this.state;
-
+				
 				if (deep) deepCancel(this);
-
+				
 				if (oldState != dorado.Entity.STATE_MOVED) this.resetState();
 				if (oldState == dorado.Entity.STATE_DELETED && this.parent && this.parent instanceof dorado.EntityList) {
 					var entityList = this.parent;
@@ -1189,7 +1214,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				deepCancel(this);
 			}
 		},
-
+		
 		resetState: function() {
 			this._propertyInfoMap = {};
 			delete this._messages;
@@ -1197,13 +1222,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.setState(dorado.Entity.STATE_NONE);
 			delete this._oldData;
 		},
-
+		
 		/**
 		 * 重设实体对象。
 		 * <p>
 		 * 此方法不会改变Entity的状态。但会重置那些通过引用属性(ReferencePropertyDef)装载的关联数据，引起这些关联数据的重新装载。
 		 * </p>
-		 * @param {String} [property] 要重置的引用属性的属性名。如果需要定义多个，可以用“,”分隔。
+		 * 
+		 * @param {String}
+		 *            [property] 要重置的引用属性的属性名。如果需要定义多个，可以用“,”分隔。
 		 */
 		reset: function(property) {
 			var data = this._data;
@@ -1250,19 +1277,22 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			this.sendMessage(0);
 		},
-
+		
 		/**
 		 * 创建并返回一个兄弟实体对象。即创建一个与本实体对象相同类型的新实体对象。
-		 * @param {Object|dorado.Entity} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
-		 * @param {boolean} [detached] 是否需要返回一个游离的实体对象。
-		 * 如果本实体对象已经隶属于一个实体集合，那么默认情况下此方法会将新创建的实体对象追加到该集合中。
-		 * 通过detached参数可以指定本方法不将新的实体对象追加到集合；<br>
-		 * 如果本实体对象不隶属于实体集合，那么detached参数将没有实际作用，新的实体对象将总是游离的。
+		 * 
+		 * @param {Object|dorado.Entity}
+		 *            [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
+		 * @param {boolean}
+		 *            [detached] 是否需要返回一个游离的实体对象。
+		 *            如果本实体对象已经隶属于一个实体集合，那么默认情况下此方法会将新创建的实体对象追加到该集合中。
+		 *            通过detached参数可以指定本方法不将新的实体对象追加到集合；<br>
+		 *            如果本实体对象不隶属于实体集合，那么detached参数将没有实际作用，新的实体对象将总是游离的。
 		 * @return {dorado.Entity} 新创建的实体对象。
 		 */
 		createBrother: function(data, detached) {
 			if (data instanceof dorado.Entity) data = data.getData();
-
+			
 			var brother = new dorado.Entity(null, this.dataTypeRepository, this.dataType);
 			if (data) brother.set(data);
 			if (!detached && this.parent instanceof dorado.EntityList) {
@@ -1270,21 +1300,25 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return brother;
 		},
-
+		
 		/**
 		 * 创建并返回一个子实体对象。
-		 * @param {String} property 子实体对象对应的属性名。
-		 * @param {Object|dorado.Entity} [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
-		 * @param {boolean} [detached] 是否需要返回一个游离的实体对象。
-		 * 默认情况下，新创建的子实体对象会直接被设置到本实体对象的属性中。
-		 * 通过detached参数可以指定本方法不将新的子实体对象附着到本实体对象中。<br>
-		 * 需要注意的是，如果子属性的数据类型为集合类型({@link dorado.AggregationDataType})。
-		 * 那么，新创建的子实体对象会被追加到该属性对应的实体集合中。如果属性的值为空，则测方法还会自动为该属性创建一个匹配的实体集合。
+		 * 
+		 * @param {String}
+		 *            property 子实体对象对应的属性名。
+		 * @param {Object|dorado.Entity}
+		 *            [data] 新创建的实体对象要封装JSON数据对象，可以不指定此参数。
+		 * @param {boolean}
+		 *            [detached] 是否需要返回一个游离的实体对象。
+		 *            默认情况下，新创建的子实体对象会直接被设置到本实体对象的属性中。
+		 *            通过detached参数可以指定本方法不将新的子实体对象附着到本实体对象中。<br>
+		 *            需要注意的是，如果子属性的数据类型为集合类型({@link dorado.AggregationDataType})。
+		 *            那么，新创建的子实体对象会被追加到该属性对应的实体集合中。如果属性的值为空，则测方法还会自动为该属性创建一个匹配的实体集合。
 		 * @return {dorado.Entity} 新创建的实体对象。
 		 */
 		createChild: function(property, data, detached) {
 			if (data instanceof dorado.Entity) data = data.getData();
-
+			
 			var child = null;
 			if (this.dataType) {
 				var propertyDef = this.getPropertyDef(property);
@@ -1325,44 +1359,52 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return child;
 		},
-
+		
 		/**
 		 * 返回与当前数据实体平级的前一个数据实体。
-		 * <p>注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。</p>
+		 * <p>
+		 * 注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。
+		 * </p>
+		 * 
 		 * @return {dorado.Entity} 前一个数据实体。
 		 */
 		getPrevious: function() {
 			var entityList = this.parent;
 			if (!entityList || !(entityList instanceof dorado.EntityList)) return null;
-
+			
 			var page = this.page;
 			var entry = page.findEntry(this);
 			entry = entityList._findPreviousEntry(entry);
 			return (entry) ? entry.data : null;
 		},
-
+		
 		/**
 		 * 返回与当前数据实体平级的下一个数据实体。
-		 * <p>注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。</p>
+		 * <p>
+		 * 注意：此方法不会导致集合的自动装载动作。如果本数据实体不在某个实体集合中,那么此方法将直接返回null。
+		 * </p>
+		 * 
 		 * @return {dorado.Entity} 下一个数据实体。
 		 */
 		getNext: function() {
 			var entityList = this.parent;
 			if (!entityList || !(entityList instanceof dorado.EntityList)) return null;
-
+			
 			var page = this.page;
 			var entry = page.findEntry(this);
 			entry = entityList._findNextEntry(entry);
 			return (entry) ? entry.data : null;
 		},
-
+		
 		/**
 		 * 将此数据实体设置为其目前所在的实体集合中的当前实体。
 		 * <p>
 		 * <b>一个数据实体某一时刻最多只能隶属于一个实体集合。</b><br>
 		 * 如果此数据实体目前不属于任何实体集合，则此方法什么也不做。
 		 * </p>
-		 * @param {boolean} [cascade] 是否同时要将此数据实体之上的每一级父对象都设置为当前数据实体。
+		 * 
+		 * @param {boolean}
+		 *            [cascade] 是否同时要将此数据实体之上的每一级父对象都设置为当前数据实体。
 		 * @see dorado.EntityList#setCurrent
 		 */
 		setCurrent: function(cascade) {
@@ -1373,12 +1415,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			} else {
 				parentEntity = this.parent;
 			}
-
+			
 			if (cascade && parentEntity && parentEntity instanceof dorado.Entity) {
 				parentEntity.setCurrent(true);
 			}
 		},
-
+		
 		/**
 		 * 清空本数据实体中所有的数据。
 		 */
@@ -1391,10 +1433,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
-
+		
 		/**
 		 * 将给定的JSON对象中的数据转换成为数据实体。
-		 * @param {Object} json 要转换的JSON对象。
+		 * 
+		 * @param {Object}
+		 *            json 要转换的JSON对象。
 		 */
 		fromJSON: function(json) {
 			if (this.dataType) json.$dataType = this.dataType._id;
@@ -1404,35 +1448,57 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
-
+		
 		/**
 		 * 将实体对象转换成一个JSON数据对象。
-		 * @param {Object} [options] 转换选项。
-		 * @param {String[]} [options.properties] 属性名数组，表示只转换该数组中列举过的属性。如果不指定此属性表示转换实体对象中的所有属性。
-		 * @param {boolean} [options.includeUnsubmittableProperties=true] 是否转换实体对象中那么submittable=false的属性（见{@link dorado.PropertyDef#attribute:submittable}）。默认按true进行处理。
-		 * @param {boolean} [options.includeReferenceProperties=true] 是否转换实体对象中{@link dorado.Reference}类型的属性。默认按true进行处理。
-		 * @param {String} [options.loadMode="never"] 数据装载模式，此属性仅在options.includeReferenceProperties=true为true时有效。<br>
-		 * 包含下列三种取值:
-		 * <ul>
-		 * <li>always	-	如果有需要总是装载尚未装载的延时数据。</li>
-		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
-		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
-		 * </ul>
-		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。
-		 * 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
-		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按true进行处理。
-		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
-		 * 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
-		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
-		 * @param {boolean} [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
-		 * @param {boolean} [options.generateDataType] 是否在JSON对象中生成DataType信息，生成的DataType信息将被放置在名为$dataType的特殊子属性中。
-		 * 注意：此属性的只对顶层JSON对象有效，即此方法永远不会为子JSON对象生成DataType信息。
-		 * @param {boolean} [options.generateState] 是否在JSON对象中生成实体对象的状态信息(即新增、已更改等状态)，生成的状态信息将被放置在名为$state的特殊子属性中。
-		 * @param {boolean} [options.generateEntityId] 是否在JSON对象中生成实体对象的ID，生成的状态信息将被放置在名为$entityId的特殊子属性中。
-		 * @param {boolean} [options.generateOldData] 是否在JSON对象中生成旧数据，生成的状态信息将被放置在名为$oldData的特殊子属性中。
-		 * @param {Function} [options.entityFilter] 用户自定义的数据实体过滤函数，返回true/false表示是否需要将此当前数据实体转换到JSON中。
-		 * 此函数的传入参数如下：
-		 * @param {dorado.Entity} [options.entityFilter.entity] 当前正被过滤的数据实体。
+		 * 
+		 * @param {Object}
+		 *            [options] 转换选项。
+		 * @param {String[]}
+		 *            [options.properties]
+		 *            属性名数组，表示只转换该数组中列举过的属性。如果不指定此属性表示转换实体对象中的所有属性。
+		 * @param {boolean}
+		 *            [options.includeUnsubmittableProperties=true]
+		 *            是否转换实体对象中那么submittable=false的属性（见{@link dorado.PropertyDef#attribute:submittable}）。默认按true进行处理。
+		 * @param {boolean}
+		 *            [options.includeReferenceProperties=true] 是否转换实体对象中{@link dorado.Reference}类型的属性。默认按true进行处理。
+		 * @param {String}
+		 *            [options.loadMode="never"]
+		 *            数据装载模式，此属性仅在options.includeReferenceProperties=true为true时有效。<br>
+		 *            包含下列三种取值:
+		 *            <ul>
+		 *            <li>always - 如果有需要总是装载尚未装载的延时数据。</li>
+		 *            <li>auto - 如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
+		 *            <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
+		 *            </ul>
+		 * @param {boolean}
+		 *            [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。
+		 *            此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
+		 *            因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按true进行处理。
+		 * @param {boolean}
+		 *            [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。 此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
+		 *            因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
+		 * @param {boolean}
+		 *            [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
+		 * @param {boolean}
+		 *            [options.generateDataType]
+		 *            是否在JSON对象中生成DataType信息，生成的DataType信息将被放置在名为$dataType的特殊子属性中。
+		 *            注意：此属性的只对顶层JSON对象有效，即此方法永远不会为子JSON对象生成DataType信息。
+		 * @param {boolean}
+		 *            [options.generateState]
+		 *            是否在JSON对象中生成实体对象的状态信息(即新增、已更改等状态)，生成的状态信息将被放置在名为$state的特殊子属性中。
+		 * @param {boolean}
+		 *            [options.generateEntityId]
+		 *            是否在JSON对象中生成实体对象的ID，生成的状态信息将被放置在名为$entityId的特殊子属性中。
+		 * @param {boolean}
+		 *            [options.generateOldData]
+		 *            是否在JSON对象中生成旧数据，生成的状态信息将被放置在名为$oldData的特殊子属性中。
+		 * @param {Function}
+		 *            [options.entityFilter]
+		 *            用户自定义的数据实体过滤函数，返回true/false表示是否需要将此当前数据实体转换到JSON中。
+		 *            此函数的传入参数如下：
+		 * @param {dorado.Entity}
+		 *            [options.entityFilter.entity] 当前正被过滤的数据实体。
 		 * @return {Object} 得到的JSON数据对象。
 		 */
 		toJSON: function(options, context) {
@@ -1441,7 +1507,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			includeUnsubmittableProperties = includeReferenceProperties = true, loadMode = "never";
 			simplePropertyOnly = generateDataType = generateState = generateEntityId = generateOldData = false;
 			properties = entityFilter = null;
-
+			
 			if (options != null) {
 				if (options.includeUnsubmittableProperties === false) includeUnsubmittableProperties = false;
 				if (options.includeReferenceProperties === false) includeReferenceProperties = false;
@@ -1461,23 +1527,23 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				if (!data.hasOwnProperty(property)) continue;
 				if (property.charAt(0) == '$') continue;
 				if (properties && properties.indexOf(property) < 0) continue;
-
+				
 				var propertyDef = (this._propertyDefs) ? this._propertyDefs.get(property) : null;
 				if (propertyDef && simplePropertyOnly) {
 					var pdt = propertyDef.getDataType("never");
 					if (pdt && (pdt instanceof dorado.EntityDataType || pdt instanceof dorado.AggregationDataType)) continue;
 				}
-
+				
 				if (!includeUnsubmittableProperties && propertyDef && !propertyDef._submittable) continue;
 				if (propertyDef instanceof dorado.Reference) {
 					if (!includeReferenceProperties) continue;
 				}
-
+				
 				var value = this._get(property, propertyDef, null, loadMode);
 				if (value != null) {
 					if (value instanceof dorado.Entity) {
 						if (simplePropertyOnly) continue;
-
+					
 						if (!entityFilter || entityFilter(value)) {
 							value = value.toJSON(options, context);
 						} else {
@@ -1491,7 +1557,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					if (!oldDataHolder) oldDataHolder = {};
 					oldDataHolder[property] = oldData[property];
 				}
-
+				
 				result[property] = value;
 			}
 
@@ -1503,15 +1569,21 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (context && context.entities) context.entities.push(this);
 			return result;
 		},
-
+		
 		/**
 		 * 将实体对象转换成一个可以以类似JSON方式来读写的代理对象。
-		 * @param {Object} [options] 转换选项。
-		 * @param {boolean} [options.textMode=false] 是否代理Entity的getText方法。该选项默认值为false，表示代理Entity的get方法。
-		 * @param {boolean} [options.readOnly=false] 是否以只读方式代理Entity。该选项默认值为false。
-		 * @param {boolean} [options.includeUnloadPage=false] 是否处理{@link dorado.EntityList}中尚未装载的页中的数据。
-		 * 此属性对于{@link dorado.Entity}的getWrapper而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的getWrapper方法中，
-		 * 因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
+		 * 
+		 * @param {Object}
+		 *            [options] 转换选项。
+		 * @param {boolean}
+		 *            [options.textMode=false]
+		 *            是否代理Entity的getText方法。该选项默认值为false，表示代理Entity的get方法。
+		 * @param {boolean}
+		 *            [options.readOnly=false] 是否以只读方式代理Entity。该选项默认值为false。
+		 * @param {boolean}
+		 *            [options.includeUnloadPage=false] 是否处理{@link dorado.EntityList}中尚未装载的页中的数据。
+		 *            此属性对于{@link dorado.Entity}的getWrapper而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的getWrapper方法中，
+		 *            因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
 		 * @return {Object} 得到的代理对象。
 		 */
 		getWrapper: function(options) {
@@ -1522,11 +1594,11 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					this._textMode = options && options.textMode;
 					this._readOnly = options && options.readOnly;
 				}, wrapperPrototype = wrapperType.prototype;
-
+				
 				var data = this._data, textMode = options && options.textMode;
 				for (var property in data) {
 					if (!data.hasOwnProperty(property)) continue;
-
+					
 					var getter = function() {
 						var value;
 						if (this._textMode) {
@@ -1546,12 +1618,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 						this._entity.set(property, value);
 					};
-
+					
 					try {
-						wrapperPrototype.__defineGetter__(property, getter);
-						wrapperPrototype.__defineSetter__(property, setter);
+						wrapperPrototype.__defineGetter__(property, getter);	
+						wrapperPrototype.__defineSetter__(property, setter);		
 					} catch (e) {
-						Object.defineProperty(wrapperPrototype, property, {
+						Object.defineProperty(wrapperPrototype, property, {  
 					        get: getter,
 					        set: setter
 					    });
@@ -1563,31 +1635,35 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return new wrapperType(this, options);
 		},
-
+		
 		getData: function() {
 			return this._data;
 		},
-
+		
 		/**
 		 * 返回数据实体内部用于保存原有属性值的JSON对象。
+		 * 
 		 * @return {Object} JSON对象。<br>
-		 * 注意：该对象可能并不存在。
+		 *         注意：该对象可能并不存在。
 		 */
 		getOldData: function() {
 			return this._oldData;
 		},
-
+		
 		/**
 		 * 返回当前数据实体关联的额外信息的数组。
-		 * @param {String} [property] 属性名。
-		 * <p>
-		 * 如果在调用时指定了这个参数，这表示要读取跟某个属性关联的额外信息。否则表示读取跟整个数据实体关联的额外信息。
-		 * </p>
+		 * 
+		 * @param {String}
+		 *            [property] 属性名。
+		 *            <p>
+		 *            如果在调用时指定了这个参数，这表示要读取跟某个属性关联的额外信息。否则表示读取跟整个数据实体关联的额外信息。
+		 *            </p>
 		 * @return [Object] 额外信息的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
-		 * <ul>
-		 * <li>state	-	{String} 信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
-		 * <li>text	-	{String} 信息内容。</li>
-		 * </ul>
+		 *         <ul>
+		 *         <li>state - {String}
+		 *         信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
+		 *         <li>text - {String} 信息内容。</li>
+		 *         </ul>
 		 */
 		getMessages: function(property) {
 			var results;
@@ -1599,7 +1675,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return results;
 		},
-
+		
 		doSetMessages: function(property, messages) {
 
 			function getMessageState(entity) {
@@ -1627,8 +1703,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				if (this._messages == messages) return false;
 				this._messages = messages;
-
-				// if (dorado.Toolkits.getTopMessageState(messages) != this._messageState) {
+				
+				// if (dorado.Toolkits.getTopMessageState(messages) !=
+				// this._messageState) {
 				this._messageState = getMessageState(this);
 				retval = true;
 				// }
@@ -1637,13 +1714,14 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				messages = dorado.Toolkits.trimMessages(messages, DEFAULT_VALIDATION_RESULT_STATE);
 				var propertyInfo = map[property];
 				if (propertyInfo && !propertyInfo.validating && propertyInfo.messages == messages) return false;
-
+				
 				var state = dorado.Toolkits.getTopMessageState(messages);
 				if (!propertyInfo) map[property] = propertyInfo = {};
 				propertyInfo.state = state;
 				propertyInfo.messages = messages;
-
-				// if (state != this._messageState || state != (propertyInfo ? propertyInfo.state : null)) {
+				
+				// if (state != this._messageState || state != (propertyInfo ?
+				// propertyInfo.state : null)) {
 				this._messageState = getMessageState(this);
 				retval = true;
 				// }
@@ -1659,7 +1737,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return retval;
 		},
-
+		
 		/**
 		 * 设置当前数据实体关联的额外信息的数组。
 		 * <p>
@@ -1670,12 +1748,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * 此时第一个参数将被认为是属性名，第二个参数被认为是额外信息。</li>
 		 * </ul>
 		 * </p>
-		 * @param {String} [property] 属性名。
-		 * @param {String|Object|[String]|[Object]} [messages] 额外信息。
-		 * <p>
-		 * 调用此方法时，既可以传入单个的信息，也可以传入信息的数组。
-		 * 对于每一个信息既可以是一个描述信息完整信息的JSON对象，也可以是一个简单的字符窜（此时系统会自动将其信息级别处理为error）。
-		 * </p>
+		 * 
+		 * @param {String}
+		 *            [property] 属性名。
+		 * @param {String|Object|[String]|[Object]}
+		 *            [messages] 额外信息。
+		 *            <p>
+		 *            调用此方法时，既可以传入单个的信息，也可以传入信息的数组。
+		 *            对于每一个信息既可以是一个描述信息完整信息的JSON对象，也可以是一个简单的字符窜（此时系统会自动将其信息级别处理为error）。
+		 *            </p>
 		 */
 		setMessages: function(property, messages) {
 			var retval = this.doSetMessages(property, messages);
@@ -1692,13 +1773,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return retval;
 		},
-
+		
 		/**
 		 * 返回当前数据实体中最高的信息级别。即系统认为error高于warn高于ok高于info。
-		 * @param {String} [property] 属性名。
-		 * <p>
-		 * 如果在调用时指定了这个参数，这表示要返回跟某个属性的最高信息级别。否则表示读取跟整个数据实体关联的最高信息级别。
-		 * </p>
+		 * 
+		 * @param {String}
+		 *            [property] 属性名。
+		 *            <p>
+		 *            如果在调用时指定了这个参数，这表示要返回跟某个属性的最高信息级别。否则表示读取跟整个数据实体关联的最高信息级别。
+		 *            </p>
 		 * @return {String} 最高的验证信息级别。取值包括: error、warn、ok、info。
 		 */
 		getMessageState: function(property) {
@@ -1709,18 +1792,20 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return this._messageState;
 			}
 		},
-
+		
 		/**
 		 * 返回数据实体中某属性校验状态。
-		 * @param {Object} property 属性名。
+		 * 
+		 * @param {Object}
+		 *            property 属性名。
 		 * @return {String} 校验状态。取值包括:
-		 * <ul>
-		 * <li>unvalidate	-	尚未校验。</li>
-		 * <li>validating	-	正在校验，指正有异步的校验过程仍未结束。</li>
-		 * <li>ok	-	校验通过。</li>
-		 * <li>warn	-	校验的返回信息中包含警告。</li>
-		 * <li>error	-	校验未通过或校验失败。</li>
-		 * </ul>
+		 *         <ul>
+		 *         <li>unvalidate - 尚未校验。</li>
+		 *         <li>validating - 正在校验，指正有异步的校验过程仍未结束。</li>
+		 *         <li>ok - 校验通过。</li>
+		 *         <li>warn - 校验的返回信息中包含警告。</li>
+		 *         <li>error - 校验未通过或校验失败。</li>
+		 *         </ul>
 		 */
 		getValidateState: function(property) {
 			var state = "unvalidate", map = this._propertyInfoMap;
@@ -1738,52 +1823,63 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return state;
 		},
-
+		
 		/**
 		 * 验证此数据实体中的数据当前是否是有效的，即是否可以被提交保存。
 		 * <p>
 		 * 关于是否有效的判断会与{@link dorado.EntityDataType#attribute:acceptValidationResult}的设置相关。
 		 * </p>
-		 * @param {String|boolean|Object} [options=true] 此参数有如下三种使用方式：
-		 * <ul>
-		 * <li>当传入一个String类型的值时，表示要校验的子属性，如果不指定则表示校验所有属性。</li>
-		 * <li>当传入一个boolean类型的值时，表示是否强制重新验证所有子属性及校验器。默认为true。</li>
-		 * <li>当传入一个JSON对象时，其中有可以包含如下的更多选项。</li>
-		 * </ul>
-		 * @param {String} [options.property] 要校验的子属性，如果不指定则表示校验所有属性。
-		 * @param {boolean} [options.force=true] 是否强制重新验证所有子属性及校验器。
-		 * @param {boolean} [options.validateSimplePropertyOnly=true] 只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
-		 * 设置此属性产生的实际结果是验证逻辑将忽略对此数据实体中的所有子数据实体的有效性验证。
-		 * @param {boolean} [options.preformAsyncValidator] 是否重新执行那些异步的校验器。
-		 * @param {Object} [options.context] 验证上下文。<br>
-		 * 传入此参数的目的通常是用于获得更加验证详尽的验证结果。此上下文对象中可以包含如下的返回属性：
-		 * <ul>
-		 * 	<li>result	-	{String} 验证结果。等同于此方法的返回值。</li>
-		 * 	<li>info	-	{[Object]} 包含所有info级别验证结果的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
-		 * 		<ul>
-		 * 			<li>entity	-	{dorado.Entity} 相关的数据实体。</li>
-		 * 			<li>property	-	{String} 相关的数据实体属性。</li>
-		 * 			<li>state	-	{String} 信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
-		 * 			<li>text	-	{String} 信息内容。</li>
-		 * 		</ul>
-		 * 	</li>
-		 * 	<li>ok	-	{[Object]} 包含所有ok级别验证结果的数组。同上。</li>
-		 * 	<li>warn	-	{[Object]} 包含所有warn级别验证结果的数组。同上。</li>
-		 * 	<li>error	-	{[Object]} 包含所有error级别验证结果的数组。同上。</li>
-		 * 	<li>executing	-	{[Object]} 尚未完成的异步验证过程描述信息的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
-		 * 		<ul>
-		 * 			<li>entity	-	{dorado.Entity} 相关的数据实体。</li>
-		 * 			<li>property	-	{String} 相关的数据实体属性。</li>
-		 * 			<li>num	-	{int} 正在执行的验证过程的个数。</li>
-		 * 		</ul>
-		 * </li>
-		 * <li>executingValidationNum	-	{int} 总的正在执行的验证过程的个数。</li>
-		 * </ul>
+		 * 
+		 * @param {String|boolean|Object}
+		 *            [options=true] 此参数有如下三种使用方式：
+		 *            <ul>
+		 *            <li>当传入一个String类型的值时，表示要校验的子属性，如果不指定则表示校验所有属性。</li>
+		 *            <li>当传入一个boolean类型的值时，表示是否强制重新验证所有子属性及校验器。默认为true。</li>
+		 *            <li>当传入一个JSON对象时，其中有可以包含如下的更多选项。</li>
+		 *            </ul>
+		 * @param {String}
+		 *            [options.property] 要校验的子属性，如果不指定则表示校验所有属性。
+		 * @param {boolean}
+		 *            [options.force=true] 是否强制重新验证所有子属性及校验器。
+		 * @param {boolean}
+		 *            [options.validateSimplePropertyOnly=true]
+		 *            只验证简单数据类型的属性中的数据，如String、boolean、int、Date等数据类型。
+		 *            设置此属性产生的实际结果是验证逻辑将忽略对此数据实体中的所有子数据实体的有效性验证。
+		 * @param {boolean}
+		 *            [options.preformAsyncValidator] 是否重新执行那些异步的校验器。
+		 * @param {Object}
+		 *            [options.context] 验证上下文。<br>
+		 *            传入此参数的目的通常是用于获得更加验证详尽的验证结果。此上下文对象中可以包含如下的返回属性：
+		 *            <ul>
+		 *            <li>result - {String} 验证结果。等同于此方法的返回值。</li>
+		 *            <li>info - {[Object]}
+		 *            包含所有info级别验证结果的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
+		 *            <ul>
+		 *            <li>entity - {dorado.Entity} 相关的数据实体。</li>
+		 *            <li>property - {String} 相关的数据实体属性。</li>
+		 *            <li>state - {String}
+		 *            信息级别。取值范围包括：info、ok、warn、error。默认值为error。</li>
+		 *            <li>text - {String} 信息内容。</li>
+		 *            </ul>
+		 *            </li>
+		 *            <li>ok - {[Object]} 包含所有ok级别验证结果的数组。同上。</li>
+		 *            <li>warn - {[Object]} 包含所有warn级别验证结果的数组。同上。</li>
+		 *            <li>error - {[Object]} 包含所有error级别验证结果的数组。同上。</li>
+		 *            <li>executing - {[Object]}
+		 *            尚未完成的异步验证过程描述信息的数组。数组中的每一个元素是一个JSON对象，该JSON对象包含以下属性：
+		 *            <ul>
+		 *            <li>entity - {dorado.Entity} 相关的数据实体。</li>
+		 *            <li>property - {String} 相关的数据实体属性。</li>
+		 *            <li>num - {int} 正在执行的验证过程的个数。</li>
+		 *            </ul>
+		 *            </li>
+		 *            <li>executingValidationNum - {int} 总的正在执行的验证过程的个数。</li>
+		 *            </ul>
 		 * @return {String} 验证结果，可能会有如下3种返回值：
-		 * <ul>
-		 * <li>invalid	-	表示本数据实体未通过数据验证，不能被提交。</li>
-		 * <li>ok	-	表示本数据实体已通过验证，可以提交。</li>
-		 * </ul>
+		 *         <ul>
+		 *         <li>invalid - 表示本数据实体未通过数据验证，不能被提交。</li>
+		 *         <li>ok - 表示本数据实体已通过验证，可以提交。</li>
+		 *         </ul>
 		 */
 		validate: function(options) {
 			if (typeof options == "string") {
@@ -1802,15 +1898,15 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			var preformAsyncValidator = (options ? options.preformAsyncValidator : false);
 			var context = options ? options.context : null;
 			var result, topResult, resultCode, topResultCode = -1, hasValidated = false;
-
+			
 			if (force) {
 				if (property) {
 					delete this._propertyInfoMap[property];
 				}
 				else {
-                    this._propertyInfoMap = {};
-                    delete this._messages;
-                    delete this._messageState;
+					this._propertyInfoMap = {};
+					delete this._messages;
+					delete this._messageState;
 				}
 			}
 
@@ -1823,13 +1919,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				context.executing = [];
 				context.executingValidationNum = 0;
 			}
-
+			
 			if (dataType) {
 				var entity = this;
 				var doValidate = function(pd) {
 					var property = pd._name, propertyInfo = propertyInfoMap[property];
 					if (property.charAt(0) == '$') return;
-
+					
 					if (propertyInfo) {
 						if (propertyInfo.validating) {
 							if (context) {
@@ -1851,7 +1947,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					} else {
 						propertyInfoMap[property] = propertyInfo = {};
 					}
-
+					
 					var value = entity._data[property];
 					hasValidated = true;
 					var messages = entity._validateProperty(dataType, pd, propertyInfo, value, preformAsyncValidator);
@@ -1859,7 +1955,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						addMessages2Context(context, entity, property, messages);
 					}
 				};
-
+				
 				if (property) {
 					var pd = this.getPropertyDef(property);
 					if (pd) doValidate(pd);
@@ -1867,7 +1963,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					dataType._propertyDefs.each(doValidate);
 				}
 			}
-
+			
 			if (!simplePropertyOnly) {
 				var data = this._data;
 				var doValidateEntity = function(p) {
@@ -1876,9 +1972,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						if (context) options.context = {};
 						result = value.validate(options);
 						if (context) {
-                            mergeValidationContexts(context, options.context);
-                            options.context = context;
-                        }
+							mergeValidationContexts(context, options.context);
+							options.context = context;
+						}
 						resultCode = VALIDATION_RESULT_CODE[result];
 						if (resultCode > topResultCode) {
 							topResultCode = resultCode;
@@ -1890,9 +1986,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 							if (context) options.context = {};
 							result = it.next().validate(options);
 							if (context) {
-                                mergeValidationContexts(context, options.context);
-                                options.context = context;
-                            }
+								mergeValidationContexts(context, options.context);
+								options.context = context;
+							}
 							resultCode = VALIDATION_RESULT_CODE[result];
 							if (resultCode > topResultCode) {
 								topResultCode = resultCode;
@@ -1901,7 +1997,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 						}
 					}
 				};
-
+				
 				if (property) {
 					doValidateEntity(property);
 				} else {
@@ -1911,7 +2007,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					}
 				}
 			}
-
+			
 			state = this.getMessageState(property);
 			var acceptState = dataType ? dataType.get("acceptValidationState") : null;
 			if (STATE_CODE[state || "info"] <= STATE_CODE[acceptState || "ok"]) {
@@ -1924,12 +2020,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				topResultCode = resultCode;
 				topResult = result;
 			}
-
+			
 			if (context) context.result = topResult;
 			if (hasValidated) this.sendMessage(0);
 			return topResult;
 		},
-
+		
 		/**
 		 * 判断数据实体或数据实体中某属性中是否包含未提交的信息。
 		 * @param {String} [property] 要判断的属性。如果不定义则表示希望判断整个数据实体是否包含未提交的信息。
@@ -1945,7 +2041,36 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				return this.state != dorado.Entity.STATE_NONE;
 			}
 		},
-
+		
+		/**
+		 * 迭代式的判断该数据实体及其所有子数据实体中是否是否包含任何未提交的信息。
+		 * @return {boolean} 是否包含未提交的信息。
+		 */
+		isCascadeDirty: function() {
+			function isDirty(entity) {
+				var dirty = (entity.state != dorado.Entity.STATE_NONE);
+				if(!dirty) {
+					var data = entity._data;
+					for(var p in data) {
+						var v = data[p];
+						if (v instanceof dorado.Entity) {
+							dirty = isDirty(v);
+						} else if (v instanceof dorado.EntityList) {
+							var it = v.iterator(true);
+							while(it.hasNext()) {
+								dirty = isDirty(it.next());
+								if(dirty) break;
+							}
+						}
+						if(dirty) break;
+					}
+				}
+				return dirty;
+			}
+			
+			return isDirty(this);
+		},
+		
 		/**
 		 * 重新装载当前实体中的数据。
 		 */
@@ -1983,28 +2108,32 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				this.dataProvider.supportsEntity = oldSupportsEntity;
 			}
 		},
-
+		
 		/**
 		 * 以异步方式重新装载实体中的数据。
-		 * @param {Function|dorado.Callback} callback 回调对象。
+		 * 
+		 * @param {Function|dorado.Callback}
+		 *            callback 回调对象。
 		 */
 		flushAsync: function(callback) {
 			this.flush(callback || dorado._NULL_FUNCTION);
 		},
-
+		
 		/**
 		 * 从所属的实体集合{@link dorado.EntityList}中删除本实体对象。
 		 * 如果本实体对象尚不属于任何实体集合，则此方法不会产生实际的作用。
-		 * @param {boolean} [detach] 是否彻底断开被删除的数据实体与集合之间的关联。默认为不断开。<br>
-		 * 在通常情况下，当我们从集合中删除一个数据实体时，dorado只是在内部处理中将数据实体的状态标记为已删除状态而并没有真正的将数据实体从合集中移除掉。
-		 * 这样做的目的是为了便于在今后提交时能够清晰的掌握集合中的元素究竟做过哪些改变。
+		 * 
+		 * @param {boolean}
+		 *            [detach] 是否彻底断开被删除的数据实体与集合之间的关联。默认为不断开。<br>
+		 *            在通常情况下，当我们从集合中删除一个数据实体时，dorado只是在内部处理中将数据实体的状态标记为已删除状态而并没有真正的将数据实体从合集中移除掉。
+		 *            这样做的目的是为了便于在今后提交时能够清晰的掌握集合中的元素究竟做过哪些改变。
 		 */
 		remove: function(detach) {
 			if (this.parent instanceof dorado.EntityList) {
 				this.parent.remove(this, detach);
 			}
 		},
-
+		
 		toString: function() {
 			var text;
 			if (this.dataType) {
@@ -2029,7 +2158,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			}
 			return text;
 		},
-
+		
 		clone: function(deep) {
 			var newData, data = this._data;
 			if (deep) {
@@ -2056,7 +2185,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		var entity = dummyEntityMap[pageNo];
 		if (!entity) {
 			dummyEntityMap[pageNo] = entity = new dorado.Entity();
-			entity.get = entity.set = entity.getState = dorado._NULL_FUNCTION;
+			entity.get = entity.set = dorado._NULL_FUNCTION;
 			entity.dummy = true;
 			entity.page = {
 				pageNo : pageNo

@@ -170,14 +170,14 @@
 					width: 36,
 					align: "center",
 					onRenderCell: function(self, arg) {
-						var offsetX;
+						var iconClass;
 						switch (arg.data.state) {
 							case "error":{
-								offsetX = "-82px";
+								iconClass = "d-update-action-icon-error";
 								break;
 							}
 							case "warn":{
-								offsetX = "-102px";
+								iconClass = "d-update-action-icon-warn";
 								break;
 							}
 						}
@@ -187,12 +187,11 @@
 						if (offsetX) {
 							$dom.xCreate({
 								tagName: "LABEL",
+								className: iconClass,
 								style: {
 									width: 16,
 									height: 16,
-									display: "inline-block",
-									background: "url(" + $url("skin>common/icons.gif") + ") " + offsetX + " -2px",
-									marginTop: "2px"
+									display: "inline-block"
 								}
 							});
 						}

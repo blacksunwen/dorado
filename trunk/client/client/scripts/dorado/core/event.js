@@ -34,7 +34,7 @@
  * <li>当callback参数是一个对象时，该对象的结构应是一个与此处dorado.Callback匹配的JavaScript对象。 </li>
  * </ul>
  * </p>
- * 
+ *
  * @example
  * // 以Function形式定义回调参数时
  * dataPipe.getAsync(function(obj) {
@@ -105,38 +105,38 @@ dorado.Callback = {};
  * @description {@link dorado.Callback#invokeCallback}的快捷方式。
  * @see dorado.Callback#invokeCallback
  */
-window.$callback = dorado.Callback.invokeCallback = function(callback, success, arg, options) {
+window.$callback = dorado.Callback.invokeCallback = function (callback, success, arg, options) {
 
 	function invoke(fn, args) {
 		if (delay > 0) {
-			setTimeout(function() {
+			setTimeout(function () {
 				fn.apply(scope, args);
 			}, delay);
 		} else {
 			fn.apply(scope, args);
 		}
 	}
-	
+
 	if (!callback) return;
 	if (success == null) success = true;
-	
+
 	var scope, delay;
 	if (options) {
 		scope = options.scope;
 		delay = options.delay;
 	}
-	
+
 	if (typeof callback == "function") {
 		if (!success) return;
 		invoke(callback, [arg]);
 	} else {
 		scope = callback.scope || scope || window;
 		delay = callback.delay || delay;
-		
-		if (typeof callback.callback  == "function") {
+
+		if (typeof callback.callback == "function") {
 			invoke(callback.callback, [success, arg]);
 		}
-		
+
 		var name = (success) ? "success" : "failure";
 		if (typeof callback[name] == "function") {
 			invoke(callback.callback, [arg]);
@@ -145,21 +145,21 @@ window.$callback = dorado.Callback.invokeCallback = function(callback, success, 
 };
 
 // 用于同时触发一组异步操作，并且等待所有的异步操作全部完成之后再激活所有相应的回调方法。
-dorado.Callback.simultaneousCallbacks = function(tasks, callback) {
+dorado.Callback.simultaneousCallbacks = function (tasks, callback) {
 
 	function getSimultaneousCallback(task) {
-		var fn = function() {
+		var fn = function () {
 			suspendedTasks.push({
 				task: task,
 				scope: this,
 				args: arguments
 			});
-			
+
 			if (taskReg[task.id]) {
 				delete taskReg[task.id];
 				taskNum--;
 				if (taskNum == 0) {
-					jQuery.each(suspendedTasks, function(i, suspendedTask) {
+					jQuery.each(suspendedTasks, function (i, suspendedTask) {
 						suspendedTask.task.callback.apply(suspendedTask.scope, suspendedTask.args);
 					});
 					$callback(callback, true);
@@ -168,10 +168,10 @@ dorado.Callback.simultaneousCallbacks = function(tasks, callback) {
 		};
 		return fn;
 	}
-	
+
 	var taskReg = {}, taskNum = tasks.length, suspendedTasks = [];
 	if (taskNum > 0) {
-		jQuery.each(tasks, function(i, task) {
+		jQuery.each(tasks, function (i, task) {
 			if (!task.id) task.id = dorado.Core.newId();
 			var simCallback = getSimultaneousCallback(task);
 			taskReg[task.id] = callback;
@@ -196,9 +196,9 @@ dorado.Callback.simultaneousCallbacks = function(tasks, callback) {
  * <li>disallowMultiListeners - {boolean} 是否禁止在该事件中绑定一个以上的监听器。</li>
  * </ul>
  * </p>
- * 
+ *
  * @abstract
- * 
+ *
  * @example
  * var SampleClass = $class({
  * 	EVENTS: {
@@ -231,7 +231,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		 * <ul>
 		 * <li>name - {String} 要监听的事件名称。</li>
 		 * <li>listener - {Function} 事件监听方法。</li>
-		 * <li>[options] - {Object} 监听选项。见{@link dorado.EventSupport#addListener}中的options参数的说明。</li>
+		 * <li>[options] - {Object} 监听选项。见{@link dorado.EventSupport#bind}中的options参数的说明。</li>
 		 * </ul>
 		 * 采用此种方式定义的目的一般是为了同时某一个事件关联多个监听器，或者为了指定事件监听器的选项。 </li>
 		 * </ul>
@@ -241,7 +241,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		 * </p>
 		 * @type Object|Object[]
 		 * @attribute writeOnly
-		 * 
+		 *
 		 * @example
 		 * // sample 1
 		 * oop.set("listener", {
@@ -270,7 +270,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		 * });
 		 */
 		listener: {
-			setter: function(v) {
+			setter: function (v) {
 				if (!v) return;
 				for (var p in v) {
 					if (v.hasOwnProperty(p)) {
@@ -280,16 +280,16 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 								for (var i = 0; i < listener.length; i++) {
 									var l = listener[i];
 									if (typeof l == "function") {
-										this.addListener(p, l);
+										this.bind(p, l);
 									}
 									else if (typeof l.fn == "function") {
-										this.addListener(p, l.fn, l.options);
+										this.bind(p, l.fn, l.options);
 									}
 								}
 							} else if (typeof listener == "function") {
-								this.addListener(p, listener);
+								this.bind(p, listener);
 							} else if (typeof listener.fn == "function") {
-								this.addListener(p, listener.fn, listener.options);
+								this.bind(p, listener.fn, listener.options);
 							}
 						}
 					}
@@ -298,24 +298,45 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			writeOnly: true
 		}
 	},
-	
+
 	/**
 	 * 用于声明该对象中所支持的所有事件。<br>
 	 * 此属性中的对象一般由dorado系统自动生成，且往往一个类型的所有实例都共享同一个EVENTS对象。
 	 * 因此，如无特殊需要，我们不应该在运行时手动的修改此对象中的内容。
 	 * @type Object
-	 * 
+	 *
 	 * @example
 	 * // 获取某对象的onClick事件的声明。
 	 * var eventDef = oop.ENENTS.onClick。
 	 */
 	EVENTS: {},
-	
+
 	_disableListenersCounter: 0,
-	
+
+	/**
+	 * 添加一个事件监听器。
+	 * @deprecated
+	 * @see dorado.EventSupport#bind
+	 */
+	addListener: function (name, listener, options) {
+		return this.bind(name, listener, options);
+	},
+
+	/**
+	 * 移除一个事件监听器。
+	 * @deprecated
+	 * @see dorado.EventSupport#unbind
+	 */
+	removeListener: function (name, listener) {
+		return this.unbind(name, listener);
+	},
+
 	/**
 	 * 添加一个事件监听器。
 	 * @param {String} name 事件名称。
+	 * <p>此处允许您通过特殊的语法为添加的事件监听器定义别名，以便于在未来可以更加方便的删除该事件监听器。</p>
+	 * <p>例如当您使用<pre>"onClick.system"</pre>这样的名称来绑定事件，这相当于为onClick事件定义了一个别名为system的事件监听器。
+	 * 当您想要移除该事件监听器时，只要这样调用<pre>button.unbind("onClick.system")</pre>就可以了。</p>
 	 * @param {Function} listener 事件监听方法。
 	 * @param {Object} [options] 监听选项。
 	 * @param {Object} [options.scope] 事件方法脚本的宿主，即事件脚本中this的含义。如果此参数为空则表示this为触发该事件的对象。
@@ -323,11 +344,18 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 	 * @param {int} [options.delay] 延时多少毫秒后触发。
 	 * @return {Object} 返回宿主对象自身。
 	 */
-	addListener: function(name, listener, options) {
+	bind: function (name, listener, options) {
+		var i = name.indexOf('.'), alias;
+		if (i > 0) {
+			alias = name.substring(i + 1);
+			name = name.substring(0, i);
+		}
+
 		var def = this.EVENTS[name] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[name]);
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
-		
+
 		var handler = dorado.Object.apply({}, options);
+		handler.alias = alias;
 		handler.listener = listener;
 		handler.options = options;
 		if (!this._events) this._events = {};
@@ -340,23 +368,41 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		} else this._events[name] = [handler];
 		return this;
 	},
-	
+
 	/**
 	 * 移除一个事件监听器。
 	 * @param {String} name 事件名称。
-	 * @param {Function} [listener] 事件监听器。如果不指定此参数则表示移除该事件中的所有监听器
+	 * <p>此处允许您通过特殊的语法来根据别名删除某个事件监听器。</p>
+	 * @param {Function} [listener] 事件监听器。如果不指定此参数则表示移除该事件中的所有监听器。
 	 */
-	removeListener: function(name, listener) {
+	unbind: function (name, listener) {
+		var i = name.indexOf('.'), alias;
+		if (i > 0) {
+			alias = name.substring(i + 1);
+			name = name.substring(0, i);
+		}
+
 		var def = this.EVENTS[name] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[name]);
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
-		
+
 		if (!this._events) return;
 		if (listener) {
 			var handlers = this._events[name];
 			if (handlers) {
-				var len = handlers.length;
-				for (var i = len - 1; i >= 0; i--) {
-					if (handlers[i].listener == listener) handlers.removeAt(i);
+				for (var i = handlers.length - 1; i >= 0; i--) {
+					if (handlers[i].listener == listener && (!alias || handlers[i].alias == alias)) {
+						handlers.removeAt(i);
+					}
+				}
+			}
+		}
+		else if (alias) {
+			var handlers = this._events[name];
+			if (handlers) {
+				for (var i = handlers.length - 1; i >= 0; i--) {
+					if (handlers[i].alias == alias) {
+						handlers.removeAt(i);
+					}
 				}
 			}
 		}
@@ -364,45 +410,45 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			delete this._events[name];
 		}
 	},
-	
+
 	/**
 	 * 清除事件中的所有事件监听器。
 	 * @param {String} name 事件名称。
 	 */
-	clearListeners: function(name) {
+	clearListeners: function (name) {
 		if (!this._events) return;
 		this._events[name] = null;
 	},
-	
+
 	/**
 	 * 禁用所有事件的监听器。
 	 */
-	disableListeners: function() {
+	disableListeners: function () {
 		this._disableListenersCounter++;
 	},
-	
+
 	/**
 	 * 启用所有事件的监听器。
 	 */
-	enableListeners: function() {
+	enableListeners: function () {
 		if (this._disableListenersCounter > 0) this._disableListenersCounter--;
 	},
-	
+
 	/**
 	 * 触发一个事件。
 	 * @param {String} name 事件名称。
 	 * @param {Object} [args...] 0到n个事件参数。
 	 * @return {boolean} 返回事件队列的触发过程是否正常的执行结束。
 	 */
-	fireEvent: function(name) {
+	fireEvent: function (name) {
 		var def = this.EVENTS[name] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[name]);
 		if (!def) throw new dorado.ResourceException("dorado.core.UnknownEvent", name);
-		
+
 		var handlers = (this._events) ? this._events[name] : null;
 		if ((!handlers || !handlers.length) && !def.interceptor) return;
-		
+
 		var self = this;
-		var superFire = function() {
+		var superFire = function () {
 			if (handlers) {
 				for (var i = 0; i < handlers.length;) {
 					var handler = handlers[i];
@@ -413,7 +459,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			}
 			return true;
 		};
-		
+
 		try {
 			var interceptor = (typeof def.interceptor == "function") ? def.interceptor : null;
 			if (interceptor) {
@@ -422,7 +468,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			} else if (handlers && this._disableListenersCounter == 0) {
 				return superFire.apply(this, Array.prototype.slice.call(arguments, 1));
 			}
-		} 
+		}
 		catch (e) {
 			if (def.processException) {
 				dorado.Exception.processException(e);
@@ -432,13 +478,13 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		}
 		return true;
 	},
-	
+
 	/**
 	 * 返回某事件中 已定义的事件监听器的个数。
 	 * @param {String} name 事件名称。
 	 * @return {int} 已定义的事件监听器的个数。
 	 */
-	getListenerCount: function(name) {
+	getListenerCount: function (name) {
 		if (this._events) {
 			var handlers = this._events[name];
 			return (handlers) ? handlers.length : 0;
@@ -447,15 +493,15 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			return 0;
 		}
 	},
-	
-	notifyListener: function(handler, args) {
+
+	notifyListener: function (handler, args) {
 		var listener = handler.listener;
 		var scope = handler.scope;
 		if (!scope && this.getListenerScope) {
 			scope = this.getListenerScope();
 		}
 		scope = scope || this;
-		
+
 		// 自动参数注入
 		if (handler.autowire !== false && dorado.widget && dorado.widget.View && scope instanceof dorado.widget.View) {
 			if (handler.signature === undefined) {
@@ -495,11 +541,11 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 				args = customArgs;
 			}
 		}
-		
+
 		var delay = handler.delay;
 		if (delay >= 0) {
 			/* ignore delayed listener's result */
-			setTimeout(function() {
+			setTimeout(function () {
 				listener.apply(scope, args);
 			}, delay);
 		} else {

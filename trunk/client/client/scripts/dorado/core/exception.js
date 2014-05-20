@@ -17,13 +17,13 @@
  */
 dorado.AbstractException = $class({
 	$className: "dorado.AbstractException",
-	
-	constructor: function(script) {
+
+	constructor: function () {
 		dorado.Exception.EXCEPTION_STACK.push(this);
-		
+
 		if (dorado.Browser.msie || dorado.Browser.mozilla) {
 			/* 强行接管window.onerror事件，须建议用户不要自行声明此事件 */
-			window.onerror = function(message, url, line) {
+			window.onerror = function (message, url, line) {
 				var result = false;
 				if (dorado.Exception.EXCEPTION_STACK.length > 0) {
 					var e;
@@ -36,12 +36,12 @@ dorado.AbstractException = $class({
 				return result;
 			};
 		}
-		
-		$setTimeout(this, function() {
+
+		$setTimeout(this, function () {
 			if (dorado.Exception.EXCEPTION_STACK.indexOf(this) >= 0) {
 				dorado.Exception.processException(this);
 			}
-		}, 0);
+		}, 50);
 	}
 });
 
@@ -67,7 +67,7 @@ dorado.AbstractException = $class({
  */
 dorado.Exception = $extend(dorado.AbstractException, /** @scope dorado.Exception.prototype */ {
 	$className: "dorado.Exception",
-	
+
 	/**
 	 * dorado生成的错误堆栈信息。
 	 * @name dorado.Exception#stack
@@ -81,14 +81,14 @@ dorado.Exception = $extend(dorado.AbstractException, /** @scope dorado.Exception
 	 * @type String[]
 	 */
 	// =====
-	
-	constructor: function(message) {
-		this.message = message;
+
+	constructor: function (message) {
+		this.message = message || this.$className;
 		if ($setting["common.debugEnabled"]) this._buildStackTrace();
 		$invokeSuper.call(this, arguments);
 	},
-	
-	_buildStackTrace: function() {
+
+	_buildStackTrace: function () {
 		var stack = [];
 		var funcCaller = dorado.Exception.caller, callers = [];
 		while (funcCaller && callers.indexOf(funcCaller) < 0) {
@@ -97,7 +97,7 @@ dorado.Exception = $extend(dorado.AbstractException, /** @scope dorado.Exception
 			funcCaller = funcCaller.caller;
 		}
 		this.stack = stack;
-		
+
 		if (dorado.Browser.mozilla || dorado.Browser.chrome) {
 			var stack = new Error().stack;
 			if (stack) {
@@ -106,18 +106,18 @@ dorado.Exception = $extend(dorado.AbstractException, /** @scope dorado.Exception
 			}
 		}
 	},
-	
+
 	/**
 	 * 将传入的调用堆栈信息格式化为较便于阅读的文本格式。
 	 * @param {String[]} stack 调用堆栈信息。
 	 * @return {String} 格式化后的调用堆栈信息。
 	 * @see dorado.Exception.formatStack
 	 */
-	formatStack: function(stack) {
+	formatStack: function (stack) {
 		return dorado.Exception.formatStack(stack);
 	},
-	
-	toString: function() {
+
+	toString: function () {
 		return this.message;
 	}
 });
@@ -127,7 +127,7 @@ dorado.Exception = $extend(dorado.AbstractException, /** @scope dorado.Exception
  * @param {String[]} stack 调用堆栈信息。
  * @return {String} 格式化后的调用堆栈信息。
  */
-dorado.Exception.formatStack = function(stack) {
+dorado.Exception.formatStack = function (stack) {
 	var msg = "";
 	if (stack) {
 		if (typeof stack == "string") {
@@ -174,7 +174,7 @@ dorado.AbortException = $extend(dorado.Exception, {
  */
 dorado.RunnableException = $extend(dorado.AbstractException, {
 	$className: "dorado.RunnableException",
-	
+
 	/**
 	 *可执行的脚本。
 	 * @name dorado.RunnableException#script
@@ -182,13 +182,13 @@ dorado.RunnableException = $extend(dorado.AbstractException, {
 	 * @type String
 	 */
 	// =====
-	
-	constructor: function(script) {
+
+	constructor: function (script) {
 		this.script = script;
 		$invokeSuper.call(this, arguments);
 	},
-	
-	toString: function() {
+
+	toString: function () {
 		return this.script;
 	}
 });
@@ -205,8 +205,8 @@ dorado.RunnableException = $extend(dorado.AbstractException, {
  */
 dorado.ResourceException = $extend(dorado.Exception, {
 	$className: "dorado.ResourceException",
-	
-	constructor: function() {
+
+	constructor: function () {
 		$invokeSuper.call(this, [$resource.apply(this, arguments)]);
 	}
 });
@@ -223,7 +223,7 @@ dorado.ResourceException = $extend(dorado.Exception, {
  */
 dorado.RemoteException = $extend(dorado.Exception, {
 	$className: "dorado.RemoteException",
-	
+
 	/**
 	 * 异常类型。对于来自Java的异常而言此属性为异常对象的className。
 	 * @name dorado.RemoteException#exceptionType
@@ -237,8 +237,8 @@ dorado.RemoteException = $extend(dorado.Exception, {
 	 * @type String[]
 	 */
 	// =====
-	
-	constructor: function(message, exceptionType, remoteStack) {
+
+	constructor: function (message, exceptionType, remoteStack) {
 		$invokeSuper.call(this, [message]);
 		this.exceptionType = exceptionType;
 		this.remoteStack = remoteStack;
@@ -250,7 +250,7 @@ dorado.RemoteException = $extend(dorado.Exception, {
 dorado.Exception.EXCEPTION_STACK = [];
 dorado.Exception.IGNORE_ALL_EXCEPTIONS = false;
 
-dorado.Exception.getExceptionMessage = function(e) {
+dorado.Exception.getExceptionMessage = function (e) {
 	if (!e || e instanceof dorado.AbortException) return null;
 	var msg;
 	if (e instanceof dorado.Exception) msg = e.message;
@@ -266,38 +266,45 @@ dorado.Exception.getExceptionMessage = function(e) {
  * </p>
  * @param {dorado.Exception|Object} e 异常对象。
  */
-dorado.Exception.processException = function(e) {
-	if (dorado.Exception.IGNORE_ALL_EXCEPTIONS) return;
-	
+dorado.Exception.processException = function (e) {
+	if (dorado.Exception.IGNORE_ALL_EXCEPTIONS || dorado.windowClosed) return;
+
 	dorado.Exception.removeException(e);
 	if (!e || e instanceof dorado.AbortException) return;
-	
+
 	if (e instanceof dorado.RunnableException) {
-		eval(e.script);
+		eval(e.script).call(window, e);
 	} else {
-		var msg = dorado.Exception.getExceptionMessage(e);
-		if ($setting["common.showExceptionStackTrace"]) {
-			if (e instanceof dorado.Exception) {
-				if (e.stack) msg += "\n\nDorado Stack:\n" + dorado.Exception.formatStack(e.stack);
-				if (e.remoteStack) msg += "\n\nRemote Stack:\n" + dorado.Exception.formatStack(e.remoteStack);
-				if (e.systemStack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.systemStack);
-			} else if (e instanceof Error) {
-				if (e.stack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.stack);
+		var delay = e._processDelay || 0;
+		setTimeout(function () {
+			if (dorado.windowClosed) return;
+
+			var msg = dorado.Exception.getExceptionMessage(e);
+			if ($setting["common.showExceptionStackTrace"]) {
+				if (e instanceof dorado.Exception) {
+					if (e.stack) msg += "\n\nDorado Stack:\n" + dorado.Exception.formatStack(e.stack);
+					if (e.remoteStack) msg += "\n\nRemote Stack:\n" + dorado.Exception.formatStack(e.remoteStack);
+					if (e.systemStack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.systemStack);
+				} else if (e instanceof Error) {
+					if (e.stack) msg += "\n\nSystem Stack:\n" + dorado.Exception.formatStack(e.stack);
+				}
 			}
-		}
-		if (window.console) console.log(msg);
-		
-		if (!dorado.Exception.alertException || !document.body) {
-			alert(dorado.Exception.getExceptionMessage(e));
-		} else {
-			try {
-				dorado.Exception.alertException(e);
-			}
-			catch(e2) {
+
+			if (window.console) console.log(msg);
+
+			if (!dorado.Exception.alertException || !document.body) {
 				dorado.Exception.removeException(e2);
 				alert(dorado.Exception.getExceptionMessage(e));
+			} else {
+				try {
+					dorado.Exception.alertException(e);
+				}
+				catch (e2) {
+					dorado.Exception.removeException(e2);
+					alert(dorado.Exception.getExceptionMessage(e));
+				}
 			}
-		}
+		}, delay);
 	}
 };
 
@@ -305,6 +312,6 @@ dorado.Exception.processException = function(e) {
  * 从系统的异常堆栈中移除一个异常对象。
  * @param {dorado.Exception|Object} e 异常对象。
  */
-dorado.Exception.removeException = function(e) {
+dorado.Exception.removeException = function (e) {
 	dorado.Exception.EXCEPTION_STACK.remove(e);
 };

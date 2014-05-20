@@ -69,6 +69,16 @@
 			method: "POST",
 			batchable: false
 		},
+		"longPolling.pollingOptions": {
+			url: doradoServierURI,
+			method: "GET",
+			batchable: false
+		},
+		"longPolling.sendingOptions": {
+			url: doradoServierURI,
+			method: "POST",
+			batchable: true
+		},
 		"dom.useCssShadow": true,
 		"widget.skin": "~current",
 		"widget.panel.useCssCurveBorder": true,

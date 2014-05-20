@@ -327,7 +327,7 @@
 				if (!tipDom) {
 					this._loadingTipDom = tipDom = $DomUtils.xCreate({
 						tagName: "TABLE",
-						className: "i-list-loading d-list-loading",
+						className: "d-list-loading",
 						cellPadding: 0,
 						cellSpacing: 0,
 						style: {
@@ -359,7 +359,11 @@
 									className: "tip",
 									content: [{
 										tagName: "DIV",
-										className: "icon"
+										className: "icon",
+										content: {
+											tagName: "div",
+											className: "spinner"
+										}
 									}, {
 										tagName: "DIV",
 										className: "label",
@@ -562,7 +566,7 @@
 		if (indicator == null) {
 			indicator = $DomUtils.xCreate({
 				tagName: "div",
-				className: "i-list-dragging-insert-indicator d-list-dragging-insert-indicator"
+				className: "d-list-dragging-insert-indicator"
 			});
 			this._draggingInsertIndicator = indicator;
 		}

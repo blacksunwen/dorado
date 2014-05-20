@@ -21,6 +21,7 @@
 		"info-icon": "info-icon",
 		"question-icon": "question-icon"
 	};
+    
     /**
      * @author Frank Zhang (mailto:frank.zhang@bstek.com)
      * @class 信息提示框。
@@ -67,6 +68,9 @@
             yes: "dorado.baseWidget.MessageBoxButtonYes",
             no: "dorado.baseWidget.MessageBoxButtonNo"
         },
+        
+        highlightButtons: ["ok", "yes"],
+        declineButtons: [],
 
         onButtonClick: function(buttonIndex) {
             //log.debug("run stack length:" + dorado.MessageBox._runStack.length);
@@ -138,7 +142,7 @@
                     resizeable: false,
                     exClassName: "d-message-box",
                     modal: true,
-                    modalType: $setting["widget.messageBox.defaultModalType"] || "transparent",
+                    modalType: $setting["widget.MessageBox.defaultModalType"] || "transparent",
                     closeAction: "hide",
                     buttons: [ {
                         width: 60,
@@ -211,10 +215,10 @@
 
                         dom.appendChild(textareaWrap);
 
-                        dorado.MessageBox.updateText(dorado.MessageBox._lastText, dorado.MessageBox._lastIcon, dorado.MessageBox._lastIconClass, dorado.MessageBox._lastEditor, dorado.MessageBox._lastValue);
+                        dorado.MessageBox.updateText(dorado.MessageBox._lastText, dorado.MessageBox._lastIcon, dorado.MessageBox._lastEditor, dorado.MessageBox._lastValue);
                     }
 
-                    dialog.addListener("beforeShow", function(self) {
+                    dialog.bind("beforeShow", function(self) {
                         var dom = self._dom;
                         $fly(dom).width(dorado.MessageBox.maxWidth);
 
@@ -240,9 +244,9 @@
                         }
 
                         for (var i = 0; i < 3; i++) {
-                            var button = buttons[i];
+                            var button = buttons[i], dlgButton = dlgButtons[i];
                             if (i >= buttonCount) {
-                                $fly(dlgButtons[i]._dom).css("display", "none");
+                                $fly(dlgButton._dom).css("display", "none");
                             }
                             else {
                                 var caption;
@@ -251,14 +255,27 @@
                                 } else {
                                     caption = button;
                                 }
-                                dlgButtons[i].set("caption", caption);
-                                dlgButtons[i].refresh();
-                                $fly(dlgButtons[i]._dom).css("display", "");
+                                dlgButton.set("caption", caption);
+                                
+                                var ui;
+                                if (dorado.MessageBox.highlightButtons.indexOf(button) >= 0) {
+                                	ui = "highlight";
+                                }
+                                else if (dorado.MessageBox.declineButtons.indexOf(button) >= 0) {
+                                	ui = "decline";
+                                }
+                                else {
+                                	ui = "default";
+                                }
+                                dlgButton.set("ui", ui);
+                                
+                                dlgButton.refresh();
+                                $fly(dlgButton._dom).css("display", "");
                             }
                         }
                     });
 
-                    dialog.addListener("afterShow", function(self) {
+                    dialog.bind("afterShow", function(self) {
                         var buttons = self._buttons, button;
                         if(buttons){
                             button = buttons[0];
@@ -268,7 +285,7 @@
                         }
                     });
 
-                    dialog.addListener("beforeHide", function(self, arg) {
+                    dialog.bind("beforeHide", function(self, arg) {
                         if (dorado.MessageBox._runStack.length > 0) {
                             arg.processDefault = false; //通知系统不再执行默认的后续动作。
                             dorado.MessageBox.executeCallback();
@@ -276,11 +293,11 @@
                         }
                     });
 
-                    dialog.addListener("afterHide", function() {
+                    dialog.bind("afterHide", function() {
                         dorado.MessageBox.executeCallback();
                     });
 
-                    dialog.addListener("beforeClose", function(self, arg) {
+                    dialog.bind("beforeClose", function(self, arg) {
                         dorado.MessageBox.onButtonClick("close");
                         arg.processDefault = false;
                     });
@@ -306,7 +323,7 @@
             } else {
                 options = options || {};
             }
-            options.icon = options.icon == null ? "INFO" : options.icon;
+            options.icon = options.icon == null ? dorado.MessageBox.INFO_ICON : options.icon;
             options.message = msg;
             options.buttons = dorado.MessageBox.OK;
             options.closeAction = "ok";
@@ -329,7 +346,7 @@
             } else {
                 options = options || {};
             }
-            options.icon = options.icon == null ? "QUESTION" : options.icon;
+            options.icon = options.icon == null ? dorado.MessageBox.QUESTION_ICON : options.icon;
             options.message = msg;
             options.buttons = dorado.MessageBox.YESNO;
             options.closeAction = "no";
@@ -393,12 +410,11 @@
             }
         },
 
-        updateText: function(text, icon, iconClass, editor, value) {
+        updateText: function(text, icon, editor, value) {
             var dialog = dorado.MessageBox.getDialog(), doms = dialog._doms;
 
             dorado.MessageBox._lastText = text;
             dorado.MessageBox._lastIcon = icon;
-            dorado.MessageBox._lastIconClass = iconClass;
             dorado.MessageBox._lastEditor = editor;
             dorado.MessageBox._lastValue = value;
 
@@ -423,19 +439,11 @@
             $fly(doms.msgText).html(text || "&nbsp;");
             $fly(doms.msgIcon).prop("className", "msg-icon");
 
-            var extraClass;
-
             if (icon in icons) {
-                extraClass = icons[icon];
-                icon = null;
+            	icon = icons[icon];
             }
-
-            // console.log("icon:" + icon + "\ticonClass:" + iconClass + "\textraClass:" + extraClass);
-
-            if (icon || iconClass || extraClass) {
-                if (extraClass) $fly(doms.msgIcon).addClass(extraClass);
-                if (iconClass) $fly(doms.msgIcon).addClass(iconClass);
-                if (icon) $DomUtils.setBackgroundImage(doms.msgIcon, icon);
+            if (icon) {
+                if (icon) $fly(doms.msgIcon).addClass(icon);
                 else $fly(doms.msgIcon).css("background-image", "");
 
                 $fly(doms.msgIcon).css("display", "");
@@ -474,7 +482,6 @@
          * @param {String} options.message 要显示的提示信息。
          * @param {String} options.defaultText 如果显示单行或者多行文本框，为文本框的默认值。
          * @param {String} options.icon 目前可选值：WARNING、ERROR、INFO、QUESTION，也可以像其他组件的icon属性一样使用。
-         * @param {String} options.iconClass 这个值会被作为icon的className添加到icon上。
          * @param {String} options.editor 目前可选值:single、multiple、none。分别代表单行输入框、多行输入框、无输入框。
          * @param {String[]} options.buttons 要显示的按钮，数组形式。目前最多支持显示3个按钮，每个按钮使用不同的id来显示，目前支持ok(确定)、cancel(取消)、yes(是)、no(否)。
          * @param {String} options.closeAction 如果点击dialog的关闭按钮，对应的buttonId是什么，如果不传入这个值，默认取最后一个button。
@@ -493,10 +500,10 @@
             options = options || {};
 
             var dialog = dorado.MessageBox.getDialog(), msg = options.message, defaultText = options.defaultText,
-                title = options.title || dorado.MessageBox.defaultTitle, icon = options.icon, iconClass = options.iconClass,
+                title = options.title || dorado.MessageBox.defaultTitle, icon = options.icon,
                 editor = options.editor || "none";
 
-            dorado.MessageBox.updateText(msg, icon, iconClass, editor, defaultText);
+            dorado.MessageBox.updateText(msg, icon, editor, defaultText);
 
             dialog.set({ caption: title });
             dialog.show();

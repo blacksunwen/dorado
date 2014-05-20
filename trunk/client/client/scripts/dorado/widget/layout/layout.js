@@ -25,7 +25,7 @@ dorado.widget.layout = {};
  */
 dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado.widget.layout.Layout.prototype */ {
 	$className: "dorado.widget.layout.Layout",
-	
+
 	/**
 	 * @name dorado.widget.layout.Layout#createDom
 	 * @function
@@ -83,16 +83,16 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @see dorado.widget.layout.Layout#refreshControl
 	 */
 	// =====
-	
+
 	ATTRIBUTES: /** @scope dorado.widget.layout.Layout.prototype */ {
-		
+
 		/**
 		 * 四周的留白大小。像素值。
 		 * @type int
 		 * @attribute
 		 */
 		padding: {},
-		
+
 		/**
 		 * 此布局管理器所隶属的容器控件。
 		 * @type dorado.widget.Container
@@ -106,7 +106,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 				}
 			}
 		},
-		
+
 		/**
 		 * 指示此控件是否已经渲染过。
 		 * @type boolean
@@ -115,7 +115,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		rendered: {
 			readOnly: true
 		},
-		
+
 		/**
 		 * 指示布局管理器所对应的HTML元素被真正的添加(相当于appendChild)到HTML的dom树中。
 		 * @type boolean
@@ -125,15 +125,15 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			readOnly: true
 		}
 	},
-	
+
 	constructor: function(config) {
 		this._regions = new dorado.util.KeyedList(function(region) {
-			return region.control._id;
+			return region.control._uniqueId;
 		});
 		$invokeSuper.call(this, [config]);
 		if (config) this.set(config);
 	},
-	
+
 	/**
 	 * 返回布局管理器对应的DOM对象。
 	 * @return {HTMLElement} 布局管理器对应的DOM对象。
@@ -142,11 +142,11 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (!this._dom) this._dom = this.createDom();
 		return this._dom;
 	},
-	
+
 	getRegionDom: function(region) {
 		if (region) return this._domCache[region.id];
 	},
-	
+
 	/**
 	 * 刷新布局。
 	 */
@@ -154,11 +154,12 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (this._duringRefreshDom) return;
 		this._duringRefreshDom = true;
 		if (this._attached) {
+			this._shouldRefresh = false;
 			this.refreshDom(this.getDom());
 		}
 		this._duringRefreshDom = false;
 	},
-	
+
 	/**
 	 * 当布局管理器所属的容器控件被真正的添加(相当于appendChild)到HTML的dom树中时激活的方法。
 	 * @param {HTMLElement} containerElement 控件容器的DOM对象。
@@ -178,7 +179,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this._rendered = true;
 		}
 	},
-	
+
 	/**
 	 * 当布局管理器所属的容器控件被从(相当于removeChild)到HTML的dom树中分离时激活的方法。
 	 * @see dorado.widget.Control.onDetachFromDocument
@@ -191,7 +192,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			});
 		}
 	},
-	
+
 	/**
 	 * 返回指定的布局区域的前一个布局区域。
 	 * @protected
@@ -200,12 +201,12 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 */
 	getPreviousRegion: function(region) {
 		var entry = this._regions.findEntry(region);
-		while (entry) {
+		while(entry) {
 			entry = entry.previous;
 			if (entry && entry.data.constraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return entry.data;
 		}
 	},
-	
+
 	/**
 	 * 返回指定的布局区域的下一个布局区域。
 	 * @protected
@@ -214,19 +215,19 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 */
 	getNextRegion: function(region) {
 		var entry = this._regions.findEntry(region);
-		while (entry) {
+		while(entry) {
 			entry = entry.next;
 			if (entry && entry.data.constraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return entry.data;
 		}
 	},
-	
+
 	preprocessLayoutConstraint: function(layoutConstraint, control) {
 		if (!control._visible && control._hideMode == "display") {
 			layoutConstraint = dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT;
 		}
 		return layoutConstraint || {};
 	},
-	
+
 	/**
 	 * 向布局管理器中添加一个控件。
 	 * @param {dorado.widget.Control} control 要添加的控件。
@@ -243,7 +244,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		control._parentLayout = this;
 		if (this.onAddControl) this.onAddControl(control);
 	},
-	
+
 	/**
 	 * 从布局管理器中移除一个子控件。
 	 * @param {dorado.widget.Control} control 要移除的子控件。
@@ -251,9 +252,9 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	removeControl: function(control) {
 		control._parentLayout = null;
 		if (this.onRemoveControl) this.onRemoveControl(control);
-		this._regions.removeKey(control._id);
+		this._regions.removeKey(control._uniqueId);
 	},
-	
+
 	/**
 	 * 从布局管理器中移除所有子控件。
 	 */
@@ -263,37 +264,38 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			layout.removeControl(region.control);
 		});
 	},
-	
+
 	/**
 	 * 禁止布局管理器的自动重渲染。
 	 */
 	disableRendering: function() {
 		this._disableRendering = true;
 	},
-	
+
 	/**
 	 * 允许布局管理器的自动重渲染。
 	 */
 	enableRendering: function() {
 		this._disableRendering = false;
 	},
-	
+
 	resetControlDimension: function(region, containerDom, autoWidth, autoHeight) {
-		var control = region.control, oldWidth = control._currentWidth, oldHeight = control._currentHeight;
-		if (autoWidth && region.width !== undefined && (!control.ATTRIBUTES.width.independent || control._fixedWidth)) {
+		var control = region.control, attrWatcher = control.getAttributeWatcher();
+		var oldWidth = control._currentWidth, oldHeight = control._currentHeight;
+		if (autoWidth && region.width !== undefined && !control.ATTRIBUTES.width.independent && attrWatcher.getWritingTimes("width") < 1) {
 			control._realWidth = region.width + (region.autoWidthAdjust || 0);
 		}
-		if (autoHeight && region.height !== undefined && (!control.ATTRIBUTES.height.independent || control._fixedHeight)) {
+		if (autoHeight && region.height !== undefined && !control.ATTRIBUTES.height.independent && attrWatcher.getWritingTimes("height") < 1) {
 			control._realHeight = region.height + (region.autoHeightAdjust || 0);
 		}
 		if (control._attached && (oldWidth != control._realWidth || oldHeight != control._realHeight)) {
 			control.refresh();
 		}
 	},
-	
+
 	renderControl: function(region, containerDom, autoWidth, autoHeight) {
 		this.resetControlDimension.apply(this, [region, containerDom, autoWidth, autoHeight]);
-		
+
 		var control = region.control;
 		if (!control._rendered || control.getDom().parentNode != containerDom) {
 			this._ignoreControlSizeChange = true;
@@ -301,11 +303,11 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this._ignoreControlSizeChange = false;
 		}
 	},
-	
+
 	getRegion: function(control) {
-		return this._regions.get((control instanceof dorado.widget.Control) ? control._id : control);
+		return this._regions.get((control instanceof dorado.widget.Control) ? control._uniqueId : control);
 	},
-	
+
 	/**
 	 * 刷新指定的控件对应的布局。
 	 * 此方法一般不应在子类中复写，如有需要子类应该复写本类中的doRefreshControl方法。
@@ -318,16 +320,16 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (region) {
 			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
 			if (this._container.isActualVisible()) {
-				//this._ignoreControlSizeChange = true;
+				// this._ignoreControlSizeChange = true;
 				if (this.doRefreshRegion) this.doRefreshRegion(region);
-				//this._ignoreControlSizeChange = false;
+				// this._ignoreControlSizeChange = false;
 			}
 			else {
 				this._container.refresh(); // 由于container目前不可见，因此本次刷新动作实际会被搁置到可见时再执行。
 			}
 		}
 	},
-	
+
 	/**
 	 * 当布局管理器的尺寸发生改变时激活的方法。
 	 * 此方法一般不应在子类中复写，如有需要子类应该复写本类中的doOnResize方法。
@@ -342,10 +344,10 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (clientWidth > 10000) clientWidth = 0;
 		if (clientHeight > 10000) clientHeight = 0;
 		if (clientWidth == 0 && clientHeight == 0) return;
-		
+
 		this.doOnResize();
 	},
-	
+
 	/**
 	 * 当布局管理器的尺寸发生改变时激活的方法，供子类复写的方法。
 	 * @protected
@@ -357,7 +359,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this.refresh();
 		}
 	},
-	
+
 	/**
 	 * 当布局区域内的控件尺寸发生改变时由外部激活的方法。
 	 * 此方法一般不应在子类中复写，如有需要子类应该复写本类中的doOnControlSizeChange方法。
@@ -378,7 +380,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			container.onContentSizeChange();
 			// }
 		}
-		
+
 		if (delay) {
 			dorado.Toolkits.setDelayedAction(this, "$onControlSizeChangeTimerId", fn, 200);
 		}
@@ -404,10 +406,10 @@ dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT = "none";
  */
 dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.NativeLayout.prototype */ {
 	$className: "dorado.widget.layout.NativeLayout",
-	_className: "i-native-layout d-native-layout",
-	
+	_className: "d-native-layout",
+
 	ATTRIBUTES: /** @scope dorado.widget.layout.NativeLayout.prototype */ {
-		
+
 		/**
 		 * 用于简化DOM元素style属性设置过程的虚拟属性。
 		 * 此处用于赋值给style属性的对象是style文本值或一个结构与HTMLElement的style相似的JavaScript对象。
@@ -428,22 +430,23 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			setter: function(v) {
 				if (typeof v == "string" || !this._style) {
 					this._style = v;
-				} else if (v) {
+				}
+				else if (v) {
 					dorado.Object.apply(this._style, v);
 				}
 			}
 		}
 	},
-	
+
 	createDom: function() {
 		var dom = document.createElement("DIV");
 		dom.className = this._className;
 		return dom;
 	},
-	
+
 	refreshDom: function(dom) {
 		$fly(dom).css("padding", this._padding);
-		
+
 		if (this._style) {
 			var style = this._style;
 			if (typeof this._style == "string") {
@@ -458,24 +461,24 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			$fly(dom).css(style);
 			delete this._style;
 		}
-		
-		for (var it = this._regions.iterator(); it.hasNext();) {
+
+		for(var it = this._regions.iterator(); it.hasNext();) {
 			var region = it.next();
 			var constraint = region.constraint;
 			if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 			this.renderControl(region, dom, false, false);
 		}
 	},
-	
+
 	onAddControl: function(control) {
 		if (!this._attached || this._disableRendering) return;
-		var region = this._regions.get(control._id);
+		var region = this._regions.get(control._uniqueId);
 		if (region) this.renderControl(region, this._dom, false, false);
 	},
-	
+
 	onRemoveControl: function(control) {
-		if (!this._attached/* || this._disableRendering 此判断导致removeAllChildren()不能生效 */) return;
-		var region = this._regions.get(control._id);
+		if (!this._attached || this._disableRendering) return;
+		var region = this._regions.get(control._uniqueId);
 		control.unrender();
 	}
 });

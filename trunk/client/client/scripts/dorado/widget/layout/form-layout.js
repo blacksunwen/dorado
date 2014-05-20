@@ -40,7 +40,7 @@
 	 */
 	dorado.widget.layout.FormLayout = $extend(dorado.widget.layout.Layout, /** @scope dorado.widget.layout.FormLayout.prototype */ {
 		$className: "dorado.widget.layout.FormLayout",
-		_className: "i-form-layout d-form-layout",
+		_className: "d-form-layout",
 		
 		ATTRIBUTES: /** @scope dorado.widget.layout.FormLayout.prototype */ {
 			
@@ -164,14 +164,14 @@
 				}
 				return same;
 			}
-			
+
 			var tbody;
 			var grid = this.precalculateRegions();
 			var structureChanged = !isSameGrid(this._grid, grid);
 			if (structureChanged) {
 				this._domCache = {};
 				this._grid = grid;
-				
+
 				tbody = dom.tBodies[0];
 				for (var i = 0, rowNum = tbody.childNodes.length, row; i < rowNum; i++) {
 					row = tbody.childNodes[i];

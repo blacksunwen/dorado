@@ -24,7 +24,7 @@
 					var config = configs[i], name = config.name, func = config.func, bindingInfos = config.bindingInfos;
 					if (bindingInfos) {
 						for (var j = 0; j < bindingInfos.length; j++) {
-							view.bind(bindingInfos[j], func);
+							view.bindByExpression(bindingInfos[j], func);
 						}
 					}
 					

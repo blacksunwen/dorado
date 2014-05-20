@@ -36,7 +36,7 @@ dorado.debug.initProcedures.push(function(){
 			var codePreview = new dorado.widget.HtmlContainer({
 				width: "100%",
 				height: "100%",
-				style: "display: block; border: 1px solid #B0B0B0"
+				style: "display: block"
 			});
 
 			var keyList = new dorado.widget.ListBox({
@@ -59,7 +59,7 @@ dorado.debug.initProcedures.push(function(){
 					caption: "Hotkey",
 					tools: [{
 						$type: "SimpleIconButton",
-						icon: "url(>skin>common/icons.gif) -40px -240px",
+						iconClass: "d-debugger-hotkey-refresh-icon",
 						listener: {
 							onClick: function() {
 								panel.reload();

@@ -19,8 +19,6 @@
  * </p>
  * @param {Object} [options] 选项。
  * @param {String} [options.mode="drop"] 阴影类型，目前有drop、sides、frame这三种类型供选择。
- * @param {int} [options.offset=4] 阴影大小。
- * @param {String} [options.color=#444444] 阴影颜色。
  * @return {jQuery} 调用此方法的jQuery对象自身。
  * @see jQuery#unshadow
  */
@@ -31,13 +29,13 @@ jQuery.fn.shadow = function(options) {
 	var mode = options.mode || "drop";
 	switch (mode.toLowerCase()) {
 		case "drop":
-			this.addClass("i-shadow-drop d-shadow-drop");
+			this.addClass("d-shadow-drop");
 			break;
 		case "sides":
-			this.addClass("i-shadow-sides d-shadow-sides");
+			this.addClass("d-shadow-sides");
 			break;
 		case "frame":
-			this.addClass("i-shadow-frame d-shadow-frame");
+			this.addClass("d-shadow-frame");
 			break;
 	}
 	return this;
@@ -57,13 +55,13 @@ jQuery.fn.unshadow = function(options) {
 	var mode = options.mode || "drop";
 	switch (mode.toLowerCase()) {
 		case "drop":
-			this.removeClass("i-shadow-drop d-shadow-drop");
+			this.removeClass("d-shadow-drop");
 			break;
 		case "sides":
-			this.removeClass("i-shadow-sides d-shadow-sides");
+			this.removeClass("d-shadow-sides");
 			break;
 		case "frame":
-			this.removeClass("i-shadow-frame d-shadow-frame");
+			this.removeClass("d-shadow-frame");
 			break;
 	}
 	return this;

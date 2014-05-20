@@ -327,7 +327,7 @@
 				
 				if (entityList) {
 					if (!(entityList instanceof dorado.EntityList)) {
-						throw new dorado.ResourceException("dorado.grid.BindingTypeMismatch", this._id);
+						throw new dorado.ResourceException("dorado.grid.BindingTypeMismatch", (this._id || this._uniqueId));
 					}
 				}
 				
@@ -341,10 +341,10 @@
 					this._columnInited = false;
 					this._listeningDataTypeRepository = true;
 					var grid = this;
-					this.get("dataTypeRepository").addListener("onDataTypeRegister", function(self, arg) {
+					this.get("dataTypeRepository").bind("onDataTypeRegister", function(self, arg) {
 						var dataType = grid.getBindingDataType("never");
 						if (dataType && dataType instanceof dorado.EntityDataType) {
-							self.removeListener("onDataTypeRegister", arguments.callee);
+							self.unbind("onDataTypeRegister", arguments.callee);
 							grid._autoCreateColumns = true;
 							grid._listeningDataTypeRepository = false;
 							grid.initColumns(dataType);
@@ -565,7 +565,7 @@
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					this.hideCellEditor();
-					if (this._itemModel.groups) this.setDirtyMode(true);
+					if (this._itemModel.groups) this._itemModel.refreshItems();
 					else this.refresh(true);
 					break;
 				}
@@ -633,8 +633,13 @@
 					if (!items || items._observer != this._dataSet) {
 						this.refresh(true);
 					} else {
-						if (this._itemModel.groups) this.setDirtyMode(true);
-						else this.refreshEntity(arg.entity);
+						if (this._itemModel.groups) {
+							this._itemModel.refreshItems();
+							this.refresh(true);
+						}
+						else {
+							this.refreshEntity(arg.entity);
+						}
 					}
 					break;
 				}
@@ -644,7 +649,8 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:{
 					if (this._itemModel.groups) {
-						this.setDirtyMode(true);
+						this._itemModel.refreshItems();
+						this.refresh(true);
 					} else {
 						var items = this._itemModel.getItems();
 						if (items == arg.entityList) {
@@ -657,7 +663,10 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_INSERTED:{
-					if (this._itemModel.groups) this.setDirtyMode(true);
+					if (this._itemModel.groups) {
+						this._itemModel.refreshItems();
+						this.refresh(true);
+					}
 					else {
 						this.onEntityInserted(arg);
 						this.refreshSummary();

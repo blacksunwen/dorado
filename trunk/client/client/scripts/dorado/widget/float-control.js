@@ -125,19 +125,11 @@ dorado.dequeue = function(namespace) {
 			
 			/**
 			 * 如果浮动，则会为组件的dom添加上该className。
-			 * @attribute
+			 * @attribute writeBeforeReady
 			 * @type String
 			 */
 			floatingClassName: {
-				setter: function(className) {
-					if (this._floating && this._dom && this._floatingClassName) {
-						$fly(this._dom).removeClass(this._floatingClassName);
-					}
-					this._floatingClassName = className;
-					if (this._floating && this._dom && className) {
-						$fly(this._dom).addClass(className);
-					}
-				}
+				writeBeforeReady: true
 			},
 			
 			visible: {
@@ -679,7 +671,7 @@ dorado.dequeue = function(namespace) {
 		 */
 		getShowPosition: function(options) {
 			var control = this, anchorTarget = options.anchorTarget, position = options.position, dom = control.getDom(), event = options.event, fixedElement, result;
-			
+
 			if (anchorTarget) {
 				if (anchorTarget instanceof dorado.widget.Control) {
 					fixedElement = anchorTarget._dom;

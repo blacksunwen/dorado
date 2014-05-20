@@ -15,7 +15,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 (function() {
 
 	var ALL_VIEWS = [];
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 视图对象。
@@ -23,37 +23,36 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	 * View对象的get方法在{@link dorado.AttributeSupport#get}的基础上做了很多增强。
 	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的几种用法。
 	 * <ul>
-	 * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成id，表示根据id获取View中的子控件。参考{@link dorado.widget.View#id}。</li>
-	 * 	<li>当传入一个以^开头的字符串时，^后面的内容将被识别成tag，表示根据tag查找View中的子对象。参考{@link dorado.widget.View#tag}。</li>
-	 * 	<li>当传入一个以@开头的字符串时，@后面的内容将被识别成DataType的名称，表示根据名称获取DataType。参考{@link dorado.widget.View#getDataType}。</li>
+	 *    <li>当传入一个以#开头的字符串时，#后面的内容将被识别成id，表示根据id获取View中的子控件。参考{@link dorado.widget.View#id}。</li>
+	 *    <li>当传入一个以^开头的字符串时，^后面的内容将被识别成tag，表示根据tag查找View中的子对象。参考{@link dorado.widget.View#tag}。</li>
+	 *    <li>当传入一个以@开头的字符串时，@后面的内容将被识别成DataType的名称，表示根据名称获取DataType。参考{@link dorado.widget.View#getDataType}。</li>
 	 * </ul>
 	 * </p>
 	 * @extends dorado.widget.Container
 	 */
 	dorado.widget.View = $extend(dorado.widget.Container, /** @scope dorado.widget.View.prototype */ {
 		$className: "dorado.widget.View",
-		_inherentClassName: "i-view",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.View.prototype */ {
-		
+
 			dataTypeRepository: {
 				getter: function(p) {
 					return this['_' + p] || $dataTypeRepository;
 				}
 			},
-			
+
 			className: {
 				defaultValue: "d-view"
 			},
-			
+
 			width: {
 				defaultValue: "100%"
 			},
-			
+
 			height: {
 				defaultValue: "100%"
 			},
-			
+
 			/**
 			 * 视图的名称。此属性仅在配合Dorado服务端的开发模式中有意义。
 			 * @type String
@@ -62,7 +61,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			name: {
 				writeBeforeReady: true
 			},
-			
+
 			/**
 			 * 视图的渲染模式，即渲染时机。这个设定通常与性能优化相关。取值范围包括：
 			 * <ul>
@@ -77,13 +76,13 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			renderMode: {
 				defaultValue: "onCreate"
 			},
-			
+
 			view: {
 				setter: function(view) {
 					dorado.widget.Component.prototype.ATTRIBUTES.view.setter.call(this, view);
 				}
 			},
-			
+
 			/**
 			 * 与此视图关联的上下文。
 			 * <p>
@@ -93,7 +92,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * @attribute writeBeforeReady
 			 */
 			context: {
-				skipRefresh: true,
 				writeBeforeReady: true,
 				getter: function() {
 					if (this._context == null) this._context = $map();
@@ -112,7 +110,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}
 			}
 		},
-		
+
 		EVENTS: /** @scope dorado.widget.View.prototype */ {
 			/**
 			 * 当组件对应的根DOM对象被创建时触发的事件。
@@ -123,7 +121,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * @see dorado.widget.DataSet#loadMode
 			 */
 			onDataLoaded: {},
-			
+
 			/**
 			 * 当一个子组件被注册到视图中时触发的事件。
 			 * <p>
@@ -131,12 +129,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * </p>
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
-			 * @param {dorado.widget.Component} arg.component 被注册的子组件。
+			 * @param {dorado.widget.ViewElement} arg.viewElement 被注册的子组件。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onComponentRegistered: {},
-			
+			onViewElementRegistered: {},
+
 			/**
 			 * 当一个子组件被从视图中注消时触发的事件。
 			 * <p>
@@ -144,37 +142,71 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			 * </p>
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
-			 * @param {dorado.widget.Component} arg.component 被注消的子组件。
+			 * @param {dorado.widget.ViewElement} arg.viewElement 被注消的子组件。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
+			onViewElementUnregistered: {},
+
+			/**
+			 * @see dorado.widget.View#event:onViewElementRegistered
+			 * @event
+			 * @deprecated
+			 */
+			onComponentRegistered: {},
+
+			/**
+			 * @see dorado.widget.View#event:onViewElementUnregistered
+			 * @event
+			 * @deprecated
+			 */
 			onComponentUnregistered: {}
 		},
-		
+
 		constructor: function(configs) {
 			ALL_VIEWS.push(this);
-			
-			this._identifiedComponents = {};
+
+			this._identifiedViewElements = {};
 			this._loadingDataSet = [];
-			
-			if (configs == "$TOP_VIEW") this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
-			else this._dataTypeRepository = new dorado.DataTypeRepository(dorado.DataTypeRepository.ROOT);
+
+			if (configs == "$TOP_VIEW") {
+				this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
+			}
+			else {
+				this._dataTypeRepository = new dorado.DataTypeRepository(dorado.DataTypeRepository.ROOT);
+			}
 			this._dataTypeRepository._view = this;
-			
+
 			$invokeSuper.call(this, [configs]);
-			if (topView) topView.addChild(this);
+
+			if (this._id) {
+				var oldValue = window[this._id];
+				if (oldValue !== undefined) {
+					var errorMesssage;
+					if (oldValue instanceof dorado.widget.View) {
+						errorMesssage = "dorado.widget.UnsafeViewId";
+					}
+					else {
+						errorMesssage = "dorado.widget.UniqueViewId";
+					}
+					new dorado.ResourceException(errorMesssage, this._id);
+				}
+				else {
+					window[this._id] = this;
+				}
+			}
 		},
-		
+
 		loadData: function() {
 			if (this._renderMode !== "onDataLoaded") return;
-			
+
 			this._children.each(function (child) {
 				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
-			});			
+			});
 			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
 			this._loadingDataSet = [];
 		},
-		
+
 		onReady: function() {
 			$invokeSuper.call(this);
 			if (this._renderMode !== "onDataLoaded") {
@@ -182,16 +214,16 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				this._loadingDataSet = [];
 			}
 		},
-		
+
 		destroy: function() {
 			ALL_VIEWS.remove(this);
 			$invokeSuper.call(this);
 		},
-		
+
 		createDefaultLayout: function() {
 			if (this._id != "$TOP_VIEW") $invokeSuper.call(this);
 		},
-		
+
 		parentChanged: function() {
 			if (this._parent) {
 				var container = this._parent;
@@ -202,68 +234,111 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					}
 					container = container._parent;
 				}
-				while (container != null);
-			} else {
+				while(container != null);
+			}
+			else {
 				this._dataTypeRepository.parent = dorado.DataTypeRepository.ROOT;
 			}
 		},
-		
-		registerComponent: function(id, comp) {
-			if (this._identifiedComponents[id]) {
+
+		registerViewElement: function(id, comp) {
+			if (!id) return;
+
+			if (this._identifiedViewElements[id]) {
 				throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
 			}
-			this._identifiedComponents[id] = comp;
+			this._identifiedViewElements[id] = comp;
+			if (this.getListenerCount("onViewElementRegistered")) {
+				this.fireEvent("onViewElementRegistered", this, {
+					viewElement: comp
+				});
+			}
+
+			/**
+			 * @deprecated
+			 */
 			if (this.getListenerCount("onComponentRegistered")) {
 				this.fireEvent("onComponentRegistered", this, {
 					component: comp
 				});
 			}
 		},
-		
-		unregisterComponent: function(id) {
+
+		unregisterViewElement: function(id) {
+			if (!id) return;
+
+			if (this.getListenerCount("onViewElementUnregistered")) {
+				var comp = this._identifiedViewElements[id];
+				this.fireEvent("onViewElementUnregistered", this, {
+					component: comp
+				});
+			}
+
+			/**
+			 * @deprecated
+			 */
 			if (this.getListenerCount("onComponentUnregistered")) {
-				var comp = this._identifiedComponents[id];
+				var comp = this._identifiedViewElements[id];
 				this.fireEvent("onComponentUnregistered", this, {
 					component: comp
 				});
 			}
-			delete this._identifiedComponents[id];
+			delete this._identifiedViewElements[id];
 		},
-		
+
+		/**
+		 * @deprecated
+		 */
+		registerComponent: function(id, comp) {
+			this.registerViewElement(id, comp);
+		},
+
+		/**
+		 * @deprecated
+		 */
+		unregisterComponent: function(id) {
+			this.unregisterViewElement(id);
+		},
+
 		getListenerScope: function() {
 			return this;
 		},
-		
+
 		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#') {
 				var id = attr.substring(1);
-				return this.id(id);
-			} else if (c == '^') {
+				var result = this.id(id);
+				if (!result) result = this.getDataType(id);
+				return result;
+			}
+			else if (c == '^') {
 				var tag = attr.substring(1);
 				return this.tag(tag);
-			} else if (c == '@') {
+			}
+			else if (c == '@') {
 				var dataTypeName = attr.substring(1);
 				return this.getDataType(dataTypeName);
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, [attr]);
 			}
 		},
-		
+
 		/**
 		 * 根据传入的id返回View中的某个组件。
 		 * @param {String} id 子对象的ID。
 		 * @return {dorado.widget.Component} ID所指的子对象。
 		 */
 		id: function(id) {
-			var comp = this._identifiedComponents[id];
-			if (!comp && dorado.widget.View.DEFAULT_COMPONENTS) {
-				comp = dorado.widget.View.getDefaultComponent(this, id);
-				if (comp) this.registerComponent(id, comp);
+			var viewElement = this._identifiedViewElements[id];
+			if (!viewElement && dorado.widget.View.DEFAULT_COMPONENTS) {
+				viewElement = dorado.widget.View.getDefaultComponent(this, id);
+				if (viewElement) this.registerViewElement(id, viewElement);
 			}
-			return comp;
+			return viewElement;
 		},
-		
+
 		/**
 		 * 返回本视图中具有某一指定标签的对象的对象组。
 		 * @param {String} tags 标签值。
@@ -273,7 +348,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		 */
 		tag: function(tags) {
 			var group = dorado.TagManager.find(tags), allObjects = group.objects, objects = [];
-			for (var i = 0; i < allObjects.length; i++) {
+			for(var i = 0; i < allObjects.length; i++) {
 				var object = allObjects[i];
 				if (object._view == this || object.view == this ||
 					(object.ATTRIBUTES.view && object.get("view") == this) ||
@@ -283,14 +358,16 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 			return new dorado.ObjectGroup(objects);
 		},
-		
+
 		getComponentReference: function(id) {
-			return 	{
+			var comp = this.id(id);
+			return comp ||
+			{
 				view: this,
 				component: id
 			};
 		},
-		
+
 		/**
 		 * 根据名称以同步方式返回View中的DataType。
 		 * @param {String} name 数据类型的名称。
@@ -299,7 +376,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		getDataType: function(name) {
 			return this._dataTypeRepository.get(name);
 		},
-		
+
 		/**
 		 * 根据名称以异步方式返回View中的DataType。
 		 * @param {String} name 数据类型的名称。
@@ -308,7 +385,13 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		getDataTypeAsync: function(name, callback) {
 			return this._dataTypeRepository.getAsync(name, callback);
 		},
-		
+
+		onReady: function() {
+			$invokeSuper.call(this);
+			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
+			this._loadingDataSet = [];
+		},
+
 		/**
 		 * 当那些loadMode属性为onReady的数据集全部完成数据装载时触发的方法。
 		 * @protected
@@ -320,44 +403,45 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 			this.fireEvent("onDataLoaded", this);
 		},
-		
+
 		render: function(containerElement) {
 			var bodyWidth;
 			if (containerElement == document.body) bodyWidth = document.body.clientWidth;
 			$invokeSuper.call(this, [containerElement]);
 			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
 		},
-		
+
 		doRenderToOrReplace: function(replace, element, nextChildElement) {
 			this._rendering = true;
 			$invokeSuper.call(this, [replace, element, nextChildElement]);
 			this._rendering = false;
 		},
-		
+
 		/**
 		 * 根据绑定表达式，为View中的控件或子对象绑定事件监听器。
 		 * @param {String} expression 表达式。
 		 * @param {Function} listener 事件监听器。
 		 * @param {Object} [options] 监听选项。
 		 */
-		bind: function(expression, listener, options) {
+		bindByExpression: function(expression, listener, options) {
 			var i = expression.lastIndexOf('.'), objectsExpression, eventName;
 			if (i > 0) {
 				objectsExpression = expression.substring(0, i);
 				eventName = expression.substring(i + 1);
 			}
-			
+
 			if (i <= 0 || !eventName) {
 				throw new dorado.Exception("Invalid binding expression \"" + expression + "\".");
 			}
-			
+
 			var objects;
 			if (objectsExpression == "view") {
 				objects = this;
-			} else {
+			}
+			else {
 				objects = this.get(objectsExpression);
 			}
-			
+
 			if (objects) {
 				if (dorado.Object.isInstanceOf(objects, dorado.EventSupport)) {
 					if (eventName == "onCreate") {
@@ -365,7 +449,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 							listener: listener
 						}, options), [objects]);
 					}
-					objects.addListener(eventName, listener, options);
+					objects.bind(eventName, listener, options);
 				}
 				else if (objects instanceof dorado.ObjectGroup) {
 					if (eventName == "onCreate") {
@@ -375,18 +459,18 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 							}, options), [object]);
 						});
 					}
-					objects.addListener(eventName, listener, options);
+					objects.bind(eventName, listener, options);
 				}
 			}
 		}
-		
+
 	});
-	
+
 	dorado.widget.View.registerDefaultComponent = function(id, component) {
 		var comps = this.DEFAULT_COMPONENTS = this.DEFAULT_COMPONENTS || {};
 		comps[id] = component;
 	};
-	
+
 	dorado.widget.View.getDefaultComponent = function(view, id) {
 		var comps = this.DEFAULT_COMPONENTS;
 		if (!comps || !comps[id]) return;
@@ -394,7 +478,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (typeof comp == "function") comp = comp(view);
 		return comp;
 	};
-	
+
 	/**
 	 * @name $id
 	 * @function
@@ -403,15 +487,15 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	 * @return {dorado.ObjectGroup} 对象组。
 	 */
 	window.$id = function(id) {
-		var components = [];
-		for (var i = 0; i < ALL_VIEWS.length; i++) {
+		var viewElements = [];
+		for(var i = 0; i < ALL_VIEWS.length; i++) {
 			var view = ALL_VIEWS[i];
-			var component = view.id(id);
-			if (component) components.push(component);
+			var viewElement = view.id(id);
+			if (viewElement) viewElements.push(viewElement);
 		}
-		return new dorado.ObjectGroup(components);
+		return new dorado.ObjectGroup(viewElements);
 	};
-	
+
 	/**
 	 * @name dorado.widget.View.waitFor
 	 * @function
@@ -421,6 +505,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	 * 此处定义异步操作过程时既可以传入单个的过程也可以传入以数组封装的多个过程。 目前可支持的异步操作过程包括下列两种定义形式:
 	 * <ul>
 	 * <li>直接传入某个{@link dorado.DataSet}，此方法会自动调用其getDataAsync()方法。 </li>
+	 * <li>直接传入某个{@link dorado.widget.AsyncAction}，此方法会自动调用其execute()方法。</li>
 	 * <li>传入异步操作描述对象。异步操作描述对象是用于定义异步操作的JSON对象，其中包含下列子属性：
 	 * <ul>
 	 * <li>run - {Function} 包含对调用异步操作进行调用的Function。</li>
@@ -450,12 +535,22 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 						task.loadAsync(callback);
 					}
 				});
-			} else if (typeof task == "function") {
+			}
+			else if (task instanceof dorado.widget.AsyncAction) {
+				simTasks.push({
+					callback: dorado._NULL_FUNCTION,
+					run: function(callback) {
+						task.execute(callback);
+					}
+				});
+			}
+			else if (typeof task == "function") {
 				simTasks.push({
 					callback: dorado._NULL_FUNCTION,
 					run: task
 				});
-			} else {
+			}
+			else {
 				simTasks.push(task);
 			}
 		});
@@ -469,7 +564,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	};
 
 	dorado.fireResizeCallback = function() {
-		for (var i = 0, j = resizeCallbacks.length; i < j; i++) {
+		for(var i = 0, j = resizeCallbacks.length; i < j; i++) {
 			var callback = resizeCallbacks[i];
 			callback.call(null);
 		}
@@ -482,9 +577,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			resizeCallbacks.removeAt(index);
 		}
 	};
-	
+
 	var topView = new dorado.widget.View("$TOP_VIEW");
-	
+
 	/**
 	 * 根视图对象。<br>
 	 * 该视图对象是所有其它尚未被添加到容器中的视图对象的默认容器。
@@ -492,7 +587,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	 * @constant
 	 */
 	dorado.widget.View.TOP = topView;
-	
+
 	/**
 	 * dorado.widget.View.TOP的快捷方式。
 	 * @type dorado.widget.View
@@ -502,18 +597,18 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 	window.$topView = topView;
 
 	jQuery().ready(function() {
-	
+
 		function getControlByElement(el) {
 			var node = $DomUtils.findParent(el, function(node) {
 				return (!!node.doradoUniqueId);
 			});
 			var control = null;
-			if (node) control = dorado.widget.Component.ALL[node.doradoUniqueId];
+			if (node) control = dorado.widget.ViewElement.ALL[node.doradoUniqueId];
 			return control;
 		}
-		
+
 		dorado.fireBeforeInit();
-		
+
 		var lastFocusedControl;
 		$fly(document).mousedown(function(evt) {
 			var element = evt.target;
@@ -534,19 +629,20 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$fly(document).keydown(function(evt) {
 				var b, c = dorado.widget.getFocusedControl();
 				if (c) b = c.onKeyDown(evt);
-				
+
 				if ((dorado.widget.HtmlContainer && c instanceof dorado.widget.HtmlContainer) ||
-					(dorado.widget.TemplateField && c instanceof dorado.widget.TemplateField)){
+					(dorado.widget.TemplateField && c instanceof dorado.widget.TemplateField)) {
 					return true;
 				}
-				
+
 				if (b === false) {
 					evt.preventDefault();
 					evt.cancelBubble = true;
 					return false;
-				} else {
-					if ($setting["common.preventBackspace"])  {
-						switch (evt.keyCode || evt.which) {
+				}
+				else {
+					if ($setting["common.preventBackspace"]) {
+						switch(evt.keyCode || evt.which) {
 							case 8:
 								var doPrevent = false;
 								var d = evt.srcElement || evt.target;
@@ -568,8 +664,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					}
 
 					if (b === true) {
-						switch (evt.keyCode || evt.which) {
-							case 8: {	// Backspace
+						switch(evt.keyCode || evt.which) {
+							case 8:
+							{	// Backspace
 								if (evt.srcElement) {
 									var nodeName = evt.srcElement.nodeName.toLowerCase();
 									if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
@@ -578,7 +675,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 								}
 								break;
 							}
-							case 13:{ // Enter
+							case 13:
+							{ // Enter
 								if ($setting["common.enterAsTab"]) {
 									var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 									if (c) c.setFocus();
@@ -588,7 +686,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 								}
 								break;
 							}
-							case 9: {
+							case 9:
+							{ // Tab
 								var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 								if (c) c.setFocus();
 								evt.preventDefault();
@@ -600,50 +699,58 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					return true;
 				}
 			}).keypress(function(evt) {
-				var b, c = dorado.widget.getFocusedControl();
-				if (c) b = c.onKeyPress(evt);
-				if (b === false) {
-					evt.preventDefault();
-					evt.cancelBubble = true;
-					return false;
-				} else {
-					return true;
-				}
-			});
+					var b, c = dorado.widget.getFocusedControl();
+					if (c) b = c.onKeyPress(evt);
+					if (b === false) {
+						evt.preventDefault();
+						evt.cancelBubble = true;
+						return false;
+					}
+					else {
+						return true;
+					}
+				});
 		}
 
 		var cls = "d-unknown-browser", b = dorado.Browser, v = b.version;
 		if (b.isTouch) {
 			if (b.android) {
 				cls = "d-android";
-			} else if (b.iOS) {
+			}
+			else if (b.iOS) {
 				cls = "d-ios";
-			} else if (b.chrome) {
+			}
+			
+			if (b.androidNative) {
+				cls += " d-android-native";
+			}
+		}
+		else {
+			if (b.msie) {
+				cls = "d-ie";
+			}
+			else if (b.mozilla) {
+				cls = "d-mozilla";
+			}
+			else if (b.chrome) {
 				cls = "d-chrome";
+			}
+			else if (b.safari) {
+				cls = "d-safari";
+			}
+			else if (b.opera) {
+				cls = "d-opera";
 			}
 
 			if ($setting["common.simulateTouch"]) {
 				cls += " d-touch";
 			}
 		}
-		else {
-			if (b.msie) {
-				cls = "d-ie";
-			} else if (b.mozilla) {
-				cls = "d-mozilla";
-			} else if (b.chrome) {
-				cls = "d-chrome";
-			} else if (b.safari) {
-				cls = "d-safari";
-			} else if (b.opera) {
-				cls = "d-opera";
-			}
-		}
 		if (v) {
 			cls += " " + cls + v;
 		}
 
-		$fly(document.body).addClass(cls);
+		$fly(document.body).addClass(cls + " d-rendering");
 		if (!dorado.Browser.isTouch) {
 			$fly(document.body).focusin(function(evt) {
 				if (dorado.widget.Control.IGNORE_FOCUSIN_EVENT) return;
@@ -673,7 +780,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		var isInIFrame = false;
 		try {
 			isInIFrame = !!(top != window || window.frameElement);
-		} catch(e) {
+		}
+		catch(e) {
 			isInIFrame = true;
 		}
 
@@ -700,7 +808,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					}
 					oldWidth = width;
 					oldHeight = height;
-				} else {
+				}
+				else {
 					resizeTopView();
 				}
 			};
@@ -712,6 +821,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 
 			dorado.fireAfterInit();
+			setTimeout(function() {
+				$fly(document.body).removeClass("d-rendering");
+			}, 500);
 		};
 
 		var rootViewport = {
@@ -724,7 +836,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					//me.scrollToTop();
 				}, true);
 
-				$fly(document).bind('touchmove', function (e) { e.preventDefault(); });
+				$fly(document).bind("touchmove", function (e) { e.preventDefault(); });
 
 				this.initialHeight = window.innerHeight;
 
@@ -732,15 +844,18 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 				this.scrollToTop();
 
+				// These 2 timers here are ugly but it's the only way to make address bar hiding works on all the devices we have including the new Galaxy Tab
 				setTimeout(function() {
 					me.scrollToTop();
-					me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
+					setTimeout(function() {
+						me.scrollToTop();
+						me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
 
-					me.updateBodySize();
-
-					if (fn) {
-						fn.apply(scope || window);
-					}
+						me.updateBodySize();
+						if (fn) {
+							fn.apply(scope || window);
+						}
+					}, 50);
 				}, 50);
 			},
 			scrollToTop: function() {
@@ -749,7 +864,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					if (dorado.Browser.isPhone) {
 						document.body.scrollTop = document.body.scrollHeight;
 					}
-				} else {
+				}
+				else {
 					window.scrollTo(0, 1);
 				}
 			},
@@ -757,7 +873,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				var $body = $fly(document.body);
 				if (isInIFrame) {
 					return;
-				} else {
+				}
+				else {
 					var width = jQuery(window).width(), height = jQuery(window).height();
 					//alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
 					jQuery(document.body).height(height).width(width);
@@ -768,8 +885,11 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (dorado.Browser.isTouch) {
 			if (isInIFrame) {
 				doInitDorado();
-			} else {
-				rootViewport.init(function() { doInitDorado(); });
+			}
+			else {
+				rootViewport.init(function() {
+					doInitDorado();
+				});
 			}
 			return;
 		}
@@ -781,5 +901,5 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			doInitDorado();
 		}
 	});
-	
+
 })();

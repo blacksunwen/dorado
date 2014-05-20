@@ -330,14 +330,13 @@
 			var editor = this._editor;
 			if (this._dynaFilter && editor instanceof dorado.widget.AbstractTextBox) {
 				var dropDown = this;
-				var filterFn = this._box._onTextEditedListener = function() {
+				editor.bind("onTextEdit._filter", function() {
 					if (dropDown._filterOnTyping && dropDown.get("opened")) {
 						dorado.Toolkits.setDelayedAction(dropDown, "$filterTimeId", function() {
 							if (!dropDown._rowSelected) dropDown.onFilterItems(editor.doGetText());
 						}, dropDown._minFilterInterval);
 					}
-				};
-				editor.addListener("onTextEdit", filterFn);
+				});
 			}
 		},
 		
@@ -375,7 +374,7 @@
 			}
 			
 			if (editor instanceof dorado.widget.AbstractTextBox) {
-				editor.removeListener("onTextEdit", this._box._onTextEditedListener);
+				editor.unbind("onTextEdit._filter");
 			}
 			$invokeSuper.call(this, arguments);
 		},
@@ -421,9 +420,9 @@
 				this.locate();
 			}
 		},
-		
+
 		doOnEditorKeyDown: function(editor, evt) {
-		
+
 			function assignValue(dropdown, rowList) {
 				var property = dropdown._displayProperty || dropdown._property;
 				var value = rowList.getCurrentItem();
@@ -434,34 +433,34 @@
 						value = value[property];
 					}
 				}
-                var eventArg = {
-                    editor : editor,
-                    selectedValue : value,
-                    processDefault : true
-                };
-                dropdown.fireEvent("onValueSelect", dropdown, eventArg);
-                var entityForAssignment;
-                if (dropdown.getEntityForAssignment) {
-                    entityForAssignment = dropdown.getEntityForAssignment();
-                }
-                if (eventArg.processDefault && eventArg.selectedValue !== undefined) {
-                    dropdown.assignValue(editor, entityForAssignment, eventArg);
-                }
+				var eventArg = {
+					editor : editor,
+					selectedValue : value,
+					processDefault : true
+				};
+				dropdown.fireEvent("onValueSelect", dropdown, eventArg);
+				var entityForAssignment;
+				if (dropdown.getEntityForAssignment) {
+					entityForAssignment = dropdown.getEntityForAssignment();
+				}
+				if (eventArg.processDefault && eventArg.selectedValue !== undefined) {
+					dropdown.assignValue(editor, entityForAssignment, eventArg);
+				}
 			}
-			
+
 			var dropdown = this, retValue = true;
 			if (this.get("opened")) {
 				var rowList = this.get("box.control");
 				switch (evt.keyCode) {
 					case 38: // up
-					case 40:{ // down 
+					case 40:{ // down
 						if (!rowList._highlightCurrentRow) {
 							rowList.set("highlightCurrentRow", dropdown._rowSelected = true);
-                            assignValue(dropdown, rowList);
+							assignValue(dropdown, rowList);
 							retValue = false;
 						} else {
 							rowList.addListener("onCurrentChange", function() {
-                                assignValue(dropdown, rowList);
+								assignValue(dropdown, rowList);
 							}, {
 								once: true
 							});

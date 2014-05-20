@@ -58,23 +58,25 @@
 				}]
 			}, null, doms);
 			
-			var buttons = [{
-				caption: $resource("dorado.baseWidget.ExceptionDialogOK"),
-				width: 85,
-				onClick: function() {
-					exceptionDialog.hide();
-				}
-			}];
-			
+			var buttons = [];
 			if ($setting["common.showExceptionStackTrace"]) {
 				buttons.push({
 					caption: $resource("dorado.baseWidget.ExceptionDialogDetail"),
-					width: 70,
+					width: 80,
 					onClick: function() {
 						showExceptionDetailDialog(currentException);
 					}
 				});
 			}
+			
+			buttons.push({
+				caption: $resource("dorado.baseWidget.ExceptionDialogOK"),
+				ui: "highlight",
+				width: 85,
+				onClick: function() {
+					exceptionDialog.hide();
+				}
+			});
 			
 			exceptionDialog = new dorado.widget.Dialog({
 				center: true,
@@ -111,7 +113,7 @@
 						var dialogHeight = $dom.height(), panelHeight = $contentDom.height();
 						exceptionDialog._height = contentHeight + dialogHeight - panelHeight;
 					}
-
+					
 					exceptionDialog.refresh();
 				},
 				onHide: function() {

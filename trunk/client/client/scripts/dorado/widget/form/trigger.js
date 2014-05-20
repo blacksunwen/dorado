@@ -18,7 +18,6 @@
  */
 dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widget.Trigger.prototype */ {
 	$className: "dorado.widget.Trigger",
-	_inherentClassName: "i-trigger",
 	
 	ATTRIBUTES: /** @scope dorado.widget.Trigger.prototype */ {
 	
@@ -166,7 +165,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 		if (!trigger._buttonVisible) return;
 		
 		var control = new dorado.widget.SimpleIconButton({
-			exClassName: (trigger._inherentClassName || '') + " " + (trigger._className || '') + " " + (trigger._exClassName || ''),
+			exClassName: (trigger._className || '') + " " + (trigger._exClassName || ''),
 			icon: trigger._icon,
 			iconClass: (trigger._icon ? null : trigger._iconClass),
 			onMouseDown: function(self, arg) {
@@ -178,7 +177,7 @@ dorado.widget.Trigger = $extend(dorado.widget.Component, /** @scope dorado.widge
 				arg.returnValue = false;
 			}
 		});
-		jQuery(control.getDom()).addClassOnClick("i-trigger-down d-trigger-down", null, function() {
+		jQuery(control.getDom()).addClassOnClick("d-trigger-down", null, function() {
 			return !editor.get("readOnly");
 		});
 		return control;

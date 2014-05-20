@@ -177,4 +177,13 @@
 			}
 		};
 	}
+
+	if (!Function.prototype.bind) {
+		Function.prototype.bind = function (target) {
+			var fn = this;
+			return function () {
+				return fn.apply(target, arguments);
+			};
+		};
+	}
 })();

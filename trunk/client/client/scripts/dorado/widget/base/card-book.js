@@ -22,7 +22,6 @@
  */
 dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget.CardBook.prototype */ {
 	$className: "dorado.widget.CardBook",
-	_inherentClassName: "i-cardbook",
 	
 	ATTRIBUTES: /** @scope dorado.widget.CardBook.prototype */ {
 		className: {
@@ -179,7 +178,14 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		if (dom && control) {
 			if (!control._rendered) {
 				this._resetInnerControlDemension(control);
+				var controlDom = control.getDom();
+				if (controlDom) $fly(controlDom).addClass("d-rendering");
 				control.render(dom);
+				if (controlDom) {
+					setTimeout(function() {
+						$fly(controlDom).removeClass("d-rendering");
+					}, 500);
+				}
 			} else {
 				$fly(control._dom).css("display", "block");
 				control.setActualVisible(true);
@@ -305,12 +311,6 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			}
 		}
 		control.refresh();
-	},
-
-	createDom: function() {
-		var dom = $invokeSuper.call(this, arguments);
-		dom.className = this._className;
-		return dom;
 	},
 	
 	refreshDom: function(dom) {

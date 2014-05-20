@@ -11,7 +11,8 @@
  */
 
 (function() {
-	var GROUP_CONTENT_CLASS = "group-content", GROUP_OVERFLOW_CLASS = "i-menu-overflow d-menu-overflow";
+	var GROUP_CONTENT_CLASS = "group-content", GROUP_OVERFLOW_CLASS = "d-menu-overflow";
+	var SKIP_REFRESH = false;
 
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
@@ -22,19 +23,6 @@
 	dorado.widget.AbstractMenu = $extend([dorado.widget.Control, dorado.widget.FloatControl], /** @scope dorado.widget.AbstractMenu.prototype */ {
 		$className: "dorado.widget.AbstractMenu",
 		ATTRIBUTES: {
-			view: {
-				setter: function(view) {
-					$invokeSuper.call(this, [view]);
-
-					var items = this._items;
-					if (!items) return;
-
-					items.each(function(item) {
-						item.set("view", view);
-					});
-				}
-			},
-
 			/**
 			 * 设置的时候以数组形式进行设置，读取的时候得到的属性为dorado.util.KeyedArray。
 			 * @type dorado.util.KeyedArray
@@ -42,34 +30,18 @@
 			 */
 			items: {
 				setter: function(value) {
-					var menu = this, items = menu._items, doms = menu._doms, rendered = menu._rendered, item, i, l;
+					var menu = this, items = menu._items, doms = menu._doms, rendered = menu._rendered, i, l;
 					if (items) {
 						menu.clearItems();
 					}
-					if (value) {
-						if (!items) {
-							menu._items = items = new dorado.util.KeyedArray(function(value) {
-								return value._name;
-							});
+					if (value && value instanceof Array) {
+						var originSkipRefresh = menu._skipRefresh;
+						menu._skipRefresh = true;
+						for (i = 0, l = value.length; i < l; i++) {
+							menu.addItem(value[i]);
 						}
-						if (value.constructor == Array.prototype.constructor) {
-							for (i = 0, l = value.length; i < l; i++) {
-								item = menu.createMenuItem(value[i]);
-								items.insert(item);
-								if (rendered) {
-									item.render(doms.groupContent);
-								}
-							}
-						} else if (value instanceof dorado.util.KeyedArray) {
-							for (i = 0, l = value.size; i < l; i++) {
-								item = menu.createMenuItem(value.get(i));
-								items.append(item);
-
-								if (rendered) {
-									item.render(doms.groupContent);
-								}
-							}
-						}
+						menu._skipRefresh = originSkipRefresh;
+						if (rendered) menu.refresh();
 					}
 				}
 			}
@@ -89,7 +61,7 @@
 		 * 为Menu添加MenuItem。
 		 * @param {Object|dorado.widget.menu.AbstractMenuItem} item 可以是MenuItem或者MenuItem的Json配置信息。
 		 * @param {int} [index] 可以是整数或者MenuItem。
-		 *					  如果是整数，代表插入以后该Item的位置。如果是MenuItem，则代表要插入到该MenuItem之前。
+		 *                      如果是整数，代表插入以后该Item的位置。如果是MenuItem，则代表要插入到该MenuItem之前。
 		 * @return {dorado.widget.menu.AbstractMenuItem} 返回刚刚添加的MenuItem。
 		 */
 		addItem: function(item, index) {
@@ -99,9 +71,8 @@
 			});
 			if (item.constructor == Object.prototype.constructor || typeof item == "string") {
 				item = menu.createMenuItem(item);
-			} else {
-				item.set("parent", menu);
 			}
+			menu.registerInnerViewElement(item);
 
 			if (typeof index == "number") {
 				items.insert(item, index);
@@ -117,12 +88,13 @@
 				items.insert(item);
 			}
 
+			/* Commented by Benny 2014/1/15, 反正后面有refresh()，似乎不需要
 			if (menu._rendered) {
 				item.render(doms.groupContent, refItem ? refItem._dom : null);
 			}
+			*/
 
-			menu.refresh();
-
+			if (!menu._skipRefresh) menu.refresh();
 			return item;
 		},
 
@@ -198,30 +170,27 @@
 				}
 				if (item) {
 					item.doOnRemove && item.doOnRemove();
+					menu.unregisterInnerViewElement(item);
 					items.remove(item);
-					dom = item._dom;
-					if (dom) {
-						$fly(dom).remove();
-					}
-					return item;
 				}
 			}
-			menu.refresh();
-
-			return null;
+			if (!menu._skipRefresh) menu.refresh();
+			return item;
 		},
 
 		/**
 		 * 删除所有的MenuItem
-		 * @param deep 是否删除MenuItem的子Group。如果不传入该值，默认为false。
+		 * @param deep 是否删除MenuItem的子菜单项。如果不传入该值，默认为false。
 		 */
 		clearItems: function(deep) {
 			var menu = this, items = menu._items, dom;
 			if (items) {
+				var originSkipRefresh = menu._skipRefresh;
+				menu._skipRefresh = true;
+				
 				var innerItems = items.items;
-				for (var i = 0, j = innerItems.length; i < j; i++) {
-					var item = innerItems[0];
-					dom = item._dom;
+				for (var i = innerItems.length - 1; i >= 0; i--) {
+					var item = innerItems[i];
 					if (deep && item instanceof dorado.widget.menu.MenuItem) {
 						var subGroup = item._submenu;
 						if (subGroup) {
@@ -230,24 +199,12 @@
 						}
 					}
 					item.doOnRemove && item.doOnRemove();
-					if (dom) {
-						$fly(dom).remove();
-					}
-					items.removeAt(0);
+					menu.unregisterInnerViewElement(item);
+					items.removeAt(i);
 				}
+				menu._skipRefresh = originSkipRefresh;
 				menu.refresh();
 			}
-		},
-
-		getListenerScope: function() {
-			if (this._parent && this._parent._view) {
-				var topMenu = this.getTopMenu();
-				if (!topMenu) {
-					topMenu = this;
-				}
-				return topMenu._view;
-			}
-			return this;
 		},
 
 		getTopMenu: function() {
@@ -270,7 +227,6 @@
 	 */
 	dorado.widget.Menu = $extend(dorado.widget.AbstractMenu, /** @scope dorado.widget.Menu.prototype */ {
 		$className: "dorado.widget.Menu",
-		_inherentClassName: "i-menu",
 
 		focusable: true,
 		selectable: false,
@@ -281,7 +237,7 @@
 			},
 
 			floatingClassName: {
-				defaultValue: "i-menu-floating"
+				defaultValue: "d-menu-floating"
 			},
 
 			visible: {
@@ -327,7 +283,6 @@
 		},
 
 		EVENTS: /** @scope dorado.widget.Menu.prototype */ {
-
 			/**
 			 * 在Menu的上层菜单被隐藏的时候触发的事件。当菜单项被click的时候，会触发此事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -369,7 +324,7 @@
 			} else {
 				item = dorado.Toolkits.createInstance("menu", config);
 			}
-			item.set("parent", menu);
+			item._parent = menu;
 			return item;
 		},
 
@@ -377,7 +332,7 @@
 		 * 创建overflow的上下箭头。
 		 * @protected
 		 */
-		createOverflowarrow: function() {
+		createOverflowArrow: function() {
 			var menu = this, dom = menu._dom, doms = menu._doms;
 			if (dom) {
 				var topArrow = $DomUtils.xCreate({
@@ -432,12 +387,12 @@
 			if (dom) {
 				$fly(dom).addClass(GROUP_OVERFLOW_CLASS).outerHeight(overflowHeight);
 				if (!doms.overflowTopArrow) {
-					menu.createOverflowarrow();
+					menu.createOverflowArrow();
 				}
 				menu._overflowing = true;
 
 				var contentHeight = $fly(dom).innerHeight() - $fly(doms.overflowTopArrow).outerHeight() -
-									$fly(doms.overflowBottomArrow).outerHeight(), contentWidth = $fly(dom).width();
+				                    $fly(doms.overflowBottomArrow).outerHeight(), contentWidth = $fly(dom).width();
 
 				if (dorado.Browser.msie && dorado.Browser.version == 6) {
 					$fly(dom).width(contentWidth);
@@ -634,22 +589,22 @@
 		 * 处理按键事件，目前支持以下按钮：
 		 * <ul>
 		 *  <li>
-		 *	  向上按钮：如果当前获得焦点的MenuItem有上一个菜单项，并且可用，则使上一个菜单项获得焦点。
+		 *      向上按钮：如果当前获得焦点的MenuItem有上一个菜单项，并且可用，则使上一个菜单项获得焦点。
 		 *  </li>
 		 *  <li>
-		 *	  向下按钮: 如果当前获得焦点的MenuItem有下一个菜单项，并且可用，则使下一个菜单项获得焦点。
+		 *      向下按钮: 如果当前获得焦点的MenuItem有下一个菜单项，并且可用，则使下一个菜单项获得焦点。
 		 *  </li>
 		 *  <li>
-		 *	  向左按钮: 如果当前获得焦点的MenuItem有上级菜单，则返回上级菜单，并隐藏当前获得焦点的MenuItem。
+		 *      向左按钮: 如果当前获得焦点的MenuItem有上级菜单，则返回上级菜单，并隐藏当前获得焦点的MenuItem。
 		 *  </li>
 		 *  <li>
-		 *	  向右按钮: 如果当前获得焦点的MenuItem有下级菜单，则打开下级菜单，否则，什么也不做。
+		 *      向右按钮: 如果当前获得焦点的MenuItem有下级菜单，则打开下级菜单，否则，什么也不做。
 		 *  </li>
 		 *  <li>
-		 *	  回车: 相当于单击当前获得焦点的MenuItem。
+		 *      回车: 相当于单击当前获得焦点的MenuItem。
 		 *  </li>
 		 *  <li>
-		 *	  Esc: 隐藏打开的菜单。
+		 *      Esc: 隐藏打开的菜单。
 		 *  </li>
 		 * </ul>
 		 * @param {Object} event dhtml中的event。
@@ -731,7 +686,6 @@
 		createDom: function() {
 			var menu = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "div",
-				className: "i-menu " + menu._className,
 				content: {
 					tagName: "ul",
 					className: "group-content",
@@ -773,32 +727,32 @@
 					}
 				}
 			}).click(function(event) {
-				if (!menu.processDefaultMouseListener()) return;
-				var defaultReturnValue;
-				if (menu.onClick) {
-					defaultReturnValue = menu.onClick(event);
-				}
-				var arg = {
-					button: event.button,
-					event: event,
-					returnValue: defaultReturnValue
-				};
-				var target = event.target, item;
-				if (target) {
-					var items = menu._items;
-					for (var i = 0, j = items.size; i < j; i++) {
-						var temp = items.get(i);
-						if (temp._dom == target || jQuery.contains(temp._dom, target)) {
-							item = temp;
-							arg.item = item;
-							break;
+					if (!menu.processDefaultMouseListener()) return;
+					var defaultReturnValue;
+					if (menu.onClick) {
+						defaultReturnValue = menu.onClick(event);
+					}
+					var arg = {
+						button: event.button,
+						event: event,
+						returnValue: defaultReturnValue
+					}
+					var target = event.target, item;
+					if (target) {
+						var items = menu._items;
+						for (var i = 0, j = items.size; i < j; i++) {
+							var temp = items.get(i);
+							if (temp._dom == target || jQuery.contains(temp._dom, target)) {
+								item = temp;
+								arg.item = item;
+								break;
+							}
 						}
 					}
-				}
-				menu.fireEvent("onClick", menu, arg);
-				event.stopImmediatePropagation();
-				return arg.returnValue;
-			});
+					menu.fireEvent("onClick", menu, arg);
+					event.stopImmediatePropagation();
+					return arg.returnValue;
+				});
 
 			$fly(groupContent).mousewheel(function(event, delta) {
 				if (menu._overflowing) {
@@ -811,7 +765,7 @@
 			});
 
 			if (menu._iconPosition == "top") {
-				$fly(dom).addClass("i-menu-icon-top " + menu._className + "-icon-top");
+				$fly(dom).addClass(menu._className + "-icon-top");
 			}
 
 			return dom;
@@ -823,9 +777,10 @@
 			var menu = this, doms = menu._doms, menuContentHeight = $fly(doms.groupContent).outerHeight();
 			if (menuContentHeight > dom.offsetHeight) {
 				menu.handleOverflow();
-			} else {
-				//group.clearOverflow();
 			}
+			//else {
+			//group.clearOverflow();
+			//}
 
 			//empty panel
 			var items = menu._items || {}, visibleItemCount = 0;
@@ -839,13 +794,13 @@
 				if (!menu._noContentEl) {
 					menu._noContentEl = document.createElement("div");
 					menu._noContentEl.className = "no-content-group";
-					menu._noContentEl.innerHTML = "&lt;empty panel&gt;";
+					menu._noContentEl.innerHTML = "&lt;Empty Panel&gt;";
 					dom.appendChild(menu._noContentEl);
 				}
-				$fly(dom).addClass("i-menu-no-content " + menu._className + "-no-content");
+				$fly(dom).addClass(menu._className + "-no-content");
 			} else {
 				if (menu._noContentEl) {
-					$fly(dom).removeClass("i-menu-no-content " + menu._className + "-no-content");
+					$fly(dom).removeClass(menu._className + "-no-content");
 				}
 			}
 		},

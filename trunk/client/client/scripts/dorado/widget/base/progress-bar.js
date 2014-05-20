@@ -17,7 +17,6 @@
  */
 dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.widget.ProgressBar.prototype */ {
 	$className: "dorado.widget.ProgressBar",
-	_inherentClassName: "i-progress-bar",
 	selectable: false,
 	
 	ATTRIBUTES: /** @scope dorado.widget.ProgressBar.prototype */ {
@@ -78,13 +77,18 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 			content: [
 				{
 					tagName: "span",
-					className: "bar",
-					contextKey: "bar"
+					className: "msg",
+					contextKey: "msg"
 				},
 				{
 					tagName: "span",
-					className: "msg",
-					contextKey: "msg"
+					className: "bar",
+					contextKey: "bar",
+					content: {
+						tagName: "span",
+						className: "bar-msg",
+						contextKey: "barMsg"
+					}
 				}
 			]
 		}, null, doms);
@@ -103,10 +107,11 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 			$fly(doms.bar).css("width", percent * 100 + "%");
 		}
 
+		var $msg = $fly([doms.msg, doms.barMsg]).css("width", dom.offsetWidth);
 		if (showText) {
-			$fly(doms.msg).text(pattern.replace("{percent}", parseInt(percent * 100, 10)));
+			$msg.text(pattern.replace("{percent}", parseInt(percent * 100, 10)));
 		} else {
-            $fly(doms.msg).empty();
+			$msg.empty();
         }
 	}
 });

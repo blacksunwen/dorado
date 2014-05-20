@@ -118,7 +118,7 @@ dorado.ModalManager = {
             maskClass = maskClass || "d-modal-mask";
             $fly(maskDom).css({
                 display : ""
-            }).prop("class", "i-modal-mask " + maskClass).bringToFront();
+            }).bringToFront();
 
             stack.push({
                 dom: dom,
@@ -127,6 +127,9 @@ dorado.ModalManager = {
             });
 
             $fly(dom).bringToFront();
+            setTimeout(function() {
+                $fly(maskDom).prop("class", maskClass);
+            }, 0);
         }
     },
 
@@ -154,12 +157,12 @@ dorado.ModalManager = {
                 }
 
                 if (stack.length == 0) {
-                    $fly(maskDom).css("display", "none");
+                    $fly(maskDom).prop("class", "").css("display", "none");
                 } else {
                     target = stack[stack.length - 1];
                     $fly(maskDom).css({
                         zIndex : target.zIndex
-                    }).prop("class", "i-modal-mask " + target.maskClass);
+                    }).prop("class", target.maskClass);
                 }
             }
         }

@@ -10,7 +10,7 @@
  * at http://www.bstek.com/contact.
  */
 
-(function () {
+(function() {
 
 	var fireParentChanged = true;
 
@@ -22,7 +22,6 @@
 	 */
 	dorado.widget.Container = $extend(dorado.widget.Control, /** @scope dorado.widget.Container.prototype */ {
 		$className: "dorado.widget.Container",
-		_inherentClassName: "i-container",
 
 		ATTRIBUTES: /** @scope dorado.widget.Container.prototype */ {
 
@@ -44,14 +43,14 @@
 			 * @type dorado.widget.layout.Layout
 			 */
 			layout: {
-				setter: function (layout) {
+				setter: function(layout) {
 					var oldLayout = this._layout, controls;
 					if (oldLayout) {
 						oldLayout.disableRendering();
 						oldLayout.set("container", null);
 
 						controls = [];
-						oldLayout._regions.each(function (region) {
+						oldLayout._regions.each(function(region) {
 							controls.push(region.control);
 						});
 						oldLayout.removeAllControls();
@@ -61,7 +60,7 @@
 					}
 
 					if (layout && !(layout instanceof dorado.widget.layout.Layout)) {
-						layout = dorado.Toolkits.createInstance("layout", layout, function (type) {
+						layout = dorado.Toolkits.createInstance("layout", layout, function(type) {
 							type = type || "Dock";
 							return dorado.util.Common.getClassType("dorado.widget.layout." + type + "Layout", true);
 						});
@@ -72,7 +71,7 @@
 
 						if (controls && controls.length) {
 							layout.disableRendering();
-							controls.each(function (control) {
+							controls.each(function(control) {
 								layout.addControl(control);
 							});
 							layout.enableRendering();
@@ -82,7 +81,7 @@
 						}
 					}
 				},
-				getter: function () {
+				getter: function() {
 					if (this._layout === undefined) {
 						this._ignoreRefresh++;
 						try {
@@ -134,16 +133,35 @@
 			 */
 			children: {
 				skipRefresh: true,
-				setter: function (children) {
+				setter: function(children) {
 					if (!children || children.length < 1) return;
 
-					for (var i = 0; i < children.length; i++) {
+					var container = this;
+					var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
+					if (!optimized) AUTO_APPEND_TO_TOPVIEW = false;
+					var layout = container._layout;
+					if (layout) layout.disableRendering();
+					
+					if (container._children.length) {
+						container._children.each(function(child) {
+							container.removeChild(child);
+						});
+					}
+
+					for(var i = 0; i < children.length; i++) {
 						var child = children[i];
 						if (child instanceof dorado.widget.Component) {
-							this.addChild(child);
-						} else if (child.$type) {
-							this.addChild(this.createInnerComponent(child));
+							container.addChild(child);
 						}
+						else if (child.$type) {
+							container.addChild(this.createInnerComponent(child));
+						}
+					}
+
+					if (!optimized) AUTO_APPEND_TO_TOPVIEW = true;
+					if (layout) {
+						layout.enableRendering();
+						layout.refresh();
 					}
 				}
 			},
@@ -154,45 +172,44 @@
 			 * 该值默认为auto，可选值为visible, hidden, scroll, auto。<br />
 			 * 该值的含义与CSS中overflow的属性的意义相同，在实现上也仅仅是把这个值添加到内容容器上。
 			 * </p>
-			 * @attribute writeBeforeReady
+			 * @attribute 
 			 * @type String
 			 */
 			contentOverflow: {
-				writeBeforeReady: true
 			},
 
 			/**
 			 * 容器控件中的内容在水平方向上超出了以后的处理方法。
-			 * @attribute writeBeforeReady
+			 * @attribute
 			 * @type String
 			 */
 			contentOverflowX: {
-				writeBeforeReady: true
 			},
 
 			/**
 			 * 容器控件中的内容在垂直方向上超出了以后的处理方法。
-			 * @attribute writeBeforeReady
+			 * @attribute
 			 * @type String
 			 */
 			contentOverflowY: {
-				writeBeforeReady: true
 			},
 
 			view: {
-				setter: function (view) {
+				setter: function(view) {
 					if (this._view == view) return;
-					$invokeSuper.call(this, [view]);
-					this._children.each(function (child) {
-						if (this._view) child.set("view", null);
+
+					var container = this;
+					$invokeSuper.call(container, [view]);
+					container._children.each(function(child) {
+						if (container._view) child.set("view", null);
 						child.set("view", view);
-					}, this);
+					});
 				}
 			},
 
 			containerDom: {
 				readOnly: true,
-				getter: function () {
+				getter: function() {
 					if (!this._dom) this.getDom();
 					return this.getContentContainer();
 				}
@@ -203,7 +220,7 @@
 			}
 		},
 
-		constructor: function (config) {
+		constructor: function(config) {
 			this._contentContainerVisible = true;
 			this._children = new dorado.util.KeyedList(dorado._GET_ID);
 
@@ -227,36 +244,36 @@
 			}
 		},
 
-		createDefaultLayout: function () {
+		createDefaultLayout: function() {
 			this.set("layout", new dorado.widget.layout.DockLayout());
 		},
 
-		onReady: function () {
-			this._children.each(function (child) {
+		onReady: function() {
+			this._children.each(function(child) {
 				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
 			});
 
 			$invokeSuper.call(this);
 
-			this._children.each(function (child) {
+			this._children.each(function(child) {
 				if (child._floating && dorado.Object.isInstanceOf(child, dorado.widget.FloatControl) && !child._ready && child._visible) {
 					child.show();
 				}
 			});
 		},
 
-		destroy: function () {
+		destroy: function() {
 			var children = this._children.toArray();
-			for (var i = 0; i < children.length; i++) {
+			for(var i = 0; i < children.length; i++) {
 				children[i].destroy();
 			}
 			$invokeSuper.call(this);
 		},
 
-		onActualVisibleChange: function () {
+		onActualVisibleChange: function() {
 
 			function notifyChildren(control, parentActualVisible) {
-				control._children.each(function (child) {
+				control._children.each(function(child) {
 					if (child._parentActualVisible == parentActualVisible || !(child instanceof dorado.widget.Control)) {
 						return;
 					}
@@ -269,10 +286,10 @@
 			notifyChildren(this, this.isActualVisible());
 		},
 
-		doRenderToOrReplace: function (replace, element, nextChildElement) {
+		doRenderToOrReplace: function(replace, element, nextChildElement) {
 			if (replace && this._children.size == 0 && element.childNodes.length > 0) {
 				var children = [];
-				for (var i = 0; i < element.childNodes.length; i++) {
+				for(var i = 0; i < element.childNodes.length; i++) {
 					children.push(element.childNodes[i]);
 				}
 
@@ -288,7 +305,7 @@
 			}
 
 			if (!this._ready) {
-				this._children.each(function (child) {
+				this._children.each(function(child) {
 					if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
 				});
 			}
@@ -300,12 +317,12 @@
 		 * 向容器中添加一个组件。
 		 * @param {dorado.widget.Component} component 要添加的组件。
 		 */
-		addChild: function (component) {
+		addChild: function(component) {
 			if (component._parent) {
 				fireParentChanged = false;
 				if (component._parent.removeChild) {
-                    component._parent.removeChild(component);
-                }
+					component._parent.removeChild(component);
+				}
 				fireParentChanged = true;
 			}
 
@@ -343,7 +360,7 @@
 		 * 从容器中移除一个组件。
 		 * @param {Component} component 要移除的组件。
 		 */
-		removeChild: function (component) {
+		removeChild: function(component) {
 			this._children.remove(component);
 			component.set("view", null);
 
@@ -362,11 +379,11 @@
 		/**
 		 * 从容器中移除所有子组件。
 		 */
-		removeAllChildren: function () {
+		removeAllChildren: function() {
 			var layout = this._layout;
 			if (layout) layout._disableRendering = true;
 
-			this._children.each(function (child) {
+			this._children.each(function(child) {
 				this.removeChild(child);
 			}, this);
 
@@ -376,7 +393,7 @@
 			}
 		},
 
-		createDom: function () {
+		createDom: function() {
 			var dom = $DomUtils.xCreate({
 				tagName: "DIV",
 				content: {
@@ -395,7 +412,7 @@
 		 * 返回用于容纳子控件的DOM对象。
 		 * @return {HTMLElement} DOM对象。
 		 */
-		getContentContainer: function () {
+		getContentContainer: function() {
 			return this._container || this.getDom();
 		},
 
@@ -446,8 +463,8 @@
 			}
 		},
 
-		setContentContainerVisible: function (visible) {
-			this._children.each(function (child) {
+		setContentContainerVisible: function(visible) {
+			this._children.each(function(child) {
 				if (child instanceof dorado.widget.Control) {
 					child.setActualVisible(visible);
 				}
@@ -492,18 +509,18 @@
 			}
 		},
 
-		doOnDetachToDocument: function () {
+		doOnDetachToDocument: function() {
 			var layout = this._layout;
 			if (layout) layout.onDetachToDocument();
 		},
 
-		doResetDimension: function (force) {
+		doResetDimension: function(force) {
 			var changed = $invokeSuper.call(this, [force]);
 			this._useOriginalWidth = this._useOriginalHeight = true;
 			return changed;
 		},
 
-		doOnResize: function () {
+		doOnResize: function() {
 			var container = this;
 			dorado.Toolkits.cancelDelayedAction(container, "$notifySizeChangeTimerId");
 
@@ -514,13 +531,13 @@
 			this.processContentSize();
 		},
 
-		onContentSizeChange: function () {
+		onContentSizeChange: function() {
 			if (!this._rendered || !this._layout || !this._layout._attached) return;
 			this.processContentSize();
 			this.updateModernScroller();
 		},
 
-		processContentSize: function () {
+		processContentSize: function() {
 			if (!this._layout) return;
 
 			var dom = this._dom, containerDom = this.getContentContainer(), layoutDom = this._layout.getDom();
@@ -534,9 +551,10 @@
 				var width = layoutDom.offsetWidth + edgeWidth;
 				if (layoutDom.offsetWidth > containerDomSize[0]) {
 					newWidth = width;
-				} else if (!this._useOriginalWidth && width < this._currentOffsetWidth) {
+				}
+				else if (!this._useOriginalWidth && width < this._currentOffsetWidth) {
 					var parent = this._parent, containerToRefresh = this;
-					while (parent) {
+					while(parent) {
 						if (!parent._useOriginalWidth) {
 							containerToRefresh = parent;
 							parent = parent._parent;
@@ -551,7 +569,6 @@
 					}
 				}
 			}
-
 			if (overflowY == "visible" || !this.getRealHeight()) {
 				if (!containerDomSize) {
 					containerDomSize = this.getContentContainerSize();
@@ -606,7 +623,7 @@
 			}
 		},
 
-		getFocusableSubControls: function () {
+		getFocusableSubControls: function() {
 			return this._children.toArray();
 		}
 

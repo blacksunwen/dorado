@@ -67,7 +67,7 @@
 					if (doradoDraggable) helper = doradoDraggable.onGetDraggingIndicator(helper, evt, this);
 					
 					var draggingInfo = options.createDraggingInfo.call(this, evt);
-					$fly(this).data("draggable").draggingInfo = draggingInfo;
+					$fly(this).data("ui-draggable").draggingInfo = draggingInfo;
 					
 					if (helper instanceof dorado.DraggingIndicator) {
 						draggingInfo.set("indicator", helper);
@@ -180,7 +180,7 @@
 			};
 			
 			options.drop = function(evt, ui) {
-				var draggable = jQuery(ui.draggable).data("draggable");
+				var draggable = jQuery(ui.draggable).data("ui-draggable");
 				if (!jQuery.ui.ddmanager.accept) {
 					if (draggable && draggable.options.revert == "invalid") {
 						draggable.options.revert = true;
@@ -239,7 +239,7 @@
 
 	$.ui.plugin.add("draggable", "useShim", {
 		start: function(event, ui) {
-			var options = $(this).data('draggable').options;
+			var options = $(this).data("ui-draggable").options;
 			if (options.useShim !== false) {
 				if (!useShimDiv) {
 					useShimDiv = document.createElement("div");
@@ -278,7 +278,7 @@
 	});
 
 	$.ui.draggable.prototype.options.useShim = true;
-
+	
     //修复this.options.axis不能设置为空的问题。
 	//    $.ui.draggable.prototype._mouseDrag = function(event, noPropagation) {
 	//

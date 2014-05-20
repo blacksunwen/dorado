@@ -32,7 +32,7 @@ dorado.debug.initProcedures.push(function() {
 
 		ATTRIBUTES: /** @scope dorado.debug.Logger.prototype */{
 			className: {
-				defaultValue: "d-logger"
+				defaultValue: "d-debugger-logger"
 			},
 
 			/**

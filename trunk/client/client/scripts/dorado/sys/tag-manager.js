@@ -168,24 +168,42 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 		}
 		return new dorado.ObjectGroup(objects);
 	},
+
+	/**
+	 * 添加一个事件监听器。
+	 * @deprecated
+	 * @see dorado.EventSupport#bind
+	 */
+	addListener: function (name, listener, options) {
+		return this.bind(name, listener, options);
+	},
+
+	/**
+	 * 移除一个事件监听器。
+	 * @deprecated
+	 * @see dorado.EventSupport#unbind
+	 */
+	removeListener: function (name, listener) {
+		return this.unbind(name, listener);
+	},
 	
 	/**
 	 * 为组中的所有对象绑定事件。
 	 * <p>如果对象组中的某个对象不支持事件，该方法会跳过该对象这一个操作并继续后续处理。
-	 * 此方法的使用方法与(@link dorado.EventSupport#addListener)方法非常类似，具体使用说明请参考(@link dorado.EventSupport#addListener)方法的说明。</p>
-	 * @param {String} name 事件名称。
+	 * 此方法的使用方法与(@link dorado.EventSupport#bind)方法非常类似，具体使用说明请参考(@link dorado.EventSupport#bind)方法的说明。</p>
+	 * @param {String} name 事件名称，可支持别名。
 	 * @param {Function} listener 事件监听方法。
 	 * @param {Object} [options] 监听选项。
 	 * @return {dorado.AttributeSupport} 返回对象组自身。
 	 *
-	 * @see dorado.EventSupport#addListener
+	 * @see dorado.EventSupport#bind
 	 */
-	addListener: function(name, listener, options) {
+	bind: function(name, listener, options) {
 		if (!this.objects) return;
 		for (var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
-			if (object && typeof object.addListener == "function") {
-				object.addListener(name, listener, options);
+			if (object && typeof object.bind == "function") {
+				object.bind(name, listener, options);
 			}
 		}
 	},
@@ -193,19 +211,19 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 	/**
 	 * 从组中的所有对象中移除一个事件。
 	 * <p>如果对象组中的某个对象不支持事件，该方法会跳过该对象这一个操作并继续后续处理。
-	 * 此方法的使用方法与(@link dorado.EventSupport#removeListener)方法非常类似，具体使用说明请参考(@link dorado.EventSupport#removeListener)方法的说明。</p>
-	 * @param {String} name 事件名称。
+	 * 此方法的使用方法与(@link dorado.EventSupport#unbind)方法非常类似，具体使用说明请参考(@link dorado.EventSupport#unbind)方法的说明。</p>
+	 * @param {String} name 事件名称，可支持别名。
 	 * @param {Function} [listener] 事件监听器。如果不指定此参数则表示移除该事件中的所有监听器
 	 * @return {dorado.AttributeSupport} 返回对象组自身。
 	 *
-	 * @see dorado.EventSupport#removeListener
+	 * @see dorado.EventSupport#unbind
 	 */
-	removeListener: function(name, listener) {
+	unbind: function(name, listener) {
 		if (!this.objects) return;
 		for (var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
-			if (object && object.removeListener) {
-				object.removeListener(name, listener);
+			if (object && object.unbind) {
+				object.unbind(name, listener);
 			}
 		}
 	},

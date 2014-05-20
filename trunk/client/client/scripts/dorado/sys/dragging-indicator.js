@@ -17,7 +17,6 @@
  */
 dorado.DraggingIndicator = $extend(dorado.RenderableElement, /** @scope dorado.DraggingIndicator.prototype */ {
 	$className: "dorado.DraggingIndicator",
-	_inherentClassName: "i-dragging-indicator",
 	
 	ATTRIBUTES: /** @scope dorado.DraggingIndicator.prototype */ {
 	
