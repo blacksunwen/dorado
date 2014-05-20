@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="build" default="build">
-	<property name="skinNames" value="inherent,default" />
-
+	<property name="skinNames" value="default,skyline" />
+	
 	<target name="copySkin">
-		<mkdir dir="${dist}/skins/${skinName}" />
-		
-		<echo message="copy ${src}/skins/${skinName} --> ${dist}/skins/${skinName}" />
-		<copy todir="${dist}/skins/${skinName}">
-			<fileset dir="${src}/skins/${skinName}" />
+		<property name="dist" value="${dist}/skins/${skinName}" />
+		<property name="src" value="${src}/skins/${skinName}" />
+
+		<mkdir dir="${dist}" />
+
+		<echo message="copy ${src} --> ${dist}" />
+		<copy todir="${dist}">
+			<fileset dir="${src}">
+				<exclude name="**/*.less" />
+			</fileset>
 		</copy>
 	</target>
 
@@ -30,10 +35,6 @@
 				<file name="core/exception.js" />
 				<file name="core/attribute.js" />
 				<file name="core/event.js" />
-				<file name="core/renderer.js" />
-				<file name="core/renderable-element.js" />
-				<file name="core/tag-manager.js" />
-				<file name="core/toolkits.js" />
 				<file name="util/util.js" />
 				<file name="util/date.js" />
 				<file name="util/common.js" />
@@ -50,21 +51,26 @@
 				<file name="dom/jquery-dom.js" />
 				<file name="dom/jquery-x-create.js" />
 				<file name="dom/jquery-slide.js" />
-				<file name="dom/modal-manager.js" />
-				<file name="dom/task-indicator.js" />
 				<file name="dom/jquery-dragdrop.js" />
-				<file name="dom/scroller.js" />
-				<file name="drag-drop/dragging-indicator.js" />
-				<file name="drag-drop/drag-drop.js" />
+				<file name="sys/renderer.js" />
+				<file name="sys/renderable-element.js" />
+				<file name="sys/tag-manager.js" />
+				<file name="sys/toolkits.js" />
+				<file name="sys/dragging-indicator.js" />
+				<file name="sys/drag-drop.js" />
+				<file name="sys/modal-manager.js" />
+				<file name="sys/task-indicator.js" />
+				<file name="sys/scroller.js" />
+				<file name="sys/socket.js" />
 			</filelist>
 		</concat>
 
 		<concat destfile="${dist}/scripts/dorado/desktop-support.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado">
-				<file name="core/exception-dialog.js" />
+				<file name="sys/exception-dialog.js" />
 			</filelist>
 		</concat>
-		
+
 		<concat destfile="${dist}/scripts/dorado/touch-patch.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado">
 				<file name="dom/iscroll.js" />
@@ -90,6 +96,7 @@
 
 		<concat destfile="${dist}/scripts/dorado/widget-support.js" fixlastline="true" encoding="utf-8">
 			<filelist dir="${src}/scripts/dorado/widget">
+				<file name="view-element.js" />
 				<file name="component.js" />
 				<file name="data-set.js" />
 				<file name="data-control.js" />
@@ -147,6 +154,7 @@
 				<file name="action/action.js" />
 				<file name="action/rpc-action.js" />
 				<file name="action/form-action.js" />
+				<file name="action/long-task.js" />
 				<file name="base/html-container.js" />
 				<file name="base/abstract-button.js" />
 				<file name="base/simple-button.js" />
@@ -241,17 +249,30 @@
 				<file name="ajax.js" />
 			</filelist>
 		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/tag-editor.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget/advance">
+				<file name="tag-editor.js" />
+			</filelist>
+		</concat>
+
+		<concat destfile="${dist}/scripts/dorado/color-picker.js" fixlastline="true" encoding="utf-8">
+			<filelist dir="${src}/scripts/dorado/widget/advance">
+				<file name="spectrum.js" />
+				<file name="color-picker.js" />
+			</filelist>
+		</concat>
 	</target>
 
 	<target name="copyLibs">
 		<mkdir dir="${dist}/scripts/jquery" />
 		<copy todir="${dist}/scripts/jquery">
 			<fileset dir="${src}/scripts/jquery">
-				<include name="jquery-1.8.3.js" />
+				<include name="jquery-1.11.0.js" />
 				<include name="jquery.easing.1.3.js" />
 				<include name="jquery.mousewheel.js" />
 				<include name="jquery.hotkeys.js" />
-				<include name="jquery-ui-1.9.2.custom.js" />
+				<include name="jquery-ui-1.10.4.custom.js" />
 				<include name="jquery.swfobject.1-1-1.js" />
 				<include name="jquery.textarea.js" />
 			</fileset>
