@@ -43,6 +43,11 @@ public class MapConfigureStore extends ConfigureStore {
 		return map.get(key);
 	}
 
+	@Override
+	public void remove(String key) {
+		map.remove(key);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doSet(String key, Object value) {

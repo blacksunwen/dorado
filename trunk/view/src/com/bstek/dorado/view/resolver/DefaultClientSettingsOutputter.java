@@ -15,9 +15,10 @@ package com.bstek.dorado.view.resolver;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.web.DoradoContext;
-import com.bstek.dorado.web.WebConfigure;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -27,6 +28,8 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 
 	@Override
 	public void output(Writer writer) throws IOException {
+		DoradoContext context = DoradoContext.getCurrent();
+
 		writer.append("\"common.debugEnabled\":").append(
 				String.valueOf(Configure.getBoolean("view.debugEnabled")));
 
@@ -36,16 +39,20 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 				Configure.getBoolean("view.enterAsTab"), false);
 		writeSetting(writer, "common.preventBackspace",
 				Configure.getBoolean("view.preventBackspace"), true);
-		String contextPath = DoradoContext.getAttachedRequest()
-				.getContextPath();
+
+		String contextPath = Configure.getString("web.contextPath");
+		if (StringUtils.isEmpty(contextPath)) {
+			contextPath = context.getRequest().getContextPath();
+		}
 		writeSetting(writer, "common.contextPath", contextPath, true);
+
 		writeSetting(writer, "common.abortAsyncLoadingOnSyncLoading",
 				Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading"),
 				false);
 
 		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true);
-		writeSetting(writer, "widget.skin",
-				WebConfigure.getString("view.skin"), true);
+		writeSetting(writer, "widget.skin", context.getAttribute("view.skin"),
+				true);
 	}
 
 }

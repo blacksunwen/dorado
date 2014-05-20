@@ -12,175 +12,95 @@
 
 package com.bstek.dorado.view.widget.tree;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 
-import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.annotation.XmlSubNode;
-import com.bstek.dorado.common.Ignorable;
-import com.bstek.dorado.common.TagSupport;
+import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewElement;
+import com.bstek.dorado.view.ViewElementUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2009-9-30
+ * @since 2014-1-18
  */
 @XmlNode
-public class Node implements NodeHolder, TagSupport, Ignorable {
-	private List<Node> nodes;
+public class Node extends BaseNode implements ViewElement {
+	private String id;
+	private ViewElement parent;
+	private View view;
+	private Map<String, Object> metaData;
+	private Collection<ViewElement> innerElements;
 
-	private String label;
-	private String icon;
-	private String iconClass;
-	private String expandedIcon;
-	private String expandedIconClass;
-	private boolean checkable;
-	private boolean checked;
-	private boolean autoCheckChildren = true;
-	private String tip;
-	private Object data;
-	private Object userData;
-	private boolean hasChild;
-	private boolean expanded;
-	private String tags;
-	private boolean ignored;
-
-	@XmlSubNode
-	@ClientProperty
-	public List<Node> getNodes() {
-		if (nodes == null)
-			nodes = new ArrayList<Node>();
-		return nodes;
+	/**
+	 * 设置组件的id。
+	 */
+	public void setId(String id) {
+		if (view != null) {
+			throw new IllegalStateException(
+					"Can not change the id property after the component attach to a view.");
+		}
+		this.id = id;
 	}
 
-	public void addNode(Node node) {
-		getNodes().add(node);
+	/**
+	 * 返回组件的id。
+	 */
+	@XmlProperty(attributeOnly = true)
+	@IdeProperty(highlight = 1)
+	public String getId() {
+		return id;
 	}
 
-	public String getLabel() {
-		return label;
+	/**
+	 * 返回控件的父控件，即控件所属的容器。
+	 */
+	@XmlProperty(unsupported = true)
+	@IdeProperty(visible = false)
+	public ViewElement getParent() {
+		return parent;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	/**
+	 * 设置控件的父控件，即控件所属的容器。
+	 */
+	public void setParent(ViewElement parent) {
+		ViewElementUtils.clearParentViewElement(this, this.parent);
+		this.parent = parent;
+		ViewElementUtils.setParentViewElement(this, parent);
 	}
 
-	public String getIcon() {
-		return icon;
+	@XmlProperty(unsupported = true)
+	public View getView() {
+		return view;
 	}
 
-	public void setIcon(String icon) {
-		this.icon = icon;
+	@XmlProperty(composite = true)
+	public Map<String, Object> getMetaData() {
+		return metaData;
 	}
 
-	public String getIconClass() {
-		return iconClass;
+	public void setMetaData(Map<String, Object> metaData) {
+		this.metaData = metaData;
 	}
 
-	public void setIconClass(String iconClass) {
-		this.iconClass = iconClass;
+	public void registerInnerElement(ViewElement element) {
+		if (innerElements == null) {
+			innerElements = new HashSet<ViewElement>();
+		}
+		innerElements.add(element);
 	}
 
-	public String getExpandedIcon() {
-		return expandedIcon;
+	public void unregisterInnerElement(ViewElement element) {
+		if (innerElements != null) {
+			innerElements.remove(element);
+		}
 	}
 
-	public void setExpandedIcon(String expandedIcon) {
-		this.expandedIcon = expandedIcon;
-	}
-
-	public String getExpandedIconClass() {
-		return expandedIconClass;
-	}
-
-	public void setExpandedIconClass(String expandedIconClass) {
-		this.expandedIconClass = expandedIconClass;
-	}
-
-	public boolean isCheckable() {
-		return checkable;
-	}
-
-	public void setCheckable(boolean checkable) {
-		this.checkable = checkable;
-	}
-
-	@ClientProperty(escapeValue = "true")
-	public boolean isAutoCheckChildren() {
-		return autoCheckChildren;
-	}
-
-	public void setAutoCheckChildren(boolean autoCheckChildren) {
-		this.autoCheckChildren = autoCheckChildren;
-	}
-
-	public boolean isChecked() {
-		return checked;
-	}
-
-	public void setChecked(boolean checked) {
-		this.checked = checked;
-	}
-
-	public String getTip() {
-		return tip;
-	}
-
-	public void setTip(String tip) {
-		this.tip = tip;
-	}
-
-	@XmlProperty
-	@ClientProperty
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
-
-	@XmlProperty
-	@ClientProperty
-	public Object getUserData() {
-		return userData;
-	}
-
-	public void setUserData(Object userData) {
-		this.userData = userData;
-	}
-
-	public boolean isHasChild() {
-		return hasChild;
-	}
-
-	public void setHasChild(boolean hasChild) {
-		this.hasChild = hasChild;
-	}
-
-	public boolean isExpanded() {
-		return expanded;
-	}
-
-	public void setExpanded(boolean expanded) {
-		this.expanded = expanded;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-
-	@ClientProperty(ignored = true)
-	public boolean isIgnored() {
-		return ignored;
-	}
-
-	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
+	public Collection<ViewElement> getInnerElements() {
+		return innerElements;
 	}
 }

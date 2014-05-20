@@ -42,7 +42,7 @@ public class DefaultViewConfigManagerTest extends ViewContextTestCase {
 		assertNotNull(viewConfig);
 
 		View view = viewConfig.getView();
-		DataSet ds1 = (DataSet) view.getComponent("ds1");
+		DataSet ds1 = (DataSet) view.getViewElement("ds1");
 		assertNotNull(ds1);
 
 		DataProvider dataProvider = ds1.getDataProvider();
@@ -60,7 +60,7 @@ public class DefaultViewConfigManagerTest extends ViewContextTestCase {
 
 		View view = viewConfig.getView();
 
-		DataSet ds2 = (DataSet) view.getComponent("ds2");
+		DataSet ds2 = (DataSet) view.getViewElement("ds2");
 		assertNotNull(ds2);
 
 		DataProvider dataProvider = ds2.getDataProvider();

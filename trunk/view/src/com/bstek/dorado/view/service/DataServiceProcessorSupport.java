@@ -83,7 +83,6 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 	private DataTypeManager dataTypeManager;
 	private Outputter dataOutputter;
 	private Outputter includeDataTypesOutputter;
-	private JsonConvertContext jsonContext;
 
 	public void setDataTypeManager(DataTypeManager dataTypeManager) {
 		this.dataTypeManager = dataTypeManager;
@@ -91,6 +90,10 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
 		this.viewConfigManager = viewConfigManager;
+	}
+
+	public Outputter getDataOutputter() {
+		return dataOutputter;
 	}
 
 	public void setDataOutputter(Outputter dataOutputter) {
@@ -239,9 +242,8 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 
 	protected Object jsonToJavaObject(JsonNode jsonNode, DataType dataType,
 			Class<?> targetType, boolean proxy) throws Exception {
-		if (jsonContext == null) {
-			jsonContext = new JsonConvertContextImpl(false, false, this);
-		}
+		JsonConvertContext jsonContext = new JsonConvertContextImpl(false,
+				false, this);
 		return JsonUtils.toJavaObject(jsonNode, dataType, targetType, proxy,
 				jsonContext);
 

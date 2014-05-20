@@ -14,11 +14,14 @@ package com.bstek.dorado.view.resolver;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2012-12-31
  */
-public class ViewResolverListenerRegister implements InitializingBean {
+public class ViewResolverListenerRegister implements InitializingBean,
+		RemovableBean {
 	private HtmlViewResolver viewResolver;
 	private ViewResolverListener listener;
 

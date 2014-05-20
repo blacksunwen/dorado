@@ -21,7 +21,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.DataProvider;
-import com.bstek.dorado.common.service.ExposedService;
+import com.bstek.dorado.common.service.ExposedServiceDefintion;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.console.web.DoradoObject.Type;
 import com.bstek.dorado.data.config.definition.DataProviderDefinitionManager;
@@ -63,15 +63,16 @@ public class DoradoObjectController {
 				.getCurrent().getWebApplicationContext()
 				.getBean("dorado.exposedServiceManager");
 		List<DoradoObject> list = new ArrayList<DoradoObject>();
-		Collection<ExposedService> collection = serviceManager.getServices()
-				.values();
-		Iterator<ExposedService> it = collection.iterator();
+		Collection<ExposedServiceDefintion> collection = serviceManager
+				.getServices().values();
+		Iterator<ExposedServiceDefintion> it = collection.iterator();
 		DoradoObject doradoExpos;
 		while (it.hasNext()) {
-			ExposedService exposedService = (ExposedService) it.next();
+			ExposedServiceDefintion exposedService = (ExposedServiceDefintion) it
+					.next();
 			if (match(exposedService.getName())) {
 				doradoExpos = new DoradoObject();
-				doradoExpos.setBeanName(exposedService.getBeanName());
+				doradoExpos.setBean(exposedService.getBean());
 				doradoExpos.setMethod(exposedService.getMethod());
 				doradoExpos.setName(exposedService.getName());
 				list.add(doradoExpos);

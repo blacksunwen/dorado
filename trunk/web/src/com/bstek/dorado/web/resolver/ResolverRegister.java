@@ -16,11 +16,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-13
  */
-public class ResolverRegister implements ApplicationContextAware {
+public class ResolverRegister implements ApplicationContextAware, RemovableBean {
 	private ResolverRegisterProcessor resolverRegisterProcessor;
 
 	private String url;

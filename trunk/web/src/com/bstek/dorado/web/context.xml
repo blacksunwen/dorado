@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.bstek.com/dorado/schema"
 	xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd">
@@ -12,15 +13,14 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.abstractControllerResolver" abstract="true" class="com.bstek.dorado.web.resolver.AbstractControllerResolver">
-		<property name="uriSuffix" value=".c" />
-	</bean>
-	<bean id="dorado.controllerResolver" parent="dorado.abstractControllerResolver" class="com.bstek.dorado.web.resolver.SpringBeanNameControllerResolver" />
+	<bean id="dorado.controllerResolver"
+		class="com.bstek.dorado.web.resolver.SpringBeanControllerResolver" />
 
 	<bean id="dorado.cacheBusterGenerator" class="com.bstek.dorado.web.resolver.JVMCacheBusterGenerator" />
 
 	<bean id="dorado.resourceTypeManager" class="com.bstek.dorado.web.resolver.ResourceTypeManager" />
-	<bean id="dorado.resourceTypeLoader" abstract="true" class="com.bstek.dorado.web.resolver.ResourceTypeLoader">
+	<bean id="dorado.resourceTypeLoader" abstract="true"
+		class="com.bstek.dorado.web.resolver.ResourceTypeLoader">
 		<property name="resourceTypeManager" ref="dorado.resourceTypeManager" />
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
 		<property name="resourceTypeParser">
@@ -43,6 +43,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.consoleStartedMessagesOutputter" class="com.bstek.dorado.web.loader.ConsoleStartedMessagesOutputter" />
-	<bean class="com.bstek.dorado.web.loader.RunModeConsoleStartedMessageOutputter" />
+	<bean id="dorado.consoleStartedMessagesOutputter"
+		class="com.bstek.dorado.web.loader.ConsoleStartedMessagesOutputter" />
+	<bean
+		class="com.bstek.dorado.web.loader.RunModeConsoleStartedMessageOutputter" />
 </beans>

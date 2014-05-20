@@ -13,8 +13,10 @@
 package com.bstek.dorado.web.loader;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -27,13 +29,15 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.web.ConsoleUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-1-22
  */
-public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
+public class ConsoleStartedMessagesOutputter implements BeanFactoryAware,
+		RemovableBean {
 	private BeanFactory beanFactory;
 	private List<ConsoleStartedMessageOutputter> messageOutputters;
 
@@ -54,7 +58,16 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 		messageOutputters.add(messageOutputter);
 	}
 
-	public void output() throws Exception {
+	public static void outputLoadingInfo(Writer writer) throws IOException {
+		outputLoadingInfo(writer, "");
+	}
+
+	public static void outputLoadingInfo(Writer writer, String s)
+			throws IOException {
+		writer.append(" * ").append(s).append('\n');
+	}
+
+	public void output(Writer writer) throws Exception {
 		Map<String, ConsoleStartedMessageOutputter> outputterMap = ((ListableBeanFactory) beanFactory)
 				.getBeansOfType(ConsoleStartedMessageOutputter.class);
 
@@ -77,21 +90,21 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 		}
 
 		for (ConsoleStartedMessageOutputter outputter : outputters) {
-			StringWriter writer = new StringWriter();
+			StringWriter buffer = new StringWriter();
 			try {
-				outputter.output(writer);
-				String content = writer.toString();
+				outputter.output(buffer);
+				String content = buffer.toString();
+
 				if (content.length() > 0) {
 					if (!headerOutputted) {
 						headerOutputted = true;
-						ConsoleUtils.outputLoadingInfo();
-						ConsoleUtils
-								.outputLoadingInfo("========================");
-						ConsoleUtils.outputLoadingInfo();
+						outputLoadingInfo(writer);
+						outputLoadingInfo(writer, "========================");
+						outputLoadingInfo(writer);
 					} else {
-						ConsoleUtils.outputLoadingInfo();
-						ConsoleUtils
-								.outputLoadingInfo("------------------------");
+						outputLoadingInfo(writer);
+						outputLoadingInfo(writer, "------------------------");
+						outputLoadingInfo(writer);
 						ConsoleUtils.outputLoadingInfo();
 					}
 
@@ -99,19 +112,19 @@ public class ConsoleStartedMessagesOutputter implements BeanFactoryAware {
 					BufferedReader reader = new BufferedReader(sr);
 					String line = reader.readLine();
 					while (line != null) {
-						ConsoleUtils.outputLoadingInfo(line);
+						outputLoadingInfo(writer, line);
 						line = reader.readLine();
 					}
 				}
 			} finally {
-				writer.close();
+				buffer.close();
 			}
 		}
 
 		if (headerOutputted) {
-			ConsoleUtils.outputLoadingInfo();
-			ConsoleUtils.outputLoadingInfo("========================");
-			ConsoleUtils.outputLoadingInfo();
+			outputLoadingInfo(writer);
+			outputLoadingInfo(writer, "========================");
+			outputLoadingInfo(writer);
 		}
 	}
 }

@@ -27,14 +27,11 @@ import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
-import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.Context;
-import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.config.ConfigurableDataConfigManager;
 import com.bstek.dorado.data.config.DataConfigManager;
 import com.bstek.dorado.data.config.ReloadableDataConfigManagerSupport;
-import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.View;
 import com.bstek.dorado.view.ViewCache;
@@ -42,7 +39,6 @@ import com.bstek.dorado.view.ViewCacheMode;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.manager.ViewConfigManager;
 import com.bstek.dorado.web.DoradoContext;
-import com.bstek.dorado.web.WebConfigure;
 import com.bstek.dorado.web.resolver.AbstractTextualResolver;
 import com.bstek.dorado.web.resolver.HttpConstants;
 import com.bstek.dorado.web.resolver.PageAccessDeniedException;
@@ -55,11 +51,8 @@ import com.bstek.dorado.web.resolver.PageNotFoundException;
  * @since Feb 26, 2008
  */
 public class HtmlViewResolver extends AbstractTextualResolver {
-	private final static String INHERENT_SKIN = "inherent";
-	private final static String DEFAULT_SKIN = "default";
 	private final static long ONE_SECOND = 1000L;
 	private final static long MIN_DATA_CONFIG_VALIDATE_SECONDS = 5;
-	private final static String RESOURCE_PREFIX_DELIM = ";,\n\r";
 
 	private DataConfigManager dataConfigManager;
 	private ViewConfigManager viewConfigManager;
@@ -105,9 +98,6 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 		return velocityHelper;
 	}
 
-	/**
-	 * 设置Velocity模板文件。
-	 */
 	public void setTemplateFile(String templateFile) {
 		this.templateFile = templateFile;
 		validTemplateFile = null;
@@ -249,56 +239,6 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 			request.setAttribute(View.class.getName(), view);
 			requestDispatcher.include(request, response);
 		} else {
-			String skin = view.getSkin();
-			if (StringUtils.isEmpty(skin)) {
-				skin = WebConfigure.getString("view.skin");
-			}
-
-			if (StringUtils.isBlank(skin)) {
-				skin = DEFAULT_SKIN;
-				WebConfigure.set(DoradoContext.REQUEST, "view.skin",
-						DEFAULT_SKIN);
-			} else if (INHERENT_SKIN.equals(skin)) {
-				throw new IllegalArgumentException("\"" + INHERENT_SKIN
-						+ "\" is not a valid dorado skin.");
-			}
-
-			DoradoContext doradoContext = DoradoContext.getCurrent();
-			int currentClientType = VariantUtils.toInt(doradoContext
-					.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
-			if (currentClientType != ClientType.DESKTOP
-					&& skin.indexOf('.') < 0) {
-				String tempSkin = skin + '.'
-						+ ClientType.toString(currentClientType);
-
-				String libraryRoot = WebConfigure.getString("view.libraryRoot");
-				String pathSection = PathUtils.concatPath("skins", tempSkin,
-						"core.css");
-
-				if (StringUtils.indexOfAny(libraryRoot, RESOURCE_PREFIX_DELIM) >= 0) {
-					String[] roots = StringUtils.split(libraryRoot,
-							RESOURCE_PREFIX_DELIM);
-					for (String root : roots) {
-						String tempPath = PathUtils.concatPath(root,
-								pathSection);
-						Resource tempRes = doradoContext.getResource(tempPath);
-						if (tempRes.exists()) {
-							WebConfigure.set(DoradoContext.REQUEST,
-									"view.skin", tempSkin);
-							break;
-						}
-					}
-				} else {
-					String tempPath = PathUtils.concatPath(libraryRoot,
-							pathSection);
-					Resource tempRes = doradoContext.getResource(tempPath);
-					if (tempRes.exists()) {
-						WebConfigure.set(DoradoContext.REQUEST, "view.skin",
-								tempSkin);
-					}
-				}
-			}
-
 			org.apache.velocity.context.Context velocityContext = velocityHelper
 					.getContext(view, request, response);
 

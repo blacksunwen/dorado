@@ -24,6 +24,7 @@ public class ResourcesWrapper {
 	private long lastAccessed;
 	private boolean reloadable;
 	private int httpStatus;
+	private Object userData;
 
 	public ResourcesWrapper(Resource[] resources, ResourceType resourceType) {
 		this.resources = resources;
@@ -88,5 +89,13 @@ public class ResourcesWrapper {
 
 	public int getHttpStatus() {
 		return httpStatus;
+	}
+
+	public Object getUserData() {
+		return userData;
+	}
+
+	public void setUserData(Object userData) {
+		this.userData = userData;
 	}
 }

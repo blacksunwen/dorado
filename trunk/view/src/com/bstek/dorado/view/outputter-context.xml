@@ -97,6 +97,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="localeResolver" ref="dorado.localeResolver" />
 		<property name="javaScriptResourceManager" ref="dorado.viewJavaScriptResourceManager" />
 		<property name="styleSheetResourceManager" ref="dorado.viewStyleSheetResourceManager" />
+		<property name="skinSettingManager" ref="dorado.skinSettingManager" />
+		<property name="skinResolver" ref="dorado.skinResolver" />
 	</bean>
 	<bean id="dorado.pageFooterOutputter" class="com.bstek.dorado.view.resolver.PageFooterOutputter" />
 </beans>

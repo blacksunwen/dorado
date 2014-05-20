@@ -81,6 +81,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="com.bstek.dorado.view.widget.action.AjaxAction" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.action.UpdateAction" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.action.FormSubmitAction" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.action.LongTask" parent="dorado.defaultComponentTypeRegister" />
 
 	<bean id="com.bstek.dorado.view.widget.base.Button" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.base.SimpleButton" parent="dorado.defaultComponentTypeRegister" />
@@ -151,4 +152,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="com.bstek.dorado.view.widget.blockview.DataBlockView" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.treegrid.TreeGrid" parent="dorado.defaultComponentTypeRegister" />
 	<bean id="com.bstek.dorado.view.widget.treegrid.DataTreeGrid" parent="dorado.defaultComponentTypeRegister" />
+	
+	<bean id="com.bstek.dorado.view.widget.advance.TagEditor" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.advance.ColorPicker" parent="dorado.defaultComponentTypeRegister" />
+	<bean id="com.bstek.dorado.view.widget.advance.ColorEditor" parent="dorado.defaultComponentTypeRegister" />
 </beans>

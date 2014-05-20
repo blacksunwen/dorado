@@ -23,8 +23,7 @@ import com.bstek.dorado.core.resource.ResourceManagerUtils;
  * @since 2010-7-27
  */
 @XmlNode(fixedProperties = "type=range")
-@ClientObject(prototype = "dorado.validator.RangeValidator",
-		shortTypeName = "Range")
+@ClientObject(prototype = "dorado.validator.RangeValidator", shortTypeName = "Range")
 public class RangeValidator extends BaseValidator {
 	private static final ResourceManager resourceManager = ResourceManagerUtils
 			.get(RangeValidator.class);
@@ -43,6 +42,7 @@ public class RangeValidator extends BaseValidator {
 		this.minValue = minValue;
 	}
 
+	@ClientProperty(escapeValue = "ignore")
 	public RangeValidateMode getMinValueValidateMode() {
 		return minValueValidateMode;
 	}
@@ -60,6 +60,7 @@ public class RangeValidator extends BaseValidator {
 		this.maxValue = maxValue;
 	}
 
+	@ClientProperty(escapeValue = "ignore")
 	public RangeValidateMode getMaxValueValidateMode() {
 		return maxValueValidateMode;
 	}
@@ -81,14 +82,15 @@ public class RangeValidator extends BaseValidator {
 			if (f == minValue
 					&& minValueValidateMode != RangeValidateMode.allowEquals) {
 				invalid = true;
-				subMessage = resourceManager.getString("dorado.data/errorOrEqualTo");
+				subMessage = resourceManager
+						.getString("dorado.data/errorOrEqualTo");
 			}
 			if (f < minValue) {
 				invalid = true;
 			}
 			if (invalid) {
-				return resourceManager.getString("dorado.data/errorNumberTooLess",
-						subMessage, minValue);
+				return resourceManager.getString(
+						"dorado.data/errorNumberTooLess", subMessage, minValue);
 			}
 		}
 		if (maxValueValidateMode != RangeValidateMode.ignore) {
@@ -96,14 +98,16 @@ public class RangeValidator extends BaseValidator {
 			if (f == maxValue
 					&& maxValueValidateMode != RangeValidateMode.allowEquals) {
 				invalid = true;
-				subMessage = resourceManager.getString("dorado.data/errorOrEqualTo");
+				subMessage = resourceManager
+						.getString("dorado.data/errorOrEqualTo");
 			}
 			if (f > maxValue) {
 				invalid = true;
 			}
 			if (invalid) {
-				return resourceManager.getString("dorado.data/errorNumberTooGreat",
-						subMessage, maxValue);
+				return resourceManager
+						.getString("dorado.data/errorNumberTooGreat",
+								subMessage, maxValue);
 			}
 		}
 		return null;

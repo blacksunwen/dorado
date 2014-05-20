@@ -117,11 +117,7 @@ public class DataObjectAnnotationEngineStartupListener extends
 			if (definition == null) {
 				definition = new DataProviderDefinition();
 				definition.setName(dataObjectName);
-
-				String scope = dataProvider.scope();
-				definition
-						.setScope((StringUtils.isEmpty(scope)) ? DEFAULT_DATA_PROVIDER_SCOPE
-								: Scope.valueOf(scope));
+				definition.setScope(DEFAULT_DATA_PROVIDER_SCOPE);
 				definition.setImpl(DEFAULT_DATA_PROVIDER);
 				definition.setInterceptor(BEAN_NAME_PREFIX + dataObjectName);
 				dataProviderDefinitionManager.registerDefinition(
@@ -139,11 +135,7 @@ public class DataObjectAnnotationEngineStartupListener extends
 			if (definition == null) {
 				definition = new DataResolverDefinition();
 				definition.setName(dataObjectName);
-
-				String scope = dataResolver.scope();
-				definition
-						.setScope((StringUtils.isEmpty(scope)) ? DEFAULT_DATA_RESOLVER_SCOPE
-								: Scope.valueOf(scope));
+				definition.setScope(DEFAULT_DATA_RESOLVER_SCOPE);
 				definition.setImpl(DEFAULT_DATA_RESOLVER);
 				definition.setInterceptor(BEAN_NAME_PREFIX + dataObjectName);
 				dataResolverDefinitionManager.registerDefinition(

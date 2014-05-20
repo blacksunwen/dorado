@@ -30,14 +30,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.web.DoradoContext;
 
-public abstract class AbstractWebFileResolver extends AbstractResolver {
-
+public abstract class AbstractWebFileResolver extends AbstractResolver
+		implements BeanFactoryAware, InitializingBean {
 	private static Log logger = LogFactory.getLog(WebFileResolver.class);
 
 	private static final int BUFFER_SIZE = 1024 * 2;
@@ -51,21 +54,23 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 	private static final ResourcesWrapper FORBIDDEN_RESOURCES_WRAPPER = new ResourcesWrapper(
 			HttpServletResponse.SC_FORBIDDEN);
 
+	private BeanFactory beanFactory;
 	private ResourceTypeManager resourceTypeManager;
 	private Map<String, ResourcesWrapper> resourcesCache = new Hashtable<String, ResourcesWrapper>();
 	private boolean useResourcesCache;
 	private boolean checkResourceType;
 
 	protected ResourceTypeManager getResourceTypeManager() {
-		if (resourceTypeManager == null) {
-			try {
-				resourceTypeManager = (ResourceTypeManager) Context
-						.getCurrent().getServiceBean("resourceTypeManager");
-			} catch (Exception e) {
-				logger.error(e, e);
-			}
-		}
 		return resourceTypeManager;
+	}
+
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		resourceTypeManager = (ResourceTypeManager) beanFactory
+				.getBean("dorado.resourceTypeManager");
 	}
 
 	protected String getResourceExtName(String path) {
@@ -157,7 +162,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 			DoradoContext context) throws Exception {
 		String cacheKey = getResourceCacheKey(request);
 		ResourcesWrapper resourcesWrapper = null;
-		if (useResourcesCache) {
+		if (useResourcesCache && cacheKey != null) {
 			resourcesWrapper = resourcesCache.get(cacheKey);
 		}
 		if (resourcesWrapper != null) {
@@ -186,7 +191,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 					}
 				}
 
-				if (useResourcesCache) {
+				if (useResourcesCache && cacheKey != null) {
 					resourcesCache.put(cacheKey, resourcesWrapper);
 				}
 			} catch (FileNotFoundException e) {
@@ -196,6 +201,9 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 				logger.error(e, e);
 				resourcesWrapper = FORBIDDEN_RESOURCES_WRAPPER;
 			}
+		}
+		if (resourcesWrapper == null) {
+			resourcesWrapper = FILE_NOT_FOUND_RESOURCES_WRAPPER;
 		}
 		return resourcesWrapper;
 	}
@@ -207,7 +215,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		String path = getResourceCacheKey(request);
+		String path = getRelativeRequestURI(request);
 		String resourceSuffix = getUriSuffix(request);
 		Resource[] resources = context.getResources(path);
 		return new ResourcesWrapper(resources, getResourceTypeManager()
@@ -220,6 +228,13 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 		DoradoContext context = DoradoContext.getCurrent();
 		ResourcesWrapper resourcesWrapper = getResourcesWrapper(request,
 				context);
+		outputResourcesWrapper(resourcesWrapper, request, response);
+		return null;
+	}
+
+	protected void outputResourcesWrapper(ResourcesWrapper resourcesWrapper,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		if (resourcesWrapper.getHttpStatus() != 0) {
 			response.setStatus(resourcesWrapper.getHttpStatus());
 		} else {
@@ -267,6 +282,5 @@ public abstract class AbstractWebFileResolver extends AbstractResolver {
 				}
 			}
 		}
-		return null;
 	}
 }

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Component;
@@ -33,7 +34,7 @@ import com.bstek.dorado.view.widget.Component;
  * @since Jan 22, 2008
  */
 public abstract class ComponentTypeRegister implements InitializingBean,
-		BeanFactoryAware, BeanNameAware {
+		BeanFactoryAware, BeanNameAware, RemovableBean {
 	private static final Log logger = LogFactory
 			.getLog(ComponentTypeRegister.class);
 

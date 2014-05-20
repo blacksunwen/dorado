@@ -16,13 +16,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-27
  */
-public class ValidatorTypeRegister implements InitializingBean {
+public class ValidatorTypeRegister implements InitializingBean, RemovableBean {
 	private static final Log logger = LogFactory
 			.getLog(ValidatorTypeRegister.class);
 

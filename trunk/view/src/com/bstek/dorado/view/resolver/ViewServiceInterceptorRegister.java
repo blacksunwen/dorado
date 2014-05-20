@@ -15,11 +15,14 @@ package com.bstek.dorado.view.resolver;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-7
  */
-public class ViewServiceInterceptorRegister implements InitializingBean {
+public class ViewServiceInterceptorRegister implements InitializingBean,
+		RemovableBean {
 	private ViewServiceResolver viewServiceResolver;
 	private MethodInterceptor methodInterceptor;
 

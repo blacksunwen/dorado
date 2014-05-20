@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.data.resolver.DataResolver;
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.util.clazz.ClassUtils;
 
 /**
@@ -26,7 +27,8 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  * @since Dec 16, 2007
  * @see com.bstek.dorado.data.Resolver.manager.DataResolverTypeRegistry
  */
-public class DataResolverTypeRegister implements InitializingBean {
+public class DataResolverTypeRegister implements InitializingBean,
+		RemovableBean {
 	private static final Log logger = LogFactory
 			.getLog(DataResolverTypeRegister.class);
 

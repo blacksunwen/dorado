@@ -15,7 +15,9 @@ package com.bstek.dorado.view.widget.base;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
+import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.FloatControl;
@@ -29,8 +31,9 @@ import com.bstek.dorado.view.widget.ModalType;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-15
  */
-@Widget(name = "Tip", category = "Floatable", dependsPackage = "base-widget-desktop")
+@Widget(name = "Tip", category = "Floatable", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.Tip", shortTypeName = "Tip")
+@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class Tip extends Control implements FloatControl {
 	private FloatControlAnimateType animateType = FloatControlAnimateType.fade;
 	private FloatControlAnimateType showAnimateType;

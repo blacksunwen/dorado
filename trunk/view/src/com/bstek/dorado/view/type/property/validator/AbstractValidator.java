@@ -29,11 +29,20 @@ import com.bstek.dorado.view.RunAt;
  */
 public abstract class AbstractValidator extends ClientEventSupportedObject
 		implements Validator {
+	private String name;
 	private RunAt runAt = RunAt.client;
 	private MessageState defaultResultState = MessageState.error;
 	private boolean revalidateOldValue = true;
 
-	@ClientProperty(ignored=true)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@ClientProperty(escapeValue = "client")
 	public RunAt getRunAt() {
 		return runAt;
 	}

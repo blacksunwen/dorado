@@ -12,19 +12,12 @@
 
 package com.bstek.dorado.view.widget.base.menu;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.common.Ignorable;
-import com.bstek.dorado.common.TagSupport;
-import com.bstek.dorado.common.event.ClientEventSupportedObject;
-import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.ViewElement;
-import com.bstek.dorado.view.ViewElementUtils;
+import com.bstek.dorado.view.ClientEventSupportedElement;
 import com.bstek.dorado.view.widget.RenderableElement;
 
 /**
@@ -32,11 +25,8 @@ import com.bstek.dorado.view.widget.RenderableElement;
  * @since 2009-11-4
  */
 @XmlNode(implTypes = "com.bstek.dorado.view.widget.base.menu.*")
-public abstract class BaseMenuItem extends ClientEventSupportedObject implements
-		RenderableElement, Ignorable, TagSupport, ViewElement {
-	private ViewElement parent;
-	private Collection<ViewElement> innerElements;
-
+public abstract class BaseMenuItem extends ClientEventSupportedElement
+		implements RenderableElement {
 	private String name;
 	private String width;
 	private String height;
@@ -45,24 +35,6 @@ public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 	private Map<String, Object> style;
 	private boolean visible = true;
 	private String tip;
-	private boolean ignored;
-	private Object userData;
-	private String tags;
-
-	public ViewElement getParent() {
-		return parent;
-	}
-
-	public void setParent(ViewElement parent) {
-		ViewElementUtils.clearParentViewElement(this, this.parent);
-
-		this.parent = parent;
-
-		View view = ViewElementUtils.getParentView(parent);
-		if (view != null) {
-			ViewElementUtils.setParentViewElement(this, parent);
-		}
-	}
 
 	public String getName() {
 		return name;
@@ -96,10 +68,12 @@ public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 		this.className = className;
 	}
 
+	@Deprecated
 	public String getExClassName() {
 		return exClassName;
 	}
 
+	@Deprecated
 	public void setExClassName(String exClassName) {
 		this.exClassName = exClassName;
 	}
@@ -128,48 +102,5 @@ public abstract class BaseMenuItem extends ClientEventSupportedObject implements
 
 	public void setTip(String tip) {
 		this.tip = tip;
-	}
-
-	public boolean isIgnored() {
-		return ignored;
-	}
-
-	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
-	}
-
-	@XmlProperty
-	@ClientProperty
-	public Object getUserData() {
-		return userData;
-	}
-
-	public void setUserData(Object userData) {
-		this.userData = userData;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-
-	public void registerInnerElement(ViewElement element) {
-		if (innerElements == null) {
-			innerElements = new HashSet<ViewElement>();
-		}
-		innerElements.add(element);
-	}
-
-	public void unregisterInnerElement(ViewElement element) {
-		if (innerElements != null) {
-			innerElements.remove(element);
-		}
-	}
-
-	public Collection<ViewElement> getInnerElements() {
-		return innerElements;
 	}
 }

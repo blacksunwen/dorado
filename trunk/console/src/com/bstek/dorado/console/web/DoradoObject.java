@@ -14,7 +14,7 @@ package com.bstek.dorado.console.web;
 
 public class DoradoObject {
 	private String name;
-	private String beanName;
+	private String bean;
 	private String method;
 	private Type type;
 	public enum Type{  
@@ -27,11 +27,11 @@ public class DoradoObject {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getBeanName() {
-		return beanName;
+	public String getBean() {
+		return bean;
 	}
-	public void setBeanName(String beanName) {
-		this.beanName = beanName;
+	public void setBean(String bean) {
+		this.bean = bean;
 	}
 	public String getMethod() {
 		return method;

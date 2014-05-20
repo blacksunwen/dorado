@@ -48,19 +48,18 @@ import com.bstek.dorado.view.config.xml.ViewXmlConstants;
  */
 public class XmlViewConfigDefinitionFactory implements
 		ViewConfigDefinitionFactory {
-	private static byte viewNameDelimMode = 0;
+	private static byte nameDelimDotOrBackLashMode = 1;
+	private static byte nameDelimDotMode = 2;
+	private static byte nameDelimBackLashMode = 3;
 
-	private static byte viewNameDelimDotOrBackLashMode = 1;
-	private static byte viewNameDelimDotMode = 2;
-	private static byte viewNameDelimBackLashMode = 3;
-
-	private static String viewNameDelimDot = "dot";
-	private static String viewNameDelimBackLash = "backlash";
-	private static String viewNameDelimDotOrBackLash = "dotOrBacklash";
+	private static String nameDelimDot = "dot";
+	private static String nameDelimBackLash = "backlash";
+	private static String nameDelimDotOrBackLash = "dotOrBacklash";
 
 	private XmlDocumentBuilder xmlDocumentBuilder;
 	private String pathPrefix;
 	private String pathSubfix;
+	private byte nameDelimMode = 0;
 	private char pathDelimChar = '.';
 	private XmlDocumentPreprocessor xmlPreprocessor;
 	private XmlParser xmlParser;
@@ -68,19 +67,19 @@ public class XmlViewConfigDefinitionFactory implements
 	private DataProviderDefinitionManager dataProviderDefinitionManager;
 	private DataResolverDefinitionManager dataResolverDefinitionManager;
 
-	public static byte getViewNameDelimMode() {
-		if (viewNameDelimMode == 0) {
+	private byte getNameDelimMode() {
+		if (nameDelimMode == 0) {
 			String setting = Configure.getString("view.viewNameDelim",
-					viewNameDelimDotOrBackLash);
-			if (viewNameDelimDot.equals(setting)) {
-				viewNameDelimMode = viewNameDelimDotMode;
-			} else if (viewNameDelimBackLash.equals(setting)) {
-				viewNameDelimMode = viewNameDelimBackLashMode;
+					nameDelimDotOrBackLash);
+			if (nameDelimDot.equals(setting)) {
+				nameDelimMode = nameDelimDotMode;
+			} else if (nameDelimBackLash.equals(setting)) {
+				nameDelimMode = nameDelimBackLashMode;
 			} else {
-				viewNameDelimMode = viewNameDelimDotOrBackLashMode;
+				nameDelimMode = nameDelimDotOrBackLashMode;
 			}
 		}
-		return viewNameDelimMode;
+		return nameDelimMode;
 	}
 
 	/**
@@ -194,10 +193,10 @@ public class XmlViewConfigDefinitionFactory implements
 	private String getResourcePath(String viewName, String pathPrefix,
 			String pathSubfix) {
 		String path = viewName;
-		byte delimMode = getViewNameDelimMode();
+		byte delimMode = getNameDelimMode();
 
-		if (delimMode != viewNameDelimBackLashMode) {
-			if (delimMode == viewNameDelimDotMode && path.indexOf('/') > 0) {
+		if (delimMode != nameDelimBackLashMode) {
+			if (delimMode == nameDelimDotMode && path.indexOf('/') > 0) {
 				throw new IllegalArgumentException("Resource[" + path
 						+ "] not exists.");
 			}
@@ -291,26 +290,26 @@ public class XmlViewConfigDefinitionFactory implements
 				+ ViewXmlConstants.PATH_COMPONENT_PREFIX;
 		parseContext.setDataObjectIdPrefix(viewObjectNamePrefix);
 
-		InnerDataTypeDefinitionManager innerDataTypeDefinitionManager = new InnerDataTypeDefinitionManager(
+		PrivateDataTypeDefinitionManager privateDataTypeDefinitionManager = new PrivateDataTypeDefinitionManager(
 				dataTypeDefinitionManager);
-		innerDataTypeDefinitionManager
+		privateDataTypeDefinitionManager
 				.setDataObjectIdPrefix(viewObjectNamePrefix);
 		parseContext
-				.setDataTypeDefinitionManager(innerDataTypeDefinitionManager);
+				.setDataTypeDefinitionManager(privateDataTypeDefinitionManager);
 
-		InnerDataProviderDefinitionManager innerDataProviderDefinitionManager = new InnerDataProviderDefinitionManager(
+		PrivateDataProviderDefinitionManager privateDataProviderDefinitionManager = new PrivateDataProviderDefinitionManager(
 				dataProviderDefinitionManager);
-		innerDataProviderDefinitionManager
+		privateDataProviderDefinitionManager
 				.setDataObjectIdPrefix(viewObjectNamePrefix);
 		parseContext
-				.setDataProviderDefinitionManager(innerDataProviderDefinitionManager);
+				.setDataProviderDefinitionManager(privateDataProviderDefinitionManager);
 
-		InnerDataResolverDefinitionManager innerDataResolverDefinitionManager = new InnerDataResolverDefinitionManager(
+		PrivateDataResolverDefinitionManager privateDataResolverDefinitionManager = new PrivateDataResolverDefinitionManager(
 				dataResolverDefinitionManager);
-		innerDataResolverDefinitionManager
+		privateDataResolverDefinitionManager
 				.setDataObjectIdPrefix(viewObjectNamePrefix);
 		parseContext
-				.setDataResolverDefinitionManager(innerDataResolverDefinitionManager);
+				.setDataResolverDefinitionManager(privateDataResolverDefinitionManager);
 
 		Element documentElement = document.getDocumentElement();
 		ViewConfigDefinition viewConfigDefinition = (ViewConfigDefinition) xmlParser

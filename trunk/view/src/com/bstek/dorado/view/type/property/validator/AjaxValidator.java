@@ -19,7 +19,7 @@ import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.common.service.ExposedService;
+import com.bstek.dorado.common.service.ExposedServiceDefintion;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.core.bean.BeanFactoryUtils;
@@ -30,9 +30,8 @@ import com.bstek.dorado.view.annotation.ComponentReference;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-5-25
  */
-@XmlNode(fixedProperties = "type=ajax")
-@ClientObject(prototype = "dorado.validator.AjaxValidator",
-		shortTypeName = "Ajax")
+@XmlNode(fixedProperties = "type=ajax", parser = "spring:dorado.ajaxValidatorParser")
+@ClientObject(prototype = "dorado.validator.AjaxValidator", shortTypeName = "Ajax")
 @ClientEvents(@ClientEvent(name = "beforeExecute"))
 public class AjaxValidator extends AbstractAjaxValidator {
 	private static ExposedServiceManager exposedServiceManager;
@@ -68,21 +67,20 @@ public class AjaxValidator extends AbstractAjaxValidator {
 
 	@Override
 	protected Object doValidate(Object value) throws Exception {
-		ExposedService exposedService = getExposedServiceManager().getService(
-				service);
+		ExposedServiceDefintion exposedService = getExposedServiceManager()
+				.getService(service);
 		if (exposedService == null) {
 			throw new IllegalArgumentException("Unknown ExposedService ["
 					+ service + "].");
 		}
 
-		Object serviceBean = BeanFactoryUtils.getBean(exposedService
-				.getBeanName());
+		Object serviceBean = BeanFactoryUtils.getBean(exposedService.getBean());
 		Method[] methods = MethodAutoMatchingUtils.getMethodsByName(
 				serviceBean.getClass(), exposedService.getMethod());
 		if (methods.length == 0) {
 			throw new NoSuchMethodException("Method ["
 					+ exposedService.getMethod() + "] not found in ["
-					+ exposedService.getBeanName() + "].");
+					+ exposedService.getBean() + "].");
 		}
 
 		String[] optionalParameterNames = new String[] { "value" };

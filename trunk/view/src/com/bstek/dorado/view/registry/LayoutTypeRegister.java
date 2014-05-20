@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.view.widget.layout.Layout;
 import com.bstek.dorado.view.widget.layout.LayoutConstraintSupport;
 
@@ -27,7 +28,7 @@ import com.bstek.dorado.view.widget.layout.LayoutConstraintSupport;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 16, 2008
  */
-public class LayoutTypeRegister implements InitializingBean {
+public class LayoutTypeRegister implements InitializingBean, RemovableBean {
 	private static final Log logger = LogFactory
 			.getLog(LayoutTypeRegister.class);
 
@@ -82,12 +83,12 @@ public class LayoutTypeRegister implements InitializingBean {
 
 			LayoutTypeRegisterInfo registerInfo = new LayoutTypeRegisterInfo(
 					type, cl, constraintCl);
-			
+
 			int clientTypesValue = ClientType.parseClientTypes(clientTypes);
 			if (clientTypesValue > 0) {
 				registerInfo.setClientTypes(clientTypesValue);
 			}
-			
+
 			layoutTypeRegistry.registerType(registerInfo);
 		} catch (ClassNotFoundException e) {
 			logger.equals(e);

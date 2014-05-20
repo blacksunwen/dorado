@@ -25,11 +25,12 @@ import com.bstek.dorado.util.PathUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-1-23
  */
-public abstract class AbstractControllerResolver extends WebContextSupportedController {
+public abstract class AbstractControllerResolver extends
+		WebContextSupportedController {
 	private String uriPrefix;
 	private int uriPrefixLen;
-	private String uriSuffix;
-	private int uriSuffixLen;
+	private String uriSuffix = ".c";
+	private int uriSuffixLen = uriSuffix.length();
 
 	public void setUriPrefix(String uriPrefix) {
 		if (uriPrefix != null && uriPrefix.charAt(0) == PathUtils.PATH_DELIM) {

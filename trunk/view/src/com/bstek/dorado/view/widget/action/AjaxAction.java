@@ -25,20 +25,11 @@ import com.bstek.dorado.view.annotation.Widget;
 @Widget(name = "AjaxAction", category = "Action", dependsPackage = "base-widget", autoGenerateId = true)
 @XmlNode(parser = "spring:dorado.ajaxActionParser")
 @ClientObject(prototype = "dorado.widget.AjaxAction", shortTypeName = "AjaxAction")
-public class AjaxAction extends Action {
+public class AjaxAction extends AsyncAction {
 	private long timeout;
 	private boolean batchable = true;
 	private String service;
 	private boolean supportsEntity = true;
-
-	public AjaxAction() {
-		setAsync(true);
-	}
-
-	@ClientProperty(escapeValue = "true")
-	public boolean isAsync() {
-		return super.isAsync();
-	}
 
 	public long getTimeout() {
 		return timeout;

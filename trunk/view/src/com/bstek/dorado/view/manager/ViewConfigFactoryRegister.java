@@ -15,13 +15,15 @@ package com.bstek.dorado.view.manager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Ordered;
 
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.util.Assert;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-15
  */
-public class ViewConfigFactoryRegister implements InitializingBean, Ordered {
+public class ViewConfigFactoryRegister implements InitializingBean, Ordered,
+		RemovableBean {
 	private ViewConfigManager viewConfigManager;
 	private String viewNamePattern;
 	private Object viewConfigFactory;

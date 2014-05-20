@@ -34,8 +34,7 @@ public class ReferenceParser extends PropertyDefParser {
 
 		DefinitionReference<DataProviderDefinition> dataProviderRef = dataObjectParseHelper
 				.getReferencedDataProvider(
-						DataXmlConstants.ATTRIBUTE_DATA_PROVIDER,
-						DataXmlConstants.DATA_PROVIDER, element,
+						DataXmlConstants.ATTRIBUTE_DATA_PROVIDER, element,
 						(DataParseContext) context);
 		if (dataProviderRef != null) {
 			definition.setProperty(DataXmlConstants.ATTRIBUTE_DATA_PROVIDER,

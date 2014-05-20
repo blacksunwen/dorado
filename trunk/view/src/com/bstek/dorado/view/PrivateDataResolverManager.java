@@ -20,36 +20,36 @@ import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
 import com.bstek.dorado.data.resolver.manager.DefaultDataResolverManager;
-import com.bstek.dorado.view.config.InnerDataProviderDefinitionManager;
-import com.bstek.dorado.view.config.InnerDataResolverDefinitionManager;
-import com.bstek.dorado.view.config.InnerDataTypeDefinitionManager;
+import com.bstek.dorado.view.config.PrivateDataProviderDefinitionManager;
+import com.bstek.dorado.view.config.PrivateDataResolverDefinitionManager;
+import com.bstek.dorado.view.config.PrivateDataTypeDefinitionManager;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2010-7-21
  */
-public class InnerDataResolverManager extends DefaultDataResolverManager {
+public class PrivateDataResolverManager extends DefaultDataResolverManager {
 	private DataResolverManager parent;
-	private InnerDataTypeDefinitionManager innerDataTypeDefinitionManager;
-	private InnerDataProviderDefinitionManager innerDataProviderDefinitionManager;
-	private InnerDataResolverDefinitionManager innerDataResolverDefinitionManager;
+	private PrivateDataTypeDefinitionManager privateDataTypeDefinitionManager;
+	private PrivateDataProviderDefinitionManager privateDataProviderDefinitionManager;
+	private PrivateDataResolverDefinitionManager privateDataResolverDefinitionManager;
 
-	public InnerDataResolverManager(
+	public PrivateDataResolverManager(
 			DataResolverManager parent,
-			InnerDataTypeDefinitionManager innerDataTypeDefinitionManager,
-			InnerDataProviderDefinitionManager innerDataProviderDefinitionManager,
-			InnerDataResolverDefinitionManager innerDataResolverDefinitionManager) {
-		this.setDataResolverDefinitionManager(innerDataResolverDefinitionManager);
-		this.innerDataTypeDefinitionManager = innerDataTypeDefinitionManager;
-		this.innerDataResolverDefinitionManager = innerDataResolverDefinitionManager;
-		this.innerDataResolverDefinitionManager = innerDataResolverDefinitionManager;
+			PrivateDataTypeDefinitionManager privateDataTypeDefinitionManager,
+			PrivateDataProviderDefinitionManager privateDataProviderDefinitionManager,
+			PrivateDataResolverDefinitionManager privateDataResolverDefinitionManager) {
+		this.setDataResolverDefinitionManager(privateDataResolverDefinitionManager);
+		this.privateDataTypeDefinitionManager = privateDataTypeDefinitionManager;
+		this.privateDataResolverDefinitionManager = privateDataResolverDefinitionManager;
+		this.privateDataResolverDefinitionManager = privateDataResolverDefinitionManager;
 		this.parent = parent;
 	}
 
 	@Override
 	public DataResolver getDataResolver(String name) throws Exception {
-		ViewConfigDefinition viewConfigDefinition = innerDataResolverDefinitionManager
+		ViewConfigDefinition viewConfigDefinition = privateDataResolverDefinitionManager
 				.getViewConfigDefinition();
 
 		Context context = Context.getCurrent();
@@ -76,13 +76,13 @@ public class InnerDataResolverManager extends DefaultDataResolverManager {
 
 		context.setAttribute(Context.THREAD,
 				"privateDataTypeDefinitionManager",
-				innerDataTypeDefinitionManager);
+				privateDataTypeDefinitionManager);
 		context.setAttribute(Context.THREAD,
 				"privateDataProviderDefinitionManager",
-				innerDataProviderDefinitionManager);
+				privateDataProviderDefinitionManager);
 		context.setAttribute(Context.THREAD,
 				"privateDataResolverDefinitionManager",
-				innerDataResolverDefinitionManager);
+				privateDataResolverDefinitionManager);
 		try {
 			DataResolver dataResolver = super.getDataResolver(name);
 			if (dataResolver == null && parent != null) {

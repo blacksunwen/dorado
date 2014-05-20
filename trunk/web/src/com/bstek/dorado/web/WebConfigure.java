@@ -62,6 +62,11 @@ public abstract class WebConfigure {
 		}
 
 		@Override
+		public void remove(String key) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		protected void doSet(String key, Object value) {
 			throw new UnsupportedOperationException();
 		}
@@ -102,6 +107,10 @@ public abstract class WebConfigure {
 
 	public static void setNull(String scope, String key) {
 		set(scope, key, NULL);
+	}
+
+	public static void remove(String scope, String key) {
+		store.remove(scope, key);
 	}
 
 	/**
@@ -178,9 +187,57 @@ class ConfigureWrapper extends ConfigureStore {
 		this.store = store;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean contains(String key) {
-		return store.contains(key);
+		boolean b = store.contains(key);
+		if (b)
+			return true;
+
+		Context context = Context.getCurrent();
+		if (context instanceof DoradoContext) {
+			DoradoContext doradoContext = (DoradoContext) context;
+			Map<String, Object> localConfigureMap = (Map<String, Object>) doradoContext
+					.getAttribute(DoradoContext.REQUEST, WebConfigure.STORE_KEY);
+			if (localConfigureMap != null) {
+				b = localConfigureMap.containsKey(key);
+				if (b)
+					return true;
+			}
+
+			localConfigureMap = (Map<String, Object>) doradoContext
+					.getAttribute(DoradoContext.SESSION, WebConfigure.STORE_KEY);
+			if (localConfigureMap != null) {
+				b = localConfigureMap.containsKey(key);
+				if (b)
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public void remove(String key) {
+		throw new UnsupportedOperationException();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void remove(String scope, String key) {
+		if (DoradoContext.APPLICATION.equals(scope)
+				|| StringUtils.isEmpty(scope)) {
+			store.remove(key);
+		} else {
+			DoradoContext context = DoradoContext.getCurrent();
+			Map<String, Object> localConfigureMap = (Map<String, Object>) context
+					.getAttribute(scope, WebConfigure.STORE_KEY);
+			if (localConfigureMap == null) {
+				localConfigureMap = new HashMap<String, Object>();
+				context.setAttribute(scope, WebConfigure.STORE_KEY,
+						localConfigureMap);
+			}
+			localConfigureMap.remove(key);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

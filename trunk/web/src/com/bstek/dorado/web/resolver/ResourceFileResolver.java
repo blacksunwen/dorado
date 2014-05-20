@@ -25,7 +25,7 @@ import com.bstek.dorado.web.WebConfigure;
  */
 public class ResourceFileResolver extends WebFileResolver {
 	@Override
-	protected final ModelAndView doHandleRequest(HttpServletRequest request,
+	protected ModelAndView doHandleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		response.addHeader(HttpConstants.CACHE_CONTROL, HttpConstants.MAX_AGE
 				+ WebConfigure.getLong("web.resourceMaxAge", 3600));

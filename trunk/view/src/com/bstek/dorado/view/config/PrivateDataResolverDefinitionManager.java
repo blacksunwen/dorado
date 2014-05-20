@@ -17,23 +17,22 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
-import com.bstek.dorado.data.config.definition.DataTypeDefinition;
-import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
+import com.bstek.dorado.data.config.definition.DataResolverDefinition;
+import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2010-12-28
+ * @since 2012-2-3
  */
-public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
-	private static final String GLOBAL_PREFIX = "global:";
-
+public class PrivateDataResolverDefinitionManager extends
+		DataResolverDefinitionManager {
 	private String dataObjectIdPrefix;
 	private ViewConfigDefinition viewConfigDefinition;
 
-	public InnerDataTypeDefinitionManager(
-			DefinitionManager<DataTypeDefinition> parent) {
+	public PrivateDataResolverDefinitionManager(
+			DefinitionManager<DataResolverDefinition> parent) {
 		super(parent);
 	}
 
@@ -55,37 +54,23 @@ public class InnerDataTypeDefinitionManager extends DataTypeDefinitionManager {
 	}
 
 	@Override
-	public void registerDefinition(String name, DataTypeDefinition definition) {
+	public void registerDefinition(String name,
+			DataResolverDefinition definition) {
 		Assert.notEmpty(name);
 
 		String id = definition.getId();
 		if (StringUtils.isEmpty(id)) {
 			id = name;
 		}
-		DataObjectDefinitionUtils.setDataTypeId(definition, dataObjectIdPrefix
-				+ id);
+		DataObjectDefinitionUtils.setDataResolverId(definition,
+				dataObjectIdPrefix + id);
 		definition.setScope(Scope.thread);
 
 		super.registerDefinition(name, definition);
 	}
 
-	@Override
-	public DataTypeDefinition getDefinition(String name) {
-		DataTypeDefinition definition = null;
-		if (name.startsWith(GLOBAL_PREFIX)) {
-			DefinitionManager<DataTypeDefinition> parent = getParent();
-			if (parent != null) {
-				definition = parent.getDefinition(name.substring(GLOBAL_PREFIX
-						.length()));
-			}
-		} else {
-			definition = super.getDefinition(name);
-		}
-		return definition;
-	}
-
-	public InnerDataTypeDefinitionManager duplicate() {
-		InnerDataTypeDefinitionManager duplication = new InnerDataTypeDefinitionManager(
+	public PrivateDataResolverDefinitionManager duplicate() {
+		PrivateDataResolverDefinitionManager duplication = new PrivateDataResolverDefinitionManager(
 				getParent());
 		duplication.setDataObjectIdPrefix(dataObjectIdPrefix);
 		duplication.setViewConfigDefinition(viewConfigDefinition);

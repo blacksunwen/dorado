@@ -10,6 +10,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
 		http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dorado-7.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+		
 	<!--DataProviderGetResult 拦截器 -->
 	<bean parent="dorado.dataProviderInterceptorRegister">
 		<property name="methodInterceptor">

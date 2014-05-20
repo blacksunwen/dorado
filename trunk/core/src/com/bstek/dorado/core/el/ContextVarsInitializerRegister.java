@@ -20,6 +20,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * 用于利用外部的Spring配置文件完成隐式变量初始化器注册功能的辅助类。
  * 
@@ -27,7 +29,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @since Dec 17, 2007
  */
 public class ContextVarsInitializerRegister implements InitializingBean,
-		BeanFactoryAware {
+		BeanFactoryAware, RemovableBean {
 	private BeanFactory beanFactory;
 	private ContextVarsInitializer contextInitializer;
 

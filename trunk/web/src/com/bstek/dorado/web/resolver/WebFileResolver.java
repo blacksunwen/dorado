@@ -28,6 +28,8 @@ import com.bstek.dorado.web.DoradoContext;
  * @since Sep 24, 2008
  */
 public class WebFileResolver extends AbstractWebFileResolver {
+	public static final Resource[] EMPTY_RESOURCES = new Resource[0];
+	
 	private static final String RESOURCE_PREFIX_DELIM = ";,\n\r";
 
 	String baseUri;

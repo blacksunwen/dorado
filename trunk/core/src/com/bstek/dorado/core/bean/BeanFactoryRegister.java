@@ -16,13 +16,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * 用于利用外部的Spring配置文件完成Bean工厂注册功能的辅助类。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Dec 26, 2007
  */
-public class BeanFactoryRegister implements InitializingBean {
+public class BeanFactoryRegister implements InitializingBean, RemovableBean {
 	private BeanFactoryRegistry beanFactoryRegistry;
 	private List<BeanFactory> beanFactories;
 

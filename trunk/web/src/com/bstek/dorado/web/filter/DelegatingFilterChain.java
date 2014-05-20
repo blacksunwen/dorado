@@ -22,7 +22,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.PathMatcher;
 
 /**
@@ -42,35 +41,62 @@ public class DelegatingFilterChain implements FilterChain {
 		this.realFilterChain = realFilterChain;
 	}
 
+	private String getContextPath(HttpServletRequest request) {
+		return request.getContextPath();
+	}
+
 	private String getPath(HttpServletRequest request) {
 		return request.getRequestURI().substring(
-				request.getContextPath().length());
+				getContextPath(request).length());
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response)
 			throws IOException, ServletException {
 		boolean matched = false;
-		while (index < targetFilters.size()) {
-			DelegatingFilter targetFilter = targetFilters.get(index);
-			index++;
-			String urlPattern = targetFilter.getUrlPattern();
-
-			if (StringUtils.isNotEmpty(urlPattern)) {
-				String path = getPath((HttpServletRequest) request);
-				matched = pathMatcher.match(urlPattern, path);
-			} else {
-				matched = true;
-			}
-
-			if (matched) {
-				targetFilter.doFilter((HttpServletRequest) request,
-						(HttpServletResponse) response, this);
-				break;
-			}
-		}
-
-		if (index >= targetFilters.size()) {
+		int filterNum = targetFilters.size();
+		if (index >= filterNum) {
 			realFilterChain.doFilter(request, response);
+		} else {
+			while (index < filterNum) {
+				DelegatingFilter targetFilter = targetFilters.get(index);
+				index++;
+
+				List<String> urlPatterns = targetFilter.getUrlPatterns();
+				if (urlPatterns != null) {
+					String path = getPath((HttpServletRequest) request);
+					for (String pattern : urlPatterns) {
+						if (pathMatcher.match(pattern, path)) {
+							matched = true;
+							break;
+						}
+					}
+
+					if (matched) {
+						List<String> excludeUrlPatterns = targetFilter
+								.getExcludeUrlPatterns();
+						if (excludeUrlPatterns != null) {
+							for (String pattern : excludeUrlPatterns) {
+								if (pathMatcher.match(pattern, path)) {
+									matched = false;
+									break;
+								}
+							}
+						}
+					}
+				} else {
+					matched = true;
+				}
+
+				if (matched) {
+					targetFilter.doFilter((HttpServletRequest) request,
+							(HttpServletResponse) response, this);
+					break;
+				}
+			}
+
+			if (!matched) {
+				realFilterChain.doFilter(request, response);
+			}
 		}
 	}
 }

@@ -14,6 +14,8 @@ package com.bstek.dorado.core;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
+
 /**
  * Dorado引擎的启动过程监听器。
  * <p>
@@ -24,7 +26,8 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Mar 9, 2007
  */
-public abstract class EngineStartupListener implements InitializingBean {
+public abstract class EngineStartupListener implements InitializingBean,
+		RemovableBean {
 	private int order = 999;
 
 	/**

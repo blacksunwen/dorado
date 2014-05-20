@@ -62,6 +62,7 @@ public abstract class Control extends Component implements HtmlElement,
 	private String width;
 	private String height;
 	private String className;
+
 	private String exClassName;
 	private String ui = "default";
 	private Map<String, Object> style;

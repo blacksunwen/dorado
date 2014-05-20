@@ -54,7 +54,7 @@ public class DataCollectionParser extends DataElementParserSupport {
 		Class<?> collectionType = null;
 		DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
 				.getReferencedDataType(DataXmlConstants.ATTRIBUTE_DATA_TYPE,
-						null, element, context);
+						element, context);
 		if (dataTypeRef != null) {
 			DataTypeDefinition dataTypeDefinition = dataTypeRef.getDefinition();
 			dataTypeRef = (DefinitionReference<DataTypeDefinition>) dataTypeDefinition

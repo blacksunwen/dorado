@@ -12,8 +12,6 @@
 
 package com.bstek.dorado.view.widget.base.tab;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Map;
 
 import com.bstek.dorado.annotation.ClientEvent;
@@ -23,13 +21,8 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.annotation.XmlProperty;
-import com.bstek.dorado.common.Ignorable;
-import com.bstek.dorado.common.MetaDataSupport;
-import com.bstek.dorado.common.TagSupport;
-import com.bstek.dorado.common.event.ClientEventSupportedObject;
-import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.ViewElement;
-import com.bstek.dorado.view.ViewElementUtils;
+import com.bstek.dorado.common.Namable;
+import com.bstek.dorado.view.ClientEventSupportedElement;
 import com.bstek.dorado.view.widget.RenderableElement;
 
 /**
@@ -38,60 +31,26 @@ import com.bstek.dorado.view.widget.RenderableElement;
  */
 @XmlNode(isPublic = false)
 @ClientObject(prototype = "dorado.widget.tab.Tab", shortTypeName = "Tab")
-@ClientEvents({ @ClientEvent(name = "beforeClose"), @ClientEvent(name = "onClose"), @ClientEvent(name = "onClick") })
-public class Tab extends ClientEventSupportedObject implements RenderableElement, Ignorable, TagSupport,
-		MetaDataSupport, ViewElement {
-	private ViewElement parent;
+@ClientEvents({ @ClientEvent(name = "beforeClose"),
+		@ClientEvent(name = "onClose"), @ClientEvent(name = "onClick") })
+public class Tab extends ClientEventSupportedElement implements
+		RenderableElement, Namable {
 	private String name;
 	private String caption;
 	private boolean closeable;
 	private String icon;
+	private String iconClass;
+
 	private boolean disabled;
 	private String width;
 	private String height;
 	private String className;
+
+	@Deprecated
 	private String exClassName;
 	private Map<String, Object> style;
 	private boolean visible = true;
 	private String tip;
-	private boolean ignored;
-	private Object userData;
-	private String tags;
-	private Map<String, Object> metaData;
-
-	private Collection<ViewElement> innerElements;
-
-	public ViewElement getParent() {
-		return parent;
-	}
-
-	public void setParent(ViewElement parent) {
-		ViewElementUtils.clearParentViewElement(this, this.parent);
-
-		this.parent = parent;
-
-		View view = ViewElementUtils.getParentView(parent);
-		if (view != null) {
-			ViewElementUtils.setParentViewElement(this, parent);
-		}
-	}
-
-	public void registerInnerElement(ViewElement element) {
-		if (innerElements == null) {
-			innerElements = new HashSet<ViewElement>();
-		}
-		innerElements.add(element);
-	}
-
-	public void unregisterInnerElement(ViewElement element) {
-		if (innerElements != null) {
-			innerElements.remove(element);
-		}
-	}
-
-	public Collection<ViewElement> getInnerElements() {
-		return innerElements;
-	}
 
 	public String getName() {
 		return name;
@@ -126,6 +85,14 @@ public class Tab extends ClientEventSupportedObject implements RenderableElement
 		this.icon = icon;
 	}
 
+	public String getIconClass() {
+		return iconClass;
+	}
+
+	public void setIconClass(String iconClass) {
+		this.iconClass = iconClass;
+	}
+
 	public boolean isDisabled() {
 		return disabled;
 	}
@@ -158,10 +125,13 @@ public class Tab extends ClientEventSupportedObject implements RenderableElement
 		this.className = className;
 	}
 
+	@Deprecated
+	@XmlProperty(deprecated = true)
 	public String getExClassName() {
 		return exClassName;
 	}
 
+	@Deprecated
 	public void setExClassName(String exClassName) {
 		this.exClassName = exClassName;
 	}
@@ -192,40 +162,4 @@ public class Tab extends ClientEventSupportedObject implements RenderableElement
 		this.tip = tip;
 	}
 
-	public boolean isIgnored() {
-		return ignored;
-	}
-
-	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
-	}
-
-	@XmlProperty
-	@ClientProperty
-	@IdeProperty(editor = "any")
-	public Object getUserData() {
-		return userData;
-	}
-
-	public void setUserData(Object userData) {
-		this.userData = userData;
-	}
-
-	public String getTags() {
-		return tags;
-	}
-
-	public void setTags(String tags) {
-		this.tags = tags;
-	}
-
-	@XmlProperty(composite = true)
-	@ClientProperty(ignored = true)
-	public Map<String, Object> getMetaData() {
-		return metaData;
-	}
-
-	public void setMetaData(Map<String, Object> metaData) {
-		this.metaData = metaData;
-	}
 }

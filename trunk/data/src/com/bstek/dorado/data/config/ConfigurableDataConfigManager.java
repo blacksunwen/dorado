@@ -298,13 +298,11 @@ public class ConfigurableDataConfigManager extends
 
 				for (DataTypeDefinition dataTypeDefinition : parsedDataTypes
 						.values()) {
-					if (!dataTypeDefinition.isInner()) {
-						try {
-							dataTypeDefinitionManager
-									.registerMatchType(dataTypeDefinition);
-						} catch (Exception e) {
-							logger.warn(e, e);
-						}
+					try {
+						dataTypeDefinitionManager
+								.registerMatchType(dataTypeDefinition);
+					} catch (Exception e) {
+						logger.warn(e, e);
 					}
 				}
 			}

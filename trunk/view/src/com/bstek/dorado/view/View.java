@@ -12,6 +12,7 @@
 
 package com.bstek.dorado.view;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,7 @@ import com.bstek.dorado.view.widget.Container;
 		@ClientEvent(name = "onComponentUnregistered") })
 public abstract class View extends Container {
 	private ViewConfig viewConfig;
-	private Map<String, Component> componentMap = new HashMap<String, Component>();
+	private Map<String, ViewElement> viewElementMap = new HashMap<String, ViewElement>();
 	private ViewCache cache;
 	private ViewRenderMode renderMode = ViewRenderMode.onCreate;
 
@@ -55,13 +56,6 @@ public abstract class View extends Container {
 		}
 	}
 
-	@Override
-	@XmlProperty(ignored = true, attributeOnly = true)
-	@IdeProperty(visible = false)
-	public String getId() {
-		return super.getId();
-	}
-
 	@XmlProperty(ignored = true)
 	@IdeProperty(visible = false)
 	public String getName() {
@@ -73,33 +67,49 @@ public abstract class View extends Container {
 		return viewConfig;
 	}
 
-	public void registerComponent(Component component) {
-		String id = component.getId();
+	public void registerViewElement(ViewElement viewElement) {
+		String id = viewElement.getId();
 		if (StringUtils.isNotEmpty(id)) {
-			if (componentMap.containsKey(id)) {
-				throw new IllegalArgumentException("Duplicated component ["
+			if (viewElementMap.containsKey(id)) {
+				throw new IllegalArgumentException("Duplicated viewElement ["
 						+ id + "].");
 			}
-			componentMap.put(id, component);
+			viewElementMap.put(id, viewElement);
 		}
 	}
 
-	public void unregisterComponent(Component component) {
-		String id = component.getId();
+	public void unregisterViewElement(ViewElement viewElement) {
+		String id = viewElement.getId();
 		if (StringUtils.isNotEmpty(id)) {
-			componentMap.remove(id);
+			viewElementMap.remove(id);
 		}
 	}
 
 	/**
 	 * 根据组件id返回相应组件的对象实例。
 	 */
+	@Deprecated
 	public Component getComponent(String componentId) {
-		return componentMap.get(componentId);
+		return (Component) viewElementMap.get(componentId);
 	}
 
+	@Deprecated
 	public Collection<Component> getAllComponents() {
-		return componentMap.values();
+		Collection<Component> components = new ArrayList<Component>();
+		for (ViewElement viewELement : viewElementMap.values()) {
+			if (viewELement instanceof Component) {
+				components.add((Component) viewELement);
+			}
+		}
+		return components;
+	}
+
+	public ViewElement getViewElement(String id) {
+		return viewElementMap.get(id);
+	}
+
+	public Collection<ViewElement> getViewElements() {
+		return viewElementMap.values();
 	}
 
 	@XmlProperty(composite = true)
@@ -181,6 +191,7 @@ public abstract class View extends Container {
 		this.styleSheetFile = styleSheetFile;
 	}
 
+	@ClientProperty(ignored = true)
 	public String getSkin() {
 		return skin;
 	}

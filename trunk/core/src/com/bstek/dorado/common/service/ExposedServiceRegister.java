@@ -16,13 +16,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.InitializingBean;
 
+import com.bstek.dorado.spring.RemovableBean;
 import com.bstek.dorado.util.Assert;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-21
  */
-public class ExposedServiceRegister implements InitializingBean {
+public class ExposedServiceRegister implements InitializingBean, RemovableBean {
 	private ExposedServiceManager exposedServiceManager;
 	private Map<String, String> services;
 
@@ -51,8 +52,12 @@ public class ExposedServiceRegister implements InitializingBean {
 					} else {
 						bean = service;
 					}
-					exposedServiceManager.registerService(new ExposedService(
-							name, bean, method));
+
+					ExposedServiceDefintion exposedService = new ExposedServiceDefintion();
+					exposedService.setName(name);
+					exposedService.setBean(bean);
+					exposedService.setMethod(method);
+					exposedServiceManager.registerService(exposedService);
 				}
 			}
 		}

@@ -26,7 +26,7 @@ public abstract class AbstractRemoteServiceMethodInterceptor extends
 
 	public final Object invoke(MethodInvocation invocation) throws Throwable {
 		String serviceName = (String) DoradoContext.getCurrent().getAttribute(
-				RemoteServiceProcessor.SERVICE_NAME_ATTRIBUTE);
+				AbstractRemoteServiceProcessor.SERVICE_NAME_ATTRIBUTE);
 		return invoke(invocation, serviceName);
 	}
 

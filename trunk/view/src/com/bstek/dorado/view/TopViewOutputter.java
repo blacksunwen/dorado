@@ -40,7 +40,9 @@ public class TopViewOutputter extends ViewOutputter {
 	@Override
 	public void output(Object object, OutputContext context) throws Exception {
 		View view = (View) object;
-		view.setId("viewMain");
+		if (StringUtils.isEmpty(view.getId())) {
+			view.setId("viewMain");
+		}
 
 		context.addDependsPackage("widget");
 		context.addDependsPackage("common");
@@ -48,13 +50,11 @@ public class TopViewOutputter extends ViewOutputter {
 		Writer writer = context.getWriter();
 		writer.append("dorado.onInit(function(){\n");
 		writer.append("try{\n");
-		writer.append("AUTO_APPEND_TO_TOPVIEW=false;\n");
 
 		ViewOutputter outputter = (ViewOutputter) clientOutputHelper
 				.getOutputter(view.getClass());
 		outputter.outputView(view, context);
 
-		writer.append("AUTO_APPEND_TO_TOPVIEW=true;\n");
 
 		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");
 

@@ -28,10 +28,7 @@ import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.Constants;
-import com.bstek.dorado.data.config.DataTypeName;
-import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
-import com.bstek.dorado.data.config.definition.DataTypeDefinitionReference;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
 import com.bstek.dorado.util.clazz.ClassUtils;
@@ -77,24 +74,23 @@ public class DataTypeParser extends GenericObjectParser implements
 		DataParseContext dataContext = (DataParseContext) context;
 		DefinitionReference<DataTypeDefinition> dataTypeRef;
 		dataTypeRef = dataObjectParseHelper.getReferencedDataType(
-				DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
-				DataXmlConstants.ELEMENT_DATA_TYPE, element, dataContext);
+				DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE, element,
+				dataContext);
 		if (dataTypeRef != null) {
 			dataType.setProperty(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
 					dataTypeRef);
 		}
 
 		dataTypeRef = dataObjectParseHelper.getReferencedDataType(
-				DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
-				DataXmlConstants.KEY_DATA_TYPE, element, dataContext);
+				DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE, element, dataContext);
 		if (dataTypeRef != null) {
 			dataType.setProperty(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
 					dataTypeRef);
 		}
 
 		dataTypeRef = dataObjectParseHelper.getReferencedDataType(
-				DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
-				DataXmlConstants.VALUE_DATA_TYPE, element, dataContext);
+				DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE, element,
+				dataContext);
 		if (dataTypeRef != null) {
 			dataType.setProperty(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
 					dataTypeRef);
@@ -112,100 +108,42 @@ public class DataTypeParser extends GenericObjectParser implements
 				.getParsedDataTypes();
 
 		String name = element.getAttribute(XmlConstants.ATTRIBUTE_NAME);
-		NodeWrapper nodeWrapper = null;
-		if (!StringUtils.isEmpty(name)) {
-			nodeWrapper = dataContext.getConfiguredDataTypes().get(name);
-		}
-		boolean isInner = !(nodeWrapper != null && nodeWrapper.getNode() == node);
-
-		DataTypeDefinition dataType = null;
-		if (!StringUtils.isEmpty(name) && !isInner) {
-			// Comment 11/04/26 为了处理View中私有DataObject与Global DataObject重名的问题
-			// DefinitionManager<DataTypeDefinition> dataTypeDefinitionManager =
-			// dataContext
-			// .getDataTypeDefinitionManager();
-			// dataType = dataTypeDefinitionManager.getDefinition(name);
-			dataType = parsedDataTypes.get(name);
-			if (dataType != null) {
-				return dataType;
-			}
+		if (StringUtils.isEmpty(name)) {
+			throw new XmlParseException("DataType name undefined.", element,
+					context);
 		}
 
-		if (!isInner) {
-			parsingNodes.add(element);
-			dataContext
-					.setPrivateObjectName(Constants.PRIVATE_DATA_OBJECT_PREFIX
-							+ DataXmlConstants.PATH_DATE_TYPE_SHORT_NAME
-							+ Constants.PRIVATE_DATA_OBJECT_SUBFIX + name);
-
-			dataType = (DataTypeDefinition) super.internalParse(node,
-					dataContext);
-
-			Class<?> matchType = (Class<?>) dataType
-					.removeProperty(DataXmlConstants.ATTRIBUTE_MATCH_TYPE);
-			dataType.setMatchType(matchType);
-
-			Class<?> creationType = (Class<?>) dataType
-					.removeProperty(DataXmlConstants.ATTRIBUTE_CREATION_TYPE);
-			if (creationType != null) {
-				if (matchType != null
-						&& !matchType.isAssignableFrom(creationType)) {
-					throw new XmlParseException("The CreationType ["
-							+ creationType
-							+ "] is not a sub type of the MatchType ["
-							+ matchType + "].", element, context);
-				}
-				dataType.setCreationType(creationType);
-			}
-
-			dataContext.restorePrivateObjectName();
-			parsingNodes.clear();
-		} else {
-			name = dataContext.getPrivateObjectName();
-
-			dataType = (DataTypeDefinition) super.internalParse(node,
-					dataContext);
-
-			// 处理[Bean]这类数据类型的特殊情况
-			if (dataType.getParentReferences() != null
-					&& dataType.getParentReferences().length == 1) {
-				DataTypeDefinitionReference parentReference = (DataTypeDefinitionReference) dataType
-						.getParentReferences()[0];
-				DataTypeName dataTypeName = new DataTypeName(
-						parentReference.getName());
-				if (dataTypeName.getSubDataTypes().length == 1) {
-					String elementDataTypeName = name
-							+ DataXmlConstants.PATH_PROPERTY_PREFIX
-							+ DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE;
-					name = ((Constants.DEFAULT_COLLECTION_TYPE
-							.equals(dataTypeName.getDataType())) ? ""
-							: dataTypeName.getDataType())
-							+ '[' + elementDataTypeName + ']';
-
-					DataTypeDefinition elementDataType = dataType;
-					elementDataType.setName(elementDataTypeName);
-					elementDataType
-							.setParentReferences(new DefinitionReference[] { dataObjectParseHelper
-									.getDataTypeByName(
-											dataTypeName.getSubDataTypes()[0],
-											dataContext, true) });
-					parsedDataTypes.put(elementDataTypeName, elementDataType);
-
-					dataType = new DataTypeDefinition();
-					dataType.setResource(elementDataType.getResource());
-					DataObjectDefinitionUtils.setDataTypeInner(dataType, true);
-					DefinitionReference<?> dataTypeRef = dataContext
-							.getDataTypeReference(dataTypeName.getDataType());
-					dataType.setParentReferences(new DefinitionReference[] { dataTypeRef });
-					dataType.setProperty(
-							DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
-							elementDataType);
-				}
-			}
+		DataTypeDefinition dataType = parsedDataTypes.get(name);
+		if (dataType != null) {
+			return dataType;
 		}
+
+		parsingNodes.add(element);
+		dataContext.setPrivateObjectName(Constants.PRIVATE_DATA_OBJECT_PREFIX
+				+ DataXmlConstants.PATH_DATE_TYPE_SHORT_NAME
+				+ Constants.PRIVATE_DATA_OBJECT_SUBFIX + name);
+
+		dataType = (DataTypeDefinition) super.internalParse(node, dataContext);
+
+		Class<?> matchType = (Class<?>) dataType
+				.removeProperty(DataXmlConstants.ATTRIBUTE_MATCH_TYPE);
+		dataType.setMatchType(matchType);
+
+		Class<?> creationType = (Class<?>) dataType
+				.removeProperty(DataXmlConstants.ATTRIBUTE_CREATION_TYPE);
+		if (creationType != null) {
+			if (matchType != null && !matchType.isAssignableFrom(creationType)) {
+				throw new XmlParseException("The CreationType [" + creationType
+						+ "] is not a sub type of the MatchType [" + matchType
+						+ "].", element, context);
+			}
+			dataType.setCreationType(creationType);
+		}
+
+		dataContext.restorePrivateObjectName();
+		parsingNodes.clear();
 
 		dataType.setName(name);
-		DataObjectDefinitionUtils.setDataTypeInner(dataType, isInner);
 
 		final String DEFAULT_DATATYPE_PARENT = Configure.getString(
 				"data.defaultEntityDataTypeParent", "Entity");

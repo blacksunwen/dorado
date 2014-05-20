@@ -516,12 +516,24 @@ class GetterInterceptionInjector extends
 		return counter;
 	}
 
+	private void throwInvalidState() {
+		throw new IllegalStateException("Invalid entity interception state.");
+	}
+
 	public void disableGetterInterception() {
-		getCounter().disabled = true;
+		GetterInterceptionInjectorCounter counter = getCounter();
+		if (counter.disabled) {
+			throwInvalidState();
+		}
+		counter.disabled = true;
 	}
 
 	public void enableGetterInterception() {
-		getCounter().disabled = false;
+		GetterInterceptionInjectorCounter counter = getCounter();
+		if (!counter.disabled) {
+			throwInvalidState();
+		}
+		counter.disabled = false;
 	}
 
 	public boolean isGetterInterceptionDisabled() {

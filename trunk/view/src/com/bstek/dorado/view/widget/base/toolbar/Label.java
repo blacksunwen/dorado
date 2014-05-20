@@ -22,7 +22,7 @@ import com.bstek.dorado.view.annotation.Widget;
  */
 @Widget(category = "ToolBar")
 @XmlNode(nodeName = "ToolBarLabel")
-@ClientObject(prototype = "dorado.widget.toolbar.ToolBarLabel", shortTypeName = "ToolBarLabel")
+@ClientObject(prototype = "dorado.widget.toolbar.ToolBarLabel", shortTypeName = "Label")
 public class Label extends com.bstek.dorado.view.widget.form.Label {
 
 }

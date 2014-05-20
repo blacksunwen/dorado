@@ -17,22 +17,23 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.config.definition.DefinitionManager;
 import com.bstek.dorado.core.bean.Scope;
 import com.bstek.dorado.data.config.definition.DataObjectDefinitionUtils;
-import com.bstek.dorado.data.config.definition.DataResolverDefinition;
-import com.bstek.dorado.data.config.definition.DataResolverDefinitionManager;
+import com.bstek.dorado.data.config.definition.DataTypeDefinition;
+import com.bstek.dorado.data.config.definition.DataTypeDefinitionManager;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2012-2-3
+ * @since 2010-12-28
  */
-public class InnerDataResolverDefinitionManager extends
-		DataResolverDefinitionManager {
+public class PrivateDataTypeDefinitionManager extends DataTypeDefinitionManager {
+	private static final String GLOBAL_PREFIX = "global:";
+
 	private String dataObjectIdPrefix;
 	private ViewConfigDefinition viewConfigDefinition;
 
-	public InnerDataResolverDefinitionManager(
-			DefinitionManager<DataResolverDefinition> parent) {
+	public PrivateDataTypeDefinitionManager(
+			DefinitionManager<DataTypeDefinition> parent) {
 		super(parent);
 	}
 
@@ -54,23 +55,37 @@ public class InnerDataResolverDefinitionManager extends
 	}
 
 	@Override
-	public void registerDefinition(String name,
-			DataResolverDefinition definition) {
+	public void registerDefinition(String name, DataTypeDefinition definition) {
 		Assert.notEmpty(name);
 
 		String id = definition.getId();
 		if (StringUtils.isEmpty(id)) {
 			id = name;
 		}
-		DataObjectDefinitionUtils.setDataResolverId(definition,
-				dataObjectIdPrefix + id);
+		DataObjectDefinitionUtils.setDataTypeId(definition, dataObjectIdPrefix
+				+ id);
 		definition.setScope(Scope.thread);
 
 		super.registerDefinition(name, definition);
 	}
 
-	public InnerDataResolverDefinitionManager duplicate() {
-		InnerDataResolverDefinitionManager duplication = new InnerDataResolverDefinitionManager(
+	@Override
+	public DataTypeDefinition getDefinition(String name) {
+		DataTypeDefinition definition = null;
+		if (name.startsWith(GLOBAL_PREFIX)) {
+			DefinitionManager<DataTypeDefinition> parent = getParent();
+			if (parent != null) {
+				definition = parent.getDefinition(name.substring(GLOBAL_PREFIX
+						.length()));
+			}
+		} else {
+			definition = super.getDefinition(name);
+		}
+		return definition;
+	}
+
+	public PrivateDataTypeDefinitionManager duplicate() {
+		PrivateDataTypeDefinitionManager duplication = new PrivateDataTypeDefinitionManager(
 				getParent());
 		duplication.setDataObjectIdPrefix(dataObjectIdPrefix);
 		duplication.setViewConfigDefinition(viewConfigDefinition);

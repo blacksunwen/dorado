@@ -44,11 +44,6 @@ public class DataResolverDefinition extends InterceptableDefinition implements
 		setCacheCreatedObject(true);
 	}
 
-	public DataResolverDefinition(String name) {
-		this();
-		setName(name);
-	}
-
 	public void setDefinitionManager(
 			DataResolverDefinitionManager definitionManager) {
 		dataResolverDefinitionManager = definitionManager;

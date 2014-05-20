@@ -17,7 +17,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.bstek.dorado.common.proxy.PatternMethodInterceptor;
-import com.bstek.dorado.common.service.ExposedService;
+import com.bstek.dorado.common.service.ExposedServiceDefintion;
 import com.bstek.dorado.common.service.ExposedServiceManager;
 import com.bstek.dorado.console.Logger;
 import com.bstek.dorado.console.performance.ExecuteLogOutputter;
@@ -77,7 +77,7 @@ public class RemoteServiceMethodInterceptor extends PatternMethodInterceptor {
 						ExposedServiceManager exposedServiceManager = (ExposedServiceManager) DoradoContext
 								.getCurrent().getServiceBean(
 										"exposedServiceManager");
-						ExposedService exposedService = exposedServiceManager
+						ExposedServiceDefintion exposedService = exposedServiceManager
 								.getService(serviceName);
 						if (exposedService == null) {
 							throw new IllegalArgumentException(

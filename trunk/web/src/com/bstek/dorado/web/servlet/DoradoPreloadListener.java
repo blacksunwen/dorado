@@ -15,18 +15,22 @@ package com.bstek.dorado.web.servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.bstek.dorado.web.listener.DelegatingServletContextListenersManager;
+import com.bstek.dorado.web.listener.DelegatingSessionListenersManager;
 import com.bstek.dorado.web.loader.DoradoLoader;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-21
  */
-public class DoradoPreloadListener implements ServletContextListener {
+public class DoradoPreloadListener implements ServletContextListener,
+		HttpSessionListener {
 	private static final Log logger = LogFactory
 			.getLog(DoradoPreloadListener.class);
 
@@ -47,6 +51,22 @@ public class DoradoPreloadListener implements ServletContextListener {
 		try {
 			DelegatingServletContextListenersManager
 					.fireContextDestroyed(event);
+		} catch (Exception e) {
+			logger.error(e, e);
+		}
+	}
+
+	public void sessionCreated(HttpSessionEvent event) {
+		try {
+			DelegatingSessionListenersManager.fireSessionCreated(event);
+		} catch (Exception e) {
+			logger.error(e, e);
+		}
+	}
+
+	public void sessionDestroyed(HttpSessionEvent event) {
+		try {
+			DelegatingSessionListenersManager.fireSessionDestroyed(event);
 		} catch (Exception e) {
 			logger.error(e, e);
 		}
