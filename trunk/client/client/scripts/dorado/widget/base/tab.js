@@ -110,7 +110,7 @@
 				}
 			},
 
-			/**
+            /**
 			 * 提示信息。
 			 * @type String
 			 * @attribute skipRefresh
@@ -168,7 +168,6 @@
             }
             delete tab._dom;
             delete tab._doms;
-            delete tab._parent;
         },
 
         _createIconSpan: function() {
