@@ -725,6 +725,11 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		}
 	},
 
+    doClose: function(){
+        var panel = this;
+        panel.set("visible", false);
+    },
+
 	/**
 	 * 关闭面板。
 	 */
@@ -732,7 +737,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		var panel = this, eventArg = {};
 		panel.fireEvent("beforeClose", panel, eventArg);
 		if (eventArg.processDefault === false) return;
-		panel.hide && panel.hide();
+		panel.doClose();
 		panel.fireEvent("onClose", panel);
 		if (panel._closeAction == "close") {
 			panel.destroy();
