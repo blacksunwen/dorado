@@ -42,7 +42,7 @@ public abstract class AbstractValidator extends ClientEventSupportedObject
 		this.name = name;
 	}
 
-	@ClientProperty(escapeValue = "client")
+	@ClientProperty(ignored = "client")
 	public RunAt getRunAt() {
 		return runAt;
 	}
