@@ -127,8 +127,17 @@
 			 * @type boolean
 			 */
 			resizeable: {
-				defaultValue: true
-			},
+				defaultValue: true,
+                setter: function(value) {
+                    this._resizeable = value;
+                    if (this._dom)
+                        if (this._resizeable) {
+                            $fly(this._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+                        } else {
+                            $fly(this._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+                        }
+                }
+            },
 
 			/**
 			 * 默认为window对象，可以是dorado的组件、dom对象、dom对象的jQuery选择符。
