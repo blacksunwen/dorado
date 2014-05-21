@@ -66,7 +66,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	
 	onClick: function(event) {
 		var radioButton = this;
-        if (event.target == radioButton._dom) return;
+		if (event.target == radioButton._dom) return;
 		if (!radioButton._isReadOnly()) {
 			if (!radioButton._checked) {
 				radioButton._checked = true;
@@ -98,31 +98,31 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 			content: [{
 				tagName: "span",
 				className: "icon",
-                contextKey: "icon"
+				contextKey: "icon"
 			}, {
 				tagName: "span",
 				className: "text",
-                contextKey: "text",
+				contextKey: "text",
 				content: radioButton._text
 			}]
 		}, null, doms);
 
-        radioButton._doms = doms;
+		radioButton._doms = doms;
 
 		$fly([doms.icon, doms.text]).hover(function() {
-            if (!radioButton._isReadOnly())
-                $fly(dom).addClass(radioButton._className + "-hover");
-        }, function() {
-            if (!radioButton._isReadOnly())
-                $fly(dom).removeClass(radioButton._className + "-hover");
+			if (!radioButton._isReadOnly())
+				$fly(dom).addClass(radioButton._className + "-hover");
+		}, function() {
+			if (!radioButton._isReadOnly())
+				$fly(dom).removeClass(radioButton._className + "-hover");
 		}).mousedown(function(event) {
-            if (!radioButton._isReadOnly())
-                $fly(dom).addClass(radioButton._className + "-click");
-            $(document).one("mouseup", function() {
-                if (!radioButton._isReadOnly())
-                    $fly(dom).removeClass(radioButton._className + "-click");
-            });
-        });
+			if (!radioButton._isReadOnly())
+				$fly(dom).addClass(radioButton._className + "-click");
+			$(document).one("mouseup", function() {
+				if (!radioButton._isReadOnly())
+					$fly(dom).removeClass(radioButton._className + "-click");
+			});
+		});
 		
 		return dom;
 	},
@@ -139,7 +139,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
  * @extends dorado.widget.AbstractDataEditor
  */
 dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope dorado.widget.RadioGroup.prototype */ {
-    $className: "dorado.widget.RadioGroup",
+	$className: "dorado.widget.RadioGroup",
 	
 	ATTRIBUTES: /** @scope dorado.widget.RadioGroup.prototype */ {
 		className: {
@@ -350,8 +350,8 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			return;
 		}
 
-        var currentValue = radioGroup._value;
-        radioGroup._value = value;
+		var currentValue = radioGroup._value;
+		radioGroup._value = value;
 
 		var postResult = radioGroup.post();
 		if (postResult == false) {
@@ -437,11 +437,11 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 				
 				if (bindingInfo.propertyDef) {
-                    var oldMapping = group._propertyDefMapping, mapping = bindingInfo.propertyDef._mapping;
+					var oldMapping = group._propertyDefMapping, mapping = bindingInfo.propertyDef._mapping;
 					if ((oldMapping || mapping) && (oldMapping != mapping)) {
 						var radioButtons = [];
 						if (mapping) {
-                            group._propertyDefMapping = mapping;
+							group._propertyDefMapping = mapping;
 							for (var i = 0; i < mapping.length; i++) {
 								var item = mapping[i];
 								radioButtons.push({
@@ -455,7 +455,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 				}
 			}
 			group.setValue(value);
-            group._lastPost = value;
+			group._lastPost = value;
 			group.setDirty(dirty);
 		}
 		
@@ -470,7 +470,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		var group = this, radioButtons = group._radioButtons, layout = group._layout, columnCount = group._columnCount || 3;
 		if (radioButtons) {
 			if (layout == "grid") {
-				var width = group.getRealWidth(), averageWidth = Math.floor(width / columnCount);
+				var width = $fly(group._dom).width(), averageWidth = Math.floor(width / columnCount);
 				for (var i = 0, j = radioButtons.length; i < j; i++) {
 					var radioButton = radioButtons[i];
 					radioButton._width = averageWidth;
