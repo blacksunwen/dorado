@@ -151,14 +151,6 @@
 			onClick: {}
 		},
 
-        constructor: function(config) {
-            $invokeSuper.call(this, arguments);
-
-            if (config) {
-                this.set(config);
-            }
-        },
-
         destroy: function() {
             dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
             var tab = this, dom = tab._dom, doms = tab._doms;
