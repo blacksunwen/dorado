@@ -26,7 +26,12 @@ dorado.widget.FloatPanel = $extend([dorado.widget.Panel, dorado.widget.FloatCont
 			defaultValue: false
 		}
 	},
-	
+
+    doClose: function(){
+        var panel = this;
+        panel.hide && panel.hide();
+    },
+
 	doShow: function() {
 		var panel = this, doms = panel._doms;
 		$fly([doms.contentPanel, doms.buttonPanel]).css("display", "");
