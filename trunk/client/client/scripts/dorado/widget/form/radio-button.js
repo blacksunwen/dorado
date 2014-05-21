@@ -350,6 +350,9 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			return;
 		}
 
+        var currentValue = radioGroup._value;
+        radioGroup._value = value;
+
 		var postResult = radioGroup.post();
 		if (postResult == false) {
 			radioGroup._value = currentValue;
