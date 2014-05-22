@@ -172,8 +172,11 @@
 	function triggerVirtualEvent(eventType, event, flags) {
 		var ve;
 		if ((flags && flags[eventType]) || (!flags && getClosestElementWithVirtualBinding(event.target, eventType))) {
-			//			var mouseEvent = getMouseEvent(event, eventType);
-			//			event.target.dispatchEvent(mouseEvent);
+			var tagName = (event.target && event.target.tagName || "").toLowerCase();
+			if (tagName == "a" || tagName == "input" || tagName == "textarea") {
+				var mouseEvent = getMouseEvent(event, eventType);
+				event.target.dispatchEvent(mouseEvent);
+			}
 
 			ve = createVirtualEvent(event, eventType);
 			$(event.target).trigger(ve);
