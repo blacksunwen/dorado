@@ -180,7 +180,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$invokeSuper.call(this, [configs]);
 
 			if (this._id) {
-				this._identifiedViewElements[id] = this;
+				this._identifiedViewElements[this._id] = this;
 				
 				var oldValue = window[this._id];
 				if (oldValue !== undefined) {
