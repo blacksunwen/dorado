@@ -81,9 +81,7 @@
 					defaultValue: "d-control"
 				},
 
-				exClassName: {
-					writeBeforeReady: true
-				},
+				exClassName: {},
 
 				ui: {
 					defaultValue: "default",
