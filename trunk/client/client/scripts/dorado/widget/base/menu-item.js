@@ -698,13 +698,10 @@
 		onClick: function() {
 			var item = this, parent = item._parent, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
 			if (!disabled) {
-				if (item.hasSubmenu()) {
-					item.fireEvent("onClick", item);
-				} else {
-					item.fireEvent("onClick", item);
-					if (item._hideOnClick) {
-						parent.hideTopMenu();
-					}
+                action.execute && action.execute();
+                item.fireEvent("onClick", item);
+				if (!item.hasSubmenu() && item._hideOnClick) {
+					parent.hideTopMenu();
 				}
 
 				item.set("checked", !item._checked);
