@@ -22,7 +22,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @since 2010-8-9
  */
 @Widget(category = "ToolBar", dependsPackage = "base-widget")
-@ClientObject(prototype = "dorado.widget.toolbar.ToolBarButton", shortTypeName = "Button")
+@ClientObject(prototype = "dorado.widget.toolbar.ToolBarButton", shortTypeName = "ToolBarButton")
 @XmlNode(nodeName = "ToolBarButton", label = "ToolBarButton")
 public class Button extends com.bstek.dorado.view.widget.base.Button {
 	private boolean showMenuOnHover;
