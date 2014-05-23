@@ -65,35 +65,47 @@ public class DefaultSkinResolver implements SkinResolver {
 		} else {
 			skins = DEFAULT_SKIN;
 		}
+
+		String realSkin = null;
 		String[] skinArray = StringUtils.split(skins, ',');
 		for (String skin : skinArray) {
 			SkinSetting skinSetting;
-			String realSkin;
 			if (currentClientType != 0) {
-				realSkin = skin + '.' + ClientType.toString(currentClientType);
+				String tempSkin = skin + '.'
+						+ ClientType.toString(currentClientType);
 
 				skinSetting = skinSettingManager.getSkinSetting(context,
-						realSkin);
+						tempSkin);
 				if (skinSetting != null) {
 					if (ClientType.supports(skinSetting.getClientTypes(),
 							currentClientType)) {
-						return realSkin;
+						realSkin = tempSkin;
+						break;
 					}
 				}
-			} else if (isIE6) {
-				realSkin = skin + ".ie6";
+			}
+
+			if (isIE6) {
+				String tempSkin = skin + ".ie6";
 
 				skinSetting = skinSettingManager.getSkinSetting(context,
-						realSkin);
+						tempSkin);
 				if (skinSetting != null) {
 					if (skinSetting.getUserAgent().indexOf("-ie") < 0) {
-						return realSkin;
+						realSkin = tempSkin;
+						break;
 					}
 				}
 			}
 
 			skinSetting = skinSettingManager.getSkinSetting(context, skin);
 			if (skinSetting != null) {
+				if (currentClientType != 0) {
+					if (!ClientType.supports(skinSetting.getClientTypes(),
+							currentClientType)) {
+						break;
+					}
+				}
 				if (isOldIE) {
 					String skinUserAgent = skinSetting.getUserAgent();
 					int i = skinUserAgent.indexOf("-ie");
@@ -115,11 +127,20 @@ public class DefaultSkinResolver implements SkinResolver {
 						}
 					}
 				}
-				return skin;
+				realSkin = skin;
+				break;
 			}
 		}
 
-		return DEFAULT_SKIN;
+		if (realSkin == null) {
+			realSkin = DEFAULT_SKIN;
+			if (isOldIE) {
+				realSkin += ".ie6";
+			} else if (currentClientType > ClientType.DESKTOP) {
+				realSkin += '.' + ClientType.toString(currentClientType);
+			}
+		}
+		return realSkin;
 	}
 
 	public String determineSkin(DoradoContext context, View view)
