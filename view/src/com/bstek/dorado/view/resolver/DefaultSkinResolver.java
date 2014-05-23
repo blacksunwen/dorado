@@ -92,8 +92,8 @@ public class DefaultSkinResolver implements SkinResolver {
 						tempSkin);
 				if (skinSetting != null) {
 					String skinUserAgent = skinSetting.getUserAgent();
-					if (StringUtils.isNotEmpty(skinUserAgent)
-							&& skinUserAgent.indexOf("-ie") < 0) {
+					if (StringUtils.isEmpty(skinUserAgent)
+							|| skinUserAgent.indexOf("-ie") < 0) {
 						realSkin = tempSkin;
 						break;
 					}
