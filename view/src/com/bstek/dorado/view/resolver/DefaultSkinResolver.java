@@ -91,7 +91,9 @@ public class DefaultSkinResolver implements SkinResolver {
 				skinSetting = skinSettingManager.getSkinSetting(context,
 						tempSkin);
 				if (skinSetting != null) {
-					if (skinSetting.getUserAgent().indexOf("-ie") < 0) {
+					String skinUserAgent = skinSetting.getUserAgent();
+					if (StringUtils.isNotEmpty(skinUserAgent)
+							&& skinUserAgent.indexOf("-ie") < 0) {
 						realSkin = tempSkin;
 						break;
 					}
@@ -108,22 +110,25 @@ public class DefaultSkinResolver implements SkinResolver {
 				}
 				if (isOldIE) {
 					String skinUserAgent = skinSetting.getUserAgent();
-					int i = skinUserAgent.indexOf("-ie");
-					if (i >= 0) {
-						i += 4;
-						String version = "";
-						int len = skinUserAgent.length();
-						while (i < len) {
-							char c = skinUserAgent.charAt(i);
-							if (c >= '0' && c <= '9' || c == '.') {
-								version += c;
-							} else {
-								break;
+					if (StringUtils.isNotEmpty(skinUserAgent)) {
+						int i = skinUserAgent.indexOf("-ie");
+						if (i >= 0) {
+							i += 3;
+							String version = "";
+							int len = skinUserAgent.length();
+							while (i < len) {
+								char c = skinUserAgent.charAt(i);
+								i++;
+								if (c >= '0' && c <= '9' || c == '.') {
+									version += c;
+								} else {
+									break;
+								}
 							}
-						}
 
-						if (ieVersion.compareTo(version) <= 0) {
-							continue;
+							if (ieVersion.compareTo(version) <= 0) {
+								continue;
+							}
 						}
 					}
 				}
