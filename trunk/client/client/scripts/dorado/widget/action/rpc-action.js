@@ -89,6 +89,7 @@
 			var jsonData = {
 				action : "remote-service",
 				service : this._service,
+                supportsEntity : this._supportsEntity,
 				parameter : dorado.JSON.evaluate(this._parameter),
 				sysParameter : this._sysParameter ? this._sysParameter.toJSON() : undefined,
 				context : (this._view ? this._view.get("context") : null)
