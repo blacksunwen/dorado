@@ -444,7 +444,10 @@
 					region.realWidth = region.control.getRealWidth() || 0;
 					region.realHeight = region.control.getRealHeight() || 0;
 				}
-				this.recordMaxRange(region);
+				
+				if (!realignArg) {
+					this.recordMaxRange(region);
+				}
 
 				return realignArg;
 			},
@@ -512,6 +515,8 @@
 					region.bottom = bottom;
 					style.bottom = bottom + "px";
 				}
+				
+				this.recordMaxRange(region);
 			},
 
 			resetControlDimension: function(region, layoutDom, autoWidth, autoHeight) {
