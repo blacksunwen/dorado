@@ -65,9 +65,11 @@ public abstract class ViewElementUtils {
 
 	public static void setParentViewElement(ViewElement element,
 			ViewElement parent) {
-		View view = getParentView(parent);
-		if (view != null) {
-			registerToView(element, view);
+		if (parent != null) {
+			View view = getParentView(parent);
+			if (view != null) {
+				registerToView(element, view);
+			}
 		}
 	}
 }
