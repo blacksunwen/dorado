@@ -29,6 +29,7 @@ import com.bstek.dorado.web.WebConfigure;
 public class DefaultSkinResolver implements SkinResolver {
 	private final static String DEFAULT_SKIN = "default";
 	private final static String MSIE = "MSIE";
+	private final static String CHROME_FRAME = "chromeframe";
 	private final static Pattern MSIE_VERSION_PATTERN = Pattern
 			.compile("^.*?MSIE\\s+(\\d+).*$");
 
@@ -46,14 +47,17 @@ public class DefaultSkinResolver implements SkinResolver {
 		String ieVersion = null;
 		if (currentClientType == 0) {
 			String ua = context.getRequest().getHeader("User-Agent");
-			isIE = (ua != null && ua.indexOf(MSIE) != -1);
-			if (isIE) {
-				ieVersion = MSIE_VERSION_PATTERN.matcher(ua).replaceAll("$1");
-				if (StringUtils.isNotEmpty(ieVersion)) {
-					if ("9".compareTo(ieVersion) > 0) {
-						isOldIE = true;
-						if ("7".compareTo(ieVersion) > 0) {
-							isIE6 = true;
+			if (ua.indexOf(CHROME_FRAME) < 0) {
+				isIE = (ua != null && ua.indexOf(MSIE) != -1);
+				if (isIE) {
+					ieVersion = MSIE_VERSION_PATTERN.matcher(ua).replaceAll(
+							"$1");
+					if (StringUtils.isNotEmpty(ieVersion)) {
+						if ("9".compareTo(ieVersion) > 0) {
+							isOldIE = true;
+							if ("7".compareTo(ieVersion) > 0) {
+								isIE6 = true;
+							}
 						}
 					}
 				}
