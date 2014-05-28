@@ -149,7 +149,11 @@
   -ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
-  background: #ffffff;
+  color: #000000;
+  background-color: #ffffff;
+}
+.d-tree-default .row .node-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tree-default .hover-row {
   background: #c5e8fe;
@@ -161,6 +165,10 @@
 .d-tree-default .current-row {
   color: #ffffff;
   background-color: #15a4fa;
+}
+.d-tree-default .selected-row .node-icon,
+.d-tree-default .current-row .node-icon {
+  color: rgba(255, 255, 255, 0.7);
 }
 .d-tree-default .selected-row .node-button:hover,
 .d-tree-default .current-row .node-button:hover {
