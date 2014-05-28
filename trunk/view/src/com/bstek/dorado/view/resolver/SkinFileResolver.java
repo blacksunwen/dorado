@@ -69,10 +69,10 @@ public class SkinFileResolver extends WebFileResolver {
 							resourcePrefix, originFileName, resourceSuffix);
 				}
 				if (!skin.equals(DEFAULT_SKIN) && !resources[0].exists()) {
-					originFileName = PathUtils
-							.concatPath(DEFAULT_SKIN, subPath);
+					subPath = PathUtils.concatPath(SKIN_URI_PREFIX,
+							DEFAULT_SKIN, subPath);
 					resources = super.getResourcesByFileName(context,
-							resourcePrefix, originFileName, resourceSuffix);
+							resourcePrefix, subPath, resourceSuffix);
 				}
 				return resources;
 			}
