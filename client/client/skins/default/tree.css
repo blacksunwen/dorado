@@ -82,6 +82,9 @@
 .d-tree-default .row td {
   border-bottom: 1px #ffffff solid;
 }
+.d-tree-default .row .node-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tree-default .hover-row {
   background: #e8e8e8;
 }
@@ -93,12 +96,18 @@
   border-bottom-color: #65d17b;
   background: #aaf2b8;
 }
+.d-tree-default .selected-row .node-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tree-default .current-row {
   color: #000000;
 }
 .d-tree-default .current-row td {
   border-bottom-color: #52cb6a;
   background: #94efa6 url(list/current-row.png) repeat-x top;
+}
+.d-tree-default .current-row .node-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tree-default .drag-over-row td {
   border-top-color: #e8e8e8;

@@ -68,6 +68,7 @@
   background-position: -192px 0;
 }
 .d-icon-button-default {
+  color: rgba(0, 0, 0, 0.7);
   background-image: url(base/tool-button-bg.png);
 }
 /* .html-container */

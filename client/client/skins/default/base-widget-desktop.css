@@ -107,15 +107,18 @@
   margin-left: 0;
   margin-right: 6px;
   left: 3px;
+  top: -1px;
+  vertical-align: bottom;
 }
 .d-ie6 .d-button-trigger .button-left {
-  margin-left: 0;
   margin-right: 22px;
-  left: 3px;
 }
 .d-button-default {
   color: #000000;
   background-image: url(base/button-default-bg.png);
+}
+.d-button-default .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-button-default .button-left,
 .d-button-default .button-right {
@@ -125,6 +128,9 @@
   color: #000000;
   background-image: url(base/button-highlight-bg.png);
 }
+.d-button-highlight .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-button-highlight .button-left,
 .d-button-highlight .button-right {
   background-image: url(base/button-highlight-bg.png);
@@ -132,6 +138,9 @@
 .d-button-decline {
   color: #000000;
   background-image: url(base/button-decline-bg.png);
+}
+.d-button-decline .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-button-decline .button-left,
 .d-button-decline .button-right {
@@ -210,15 +219,15 @@
   border-style: solid;
   border-width: 1px 0px 0px 0px;
 }
-.d-menu-icon-top .group-content .menu-item {
+.d-menu-icon-top .group-content .menu-item .menu-item-content {
   background-repeat: repeat-x;
   background-position: 0 0;
   text-align: center;
 }
-.d-menu-icon-top .group-content .menu-item .d-icon {
+.d-menu-icon-top .group-content .menu-item .menu-item-content .d-icon {
   display: inline-block;
 }
-.d-menu-icon-top .group-content .menu-item .caption {
+.d-menu-icon-top .group-content .menu-item .menu-item-content .caption {
   display: block;
   width: auto;
   text-align: center;
@@ -267,6 +276,9 @@
 }
 .d-menu-default .group-content .menu-item {
   color: #000000;
+}
+.d-menu-default .group-content .menu-item .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-menu-default .group-content .menu-item .checked-icon,
 .d-menu-default .group-content .menu-item .unchecked-icon {
@@ -498,6 +510,9 @@
   color: #000000;
   background-image: url(base/tabset-top.png);
 }
+.d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab .tab-left,
 .d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab .tab-right {
   background-image: url(base/tabset-top.png);
@@ -508,8 +523,14 @@
 .d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab-hover {
   color: #000000;
 }
+.d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab-hover .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab-selected {
   color: #000000;
+}
+.d-tabbar-default.d-tabbar-top > .tabs-wrap > .tabs > .tab-selected .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tabbar-default.d-tabbar-top .left-button,
 .d-tabbar-default.d-tabbar-top .right-button,
@@ -523,6 +544,9 @@
   color: #000000;
   background-image: url(base/tabset-bottom.png);
 }
+.d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab .tab-left,
 .d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab .tab-right {
   background-image: url(base/tabset-bottom.png);
@@ -533,8 +557,14 @@
 .d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab-hover {
   color: #000000;
 }
+.d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab-hover .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab-selected {
   color: #000000;
+}
+.d-tabbar-default.d-tabbar-bottom > .tabs-wrap > .tabs > .tab-selected .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tabbar-default.d-tabbar-bottom .left-button,
 .d-tabbar-default.d-tabbar-bottom .right-button,
@@ -782,6 +812,9 @@
   color: #000000;
   background-image: url(base/tabcolumn-left.png);
 }
+.d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .tab-left,
 .d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .tab-right {
   background-image: url(base/tabcolumn-left.png);
@@ -792,8 +825,14 @@
 .d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-hover {
   color: #000000;
 }
+.d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-hover .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-selected {
   color: #000000;
+}
+.d-tabcolumn-default.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-selected .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tabcolumn-default.d-tabcolumn-left .top-button,
 .d-tabcolumn-default.d-tabcolumn-left .bottom-button {
@@ -802,6 +841,9 @@
 .d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab {
   color: #000000;
   background-image: url(base/tabcolumn-right.png);
+}
+.d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .tab-left,
 .d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .tab-right {
@@ -813,34 +855,78 @@
 .d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-hover {
   color: #000000;
 }
+.d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-hover .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-selected {
   color: #000000;
 }
+.d-tabcolumn-default.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-selected .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabcolumn-default.d-tabcolumn-right .top-button,
 .d-tabcolumn-default.d-tabcolumn-right .bottom-button {
-  background-image: url("base/tabcolumn-overflow-buttons.png");
+  background-image: url(base/tabcolumn-overflow-buttons.png);
 }
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab {
+  color: #000000;
   background-image: url(base/tabcolumn-v-left.png);
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .tab-left,
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .tab-right {
   background-image: url(base/tabcolumn-v-left.png);
 }
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab .close {
+  background-image: url(base/tabset-close-button.png);
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-hover {
+  color: #000000;
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-hover .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-selected {
+  color: #000000;
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left > .tabs-wrap > .tabs > .tab-selected .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left .top-button,
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-left .bottom-button {
-  background-image: url("base/tabcolumn-v-overflow-buttons.png");
+  background-image: url(base/tabcolumn-v-overflow-buttons.png);
 }
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab {
+  color: #000000;
   background-image: url(base/tabcolumn-v-right.png);
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .d-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .tab-left,
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .tab-right {
   background-image: url(base/tabcolumn-v-right.png);
 }
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab .close {
+  background-image: url(base/tabset-close-button.png);
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-hover {
+  color: #000000;
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-hover .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-selected {
+  color: #000000;
+}
+.d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right > .tabs-wrap > .tabs > .tab-selected .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right .top-button,
 .d-tabcolumn-default.d-tabcolumn-vtext.d-tabcolumn-right .bottom-button {
-  background-image: url("base/tabcolumn-v-overflow-buttons.png");
+  background-image: url(base/tabcolumn-v-overflow-buttons.png);
 }
 /* caption-bar */
 .d-caption-bar {
@@ -878,6 +964,9 @@
   color: #000000;
   background-color: #ededed;
   background-image: url(base/captionbar-bg.png);
+}
+.d-caption-bar-default .caption-bar-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 /* panel */
 .d-panel {
@@ -1111,10 +1200,16 @@
   background-image: url(base/section-caption-bar-bg.png);
   border: 1px solid #bababa;
 }
+.d-accordion-default .d-section .d-section-caption-bar .caption-bar-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-accordion-default .d-section.current-section .d-section-caption-bar {
   color: #000000;
   background-image: url(base/section-caption-bar-bg.png);
   border: 1px solid #8ac3f1;
+}
+.d-accordion-default .d-section.current-section .d-section-caption-bar .caption-bar-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 /* split-panel */
 .d-split-panel {
@@ -1647,6 +1742,9 @@
   background-image: url(base/dialog-caption-bg.png);
   background-position: 0 0;
 }
+.d-dialog-default .d-dialog-caption-bar .caption-bar-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-dialog-default .d-close-button {
   background: url(base/dialog-buttons.png) no-repeat -180px 0;
   width: 20px;
@@ -1710,6 +1808,9 @@
 .d-dialog-default.d-focused .d-dialog-caption-bar {
   color: #000000;
   background-position: 0 -29px;
+}
+.d-dialog-default.d-focused .d-dialog-caption-bar .caption-bar-icon {
+  color: rgba(0, 0, 0, 0.7);
 }
 .d-ie6 .d-dialog .dialog-header-left,
 .d-ie6 .d-dialog .dialog-header-right,
