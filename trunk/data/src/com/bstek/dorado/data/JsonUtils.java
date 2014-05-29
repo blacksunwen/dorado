@@ -282,7 +282,7 @@ public final class JsonUtils {
 
 			Object value = null;
 			JsonNode jsonNode = field.getValue();
-			if (jsonNode != null) {
+			if (jsonNode != null && !jsonNode.isNull()) {
 				Class<?> type = null;
 				PropertyDef propertyDef = null;
 				DataType propertyDataType = null;
