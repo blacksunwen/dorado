@@ -240,6 +240,21 @@
 				}
 			}
 		},
+		
+		doOnResize: function() {
+			if (dorado.Browser.msie && dorado.Browser.version < 7) {
+				var button = this, dom = button._dom, width = button.getRealWidth();
+				if (dom && width != null) {
+					$fly(dom).width(width);
+					var leftWidth = dom.offsetWidth - button._doms.buttonRight.offsetWidth -
+						parseInt($fly(button._doms.buttonLeft).css("margin-left"), 10);
+					//log.debug("margin-left:" + parseInt($fly(button._doms["buttonLeft"]).css("margin-left"), 10));
+					if (leftWidth > 0) {
+						$fly(button._doms.buttonLeft).outerWidth(leftWidth);
+					}
+				}
+			}
+		},
 
 		onDisabledChange: function() {
 			var button = this, dom = button._dom, cls = button._className;
