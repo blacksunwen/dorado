@@ -44,7 +44,6 @@
 }
 .d-text-box .blank-text {
   font-style: italic;
-  color: #a7a7a7;
 }
 .d-text-box .d-dirty-flag {
   width: 5px;
@@ -73,38 +72,41 @@
 .d-text-box-readonly .d-trigger {
   background-position: -108px 0;
 }
-.d-text-box-default {
+.d-text-box {
   border: 1px #a1a1a1 solid;
   background-color: #ffffff;
   background-image: url(form/text-field-bg.png);
 }
-.d-text-box-default .editor {
+.d-text-box .editor {
   color: #000000;
 }
-.d-text-box-default .d-trigger {
+.d-text-box .blank-text {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+.d-text-box .d-trigger {
   background-image: url(form/dropdown-trigger-bg.png);
 }
-.d-text-box-default.d-text-box-hover {
+.d-text-box.d-text-box-hover {
   border: 1px #616161 solid;
 }
-.d-text-box-default.d-text-box-focused {
+.d-text-box.d-text-box-focused {
   border: 1px #52cb6a solid;
   background-color: #ffffff;
   background-image: url(form/text-field-focus-bg.png);
 }
-.d-text-box-default.d-text-box-warn {
+.d-text-box.d-text-box-warn {
   border: 1px #dbad42 solid;
   background-color: #faefd5;
   background-image: url(form/text-field-warn-bg.png);
   background-position: left bottom;
 }
-.d-text-box-default.d-text-box-error {
+.d-text-box.d-text-box-error {
   border: 1px #fc3737 solid;
   background-color: #fce0e0;
   background-image: url(form/text-field-error-bg.png);
   background-position: left bottom;
 }
-.d-text-box-default.d-text-box-readonly {
+.d-text-box.d-text-box-readonly {
   border: 1px #a1a1a1 solid;
   background: #f8f8f8;
 }

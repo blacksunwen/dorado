@@ -43,7 +43,6 @@
 }
 .d-text-box .blank-text {
   font-style: italic;
-  color: #919191;
 }
 .d-text-box .d-dirty-flag {
   width: 0;
@@ -76,6 +75,9 @@
 .d-text-box > .editor-wrapper > .editor {
   color: #000000;
 }
+.d-text-box > .editor-wrapper > .blank-text {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
 .d-text-box.d-text-box-hover {
   border-color: #15a4fa;
   background-color: #ffffff;
@@ -106,13 +108,16 @@
 .d-text-area {
   height: 26px;
 }
-.d-text-area .textarea {
+.d-text-area > .textarea {
   color: #000000;
   background: transparent;
   border: 0;
   margin: 0;
   padding: 0;
   resize: none;
+}
+.d-text-area > .blank-text {
+  font-style: italic;
 }
 .d-text-area .d-trigger-panel {
   position: absolute;
@@ -123,10 +128,6 @@
 }
 .d-text-area .d-trigger-panel .d-trigger {
   display: block;
-}
-.d-text-area .blank-text {
-  font-style: italic;
-  color: #919191;
 }
 .d-text-area .d-dirty-flag {
   width: 0;
@@ -156,8 +157,11 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-text-area .text-area {
+.d-text-area > .text-area {
   color: #000000;
+}
+.d-text-area > .blank-text {
+  color: rgba(0, 0, 0, 0.5) !important;
 }
 .d-text-area.d-text-area-hover {
   border-color: #15a4fa;
