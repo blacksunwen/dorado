@@ -503,7 +503,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		scope = scope || this;
 
 		// 自动参数注入
-		if (handler.autowire !== false && dorado.widget && dorado.widget.View && scope instanceof dorado.widget.View) {
+		if (handler.autowire !== false) {
 			if (handler.signature === undefined) {
 				var info = dorado.getFunctionInfo(handler.listener);
 				if (!info.signature || info.signature == "self,arg") {
@@ -515,30 +515,47 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			}
 			if (handler.signature) {
 				var customArgs = [];
-				for (var i = 0; i < handler.signature.length; i++) {
-					var param = handler.signature[i];
-					if (param == "self") {
-						customArgs.push(args[0]);
-					}
-					else if (param == "arg") {
-						customArgs.push(args[1]);
-					}
-					else if (param == "view") {
-						customArgs.push(scope);
-					}
-					else {
-						var object = scope.id(param);
-						if (object == null) {
-							object = scope.getDataType(param);
+				if (dorado.widget && dorado.widget.View && scope instanceof dorado.widget.View) {
+					for (var i = 0; i < handler.signature.length; i++) {
+						var param = handler.signature[i];
+						if (param == "self") {
+							customArgs.push(args[0]);
 						}
-						if (!object) {
-							if (i == 0) object = args[0];
-							else if (i == 1) object = args[1];
+						else if (param == "arg") {
+							customArgs.push(args[1]);
 						}
-						customArgs.push(object);
+						else if (param == "view") {
+							customArgs.push(scope);
+						}
+						else {
+							var object = scope.id(param);
+							if (object == null) {
+								object = scope.getDataType(param);
+							}
+							if (!object) {
+								if (i == 0) object = args[0];
+								else if (i == 1) object = args[1];
+							}
+							customArgs.push(object);
+						}
 					}
 				}
-				args = customArgs;
+				else{
+					for (var i = 0; i < handler.signature.length; i++) {
+						var param = handler.signature[i];
+						if (param == "self") {
+							customArgs.push(args[0]);
+						}
+						else if (param == "arg") {
+							customArgs.push(args[1]);
+						}
+						else {
+							customArgs = null;
+							break;
+						}
+					}
+				}
+				if (customArgs) args = customArgs;
 			}
 		}
 
