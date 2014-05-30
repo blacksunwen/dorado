@@ -108,15 +108,15 @@
 .d-text-area {
   height: 26px;
 }
-.d-text-area > .textarea {
+.d-text-area .textarea {
   color: #000000;
   background: transparent;
-  border: 0;
+  border-width: 0;
   margin: 0;
   padding: 0;
   resize: none;
 }
-.d-text-area > .blank-text {
+.d-text-area .blank-text {
   font-style: italic;
 }
 .d-text-area .d-trigger-panel {

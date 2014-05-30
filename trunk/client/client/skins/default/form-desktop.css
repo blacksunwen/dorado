@@ -91,20 +91,20 @@
 .d-text-box-readonly .down-button {
   background-position: -108px bottom;
 }
-.d-text-box-default .slots-container .slot {
+.d-text-box .slots-container .slot {
   background-image: url(form/spinner-slot-bg.png);
 }
-.d-text-box-default .slots-container .slot-selected {
+.d-text-box .slots-container .slot-selected {
   background-color: #15428b;
   background-image: url(form/spinner-selected-slot-bg.gif);
   color: #ffffff;
 }
-.d-text-box-default .d-spinner-trigger .up-button,
-.d-text-box-default .d-spinner-trigger .down-button {
+.d-text-box .d-spinner-trigger .up-button,
+.d-text-box .d-spinner-trigger .down-button {
   background-image: url(form/dropdown-trigger-bg.png);
 }
-.d-text-box-default .d-spinner-trigger .up-button .icon,
-.d-text-box-default .d-spinner-trigger .down-button .icon {
+.d-text-box .d-spinner-trigger .up-button .icon,
+.d-text-box .d-spinner-trigger .down-button .icon {
   background-image: url(form/spinner-trigger.png);
 }
 .d-ie .d-text-box .slots-container .text {
@@ -201,32 +201,32 @@
 .d-year-month-picker .btns-pane .d-button {
   margin: 8px 5px 8px 0;
 }
-.d-year-month-picker-default {
+.d-year-month-picker {
   background: #ffffff url(form/date-picker-bg.png);
 }
-.d-year-month-picker-default .month-table td.hover {
+.d-year-month-picker .month-table td.hover {
   background: url(form/ym-picker-hover-cell.png) no-repeat center center;
 }
-.d-year-month-picker-default .month-table td.selected {
+.d-year-month-picker .month-table td.selected {
   color: #000000;
   background: url(form/ym-picker-current-cell.png) no-repeat center center;
 }
-.d-year-month-picker-default .year-table {
+.d-year-month-picker .year-table {
   border-left: 1px dotted #a1a1a1;
 }
-.d-year-month-picker-default .year-table td.hover {
+.d-year-month-picker .year-table td.hover {
   background: url(form/ym-picker-hover-cell.png) no-repeat center center;
 }
-.d-year-month-picker-default .year-table td.selected {
+.d-year-month-picker .year-table td.selected {
   color: #000000;
   background: url(form/ym-picker-current-cell.png) no-repeat center center;
 }
-.d-year-month-picker-default .year-table .prev-year-button {
+.d-year-month-picker .year-table .prev-year-button {
   background-image: url(form/yearmonth-picker-buttons.png);
   background-repeat: no-repeat;
   background-position: left 0;
 }
-.d-year-month-picker-default .year-table .next-year-button {
+.d-year-month-picker .year-table .next-year-button {
   background-image: url(form/yearmonth-picker-buttons.png);
   background-repeat: no-repeat;
   background-position: right 0;
@@ -337,37 +337,37 @@
   top: 0;
   border: 0;
 }
-.d-date-picker-default .year-month-block {
+.d-date-picker .year-month-block {
   color: #000000;
   background: url(form/date-picker-header-bg.png);
   font-weight: bold;
 }
-.d-date-picker-default .year-month-block .pre-year-button,
-.d-date-picker-default .year-month-block .pre-month-button,
-.d-date-picker-default .year-month-block .next-year-button,
-.d-date-picker-default .year-month-block .next-month-button {
+.d-date-picker .year-month-block .pre-year-button,
+.d-date-picker .year-month-block .pre-month-button,
+.d-date-picker .year-month-block .next-year-button,
+.d-date-picker .year-month-block .next-month-button {
   background-image: url(form/date-picker-buttons.png);
 }
-.d-date-picker-default .date-header {
+.d-date-picker .date-header {
   color: #000000;
   background: url(form/date-picker-date-header-bg.png);
 }
-.d-date-picker-default .date-block .date-table {
+.d-date-picker .date-block .date-table {
   border-color: #a1a1a1;
   background: url(form/date-picker-bg.png);
 }
-.d-date-picker-default .date-block .date-table td.hover {
+.d-date-picker .date-block .date-table td.hover {
   background: url(form/date-picker-hover-cell.png) no-repeat center center;
 }
-.d-date-picker-default .date-block .date-table td.selected-date {
+.d-date-picker .date-block .date-table td.selected-date {
   color: #000000;
   background: url(form/date-picker-current-cell.png) no-repeat center center;
 }
-.d-date-picker-default .date-block .date-table td.pre-month,
-.d-date-picker-default .date-block .date-table td.next-month {
+.d-date-picker .date-block .date-table td.pre-month,
+.d-date-picker .date-block .date-table td.next-month {
   color: #a7a7a7;
   background-color: #ffffff;
 }
-.d-date-picker-default .date-block .date-table td.unselectable {
+.d-date-picker .date-block .date-table td.unselectable {
   color: #a7a7a7;
 }

@@ -12,6 +12,7 @@
 /* label */
 .d-label {
   height: 20px;
+  line-height: 20px;
 }
 /* text-box */
 .d-text-box {
@@ -117,7 +118,7 @@
 }
 .d-text-area .textarea {
   background: transparent;
-  border: 0;
+  border-width: 0;
   margin: 0;
   padding: 0;
   resize: none;
@@ -148,38 +149,38 @@
   z-index: 1;
   background: url(base/dirty-flag.png);
 }
-.d-text-area-default {
+.d-text-area {
   border: 1px #a1a1a1 solid;
   background-color: #ffffff;
   background-image: url(form/text-field-bg.png);
 }
-.d-text-area-default .text-area {
+.d-text-area .text-area {
   color: #000000;
 }
-.d-text-area-default .d-trigger-panel {
+.d-text-area .d-trigger-panel {
   background-image: url(form/text-area-trigger-panel.png);
 }
-.d-text-area-default.d-text-area-hover {
+.d-text-area.d-text-area-hover {
   border: 1px #616161 solid;
 }
-.d-text-area-default.d-text-area-focused {
+.d-text-area.d-text-area-focused {
   border: 1px #52cb6a solid;
   background-color: #ffffff;
   background-image: url(form/text-field-focus-bg.png);
 }
-.d-text-area-default.d-text-area-warn {
+.d-text-area.d-text-area-warn {
   border: 1px #dbad42 solid;
   background-color: #faefd5;
   background-image: url(form/text-field-warn-bg.png);
   background-position: left bottom;
 }
-.d-text-area-default.d-text-area-error {
+.d-text-area.d-text-area-error {
   border: 1px #fc3737 solid;
   background-color: #fce0e0;
   background-image: url(form/text-field-error-bg.png);
   background-position: left bottom;
 }
-.d-text-area-default.d-text-area-readonly {
+.d-text-area.d-text-area-readonly {
   border: 1px #a1a1a1 solid;
   background: #f8f8f8;
 }
@@ -272,7 +273,7 @@
 .d-ie7 .d-checkbox .caption {
   white-space: normal;
 }
-.d-checkbox-default .icon {
+.d-checkbox .icon {
   background-image: url(form/checkbox.png);
 }
 /* radio-group */
@@ -328,7 +329,7 @@
 .d-radiogroup-flow .d-radio {
   float: left;
 }
-.d-radiogroup-default .icon {
+.d-radiogroup .icon {
   background-image: url(form/radiobox.png);
 }
 /* data-message */
@@ -345,16 +346,24 @@
 }
 .d-data-message .d-message .icon-info {
   background-image: url(../../resources/icons/silk/information.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-data-message .d-message .icon-ok {
   background-image: url(../../resources/icons/silk/accept.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-data-message .d-message .icon-warn {
   background-image: url(../../resources/icons/silk/error.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-data-message .d-message .icon-error {
   color: #FF0000;
   background-image: url(../../resources/icons/silk/exclamation.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-data-message .d-message .icon-validating {
   background: url(form/validating.gif) no-repeat;

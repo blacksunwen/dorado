@@ -11,45 +11,73 @@
  */
 .d-debugger-log-clear-icon {
   background-image: url(../../resources/icons/silk/rubber.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-log-lock-icon {
   background-image: url(../../resources/icons/silk/lock.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-log-debug-icon {
   background-image: url(../../resources/icons/silk/bug.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-log-info-icon {
   background-image: url(../../resources/icons/silk/information.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-log-warn-icon {
   background-image: url(../../resources/icons/silk/error.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-log-error-icon {
   background-image: url(../../resources/icons/silk/exclamation.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-script-run-icon {
   background-image: url(../../resources/icons/silk/control-play.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-script-clear-icon {
   background-image: url(../../resources/icons/silk/rubber.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-view-export-icon {
   background-image: url(../../resources/icons/silk/wrench.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-view-refresh-icon {
   background-image: url(../../resources/icons/silk/arrow-refresh.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-view-add-icon {
   background-image: url(../../resources/icons/silk/add.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-view-delete-icon {
   background-image: url(../../resources/icons/silk/delete.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-view-edit-icon {
   background-image: url(../../resources/icons/silk/pencil.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-hotkey-refresh-icon {
   background-image: url(../../resources/icons/silk/arrow-refresh.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-logger {
   overflow: auto;
@@ -72,14 +100,22 @@
   margin-left: 20px;
 }
 .d-debugger-logger .log-debug .icon {
-  background: url(../../resources/icons/silk/bug.png) center no-repeat;
+  background-image: url(../../resources/icons/silk/bug.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-logger .log-info .icon {
-  background: url(../../resources/icons/silk/information.png) center no-repeat;
+  background-image: url(../../resources/icons/silk/information.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-logger .log-warn .icon {
-  background: url(../../resources/icons/silk/error.png) center no-repeat;
+  background-image: url(../../resources/icons/silk/error.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-debugger-logger .log-error .icon {
-  background: url(../../resources/icons/silk/exclamation.png) center no-repeat;
+  background-image: url(../../resources/icons/silk/exclamation.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }

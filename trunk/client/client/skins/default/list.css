@@ -71,42 +71,42 @@
 .d-list-box .preparing-area {
   background: url(list/preparing-area-bg.png);
 }
-.d-list-box-default {
+.d-list-box {
   border: 1px #a1a1a1 solid;
   background-color: #ffffff;
 }
-.d-list-box-default .data-table .row {
+.d-list-box .data-table .row {
   background: #ffffff;
 }
-.d-list-box-default .data-table .hover-row {
+.d-list-box .data-table .hover-row {
   background: #e8e8e8;
 }
-.d-list-box-default .data-table .hover-row td {
+.d-list-box .data-table .hover-row td {
   border-top-color: #e8e8e8;
 }
-.d-list-box-default .data-table .selected-row {
+.d-list-box .data-table .selected-row {
   color: #000000;
   background: #aff3bc;
 }
-.d-list-box-default .data-table .selected-row td {
+.d-list-box .data-table .selected-row td {
   border-top-color: #edfcf0;
   border-bottom-color: #65d17b;
 }
-.d-list-box-default .data-table .current-row {
+.d-list-box .data-table .current-row {
   color: #000000;
   background: #94efa6 url(list/current-row.png) repeat-x top;
 }
-.d-list-box-default .data-table .current-row td {
+.d-list-box .data-table .current-row td {
   border-top-color: #d7f9dd;
   border-bottom-color: #52cb6a;
 }
-.d-list-box-default .data-table .drag-over-row {
+.d-list-box .data-table .drag-over-row {
   background: #e8e8e8;
 }
-.d-list-box-default .data-table .drag-over-row td {
+.d-list-box .data-table .drag-over-row td {
   border-top-color: #e8e8e8;
   border-bottom-color: #e8e8e8;
 }
-.d-list-box-default.d-list-focused {
+.d-list-box.d-list-focused {
   border: 1px #7b7b7b solid;
 }

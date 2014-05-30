@@ -31,39 +31,39 @@
   height: 2px;
   background: #ff8040;
 }
-.d-block-view-default {
+.d-block-view {
   border: 1px #a1a1a1 solid;
   background-color: #ffffff;
 }
-.d-block-view-default .block {
+.d-block-view .block {
   border: 1px #e8e8e8 solid;
 }
-.d-block-view-default .block-hover {
+.d-block-view .block-hover {
   border: 0;
   margin: 1px;
 }
-.d-block-view-default .block-current {
+.d-block-view .block-current {
   border: 0;
   margin: 1px;
   color: #000000;
 }
-.d-block-view-default .block-drag-over {
+.d-block-view .block-drag-over {
   background-color: #ededed;
 }
-.d-block-view-default .block-decorator-hover {
+.d-block-view .block-decorator-hover {
   border: 1px #b5b5b5 solid;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   border-radius: 0px;
   background: #e8e8e8 url(block-view/decorator-bg.png) repeat-x;
 }
-.d-block-view-default .block-decorator-current {
+.d-block-view .block-decorator-current {
   border: 1px #52cb6a solid;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   border-radius: 0px;
   background: #94efa6 url(block-view/decorator-current-bg.png) repeat-x;
 }
-.d-block-view-default.d-block-view-focused {
+.d-block-view.d-block-view-focused {
   border: 1px #7b7b7b solid;
 }

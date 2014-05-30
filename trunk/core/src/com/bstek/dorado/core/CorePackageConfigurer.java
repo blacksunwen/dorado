@@ -28,7 +28,7 @@ public class CorePackageConfigurer extends AbstractPackageConfigurer {
 
 	public String[] getContextConfigLocations(ResourceLoader resourceLoader)
 			throws Exception {
-		if (Configure.getBoolean("console.enabled", true)) {
+		if (Configure.getBoolean("console.enabled", false)) {
 			return new String[] { "classpath:com/bstek/dorado/console/context.xml" };
 		}
 		return null;
@@ -41,7 +41,7 @@ public class CorePackageConfigurer extends AbstractPackageConfigurer {
 
 	public String[] getServletContextConfigLocations(
 			ResourceLoader resourceLoader) throws Exception {
-		if (Configure.getBoolean("console.enabled", true)) {
+		if (Configure.getBoolean("console.enabled", false)) {
 			return new String[] { "classpath:com/bstek/dorado/console/servlet-context.xml" };
 		}
 		return null;
