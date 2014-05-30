@@ -25,7 +25,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Sep 30, 2008
  */
-@Widget(name = "HtmlContainer", category = "General", dependsPackage = "base-widget")
+@Widget(name = "HtmlContainer", category = "General", dependsPackage = "widget")
 @ClientObject(prototype = "dorado.widget.HtmlContainer", shortTypeName = "HtmlContainer", outputter = "spring:dorado.htmlContainerOutputter")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
 public class HtmlContainer extends Container {
