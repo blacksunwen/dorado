@@ -503,7 +503,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 		scope = scope || this;
 
 		// 自动参数注入
-		if (handler.autowire !== false) {
+		if (handler.autowire !== false && dorado.widget && dorado.widget.View && scope instanceof dorado.widget.View) {
 			if (handler.signature === undefined) {
 				var info = dorado.getFunctionInfo(handler.listener);
 				if (!info.signature || info.signature == "self,arg") {
@@ -526,7 +526,7 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 					else if (param == "view") {
 						customArgs.push(scope);
 					}
-					else if (dorado.widget && dorado.widget.View && scope instanceof dorado.widget.View) {
+					else {
 						var object = scope.id(param);
 						if (object == null) {
 							object = scope.getDataType(param);
