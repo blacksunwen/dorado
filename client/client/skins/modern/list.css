@@ -82,10 +82,10 @@
 .d-list-box .preparing-area {
   background-color: #efefef;
 }
-.d-list-box-default {
+.d-list-box {
   background-color: #f7f7f7;
 }
-.d-list-box-default .data-table .row {
+.d-list-box .data-table .row {
   background: #ffffff;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
@@ -98,24 +98,24 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-list-box-default .data-table .hover-row {
+.d-list-box .data-table .hover-row {
   background: #c5e8fe;
 }
-.d-list-box-default .data-table .hover-row td {
+.d-list-box .data-table .hover-row td {
   border-top-color: rgba(0, 0, 0, 0);
 }
-.d-list-box-default .data-table .selected-row {
+.d-list-box .data-table .selected-row {
   color: #ffffff;
   background: #33b0fb;
 }
-.d-list-box-default .data-table .current-row {
+.d-list-box .data-table .current-row {
   color: #ffffff;
   background-color: #15a4fa;
 }
-.d-list-box-default .data-table .drag-over-row {
+.d-list-box .data-table .drag-over-row {
   background: #c5e8fe;
 }
-.d-list-box-default .data-table .drag-over-row td {
+.d-list-box .data-table .drag-over-row td {
   border-top-color: rgba(0, 0, 0, 0);
   border-bottom-color: rgba(0, 0, 0, 0);
 }

@@ -159,4 +159,14 @@
 			<bean class="com.bstek.dorado.view.resolver.OldIconsFileResolver" />
 		</property>
 	</bean>
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="30" />
+		<property name="url" value="/dorado/client/resources/icons/silk/*.png" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.IE6PngFileResolver">
+				<property name="baseUri" value="/dorado/client" />
+				<property name="resourcePrefix" value="${view.libraryRoot}" />
+			</bean>
+		</property>
+	</bean>
 </beans>

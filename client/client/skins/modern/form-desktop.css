@@ -71,15 +71,15 @@
 .d-text-box .down-button .icon:before {
   content: "\e601";
 }
-.d-text-box-default .slots-container .slot-selected {
+.d-text-box .slots-container .slot-selected {
   background-color: #328efd;
   background-image: url(form/spinner-selected-slot-bg.gif);
   background-repeat: repeat-x;
   background-position: 0 2px;
   color: #ffffff;
 }
-.d-text-box-default .d-spinner-trigger .up-button .icon,
-.d-text-box-default .d-spinner-trigger .down-button .icon {
+.d-text-box .d-spinner-trigger .up-button .icon,
+.d-text-box .d-spinner-trigger .down-button .icon {
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -ms-transition-duration: 0.3s;
@@ -93,13 +93,13 @@
   color: #000000;
   background-color: rgba(0, 0, 0, 0);
 }
-.d-text-box-default .d-spinner-trigger .up-button .icon:hover,
-.d-text-box-default .d-spinner-trigger .down-button .icon:hover {
+.d-text-box .d-spinner-trigger .up-button .icon:hover,
+.d-text-box .d-spinner-trigger .down-button .icon:hover {
   color: #ffffff;
   background-color: #15a4fa;
 }
-.d-text-box-default .d-spinner-trigger .up-button .icon:active,
-.d-text-box-default .d-spinner-trigger .down-button .icon:active {
+.d-text-box .d-spinner-trigger .up-button .icon:active,
+.d-text-box .d-spinner-trigger .down-button .icon:active {
   -webkit-transition-duration: 0;
   -moz-transition-duration: 0;
   -ms-transition-duration: 0;
@@ -238,11 +238,11 @@
 .d-year-month-picker .btns-pane .d-button {
   margin: 4px 5px 4px 0;
 }
-.d-year-month-picker-default {
+.d-year-month-picker {
   color: #000000;
   background-color: #ffffff;
 }
-.d-year-month-picker-default .year-table {
+.d-year-month-picker .year-table {
   border-left: 1px solid #ededed;
 }
 /* date-picker */
@@ -391,20 +391,20 @@
   top: 0;
   border: 0;
 }
-.d-date-picker-default .year-month-block {
+.d-date-picker .year-month-block {
   background-color: #ffffff;
 }
-.d-date-picker-default .year-month-block .year-month-label {
+.d-date-picker .year-month-block .year-month-label {
   font-size: 110%;
   color: #000000;
   font-weight: bold;
 }
-.d-date-picker-default .date-header {
+.d-date-picker .date-header {
   color: #000000;
   background-color: #ffffff;
   border-bottom: 1px solid rgba(1, 100, 158, 0.5);
 }
-.d-date-picker-default .date-block .date-table td {
+.d-date-picker .date-block .date-table td {
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -ms-transition-duration: 0.3s;
@@ -416,17 +416,17 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-date-picker-default .date-block .date-table td:hover {
+.d-date-picker .date-block .date-table td:hover {
   background-color: #c5e8fe;
 }
-.d-date-picker-default .date-block .date-table td.selected-date {
+.d-date-picker .date-block .date-table td.selected-date {
   color: #ffffff;
   background-color: #15a4fa;
 }
-.d-date-picker-default .date-block .date-table td.pre-month,
-.d-date-picker-default .date-block .date-table td.next-month {
+.d-date-picker .date-block .date-table td.pre-month,
+.d-date-picker .date-block .date-table td.next-month {
   color: #919191;
 }
-.d-date-picker-default .date-block .date-table td.unselectable {
+.d-date-picker .date-block .date-table td.unselectable {
   color: #919191;
 }

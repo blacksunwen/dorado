@@ -103,6 +103,10 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 		var bar = this, min = bar._minValue, max = bar._maxValue, value = bar._value || 0, doms = bar._doms,
 			percent = value / (max - min), showText = bar._showText, pattern = bar._textPattern || "";
 
+		if (percent == 0) {
+			$fly(dom).addClass("d-rendering");
+		}
+		
 		if (percent >= 0 && percent <= 1) {
 			$fly(doms.bar).css("width", percent * 100 + "%");
 		}
@@ -113,5 +117,9 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 		} else {
 			$msg.empty();
         }
+		
+		if (percent == 0) {
+			$fly(dom).removeClass("d-rendering");
+		}
 	}
 });

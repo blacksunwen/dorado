@@ -14,33 +14,29 @@ package com.bstek.dorado.view.resolver;
 
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.web.DoradoContext;
-import com.bstek.dorado.web.resolver.AbstractWebFileResolver;
-import com.bstek.dorado.web.resolver.ResourcesWrapper;
+import com.bstek.dorado.web.resolver.ResourceFileResolver;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2014-2-21
  */
 @Deprecated
-public class OldIconsFileResolver extends AbstractWebFileResolver {
+public class IE6PngFileResolver extends ResourceFileResolver {
 	private static final String MSIE = "MSIE";
 	private final static String CHROME_FRAME = "chromeframe";
 	private final static Pattern MSIE_VERSION_PATTERN = Pattern
 			.compile("^.*?MSIE\\s+(\\d+).*$");
-	private final static String ICON_PATH = "classpath:dorado/resources/icons/silk.deprecated/icons.";
-	private final static String GIF = "gif";
-	private final static String PNG = "png";
+	private final static String PNG24_DIR = "/silk/";
+	private final static String PNG8_DIR = "/silk.deprecated/";
 
-	protected ResourcesWrapper createResourcesWrapper(
-			HttpServletRequest request, DoradoContext context) throws Exception {
-		String resourceType = PNG;
-		String ua = request.getHeader("User-Agent");
+	protected Resource[] getResourcesByFileName(DoradoContext context,
+			String resourcePrefix, String fileName, String resourceSuffix)
+			throws Exception {
+		String ua = context.getRequest().getHeader("User-Agent");
 		if (ua.indexOf(CHROME_FRAME) < 0) {
 			boolean isMSIE = (ua != null && ua.indexOf(MSIE) != -1);
 			if (isMSIE) {
@@ -48,13 +44,11 @@ public class OldIconsFileResolver extends AbstractWebFileResolver {
 						"$1");
 				if (StringUtils.isNotEmpty(version)
 						&& "7".compareTo(version) > 0) {
-					resourceType = GIF;
+					fileName = fileName.replace(PNG24_DIR, PNG8_DIR);
 				}
 			}
 		}
-
-		Resource[] resources = context.getResources(ICON_PATH + resourceType);
-		return new ResourcesWrapper(resources, getResourceTypeManager()
-				.getResourceType(resourceType));
+		return super.getResourcesByFileName(context, resourcePrefix, fileName,
+				resourceSuffix);
 	}
 }

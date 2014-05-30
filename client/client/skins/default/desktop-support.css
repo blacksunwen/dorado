@@ -75,12 +75,16 @@
   filter: alpha(opacity=80);
 }
 .d-dragging-indicator .accept-icon {
-  background: url(../../resources/icons/silk/tick.png) no-repeat center;
+  background-image: url(../../resources/icons/silk/tick.png);
+  background-repeat: no-repeat;
+  background-position: center center;
   opacity: 0.5;
   filter: alpha(opacity=50);
 }
 .d-dragging-indicator .denied-icon {
-  background: url(../../resources/icons/silk/denied.png) no-repeat center;
+  background-image: url(../../resources/icons/silk/denied.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-dragging-indicator .content-container {
   position: absolute;

@@ -61,10 +61,10 @@
   top: 3px;
   margin-right: 4px;
 }
-.d-tree-default {
+.d-tree {
   background-color: #ffffff;
 }
-.d-tree-default .node-button {
+.d-tree .node-button {
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: 16px;
@@ -88,20 +88,20 @@
   transition-property: background-color, border-color, color, box-shadow, transform;
   visibility: hidden;
 }
-.d-tree-default .node-button:before {
+.d-tree .node-button:before {
   content: "\e603";
 }
-.d-tree-default .node-button:hover {
+.d-tree .node-button:hover {
   border-color: rgba(0, 0, 0, 0.5);
 }
-.d-tree-default .node-button:active {
+.d-tree .node-button:active {
   border-color: #000000;
   background: rgba(0, 0, 0, 0.1);
 }
-.d-tree-default .node-button.expand-button {
+.d-tree .node-button.expand-button {
   visibility: visible;
 }
-.d-tree-default .node-button.collapse-button {
+.d-tree .node-button.collapse-button {
   visibility: visible;
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
@@ -109,7 +109,7 @@
   -o-transform: rotate(90deg);
   transform: rotate(90deg);
 }
-.d-tree-default .node-button.button-expanding {
+.d-tree .node-button.button-expanding {
   border-color: transparent;
   -webkit-transition-duration: 0;
   -moz-transition-duration: 0;
@@ -122,7 +122,7 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-tree-default .node-button.button-expanding > .spinner {
+.d-tree .node-button.button-expanding > .spinner {
   width: 16px;
   height: 16px;
   box-sizing: border-box;
@@ -135,10 +135,10 @@
   -ms-animation: loading-icon 400ms linear infinite;
   -o-animation: loading-icon 400ms linear infinite;
 }
-.d-tree-default .node-button.button-expanding:before {
+.d-tree .node-button.button-expanding:before {
   display: none;
 }
-.d-tree-default .row {
+.d-tree .row {
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
   -ms-transition-duration: 0.3s;
@@ -152,35 +152,35 @@
   color: #000000;
   background-color: #ffffff;
 }
-.d-tree-default .row .node-icon {
+.d-tree .row .node-icon {
   color: rgba(0, 0, 0, 0.7);
 }
-.d-tree-default .hover-row {
+.d-tree .hover-row {
   background: #c5e8fe;
 }
-.d-tree-default .selected-row {
+.d-tree .selected-row {
   color: #ffffff;
   background-color: #2eaefb;
 }
-.d-tree-default .current-row {
+.d-tree .current-row {
   color: #ffffff;
   background-color: #15a4fa;
 }
-.d-tree-default .selected-row .node-icon,
-.d-tree-default .current-row .node-icon {
+.d-tree .selected-row .node-icon,
+.d-tree .current-row .node-icon {
   color: rgba(255, 255, 255, 0.7);
 }
-.d-tree-default .selected-row .node-button:hover,
-.d-tree-default .current-row .node-button:hover {
+.d-tree .selected-row .node-button:hover,
+.d-tree .current-row .node-button:hover {
   border-color: #ffffff;
 }
-.d-tree-default .selected-row .node-button:active,
-.d-tree-default .current-row .node-button:active {
+.d-tree .selected-row .node-button:active,
+.d-tree .current-row .node-button:active {
   border-color: #ffffff;
   background: rgba(0, 0, 0, 0.1);
 }
-.d-tree-default .selected-row .node-button.button-expanding > .spinner,
-.d-tree-default .current-row .node-button.button-expanding > .spinner {
+.d-tree .selected-row .node-button.button-expanding > .spinner,
+.d-tree .current-row .node-button.button-expanding > .spinner {
   width: 16px;
   height: 16px;
   box-sizing: border-box;
@@ -193,6 +193,6 @@
   -ms-animation: loading-icon 400ms linear infinite;
   -o-animation: loading-icon 400ms linear infinite;
 }
-.d-tree-default .drag-over-row {
+.d-tree .drag-over-row {
   background-color: #c5e8fe;
 }

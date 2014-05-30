@@ -37,7 +37,7 @@
   height: 2px;
   background: #ff8040;
 }
-.d-block-view-default .block {
+.d-block-view .block {
   background-color: #f7f7f7;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
@@ -50,16 +50,16 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-block-view-default .block-hover {
+.d-block-view .block-hover {
   border: 0;
   background-color: #c5e8fe;
 }
-.d-block-view-default .block-current {
+.d-block-view .block-current {
   border: 0;
   color: #ffffff;
   background-color: #15a4fa;
 }
-.d-block-view-default .block-drag-over {
+.d-block-view .block-drag-over {
   border: 0;
   background-color: #c5e8fe;
 }

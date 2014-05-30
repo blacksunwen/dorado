@@ -78,15 +78,15 @@
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-.d-tag-editor-default {
+.d-tag-editor {
   border: 1px #bfbfbf solid;
   background-color: #ffffff;
 }
-.d-tag-editor-default .tag-container .tag {
+.d-tag-editor .tag-container .tag {
   background: #15a4fa;
   color: #ffffff;
 }
-.d-tag-editor-default .tag-container .tag .close {
+.d-tag-editor .tag-container .tag .close {
   line-height: 16px;
   text-align: center;
   font-size: 14px;
@@ -107,38 +107,38 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-tag-editor-default .tag-container .tag .close:before {
+.d-tag-editor .tag-container .tag .close:before {
   content: "\e605";
 }
-.d-tag-editor-default .tag-container .tag .close:hover {
+.d-tag-editor .tag-container .tag .close:hover {
   color: #ffffff;
 }
-.d-tag-editor-default .tag-container .tag-error {
+.d-tag-editor .tag-container .tag-error {
   background-color: #ff4a4f;
   color: #ffffff;
   text-decoration: line-through;
 }
-.d-tag-editor-default .tag-container .tag-required {
+.d-tag-editor .tag-container .tag-required {
   background-color: #07c181;
   color: #ffffff;
 }
-.d-tag-editor-default.d-tag-editor-hover {
+.d-tag-editor.d-tag-editor-hover {
   border-color: #15a4fa;
   background-color: #ffffff;
 }
-.d-tag-editor-default.d-tag-editor-focused {
+.d-tag-editor.d-tag-editor-focused {
   border-color: #15a4fa;
   background-color: #ffffff;
 }
-.d-tag-editor-default.d-tag-editor-warn {
+.d-tag-editor.d-tag-editor-warn {
   border-color: #ecc463;
   background-color: #faefd5;
 }
-.d-tag-editor-default.d-tag-editor-error {
+.d-tag-editor.d-tag-editor-error {
   border-color: #ff6267;
   background-color: #ffe1e2;
 }
-.d-tag-editor-default.d-tag-editor-readonly {
+.d-tag-editor.d-tag-editor-readonly {
   border-color: #bfbfbf;
   background: #efefef;
 }

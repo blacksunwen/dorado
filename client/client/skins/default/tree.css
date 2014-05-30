@@ -75,48 +75,48 @@
   top: 2px;
   margin-right: 4px;
 }
-.d-tree-default {
+.d-tree {
   border: 1px #a1a1a1 solid;
   background-color: #ffffff;
 }
-.d-tree-default .row td {
+.d-tree .row td {
   border-bottom: 1px #ffffff solid;
 }
-.d-tree-default .row .node-icon {
+.d-tree .row .node-icon {
   color: rgba(0, 0, 0, 0.7);
 }
-.d-tree-default .hover-row {
+.d-tree .hover-row {
   background: #e8e8e8;
 }
-.d-tree-default .selected-row {
+.d-tree .selected-row {
   color: #000000;
 }
-.d-tree-default .selected-row td {
+.d-tree .selected-row td {
   border-top-color: #edfcf0;
   border-bottom-color: #65d17b;
   background: #aaf2b8;
 }
-.d-tree-default .selected-row .node-icon {
+.d-tree .selected-row .node-icon {
   color: rgba(0, 0, 0, 0.7);
 }
-.d-tree-default .current-row {
+.d-tree .current-row {
   color: #000000;
 }
-.d-tree-default .current-row td {
+.d-tree .current-row td {
   border-bottom-color: #52cb6a;
   background: #94efa6 url(list/current-row.png) repeat-x top;
 }
-.d-tree-default .current-row .node-icon {
+.d-tree .current-row .node-icon {
   color: rgba(0, 0, 0, 0.7);
 }
-.d-tree-default .drag-over-row td {
+.d-tree .drag-over-row td {
   border-top-color: #e8e8e8;
   border-bottom-color: #e8e8e8;
   background: #e8e8e8;
 }
-.d-tree-default .d-tree-node .node-button {
+.d-tree .d-tree-node .node-button {
   background-image: url(tree/tree-buttons.png);
 }
-.d-tree-default.d-tree-focused {
+.d-tree.d-tree-focused {
   border: 1px #7b7b7b solid;
 }

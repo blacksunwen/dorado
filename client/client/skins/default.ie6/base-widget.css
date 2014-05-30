@@ -67,7 +67,7 @@
 .d-icon-button-trigger-toggled {
   background-position: -192px 0;
 }
-.d-icon-button-default {
+.d-icon-button {
   color: rgba(0, 0, 0, 0.7);
   background-image: url(base/tool-button-bg.png);
 }
@@ -109,7 +109,7 @@
   height: 32px;
   background: url(common/loading.gif) center center no-repeat;
 }
-.d-iframe-default {
+.d-iframe {
   border: 1px solid #a1a1a1;
   background-color: #ffffff;
 }
@@ -185,15 +185,23 @@
 }
 .d-tip .tip-content .error-icon {
   background-image: url(../../resources/icons/silk/exclamation.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-tip .tip-content .info-icon {
   background-image: url(../../resources/icons/silk/information.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-tip .tip-content .warning-icon {
   background-image: url(../../resources/icons/silk/error.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-tip .tip-content .question-icon {
   background-image: url(../../resources/icons/silk/help.png);
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .d-tip .arrow {
   position: absolute;
@@ -233,21 +241,21 @@
 .d-ie6 .d-tip-arrow-bottom .arrow {
   bottom: -24px;
 }
-.d-tip-default {
+.d-tip {
   color: #000000;
   border: 1px solid #d3a608;
   background-color: #fdfcc2;
 }
-.d-tip-default .error-icon,
-.d-tip-default .info-icon,
-.d-tip-default .warning-icon,
-.d-tip-default .question-icon {
+.d-tip .error-icon,
+.d-tip .info-icon,
+.d-tip .warning-icon,
+.d-tip .question-icon {
   line-height: 18px;
 }
-.d-tip-default .close {
+.d-tip .close {
   background-image: url(base/tip-close.png);
 }
-.d-tip-default .arrow {
+.d-tip .arrow {
   background-image: url(base/tip-anchor-sprite.png);
 }
 /* slider */
@@ -343,20 +351,20 @@
   background-repeat: repeat-y;
   background-position: -20px 0;
 }
-.d-slider-default.d-slider-horizontal .slider-start,
-.d-slider-default.d-slider-horizontal .slider-end,
-.d-slider-default.d-slider-horizontal .slider-body {
+.d-slider.d-slider-horizontal .slider-start,
+.d-slider.d-slider-horizontal .slider-end,
+.d-slider.d-slider-horizontal .slider-body {
   background-image: url(base/slider-hori-bg.png);
 }
-.d-slider-default.d-slider-horizontal .slider-thumb {
+.d-slider.d-slider-horizontal .slider-thumb {
   background-image: url(base/slider-hori-thumb.png);
 }
-.d-slider-default.d-slider-vertical .slider-start,
-.d-slider-default.d-slider-vertical .slider-end,
-.d-slider-default.d-slider-vertical .slider-body {
+.d-slider.d-slider-vertical .slider-start,
+.d-slider.d-slider-vertical .slider-end,
+.d-slider.d-slider-vertical .slider-body {
   background-image: url(base/slider-vert-bg.png);
 }
-.d-slider-default.d-slider-vertical .slider-thumb {
+.d-slider.d-slider-vertical .slider-thumb {
   background-image: url(base/slider-vert-thumb.png);
 }
 /* progress-bar */
@@ -388,19 +396,19 @@
   vertical-align: middle;
   text-align: center;
 }
-.d-progress-bar-default {
+.d-progress-bar {
   height: 18px;
   border: 1px #a1a1a1 solid;
   background: url(base/progress-bar.png) repeat-x 0 bottom;
 }
-.d-progress-bar-default .bar {
+.d-progress-bar .bar {
   height: 18px;
   background: url(base/progress-bar.png) repeat-x 0 0 scroll;
 }
-.d-progress-bar-default .msg {
+.d-progress-bar .msg {
   line-height: 18px;
 }
-.d-progress-bar-default .bar-msg {
+.d-progress-bar .bar-msg {
   line-height: 18px;
   color: #000000;
 }
