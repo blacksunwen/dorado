@@ -104,6 +104,7 @@
 				<file name="control.js" />
 				<file name="float-control.js" />
 				<file name="container.js" />
+				<file name="html-container.js" />
 				<file name="view.js" />
 				<file name="controller.js" />
 				<file name="sub-view-holder.js" />
@@ -155,7 +156,6 @@
 				<file name="action/rpc-action.js" />
 				<file name="action/form-action.js" />
 				<file name="action/long-task.js" />
-				<file name="base/html-container.js" />
 				<file name="base/abstract-button.js" />
 				<file name="base/simple-button.js" />
 				<file name="base/iframe.js" />
