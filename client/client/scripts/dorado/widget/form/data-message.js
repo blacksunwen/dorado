@@ -82,7 +82,11 @@
 				tagName: "DIV",
 				content: [
 					{
-						tagName: "DIV"
+						tagName: "DIV",
+						content: {
+							tagName: "DIV",
+							className: "spinner"
+						}
 					},
 					{
 						tagName: "DIV",

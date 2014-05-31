@@ -200,7 +200,9 @@
 				preferredFormat: colorPicker._preferredFormat,
 				palette: palette,
 				show: function () {
-					$container.bringToFront();
+					setTimeout(function() {
+						$container.bringToFront();;
+					}, 0);
 				},
 				move: function (rudeColor) {
 					colorPicker.onCursorMove(rudeColor.toString(colorPicker._preferredFormat));
