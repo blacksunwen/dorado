@@ -169,4 +169,10 @@
 			</bean>
 		</property>
 	</bean>
+	<bean class="com.bstek.dorado.core.io.LocationTranformerRegister">
+		<property name="protocal" value="font-awesome:" />
+		<property name="transformer">
+			<bean class="com.bstek.dorado.view.resolver.FontAwesomeLocationTransformer" />
+		</property>
+	</bean>
 </beans>

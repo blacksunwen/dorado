@@ -24,6 +24,7 @@ public class ResourcesWrapper {
 	private long lastAccessed;
 	private boolean reloadable;
 	private int httpStatus;
+	private boolean cacheable = true;
 	private Object userData;
 
 	public ResourcesWrapper(Resource[] resources, ResourceType resourceType) {
@@ -89,6 +90,14 @@ public class ResourcesWrapper {
 
 	public int getHttpStatus() {
 		return httpStatus;
+	}
+
+	public boolean isCacheable() {
+		return cacheable;
+	}
+
+	public void setCacheable(boolean cacheable) {
+		this.cacheable = cacheable;
 	}
 
 	public Object getUserData() {

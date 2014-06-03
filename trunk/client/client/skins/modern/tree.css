@@ -46,28 +46,9 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-}
-.d-tree-node .node-icon {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  margin-right: 2px;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-.d-tree-node .d-checkbox-icononly {
-  position: relative;
-  top: 3px;
-  margin-right: 4px;
-}
-.d-tree {
-  background-color: #ffffff;
-}
-.d-tree .node-button {
   box-sizing: border-box;
   border: 1px solid transparent;
-  border-radius: 16px;
+  border-radius: 50%;
   line-height: 14px;
   text-align: center;
   font-size: 14px;
@@ -88,20 +69,20 @@
   transition-property: background-color, border-color, color, box-shadow, transform;
   visibility: hidden;
 }
-.d-tree .node-button:before {
+.d-tree-node .node-button:before {
   content: "\e603";
 }
-.d-tree .node-button:hover {
+.d-tree-node .node-button:hover {
   border-color: rgba(0, 0, 0, 0.5);
 }
-.d-tree .node-button:active {
+.d-tree-node .node-button:active {
   border-color: #000000;
   background: rgba(0, 0, 0, 0.1);
 }
-.d-tree .node-button.expand-button {
+.d-tree-node .node-button.expand-button {
   visibility: visible;
 }
-.d-tree .node-button.collapse-button {
+.d-tree-node .node-button.collapse-button {
   visibility: visible;
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
@@ -109,7 +90,7 @@
   -o-transform: rotate(90deg);
   transform: rotate(90deg);
 }
-.d-tree .node-button.button-expanding {
+.d-tree-node .node-button.button-expanding {
   border-color: transparent;
   -webkit-transition-duration: 0;
   -moz-transition-duration: 0;
@@ -122,7 +103,7 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-tree .node-button.button-expanding > .spinner {
+.d-tree-node .node-button.button-expanding > .spinner {
   width: 16px;
   height: 16px;
   box-sizing: border-box;
@@ -135,8 +116,25 @@
   -ms-animation: loading-icon 400ms linear infinite;
   -o-animation: loading-icon 400ms linear infinite;
 }
-.d-tree .node-button.button-expanding:before {
+.d-tree-node .node-button.button-expanding:before {
   display: none;
+}
+.d-tree-node .node-icon {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 2px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.d-tree-node .d-checkbox-icononly {
+  position: relative;
+  top: 3px;
+  margin-right: 4px;
+}
+.d-tree {
+  background-color: #ffffff;
 }
 .d-tree .row {
   -webkit-transition-duration: 0.3s;

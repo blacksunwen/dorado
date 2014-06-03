@@ -124,7 +124,6 @@ var _NULL_FUNCTION = function(){};
 	(s = ua.match(/msie ([\d.]+)/)) ? Browser.msie = s[1] : (s = ua.match(/firefox\/([\d.]+)/)) ? Browser.mozilla = s[1] : (s = ua.match(/chrome\/([\d.]+)/)) ? Browser.chrome = s[1] : (s = ua.match(/opera.([\d.]+)/)) ? Browser.opera = s[1] : (s = ua.match(/version\/([\d.]+).*safari/)) ? Browser.safari = s[1] : 0;
 
 	var activeX = ["MSXML2.XMLHTTP.6.0", "MSXML2.XMLHTTP.5.0", "MSXML2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
-	
 	function createXMLHttpRequest() {
 		try {
 			return new XMLHttpRequest();
@@ -138,7 +137,7 @@ var _NULL_FUNCTION = function(){};
 		}
 	}
 	
-	function getContenxtViaAjax(url, callback) {
+	function getContentViaAjax(url, callback) {
 		var xmlHttp = createXMLHttpRequest();
 		if (callback) {
 			xmlHttp.onReadyStateChange = function() {
@@ -158,7 +157,6 @@ var _NULL_FUNCTION = function(){};
 		else {
 			xmlHttp.open("GET", url, false); 
 			xmlHttp.send(null);
-			xmlHttp.onreadystatechange = _NULL_FUNCTION;
 			if (xmlHttp.status == 200 || xmlHttp.status == 304) {
 				return xmlHttp.responseText;
 			}
@@ -363,7 +361,7 @@ var _NULL_FUNCTION = function(){};
 			element.type = request.contentType;
 			element.charset = request.charset;
 			
-			getContenxtViaAjax(request.url, function(content) {
+			getContentViaAjax(request.url, function(content) {
 				element.text = content;
 				if (callback) callback(content);
 			});
@@ -400,7 +398,7 @@ var _NULL_FUNCTION = function(){};
 			if (request.id) element.id = request.id;
 			element.type = request.contentType;
 			element.charset = request.charset;
-			element.text = getContenxtViaAjax(request.url);
+			element.text = getContentViaAjax(request.url);
 			head.insertBefore(element, head.firstChild);
 		}
 		markRequestLoaded(request);

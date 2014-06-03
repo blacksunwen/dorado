@@ -281,6 +281,7 @@ public class PackageFileResolver extends WebFileResolver {
 		Map<String, Pattern> patterns = packagesConfig.getPatterns();
 		Map<String, Package> packages = packagesConfig.getPackages();
 
+		boolean cacheable = true;
 		String[] pkgNames = packageName.split(",");
 		List<FileInfo> fileInfos = new ArrayList<FileInfo>();
 		for (int i = 0; i < pkgNames.length; i++) {
@@ -311,6 +312,10 @@ public class PackageFileResolver extends WebFileResolver {
 				}
 			}
 
+			if (!pkg.isCacheable()) {
+				cacheable = false;
+			}
+
 			collectFileInfos(context, fileInfos, pkg, resourcePrefix,
 					resourceSuffix);
 		}
@@ -329,8 +334,10 @@ public class PackageFileResolver extends WebFileResolver {
 		resources = new Resource[resourceList.size()];
 		resourceList.toArray(resources);
 
-		return new ResourcesWrapper(resources, getResourceTypeManager()
-				.getResourceType(resourceSuffix));
+		ResourcesWrapper resourcesWrapper = new ResourcesWrapper(resources,
+				getResourceTypeManager().getResourceType(resourceSuffix));
+		resourcesWrapper.setCacheable(cacheable);
+		return resourcesWrapper;
 	}
 
 	private void collectFileInfos(DoradoContext context,

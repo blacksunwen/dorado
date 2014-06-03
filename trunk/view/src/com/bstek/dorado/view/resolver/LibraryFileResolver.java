@@ -152,7 +152,8 @@ public class LibraryFileResolver extends PackageFileResolver {
 			if (StringUtils.isNotEmpty(customSkinPath)) {
 				resources = doGetJavaScriptResources(context, customSkinPath,
 						resourceSuffix,
-						fileName.substring(CURRENT_SKIN_PREFIX.length()), useMinJs);
+						fileName.substring(CURRENT_SKIN_PREFIX.length()),
+						useMinJs);
 			} else {
 				resources = doGetJavaScriptResources(context, resourcePrefix,
 						resourceSuffix, fileName.replace(CURRENT_SKIN, skin),
@@ -204,12 +205,12 @@ public class LibraryFileResolver extends PackageFileResolver {
 	protected Resource[] getStyleSheetResources(DoradoContext context,
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
-		String fileName = fileInfo.getFileName();
-
 		String uri = context.getRequest().getRequestURI();
-		String skin, subUri;
 		int i = uri.indexOf(SKIN_URI_PREFIX);
 		if (i >= 0) {
+			String fileName = fileInfo.getFileName();
+			String skin, subUri;
+
 			subUri = uri.substring(i + SKIN_URI_PREFIX.length());
 			i = subUri.indexOf(PathUtils.PATH_DELIM);
 			if (i > 0) {
@@ -225,9 +226,13 @@ public class LibraryFileResolver extends PackageFileResolver {
 				return doGetStyleSheetResources(context, skin, resourcePrefix,
 						fileName, customSkinPath, subSkinPath, resourceSuffix,
 						useMinCss);
+			} else {
+				return null;
 			}
+		} else {
+			return super.getStyleSheetResources(context, fileInfo,
+					resourcePrefix, resourceSuffix);
 		}
-		return null;
 	}
 
 	private Resource[] doGetStyleSheetResources(DoradoContext context,

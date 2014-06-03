@@ -162,6 +162,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 			DoradoContext context) throws Exception {
 		String cacheKey = getResourceCacheKey(request);
 		ResourcesWrapper resourcesWrapper = null;
+		boolean useResourcesCache = isUseResourcesCache();
 		if (useResourcesCache && cacheKey != null) {
 			resourcesWrapper = resourcesCache.get(cacheKey);
 		}
@@ -191,7 +192,8 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 					}
 				}
 
-				if (useResourcesCache && cacheKey != null) {
+				if (useResourcesCache && cacheKey != null
+						&& resourcesWrapper.isCacheable()) {
 					resourcesCache.put(cacheKey, resourcesWrapper);
 				}
 			} catch (FileNotFoundException e) {

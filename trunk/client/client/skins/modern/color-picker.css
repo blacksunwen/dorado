@@ -78,7 +78,7 @@ License: MIT
   width: 6px;
   left: 50%;
   cursor: pointer;
-  border: 1px solid #353535;
+  border: 1px solid #15a4fa;
   background: white;
   opacity: .8;
 }
@@ -228,7 +228,7 @@ License: MIT
   height: 3px;
   left: -1px;
   right: -1px;
-  border: 1px solid #353535;
+  border: 1px solid #15a4fa;
   background: #fff;
   opacity: .8;
 }
@@ -318,7 +318,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 .sp-container .sp-palette .sp-thumb-el:hover,
 .sp-container .sp-palette .sp-thumb-el.sp-thumb-active {
-  border-color: #353535;
+  border-color: #15a4fa;
 }
 .sp-container .sp-thumb-el {
   position: relative;
@@ -357,7 +357,7 @@ See http://bgrins.github.io/spectrum/themes/ for instructions.
 }
 .sp-container .sp-palette span:hover,
 .sp-container .sp-palette span.sp-thumb-active {
-  border-color: #353535;
+  border-color: #15a4fa;
 }
 .sp-container .sp-palette .sp-thumb-inner {
   background-position: 50% 50%;

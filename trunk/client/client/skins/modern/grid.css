@@ -441,12 +441,37 @@
   border-top-color: rgba(0, 0, 0, 0);
 }
 .d-grid .data-table .selected-row {
-  color: #ffffff;
   background: #3db4fb;
 }
 .d-grid .data-table .current-row {
-  color: #ffffff;
   background-color: #15a4fa;
+}
+.d-grid .data-table .selected-row,
+.d-grid .data-table .current-row {
+  color: #ffffff;
+}
+.d-grid .data-table .selected-row .node-button:hover,
+.d-grid .data-table .current-row .node-button:hover {
+  border-color: #ffffff;
+}
+.d-grid .data-table .selected-row .node-button:active,
+.d-grid .data-table .current-row .node-button:active {
+  border-color: #ffffff;
+  background: rgba(0, 0, 0, 0.1);
+}
+.d-grid .data-table .selected-row .node-button.button-expanding > .spinner,
+.d-grid .data-table .current-row .node-button.button-expanding > .spinner {
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  border-radius: 50%;
+  -webkit-animation: loading-icon 400ms linear infinite;
+  -moz-animation: loading-icon 400ms linear infinite;
+  -ms-animation: loading-icon 400ms linear infinite;
+  -o-animation: loading-icon 400ms linear infinite;
 }
 .d-grid .data-table .drag-over-row {
   background-color: #c5e8fe;
