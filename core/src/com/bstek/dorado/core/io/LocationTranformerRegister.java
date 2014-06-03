@@ -17,8 +17,6 @@ import org.springframework.beans.factory.InitializingBean;
 import com.bstek.dorado.spring.RemovableBean;
 
 /**
- * 
- * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-3-22
  */

@@ -33,6 +33,7 @@ public class Package {
 	private Set<String> dependedBy = new LinkedHashSet<String>();
 	private String baseUri;
 	private boolean mergeRequests = true;
+	private boolean cacheable = true;
 	private int clientType;
 
 	/**
@@ -141,6 +142,14 @@ public class Package {
 
 	public void setMergeRequests(boolean mergeRequests) {
 		this.mergeRequests = mergeRequests;
+	}
+
+	public boolean isCacheable() {
+		return cacheable;
+	}
+
+	public void setCacheable(boolean cacheable) {
+		this.cacheable = cacheable;
 	}
 
 	public int getClientType() {
