@@ -44,6 +44,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
+  background-image: url(tree/tree-buttons.png);
   background-repeat: no-repeat;
 }
 .d-tree-node .node-button.expand-button {
@@ -113,9 +114,6 @@
   border-top-color: #e8e8e8;
   border-bottom-color: #e8e8e8;
   background: #e8e8e8;
-}
-.d-tree .d-tree-node .node-button {
-  background-image: url(tree/tree-buttons.png);
 }
 .d-tree.d-tree-focused {
   border: 1px #7b7b7b solid;
