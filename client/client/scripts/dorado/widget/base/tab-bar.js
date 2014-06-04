@@ -11,8 +11,7 @@
  */
 
 (function() {
-	var TABBAR_CLASS = "d-tabbar", TABS_CLASS = "tabs", TABS_WRAP_CLASS = "tabs-wrap",
-		LEFT_BUTTON_CLASS = "left-button", RIGHT_BUTTON_CLASS = "right-button", MENU_BUTTON_CLASS = "menu-button",
+	var LEFT_BUTTON_CLASS = "left-button", RIGHT_BUTTON_CLASS = "right-button", MENU_BUTTON_CLASS = "menu-button",
 		TOP_BUTTON_CLASS = "top-button", BOTTOM_BUTTON_CLASS = "bottom-button";
 
 	/**
@@ -593,11 +592,11 @@
 				content: [
 					{
 						tagName: "div",
-						className: TABS_WRAP_CLASS,
+						className: "tabs-wrap column-tabs-wrap",
 						contextKey: "tabsWrap",
 						content: {
 							tagName: "ul",
-							className: TABS_CLASS,
+							className: "tabs column-tabs",
 							contextKey: "tabs"
 						}
 					}
@@ -966,7 +965,7 @@
 
 		ATTRIBUTES: /** @scope dorado.widget.TabBar.prototype */ {
 			className: {
-				defaultValue: TABBAR_CLASS
+				defaultValue: "d-tabbar"
 			},
 
 			/**
@@ -1143,11 +1142,11 @@
 				content: [
 					{
 						tagName: "div",
-						className: TABS_WRAP_CLASS,
+						className: "tabs-wrap bar-tabs-wrap",
 						contextKey: "tabsWrap",
 						content: {
 							tagName: "ul",
-							className: TABS_CLASS,
+							className: "tabs bar-tabs",
 							contextKey: "tabs"
 						}
 					}
