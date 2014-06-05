@@ -23,7 +23,6 @@ import java.util.concurrent.Callable;
 public abstract class LongTask implements Callable<Object> {
 	private List<TaskMessageListener> taskMessageListeners;
 	private TaskStateInfo stateInfo = new TaskStateInfo(TaskState.waiting);
-	private boolean continueExecution = true;
 
 	public synchronized void addMessageListener(TaskMessageListener listener) {
 		if (taskMessageListeners == null) {
@@ -60,7 +59,7 @@ public abstract class LongTask implements Callable<Object> {
 		return stateInfo;
 	}
 
-	public void setStateInfo(TaskStateInfo stateInfo) {
+	public synchronized void setStateInfo(TaskStateInfo stateInfo) {
 		this.stateInfo = stateInfo;
 		fireStateChange(stateInfo);
 	}
@@ -69,12 +68,60 @@ public abstract class LongTask implements Callable<Object> {
 		fireLog(log);
 	}
 
-	public boolean shouldContinue() {
-		return continueExecution;
+	public boolean isActive() {
+		TaskState state = stateInfo.getState();
+		return state == TaskState.running || state == TaskState.resuming;
 	}
 
-	public void abort() {
-		setStateInfo(new TaskStateInfo(TaskState.aborting));
-		continueExecution = false;
+	public boolean isAlive() {
+		TaskState state = stateInfo.getState();
+		return state != TaskState.aborting || state == TaskState.aborted
+				|| state != TaskState.terminated || state == TaskState.error;
+	}
+
+	public boolean isAbortRequired() {
+		TaskState state = stateInfo.getState();
+		return state == TaskState.aborting || state == TaskState.aborted;
+	}
+
+	public boolean isSuspendRequired() {
+		TaskState state = stateInfo.getState();
+		return state == TaskState.suspending || state == TaskState.suspended;
+	}
+
+	public final synchronized void abort() {
+		if (isAlive()) {
+			setStateInfo(new TaskStateInfo(TaskState.aborting));
+		} else {
+			throw new IllegalStateException();
+		}
+		doAbort();
+	}
+
+	protected void doAbort() {
+	}
+
+	public final synchronized void suspend() {
+		if (stateInfo.getState() == TaskState.running) {
+			setStateInfo(new TaskStateInfo(TaskState.suspending));
+		} else {
+			throw new IllegalStateException();
+		}
+		doSuspend();
+	}
+
+	protected void doSuspend() {
+	}
+
+	public final synchronized void resume() {
+		if (stateInfo.getState() == TaskState.suspended) {
+			setStateInfo(new TaskStateInfo(TaskState.resuming));
+		} else {
+			throw new IllegalStateException();
+		}
+		doResume();
+	}
+
+	protected void doResume() {
 	}
 }
