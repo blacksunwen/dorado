@@ -138,7 +138,7 @@ public class LongTaskThread extends Thread implements TaskMessageListener {
 		try {
 			task.setStateInfo(new TaskStateInfo(TaskState.running));
 			Object result = task.call();
-			if (task.shouldContinue()) {
+			if (task.isActive()) {
 				TaskStateInfo stateInfo = new TaskStateInfo(
 						TaskState.terminated);
 				stateInfo.setData(result);
@@ -149,15 +149,10 @@ public class LongTaskThread extends Thread implements TaskMessageListener {
 				fireTaskAbort(task);
 			}
 		} catch (Exception e) {
-			if (task.shouldContinue()) {
-				TaskStateInfo stateInfo = new TaskStateInfo(TaskState.error);
-				stateInfo.setData(new ExceptionInfo(e));
-				task.setStateInfo(stateInfo);
-				fireTaskFailure(task, e);
-			} else {
-				task.setStateInfo(new TaskStateInfo(TaskState.aborted));
-				fireTaskAbort(task);
-			}
+			TaskStateInfo stateInfo = new TaskStateInfo(TaskState.error);
+			stateInfo.setData(new ExceptionInfo(e));
+			task.setStateInfo(stateInfo);
+			fireTaskFailure(task, e);
 			logger.error(e, e);
 		}
 	}

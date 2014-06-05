@@ -17,5 +17,5 @@ package com.bstek.dorado.view.task;
  * @since 2014-1-20
  */
 public enum TaskState {
-	waiting, running, suspended, aborting, aborted, error, terminated
+	waiting, running, suspending, suspended, resuming, aborting, aborted, error, terminated
 }

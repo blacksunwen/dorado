@@ -34,6 +34,8 @@ public class SocketLongTaskConnector implements SocketConnectionListener,
 			.getLog(SocketLongTaskConnector.class);
 
 	private static final String QUERY_STATE = "query-state";
+	private static final String SUSPEND = "suspend";
+	private static final String RESUME = "resume";
 	private static final String ABORT = "abort";
 
 	private Socket socket;
@@ -65,7 +67,7 @@ public class SocketLongTaskConnector implements SocketConnectionListener,
 		}
 
 		this.taskThread = taskThread;
-		
+
 		if (taskThread != null) {
 			task = taskThread.getTask();
 			taskThread.addExecutionListener(this);
@@ -112,6 +114,14 @@ public class SocketLongTaskConnector implements SocketConnectionListener,
 			} else if (ABORT.equals(type)) {
 				if (task != null) {
 					task.abort();
+				}
+			} else if (SUSPEND.equals(type)) {
+				if (task != null) {
+					task.suspend();
+				}
+			} else if (RESUME.equals(type)) {
+				if (task != null) {
+					task.resume();
 				}
 			}
 		} catch (Exception e) {
