@@ -31,6 +31,11 @@ public class TaskStateInfo extends AbstractTaskMessage {
 		setText(text);
 	}
 
+	public TaskStateInfo(TaskState state, Object data) {
+		this(state);
+		setData(data);
+	}
+
 	public TaskStateInfo(TaskState state, String text, Object data) {
 		this(state, text);
 		setData(data);

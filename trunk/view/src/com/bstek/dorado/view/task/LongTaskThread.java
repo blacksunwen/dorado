@@ -18,6 +18,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.bstek.dorado.view.socket.Message;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2014-1-26
@@ -82,6 +84,15 @@ public class LongTaskThread extends Thread implements TaskMessageListener {
 		}
 	}
 
+	protected void fireSendMessage(Message message) {
+		if (messageListeners != null) {
+			for (TaskThreadMessageListener listener : messageListeners
+					.toArray(new TaskThreadMessageListener[0])) {
+				listener.onSendMessage(this, message);
+			}
+		}
+	}
+
 	public synchronized void addExecutionListener(
 			TaskThreadExecutionListener listener) {
 		if (executionListeners == null) {
@@ -130,6 +141,10 @@ public class LongTaskThread extends Thread implements TaskMessageListener {
 
 	public void onLogAppend(LongTask task, TaskLog log) {
 		fireTaskLog(log);
+	}
+
+	public void onSendMessage(LongTask task, Message message) {
+		fireSendMessage(message);
 	}
 
 	@Override

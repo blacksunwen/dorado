@@ -17,9 +17,19 @@ package com.bstek.dorado.view.task;
  * @since 2014-1-20
  */
 public class LongTaskDefinition {
+	private String name;
 	private String schedular;
+	private LongTaskScope scope = LongTaskScope.session;
 	private int maxRunning = 0;
 	private int maxWaiting = Integer.MAX_VALUE;
+
+	public LongTaskDefinition(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
 
 	public String getSchedular() {
 		return schedular;
@@ -27,6 +37,14 @@ public class LongTaskDefinition {
 
 	public void setSchedular(String schedular) {
 		this.schedular = schedular;
+	}
+
+	public LongTaskScope getScope() {
+		return scope;
+	}
+
+	public void setScope(LongTaskScope scope) {
+		this.scope = scope;
 	}
 
 	public int getMaxRunning() {

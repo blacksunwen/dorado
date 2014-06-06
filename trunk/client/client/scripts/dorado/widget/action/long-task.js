@@ -16,6 +16,9 @@
 				defaultValue: "daemonTask",
 				writeBeforeReady: true
 			},
+			disableOnActive: {
+				defaultValue: true
+			},
 			stateInfo: {},
 			lastLog: {},
 			active: {
@@ -39,6 +42,8 @@
 			onTaskEnd: {},
 	
 			onStateChange: {},
+			
+			onReceive: {},
 	
 			onLog: {}
 		},
@@ -48,7 +53,7 @@
 			this.connect();
 		},
 	
-		onReceive: function (type, data) {
+		onReceiveAll: function (type, data) {
 			var task = this;
 			if (task._starting) {
 				if (!task._pendingMessages) {
@@ -71,6 +76,12 @@
 						task.onLog(data);
 						break;
 					}
+					default: {
+						task.fireEvent("onReceive", task, {
+							type: type,
+							data: data
+						});
+					}
 				}
 			}
 		},
@@ -78,8 +89,7 @@
 		getStateDisplayInfo: function (stateInfo) {
 			var task = this, text = stateInfo.text;
 			if (!text) {
-				var resKey = stateInfo.state.substring(0, 1).toUpperCase() + stateInfo.state.substring(1);
-				text = (task._caption || $resource("dorado.baseWidget.LongTask")) + " [" + $resource("dorado.baseWidget.LongTask" + resKey) + "]";
+				text = (task._caption || $resource("dorado.baseWidget.LongTask")) + " [" + $resource("dorado.baseWidget.LongTask." + stateInfo.state) + "]";
 			}
 			return {
 				text: text,
@@ -104,7 +114,7 @@
 					break;
 				}
 			}
-			task._sysDisabled = true;
+			if (task._disableOnActive) task._sysDisabled = true;
 			task.notifyBindingObjects();
 			task.fireEvent("onTaskScheduled", task, stateInfo);
 		},
@@ -131,7 +141,7 @@
 			eventArg.processDefault = true;
 			task.fireEvent((success) ? "onSuccess" : "onFailure", task, eventArg);
 	
-			task._sysDisabled = false;
+			if (task._disableOnActive) task._sysDisabled = false;
 			task.notifyBindingObjects();
 			
 			if (!success && !eventArg.processDefault) {
@@ -208,7 +218,7 @@
 				service: "dorado.connectLongTask",
 				parameter: task._taskName,
 				onReceive: function (self, arg) {
-					task.onReceive(arg.type, arg.data);
+					task.onReceiveAll(arg.type, arg.data);
 				}
 			}, function (stateInfo) {
 				if (stateInfo != null) {
@@ -266,7 +276,7 @@
 							delete task._pendingMessages;
 							setTimeout(function() {
 								messages.each(function(message) {
-									task.onReceive(message.type, message.data);
+									task.onReceiveAll(message.type, message.data);
 								});
 							}, 0);
 						}

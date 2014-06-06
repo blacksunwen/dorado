@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import com.bstek.dorado.view.socket.Message;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2014-1-25
@@ -51,6 +53,15 @@ public abstract class LongTask implements Callable<Object> {
 			for (TaskMessageListener listener : taskMessageListeners
 					.toArray(new TaskMessageListener[0])) {
 				listener.onLogAppend(this, log);
+			}
+		}
+	}
+
+	protected void fireSendMessage(Message message) {
+		if (taskMessageListeners != null) {
+			for (TaskMessageListener listener : taskMessageListeners
+					.toArray(new TaskMessageListener[0])) {
+				listener.onSendMessage(this, message);
 			}
 		}
 	}
@@ -123,5 +134,12 @@ public abstract class LongTask implements Callable<Object> {
 	}
 
 	protected void doResume() {
+	}
+
+	protected void onReceive(Message message) {
+	}
+
+	public void send(Message message) {
+
 	}
 }

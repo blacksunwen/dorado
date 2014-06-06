@@ -34,6 +34,7 @@ import com.bstek.dorado.view.annotation.Widget;
 public class LongTask extends Action {
 	private String taskName;
 	private LongTaskAppearence appearence = LongTaskAppearence.daemonTask;
+	private boolean disableOnActive = true;
 
 	@IdeProperty(highlight = 1)
 	public String getTaskName() {
@@ -52,4 +53,14 @@ public class LongTask extends Action {
 	public void setAppearence(LongTaskAppearence appearence) {
 		this.appearence = appearence;
 	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isDisableOnActive() {
+		return disableOnActive;
+	}
+
+	public void setDisableOnActive(boolean disableOnActive) {
+		this.disableOnActive = disableOnActive;
+	}
+
 }

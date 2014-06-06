@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.view.task;
 
+import com.bstek.dorado.view.socket.Message;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2014-1-26
@@ -20,4 +22,6 @@ public interface TaskThreadMessageListener {
 	void onStateChange(LongTaskThread taskThread, TaskStateInfo state);
 
 	void onLogAppend(LongTaskThread taskThread, TaskLog log);
+
+	void onSendMessage(LongTaskThread taskThread, Message message);
 }

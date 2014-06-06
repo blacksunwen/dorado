@@ -123,6 +123,8 @@ public class SocketLongTaskConnector implements SocketConnectionListener,
 				if (task != null) {
 					task.resume();
 				}
+			} else {
+				task.onReceive(message);
 			}
 		} catch (Exception e) {
 			logger.error(e, e);
@@ -153,6 +155,14 @@ public class SocketLongTaskConnector implements SocketConnectionListener,
 		}
 	}
 
+	public void onSendMessage(LongTaskThread taskThread, Message message) {
+		try {
+			socket.send(message);
+		} catch (Exception e) {
+			logger.error(e, e);
+		}
+	}
+
 	protected void removeTaskListeners() {
 		taskThread.removeMessageListener(this);
 		taskThread.removeExecutionListener(this);
@@ -176,4 +186,5 @@ public class SocketLongTaskConnector implements SocketConnectionListener,
 	public boolean isClosed() {
 		return closed;
 	}
+
 }
