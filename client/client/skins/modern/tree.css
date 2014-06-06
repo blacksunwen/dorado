@@ -151,7 +151,7 @@
   background-color: #ffffff;
 }
 .d-tree .row .node-icon {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(0, 0, 0, 0.8);
 }
 .d-tree .hover-row {
   background: #c5e8fe;
@@ -166,7 +166,7 @@
 }
 .d-tree .selected-row .node-icon,
 .d-tree .current-row .node-icon {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
 }
 .d-tree .selected-row .node-button:hover,
 .d-tree .current-row .node-button:hover {
