@@ -580,6 +580,7 @@
 /* tabcolumn */
 .d-tabcolumn {
   position: relative;
+  background-repeat: repeat-y;
 }
 .d-tabcolumn .column-tabs-wrap {
   position: relative;
@@ -814,6 +815,10 @@
 .d-tabcolumn-vtext .column-tabs-wrap .column-tabs .tab-selected .tab-right {
   background-position: 0 bottom;
 }
+.d-tabcolumn.d-tabcolumn-left {
+  background-position: right top;
+  background-image: url(base/tabcolumn-left-baseline.png);
+}
 .d-tabcolumn.d-tabcolumn-left .column-tabs-wrap .column-tabs .tab {
   color: #000000;
   background-image: url(base/tabcolumn-left.png);
@@ -843,6 +848,10 @@
 .d-tabcolumn.d-tabcolumn-left .top-button,
 .d-tabcolumn.d-tabcolumn-left .bottom-button {
   background-image: url(base/tabcolumn-overflow-buttons.png);
+}
+.d-tabcolumn.d-tabcolumn-right {
+  background-position: left top;
+  background-image: url(base/tabcolumn-right-baseline.png);
 }
 .d-tabcolumn.d-tabcolumn-right .column-tabs-wrap .column-tabs .tab {
   color: #000000;
@@ -874,6 +883,10 @@
 .d-tabcolumn.d-tabcolumn-right .bottom-button {
   background-image: url(base/tabcolumn-overflow-buttons.png);
 }
+.d-tabcolumn.d-tabcolumn-vtext.d-tabcolumn-left {
+  background-position: right top;
+  background-image: url(base/tabcolumn-left-baseline.png);
+}
 .d-tabcolumn.d-tabcolumn-vtext.d-tabcolumn-left .column-tabs-wrap .column-tabs .tab {
   color: #000000;
   background-image: url(base/tabcolumn-v-left.png);
@@ -903,6 +916,10 @@
 .d-tabcolumn.d-tabcolumn-vtext.d-tabcolumn-left .top-button,
 .d-tabcolumn.d-tabcolumn-vtext.d-tabcolumn-left .bottom-button {
   background-image: url(base/tabcolumn-v-overflow-buttons.png);
+}
+.d-tabcolumn.d-tabcolumn-vtext.d-tabcolumn-right {
+  background-position: left top;
+  background-image: url(base/tabcolumn-right-baseline.png);
 }
 .d-tabcolumn.d-tabcolumn-vtext.d-tabcolumn-right .column-tabs-wrap .column-tabs .tab {
   color: #000000;
