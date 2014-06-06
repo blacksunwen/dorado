@@ -45,7 +45,8 @@ import com.bstek.dorado.web.DoradoContext;
  * @since 2014-1-26
  */
 public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
-	public static final String LONG_TASK_KEY_PREFIX = LongTask.class.getName() + '.';
+	public static final String LONG_TASK_KEY_PREFIX = DefaultTaskScheduler.class
+			.getName() + '.';
 	public static final String TASK_SCHEDULER_KEY_PREFIX = TaskScheduler.class
 			.getName() + '.';
 	public static final String TASK_CONNECTOR_KEY_PREFIX = SocketLongTaskConnector.class
@@ -101,8 +102,6 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 		private static final long serialVersionUID = 796823157518443055L;
 	}
 
-	private static final LongTaskDefinition DEFAULT_TASK_DEFINITION = new LongTaskDefinition();
-
 	private ExposedServiceManager exposedServiceManager;
 	private LongPollingManager longPollingManager;
 	private Map<String, SocketLongTaskConnector> connectorMap = new ConcurrentHashMap<String, SocketLongTaskConnector>();
@@ -126,15 +125,17 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 					+ taskName + "].");
 		}
 
+		LongTaskDefinition taskDefinition = (LongTaskDefinition) exposedService
+				.getExDefinition();
+		String threadAttributeKey = LONG_TASK_KEY_PREFIX + taskName;
+		String scope = (taskDefinition != null && taskDefinition.getScope() == LongTaskScope.application) ? DoradoContext.APPLICATION
+				: DoradoContext.SESSION;
+
 		TaskStatePacket taskStatePacket = null;
-		String threadAttributeKey = LONG_TASK_KEY_PREFIX
-				+ exposedService.getName();
 		LongTaskThread taskThread = (LongTaskThread) context.getAttribute(
-				DoradoContext.SESSION, threadAttributeKey);
-		if (taskThread != null) {
-			if (taskThread.isAlive()) {
-				taskStatePacket = new TaskStatePacket(taskThread);
-			}
+				scope, threadAttributeKey);
+		if (taskThread != null && taskThread.isAlive()) {
+			taskStatePacket = new TaskStatePacket(taskThread);
 		}
 
 		String socketId = socket.getId();
@@ -149,14 +150,13 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 
 			synchronized (this) {
 				String connectorAttributeKey = TASK_CONNECTOR_KEY_PREFIX
-						+ exposedService.getName();
+						+ taskName;
 				Set<SocketLongTaskConnector> connectors = (Set<SocketLongTaskConnector>) context
-						.getAttribute(DoradoContext.SESSION,
-								connectorAttributeKey);
+						.getAttribute(scope, connectorAttributeKey);
 				if (connectors == null) {
 					connectors = new WeakHashSet<SocketLongTaskConnector>();
-					context.setAttribute(DoradoContext.SESSION,
-							connectorAttributeKey, connectors);
+					context.setAttribute(scope, connectorAttributeKey,
+							connectors);
 				}
 				connectors.add(connector);
 			}
@@ -177,25 +177,6 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 			throw new IllegalArgumentException("Unknown ExposedService ["
 					+ taskName + "].");
 		}
-		LongTaskDefinition taskDefinition = (LongTaskDefinition) exposedService
-				.getExDefinition();
-		if (taskDefinition == null) {
-			taskDefinition = DEFAULT_TASK_DEFINITION;
-		}
-
-		String threadAttributeKey = LONG_TASK_KEY_PREFIX
-				+ exposedService.getName();
-		LongTaskThread taskThread = (LongTaskThread) context.getAttribute(
-				DoradoContext.SESSION, threadAttributeKey);
-		if (taskThread != null) {
-			if (taskThread.getState() == Thread.State.TERMINATED) {
-				context.removeAttribute(DoradoContext.SESSION,
-						threadAttributeKey);
-			} else {
-				throw new IllegalStateException(resourceManager.getString(
-						"dorado.view/errorLongTaskRunning", taskName));
-			}
-		}
 
 		Socket socket = longPollingManager.getSocket(socketId);
 		if (socket == null) {
@@ -203,18 +184,32 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 					+ socketId + "].");
 		}
 
+		String threadAttributeKey = LONG_TASK_KEY_PREFIX + taskName;
+		LongTaskDefinition taskDefinition = (LongTaskDefinition) exposedService
+				.getExDefinition();
+		String scope = (taskDefinition != null && taskDefinition.getScope() == LongTaskScope.application) ? DoradoContext.APPLICATION
+				: DoradoContext.SESSION;
+
+		LongTaskThread currentTaskThread = (LongTaskThread) context
+				.getAttribute(scope, threadAttributeKey);
+		if (currentTaskThread != null) {
+			if (currentTaskThread.getState() == Thread.State.TERMINATED) {
+				currentTaskThread = null;
+				context.removeAttribute(scope, threadAttributeKey);
+			} else {
+				throw new IllegalStateException(resourceManager.getString(
+						"dorado.view/errorLongTaskRunning", taskName));
+			}
+		}
+
 		LongTask task = getLongTask(context, exposedService, realParameter);
 
-		taskThread = new LongTaskThread(task);
+		LongTaskThread taskThread = new LongTaskThread(task);
 		taskThread.setName(taskName);
 
-		context.setAttribute(DoradoContext.SESSION, threadAttributeKey,
-				taskThread);
-
-		String connectorAttributeKey = TASK_CONNECTOR_KEY_PREFIX
-				+ exposedService.getName();
+		String connectorAttributeKey = TASK_CONNECTOR_KEY_PREFIX + taskName;
 		Set<SocketLongTaskConnector> connectors = (Set<SocketLongTaskConnector>) context
-				.getAttribute(DoradoContext.SESSION, connectorAttributeKey);
+				.getAttribute(scope, connectorAttributeKey);
 		if (connectors != null) {
 			Iterator<SocketLongTaskConnector> it = connectors.iterator();
 			while (it.hasNext()) {
@@ -227,8 +222,27 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 			}
 		}
 
-		TaskScheduler scheduler = findTaskSchedular(context, taskName);
+		TaskScheduler scheduler = getTaskScheduler(context, taskName,
+				exposedService);
+		scheduler.queueTask(context, taskThread);
+		context.setAttribute(scope, threadAttributeKey, taskThread);
+	}
+
+	protected synchronized TaskScheduler getTaskScheduler(
+			DoradoContext context, String taskName,
+			ExposedServiceDefintion exposedService)
+			throws ClassNotFoundException, IllegalAccessException,
+			InstantiationException {
+		String schedulerAttributeKey = TASK_SCHEDULER_KEY_PREFIX + taskName;
+		TaskScheduler scheduler = (TaskScheduler) context.getAttribute(
+				DoradoContext.APPLICATION, schedulerAttributeKey);
 		if (scheduler == null) {
+			LongTaskDefinition taskDefinition = (LongTaskDefinition) exposedService
+					.getExDefinition();
+			if (taskDefinition == null) {
+				taskDefinition = new LongTaskDefinition(taskName);
+			}
+
 			String schedularType = taskDefinition.getSchedular();
 			if (StringUtils.isNotEmpty(schedularType)) {
 				scheduler = (TaskScheduler) ClassUtils
@@ -238,19 +252,10 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 			}
 			scheduler.setTaskDefinition(taskDefinition);
 
-			String schedulerAttributeKey = TASK_SCHEDULER_KEY_PREFIX
-					+ exposedService.getName();
 			context.setAttribute(DoradoContext.APPLICATION,
 					schedulerAttributeKey, scheduler);
 		}
-		scheduler.queueTask(taskThread);
-	}
-
-	protected TaskScheduler findTaskSchedular(DoradoContext context,
-			String taskName) {
-		String schedulerAttributeKey = TASK_SCHEDULER_KEY_PREFIX + taskName;
-		return (TaskScheduler) context.getAttribute(DoradoContext.APPLICATION,
-				schedulerAttributeKey);
+		return scheduler;
 	}
 
 	public void onClose(SocketLongTaskConnector connector) {

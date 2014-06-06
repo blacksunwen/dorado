@@ -76,8 +76,9 @@ public class LongTaskAnnotationBeanPostProcessor extends EngineStartupListener
 		if (exposedService != null) {
 			com.bstek.dorado.annotation.TaskScheduler annotation = pendingObject
 					.getAnnotation();
-			LongTaskDefinition def = new LongTaskDefinition();
+			LongTaskDefinition def = new LongTaskDefinition(serviceName);
 			def.setSchedular(annotation.impl());
+			def.setScope(annotation.scope());
 			def.setMaxRunning(annotation.maxRunning());
 			def.setMaxWaiting(annotation.maxWaiting());
 			exposedService.setExDefinition(def);

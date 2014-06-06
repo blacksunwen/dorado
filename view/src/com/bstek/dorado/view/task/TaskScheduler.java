@@ -14,6 +14,8 @@ package com.bstek.dorado.view.task;
 
 import java.util.Set;
 
+import com.bstek.dorado.web.DoradoContext;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2014-1-26
@@ -21,9 +23,9 @@ import java.util.Set;
 public interface TaskScheduler {
 	void setTaskDefinition(LongTaskDefinition taskDefinition);
 
-	void queueTask(LongTaskThread taskThread);
+	void queueTask(DoradoContext context, LongTaskThread taskThread);
 
-	boolean dequeueTask(LongTaskThread taskThread);
+	boolean dequeueTask(DoradoContext context, LongTaskThread taskThread);
 
 	Set<LongTaskThread> getRunningTasks();
 

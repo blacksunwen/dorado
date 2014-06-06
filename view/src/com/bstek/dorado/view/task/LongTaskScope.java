@@ -12,16 +12,10 @@
 
 package com.bstek.dorado.view.task;
 
-import com.bstek.dorado.view.socket.Message;
-
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2014-1-26
+ * @since 2014-6-6
  */
-public interface TaskMessageListener {
-	void onStateChange(LongTask task, TaskStateInfo state);
-
-	void onLogAppend(LongTask task, TaskLog log);
-
-	void onSendMessage(LongTask task, Message message);
+public enum LongTaskScope {
+	session, application
 }
