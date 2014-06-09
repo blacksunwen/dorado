@@ -577,7 +577,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 					currentSection.doRenderControl();
 				}
 				else {
-					urrentSection._control.setActualVisible(true);
+					currentSection._control.setActualVisible(true);
 				}
 			}
 		}
