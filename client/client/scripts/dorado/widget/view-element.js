@@ -285,7 +285,7 @@
 			var component, view;
 			if (typeof value == "string") {
 				if (object.getListenerScope) {
-					view = object.getListenerScope();
+					view = object._prependingView || object.getListenerScope();
 				}
 				else {
 					view = $topView;
@@ -299,12 +299,12 @@
 			}
 			else if (typeof value == "object" && value.$type) {
 				if (object.getListenerScope) {
-					view = object.getListenerScope();
+					view = object._prependingView || object.getListenerScope();
 				}
 				else {
 					view = $topView;
 				}
-				value._prependingView = view;
+				value.$prependingView = view;
 				return dorado.Toolkits.createInstance("widget", value);
 
 			}

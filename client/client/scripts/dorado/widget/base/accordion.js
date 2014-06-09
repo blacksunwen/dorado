@@ -457,11 +457,10 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		} else {
 			sections.insert(section);
 		}
+		accordion.registerInnerControl(section);
 		if (accordion._rendered) {
 			section.render(accordion._dom, refDom);
-			accordion.registerInnerControl(section);
 			accordion.bindAction(section);
-			
 			accordion.refresh();
 		}
 	},
@@ -477,8 +476,8 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				section = sections.get(section);
 			}
 			if (section instanceof dorado.widget.Section) {
+				accordion.unregisterInnerControl(section);
 				if (accordion._rendered) {
-					accordion.unregisterInnerControl(section);
 					section.destroy();
 					
 					if (section == accordion._currentSection) {
@@ -523,20 +522,6 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 		});
 	},
 	
-	createDom: function() {
-		var accordion = this, dom = document.createElement("div"), sections = accordion._sections, section;
-		if (sections) {
-			for (var i = 0, j = sections.size; i < j; i++) {
-				section = sections.get(i);
-				section.render(dom);
-				accordion.registerInnerControl(section);
-				accordion.bindAction(section);
-			}
-		}
-		
-		return dom;
-	},
-	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		
@@ -546,19 +531,18 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 			currentSection = accordion.changeToAvialableSection();
 		}
 		
-		if (currentSection) {
-			$fly(currentSection._dom).addClass("current-section");
-			if (currentSection._control) {
-				currentSection._control.setActualVisible(true);
-			}
-		}
-		
 		var sectionMinHeight, ctHeight, accordionHeight = $fly(dom).height(), visibleCount = accordion.getVisibleSectionCount();
 		
 		if (sections) {
 			var section, control, sectionCt;
 			for (var i = 0, j = sections.size; i < j; i++) {
 				section = sections.get(i);
+
+				if (!section._rendered) {
+					section.render(dom);
+					accordion.bindAction(section);
+				}
+				
 				sectionCt = section._doms.container;
 				
 				if (currentSection != section) {
@@ -584,9 +568,18 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				}
 			}
 		}
+
 		
-		if (currentSection && currentSection._control && !currentSection._control._rendered) {
-			currentSection.doRenderControl();
+		if (currentSection) {
+			$fly(currentSection._dom).addClass("current-section");			
+			if (currentSection._control) {
+				if (!currentSection._control._rendered) {
+					currentSection.doRenderControl();
+				}
+				else {
+					urrentSection._control.setActualVisible(true);
+				}
+			}
 		}
 	},
 	
