@@ -230,9 +230,7 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 
 	protected synchronized TaskScheduler getTaskScheduler(
 			DoradoContext context, String taskName,
-			ExposedServiceDefintion exposedService)
-			throws ClassNotFoundException, IllegalAccessException,
-			InstantiationException {
+			ExposedServiceDefintion exposedService) throws Exception {
 		String schedulerAttributeKey = TASK_SCHEDULER_KEY_PREFIX + taskName;
 		TaskScheduler scheduler = (TaskScheduler) context.getAttribute(
 				DoradoContext.APPLICATION, schedulerAttributeKey);
@@ -243,10 +241,10 @@ public class LongTaskSocketServer implements SocketLongTaskConnectorListener {
 				taskDefinition = new LongTaskDefinition(taskName);
 			}
 
-			String schedularType = taskDefinition.getSchedular();
-			if (StringUtils.isNotEmpty(schedularType)) {
-				scheduler = (TaskScheduler) ClassUtils
-						.getNewInstance(schedularType);
+			String schedularImpl = taskDefinition.getSchedular();
+			if (StringUtils.isNotEmpty(schedularImpl)) {
+				scheduler = (TaskScheduler) BeanFactoryUtils
+						.getBean(schedularImpl);
 			} else {
 				scheduler = new DefaultTaskScheduler();
 			}
