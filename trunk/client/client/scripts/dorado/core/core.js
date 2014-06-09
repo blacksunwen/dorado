@@ -15,27 +15,27 @@
  */
 var dorado = {
 	id: '_' + parseInt(Math.random() * Math.pow(10, 8)),
-	
+
 	_ID_SEED: 0,
 	_TIMESTAMP_SEED: 0,
-	
+
 	_GET_ID: function(obj) {
 		return obj._id;
 	},
-	
+
 	_GET_NAME: function(obj) {
 		return obj._name;
 	},
-	
+
 	_NULL_FUNCTION: function() {
 	},
-	
+
 	_UNSUPPORTED_FUNCTION: function() {
 		return function() {
 			throw new dorado.ResourceException("dorado.core.OperationNotSupported", dorado.getFunctionDescription(arguments.callee));
 		};
 	},
-	
+
 	/**
 	 * @name dorado.Browser
 	 * @class 用于获取当前浏览器信息的静态对象。
@@ -43,11 +43,11 @@ var dorado = {
 	 */
 	Browser: (function() {
 		var browser = {};
-		for (var p in jQuery.browser) {
+		for(var p in jQuery.browser) {
 			if (jQuery.browser.hasOwnProperty(p)) browser[p] = jQuery.browser[p];
 		}
 
-		function detect(ua){
+		function detect(ua) {
 			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/),
 				ipad = ua.match(/(iPad).*OS\s([\d_]+)/), iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
 
@@ -55,11 +55,12 @@ var dorado = {
 				os.android = true;
 				os.version = android[2];
 			}
-			if (iphone) {
+			else if (iphone) {
 				os.ios = true;
 				os.version = iphone[2].replace(/_/g, '.');
 				os.iphone = true;
-			} else if (ipad) {
+			}
+			else if (ipad) {
 				os.ios = true;
 				os.version = ipad[2].replace(/_/g, '.');
 				os.ipad = true;
@@ -70,7 +71,8 @@ var dorado = {
 		var ua = navigator.userAgent, os = detect(ua);
 		if (os.iphone) {
 			browser.isPhone = os.iphone;
-		} else if (os.android) {
+		}
+		else if (os.android) {
 			var screenSize = window.screen.width;
 			if (screenSize > window.screen.height) screenSize = window.screen.height;
 			browser.isPhone = (screenSize / window.devicePixelRatio) < 768;
@@ -82,12 +84,17 @@ var dorado = {
 
 		browser.isTouch = (browser.android || browser.iOS) && !!("ontouchstart" in window || (window["$setting"] && $setting["common.simulateTouch"]));
 		if (browser.chrome) {
-			try { document.createEvent("TouchEvent"); }	 catch(e) { browser.isTouch = false; }
+			try {
+				document.createEvent("TouchEvent");
+			}
+			catch(e) {
+				browser.isTouch = false;
+			}
 		}
 		browser.version = parseInt(browser.version);
 		return browser;
 	})(),
-	
+
 	/**
 	 * @name dorado.Browser.version
 	 * @property
@@ -137,7 +144,7 @@ var dorado = {
 	 * @description 返回是否手持设备中的浏览器。
 	 */
 	// =====
-	
+
 	/**
 	 * 注册一个在Dorado将要初始化之前触发的监听器。
 	 * @param {Function} listener 监听器。
@@ -146,13 +153,13 @@ var dorado = {
 		if (this.beforeInitFired) {
 			throw new dorado.Exception("'beforeInit' already fired.");
 		}
-		
+
 		if (!this.beforeInitListeners) {
 			this.beforeInitListeners = [];
 		}
 		this.beforeInitListeners.push(listener);
 	},
-	
+
 	fireBeforeInit: function() {
 		if (this.beforeInitListeners) {
 			this.beforeInitListeners.each(function(listener) {
@@ -162,7 +169,7 @@ var dorado = {
 		}
 		this.beforeInitFired = true;
 	},
-	
+
 	/**
 	 * 注册一个在Dorado初始化之后触发的监听器。
 	 * @param {Function} listener 监听器。
@@ -171,13 +178,13 @@ var dorado = {
 		if (this.onInitFired) {
 			throw new dorado.Exception("'onInit' already fired.");
 		}
-		
+
 		if (!this.onInitListeners) {
 			this.onInitListeners = [];
 		}
 		this.onInitListeners.push(listener);
 	},
-	
+
 	fireOnInit: function() {
 		if (this.onInitListeners) {
 			this.onInitListeners.each(function(listener) {
@@ -187,18 +194,18 @@ var dorado = {
 		}
 		this.onInitFired = true;
 	},
-	
+
 	afterInit: function(listener) {
 		if (this.afterInitFired) {
 			throw new dorado.Exception("'afterInit' already fired.");
 		}
-		
+
 		if (!this.afterInitListeners) {
 			this.afterInitListeners = [];
 		}
 		this.afterInitListeners.push(listener);
 	},
-	
+
 	fireAfterInit: function() {
 		if (this.afterInitListeners) {
 			this.afterInitListeners.each(function(listener) {
@@ -208,13 +215,13 @@ var dorado = {
 		}
 		this.afterInitFired = true;
 	},
-	
+
 	defaultToString: function(obj) {
 		var s = obj.constructor.className || "[Object]";
 		if (obj.id) s += (" id=" + obj.id);
 		if (obj.name) s += (" name=" + obj.name);
 	},
-	
+
 	/**
 	 * 返回一个方法的描述信息。
 	 * @param {Function} fn 要描述的方法。
@@ -226,16 +233,17 @@ var dorado = {
 			var className;
 			if (fn.declaringClass) className = fn.declaringClass.className;
 			name = (className ? (className + '.') : "function ") +
-			fn.methodName;
-		} else {
+				fn.methodName;
+		}
+		else {
 			var regexpResult = defintion.match(/^function (\w*)/);
 			name = "function " + (regexpResult && regexpResult[1] || "anonymous");
 		}
-		
+
 		var regexpResult = defintion.match(/\((.*)\)/);
 		return name + (regexpResult && regexpResult[0]);
 	},
-	
+
 	/**
 	 * 返回一个方法名称\参数信息。
 	 * @param {Function} fn 要描述的方法。
@@ -244,17 +252,21 @@ var dorado = {
 	getFunctionInfo: function(fn) {
 		var defintion = fn.toString().substring(8), len = defintion.length, name = "", signature = "";
 		var inSignatrue = false;
-		for (var i = 0; i < len; i++) {
+		for(var i = 0; i < len; i++) {
 			var c = defintion.charAt(i);
 			if (c === ' ' || c === '\t' || c === '\n' || c === '\r') {
 				continue;
-			} else if (c === '(') {
+			}
+			else if (c === '(') {
 				inSignatrue = true;
-			} else if (c === ')') {
+			}
+			else if (c === ')') {
 				break;
-			} else if (inSignatrue) {
+			}
+			else if (inSignatrue) {
 				signature += c;
-			} else {
+			}
+			else {
 				name += c;
 			}
 		}
@@ -277,7 +289,7 @@ dorado.Core = {
 	 * @type String
 	 */
 	VERSION: "%version%",
-	
+
 	/**
 	 * 生成一个新的id。
 	 * @return {String} 新生成的id。
@@ -285,7 +297,7 @@ dorado.Core = {
 	newId: function() {
 		return "_uid_" + (++dorado._ID_SEED);
 	},
-	
+
 	/**
 	 * 生成新的时间戳。<br>
 	 * 此处的时间戳事实上只是一个自动递增的整数，并不代表当前的时间。
@@ -294,7 +306,7 @@ dorado.Core = {
 	getTimestamp: function() {
 		return ++dorado._TIMESTAMP_SEED;
 	},
-	
+
 	/**
 	 * 为一个函数指定其调用时的scope，即指定该函数在调用时this对象的指向。
 	 * @param {Object} scope 调用时this对象。
@@ -318,13 +330,14 @@ dorado.Core = {
 			return function() {
 				return fn.apply(scope, arguments);
 			};
-		} else {
+		}
+		else {
 			return function() {
 				return eval("(function(){return(" + fn + ")}).call(scope)");
 			};
 		}
 	},
-	
+
 	/**
 	 * 设定一个延时任务，同时指定该延时任务在调用时的scope。 该方法的功能类似于window.setTimeout。
 	 * @param {Object} scope 调用时this对象。
@@ -348,11 +361,12 @@ dorado.Core = {
 			return window.setTimeout(function() {
 				(dorado.Core.scopify(scope, fn))();
 			}, timeMillis);
-		} else {
+		}
+		else {
 			return setTimeout(dorado.Core.scopify(scope, fn), timeMillis);
 		}
 	},
-	
+
 	/**
 	 * 设定一个定时任务，同时指定该定时任务在调用时的scope。 该方法的功能类似于window.setInterval。
 	 * @param {Object} scope 调用时this对象。
@@ -369,11 +383,12 @@ dorado.Core = {
 			return setInterval(function() {
 				(dorado.Core.scopify(scope, fn))();
 			}, timeMillis);
-		} else {
+		}
+		else {
 			return setInterval(dorado.Core.scopify(scope, fn), timeMillis);
 		}
 	},
-	
+
 	/**
 	 * 克隆一个对象。
 	 * <p>
@@ -385,17 +400,19 @@ dorado.Core = {
 	 * @return {Object} 对象的克隆。
 	 */
 	clone: function(obj, deep) {
-	
+
 		function doClone(obj, deep) {
 			if (obj == null || typeof(obj) != "object") return obj;
 			if (typeof obj.clone == "function") {
 				return obj.clone(deep);
-			} if (obj instanceof Date) {
+			}
+			if (obj instanceof Date) {
 				return new Date(obj.getTime());
-			} else {
+			}
+			else {
 				var constr = obj.constructor;
 				var cloned = new constr();
-				for (var attr in obj) {
+				for(var attr in obj) {
 					if (cloned[attr] === undefined) {
 						var v = obj[attr];
 						if (deep) v = doClone(v, deep);
@@ -405,7 +422,7 @@ dorado.Core = {
 				return cloned;
 			}
 		}
-		
+
 		return doClone(obj, deep);
 	}
 };
@@ -425,7 +442,7 @@ dorado.Core = {
 	window.$create = (dorado.Browser.msie && dorado.Browser.version < 9) ? document.createElement : function(arg) {
 		return document.createElement(arg);
 	};
-	
+
 	/**
 	 * @name $scopify
 	 * @function
@@ -447,7 +464,7 @@ dorado.Core = {
 	 * })(); // should say "hello!"
 	 */
 	window.$scopify = dorado.Core.scopify;
-	
+
 	/**
 	 * @name $setTimeout
 	 * @function
@@ -467,7 +484,7 @@ dorado.Core = {
 	 * }, 1000);
 	 */
 	window.$setTimeout = dorado.Core.setTimeout;
-	
+
 	/**
 	 * @name $setInterval
 	 * @function
@@ -480,5 +497,5 @@ dorado.Core = {
 	 * @see dorado.Core.setInterval
 	 */
 	window.$setInterval = dorado.Core.setInterval;
-	
+
 })();

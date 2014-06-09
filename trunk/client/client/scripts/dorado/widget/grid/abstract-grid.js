@@ -1605,7 +1605,13 @@
 			var columns = this._columnsInfo.dataColumns;
 			if (!columns.length) return;
 
-			var clientWidth = (this._domMode == 0) ? this._dom.clientWidth : this._divScroll.clientWidth;
+			var clientWidth;
+			if (dorado.Browser.msie) {
+				clientWidth = (this._domMode == 0) ? this._dom.offsetWidth : this._divScroll.offsetWidth;
+			}
+			else {
+				clientWidth = (this._domMode == 0) ? this._dom.clientWidth : this._divScroll.clientWidth;
+			}
 			if (!clientWidth) return;
 
 			var totalWidth = 0, column;
@@ -1764,11 +1770,11 @@
 			}
 		},
 
-		onScroll: function (event, arg) {
+		onScroll: function(event, arg) {
 			if (this._currentCellEditor) {
 				if (dorado.Browser.webkit) { // webkit改变scrollLeft不能立即在onScroll事件的计算逻辑中反映出来
 					var self = this;
-					setTimeout(function () {
+					setTimeout(function() {
 						self._currentCellEditor.resize();
 					}, 0);
 				}
@@ -1796,7 +1802,7 @@
 			this._scrollTop = arg.scrollTop;
 		},
 
-		onXScroll: function (arg) {
+		onXScroll: function(arg) {
 			if (this._innerGridWrapper) {
 				var innerGridWrapper = this._innerGridWrapper;
 				var ratio = ((arg.scrollWidth - arg.clientWidth) / (innerGridWrapper.scrollWidth - innerGridWrapper.clientWidth)) || 1;
@@ -1804,13 +1810,14 @@
 			}
 		},
 
-		onYScroll: function (arg) {
+		onYScroll: function(arg) {
 			if (!this._divScroll) return;
 
 			var ratio = arg.scrollTop / (arg.scrollHeight - arg.clientHeight), innerContainer = this._innerGrid._container;
 			if (this._scrollMode == "lazyRender") {
 				innerContainer.scrollTop = Math.round((innerContainer.scrollHeight - innerContainer.clientHeight) * ratio);
-			} else {
+			}
+			else {
 				this._innerGrid.setYScrollPos(ratio);
 			}
 			if (this._domMode == 2) this._fixedInnerGrid._container.scrollTop = innerContainer.scrollTop;
@@ -1821,8 +1828,9 @@
 				innerGrid.doOnYScroll(innerGrid._container);
 				if (this._rowHeightInfos) this.syncroRowHeights(innerGrid._container);
 				this.updateScroller(innerGrid._container);
-			} else if (this._scrollMode == "viewport") {
-				dorado.Toolkits.setDelayedAction(this, "$scrollTimerId", function () {
+			}
+			else if (this._scrollMode == "viewport") {
+				dorado.Toolkits.setDelayedAction(this, "$scrollTimerId", function() {
 					if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll(this._fixedInnerGrid._container);
 					this._innerGrid.doOnYScroll(this._innerGrid._container);
 				}, 300);
@@ -3374,7 +3382,7 @@
 		setFocus: dorado._NULL_FUNCTION,
 		doOnResize: dorado._NULL_FUNCTION,
 
-		onScroll: function (event, arg) {
+		onScroll: function(event, arg) {
 			var grid = this.grid;
 			if (grid._innerGrid == this) {
 				grid.onScroll(event, arg);
@@ -3471,7 +3479,7 @@
 			 */
 		},
 
-		setYScrollPos: function (ratio) {
+		setYScrollPos: function(ratio) {
 			var container = this._container, scrollTop = Math.round((container.scrollHeight - container.clientHeight) * ratio);
 			if (scrollTop != container.scrollTop) {
 				container.scrollTop = scrollTop;

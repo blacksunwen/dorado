@@ -449,14 +449,16 @@
 			var table = this.getDom(), padding = parseInt(this._padding) || 0, colPadding = this._colPadding || 0;
 			var containerWidth = (table.parentNode) ? (jQuery(table.parentNode).width() - padding * 2) : 0;
 			if (!(containerWidth >= 0) || containerWidth > 10000) containerWidth = 0;
-			
-			var adjust = 0;
-			// if (dorado.Browser.webkit) adjust = padding * 2; 较新版的Chrome下似乎不用这么干了
-			
+
 			if (this._stretchWidth || this.dynaColCount > 0) {
-				table.style.width = (containerWidth + adjust - $fly(table).edgeWidth()) + "px";
+				table.style.width = (containerWidth - $fly(table).edgeWidth()) + "px";
 			}
-			table.style.margin = padding + "px";
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				table.style.margin = padding + "px";
+			}
+			else {
+				table.style.padding = padding + "px";
+			}
 			
 			containerWidth -= colPadding * (this._colWidths.length - 1);
 			var self = this, changedCols = [];

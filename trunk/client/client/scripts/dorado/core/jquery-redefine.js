@@ -20,20 +20,21 @@
  * @static
  */
 (function($) {
-	
+
 	var matched, browser;
 
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://api.jquery.com/jQuery.browser
 	// jQuery.uaMatch maintained for back-compat
-	jQuery.uaMatch = function( ua ) {
+	jQuery.uaMatch = function(ua) {
 		ua = ua.toLowerCase();
 
-		var match = /(chrome)[ \/]([\w.]+)/.exec( ua ) ||
-			/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
-			/(msie) ([\w.]+)/.exec( ua ) ||
-			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+		var match = /(chrome)[ \/]([\w.]+)/.exec(ua) ||
+			/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+			/(msie) ([\w.]+)/.exec(ua) ||
+			/(trident).*rv\:([\w.]+)/.exec(ua) ||
+			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
 			[];
 
 		return {
@@ -42,19 +43,23 @@
 		};
 	};
 
-	matched = jQuery.uaMatch( navigator.userAgent );
+	matched = jQuery.uaMatch(navigator.userAgent);
 	browser = {};
 
-	if ( matched.browser ) {
+	if (matched.browser) {
 		browser[ matched.browser ] = true;
 		browser.version = matched.version;
 	}
 
 	// Chrome is Webkit, but Webkit is also Safari.
-	if ( browser.chrome ) {
+	if (browser.chrome) {
 		browser.webkit = true;
-	} else if ( browser.webkit ) {
+	}
+	else if (browser.webkit) {
 		browser.safari = true;
+	}
+	else if (browser.trident) {
+		browser.msie = true;
 	}
 
 	jQuery.browser = browser;
@@ -66,23 +71,27 @@
 	$.prototype.ready = function(fn) {
 		if (jQuery.browser.webkit) {
 			var self = this;
+
 			function waitForReady() {
 				if (document.readyState !== "complete") {
 					setTimeout(waitForReady, 10);
-				} else {
+				}
+				else {
 					superReady.call(self, fn);
 				}
 			}
+
 			waitForReady();
-		} else {
+		}
+		else {
 			superReady.call(this, fn);
 		}
 	};
-	
+
 	var flyableElem = $();
 	flyableElem.length = 1;
 	var flyableArray = $();
-	
+
 	/**
 	 * @name $fly
 	 * @function
@@ -106,17 +115,18 @@
 	$fly = function(elems) {
 		if (elems instanceof Array) {
 			if ((dorado.Browser.mozilla && dorado.Browser.version >= 2) || dorado.Browser.msie) {
-				for (var i = flyableArray.length - 1; i >= 0; i--) {
+				for(var i = flyableArray.length - 1; i >= 0; i--) {
 					delete flyableArray[i];
 				}
 			}
 			Array.prototype.splice.call(flyableArray, 0, flyableArray.length);
 			Array.prototype.push.apply(flyableArray, elems);
 			return flyableArray;
-		} else {
+		}
+		else {
 			flyableElem[0] = elems;
 			return flyableElem;
 		}
 	};
-	
+
 })(jQuery);
