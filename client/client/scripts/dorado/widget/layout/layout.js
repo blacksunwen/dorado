@@ -373,12 +373,12 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 
 		var fn = function() {
 			var container = this._container;
-			var dom = this._dom;
-			var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
+			// var dom = this._dom;
+			// var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
 			if (this.doOnControlSizeChange) this.doOnControlSizeChange(control);
-			if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
-				container.onContentSizeChange();
-			}
+			// if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
+			container.onContentSizeChange();
+			// }
 		}
 
 		if (delay) {
