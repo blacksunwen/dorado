@@ -203,15 +203,17 @@
 					defaultValue: true,
 					setter: function(visible) {
 						if (visible == null) visible = true;
+
 						if (this._visible != visible) {
 							this._visible = visible;
-							this.onActualVisibleChange();
-						}
 
-						if (this._hideMode == "display") {
-							if (this._parent && this._parent._layout) {
-								this._parent._layout.refreshControl(this);
+							if (visible && this._hideMode == "display") {
+								if (this._parent && this._parent._layout) {
+									this._parent._layout.refreshControl(this);
+								}
 							}
+
+							this.onActualVisibleChange();
 						}
 					}
 				},
@@ -308,11 +310,11 @@
 					setter: function(layoutConstraint) {
 						if (this._layoutConstraint != layoutConstraint || this._visible || this._hideMode != "display") {
 							this._layoutConstraint = layoutConstraint;
-							if (this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
-								this.onActualVisibleChange();
-							}
 							if (this._rendered && this._parent && this._parent._layout) {
 								this._parent._layout.refreshControl(this);
+							}
+							if (this._layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT || layoutConstraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+								this.onActualVisibleChange();
 							}
 						}
 					}
@@ -553,8 +555,12 @@
 						dorado.widget.onControlGainedFocus(this.get("focusParent"));
 					}
 					if (this._parent) {
-						if (this._isInnerControl) this._parent.unregisterInnerControl(this);
-						else this._parent.removeChild(this);
+						if (this._isInnerControl) {
+							this._parent.unregisterInnerControl(this);
+						}
+						else {
+							this._parent.removeChild(this);
+						}
 					}
 				}
 
@@ -675,6 +681,7 @@
 					this.refresh();
 				}
 				notifyChildren(this, actualVisible);
+				this.notifySizeChange();
 			},
 
 			refresh: function(delay) {
@@ -1007,11 +1014,16 @@
 				if (replace) {
 					if (!element.parentNode) return;
 					element.parentNode.replaceChild(dom, element);
-				} else {
+				}
+				else {
 					if (!element) element = document.body;
 					if (dom.parentNode != element || (nextChildElement && dom.nextSibling != nextChildElement)) {
-						if (nextChildElement) element.insertBefore(dom, nextChildElement);
-						else element.appendChild(dom);
+						if (nextChildElement) {
+							element.insertBefore(dom, nextChildElement);
+						}
+						else {
+							element.appendChild(dom);
+						}
 					}
 				}
 
@@ -1021,10 +1033,11 @@
 				var attached = false, renderTarget = this._renderTo || this._renderOn;
 				if (!renderTarget && this._parent && this._parent._rendered && this._parent != dorado.widget.View.TOP) {
 					attached = this._parent._attached;
-				} else {
+				}
+				else {
 					var body = dom.ownerDocument.body;
 					var node = dom.parentNode;
-					while (node) {
+					while(node) {
 						if (node == body) {
 							attached = true;
 							break;
@@ -1035,7 +1048,8 @@
 
 				if (attached) {
 					this.onAttachToDocument();
-				} else if (this._attached) {
+				}
+				else if (this._attached) {
 					this.onDetachFromDocument();
 				}
 			},

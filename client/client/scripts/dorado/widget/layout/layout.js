@@ -477,8 +477,25 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 	},
 
 	onRemoveControl: function(control) {
-		if (!this._attached || this._disableRendering) return;
-		var region = this._regions.get(control._uniqueId);
+		if (!this._attached) return;
 		control.unrender();
+	},
+
+	doRefreshRegion: function(region) {
+		var control = region.control, controlDom = control.getDom(), dom = this.getDom();
+		var hidden = (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT), visibilityChanged = false;
+		if (hidden) {
+			if (controlDom.parentNode == dom) {
+				dom.removeChild(controlDom);
+				this.refresh();
+			}
+		}
+		else {
+			var oldWidth = region.realWidth, oldHeight = region.realHeight;
+			var $controlDom = $fly(controlDom);
+			if (controlDom.parentNode != dom || $controlDom.outerWidth() != oldWidth || $controlDom.outerHeight() != oldHeight) {
+				this.refresh();
+			}
+		}
 	}
 });
