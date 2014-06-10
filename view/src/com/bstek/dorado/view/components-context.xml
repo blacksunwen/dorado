@@ -52,12 +52,12 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean parent="dorado.layoutTypeRegister">
 		<property name="type" value="hbox" />
 		<property name="classType" value="com.bstek.dorado.view.widget.layout.HBoxLayout" />
-		<property name="constraintClassType" value="com.bstek.dorado.view.widget.layout.HBoxLayoutConstraintSupport" />
+		<property name="constraintClassType" value="com.bstek.dorado.view.widget.layout.HBoxLayoutConstraint" />
 	</bean>
 	<bean parent="dorado.layoutTypeRegister">
 		<property name="type" value="vbox" />
 		<property name="classType" value="com.bstek.dorado.view.widget.layout.VBoxLayout" />
-		<property name="constraintClassType" value="com.bstek.dorado.view.widget.layout.VBoxLayoutConstraintSupport" />
+		<property name="constraintClassType" value="com.bstek.dorado.view.widget.layout.VBoxLayoutConstraint" />
 	</bean>
 	<bean parent="dorado.layoutTypeRegister">
 		<property name="type" value="form" />

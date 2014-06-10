@@ -16,10 +16,10 @@
 	 * @namespace 表格控件所使用的一些相关类的命名空间。
 	 */
 	dorado.widget.grid = {};
-	
+
 	dorado.widget.grid.ColumnList = $extend(dorado.util.KeyedArray, {
 		$className: "dorado.widget.grid.ColumnList",
-		
+
 		constructor: function(parent) {
 			$invokeSuper.call(this, [dorado._GET_NAME]);
 			this.parent = parent;
@@ -27,33 +27,34 @@
 
 		destroy: function() {
 			var items = this.items;
-			for (var i = 0, len = items.length; i < len; i++) {
+			for(var i = 0, len = items.length; i < len; i++) {
 				items[i].destroy();
 			}
 		},
-		
+
 		updateGridColumnModelTimestamp: function() {
 			var p = this.parent;
-			while (p) {
+			while(p) {
 				if (p instanceof dorado.widget.AbstractGrid) {
-					p._columnModelTimestamp = dorado.Core.getTimestamp();;
+					p._columnModelTimestamp = dorado.Core.getTimestamp();
+					;
 					return;
 				}
 				p = p._parent;
 			}
 		},
-		
+
 		beforeInsert: function(column) {
 			column._parent = this.parent;
 			this.updateGridColumnModelTimestamp();
 		},
-		
+
 		beforeRemove: function(column) {
 			delete column._parent;
 			this.updateGridColumnModelTimestamp();
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表格的列模型。
@@ -62,7 +63,7 @@
 	 * ColumnModel的get方法在{@link dorado.AttributeSupport#get}的基础上做了增强。
 	 * 除了原有的读取属性值的功能之外，此方法还另外提供了下面的用法。
 	 * <ul>
-	 * 	<li>当传入一个以#开头的字符串时，#后面的内容将被识别成列的名称，表示根据名称获取表格列。参考{@link dorado.widget.grid.ColumnModel#getColumn}。</li>
+	 *    <li>当传入一个以#开头的字符串时，#后面的内容将被识别成列的名称，表示根据名称获取表格列。参考{@link dorado.widget.grid.ColumnModel#getColumn}。</li>
 	 * </ul>
 	 * </p>
 	 * @abstract
@@ -70,7 +71,7 @@
 	 */
 	dorado.widget.grid.ColumnModel = $extend(dorado.AttributeSupport, /** @scope dorado.widget.grid.ColumnModel.prototype */ {
 		$className: "dorado.widget.grid.ColumnModel",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.grid.ColumnModel.prototype */ {
 			/**
 			 * 子列集合。
@@ -116,27 +117,28 @@
 			if (c == '#' || c == '&') {
 				var col = attr.substring(1);
 				return this.getColumn(col);
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, [attr]);
 			}
 		},
-		
+
 		/**
 		 * 添加一个表格列。
 		 * <p>
 		 * 此处有三种方式可用于定义表格列：
-		 * 	<ul>
-		 * 	<li>直接传入一个表格列的实例对象。</li>
-		 * 	<li>传入含表格列信息的JSON对象。<br>
+		 *    <ul>
+		 *    <li>直接传入一个表格列的实例对象。</li>
+		 *    <li>传入含表格列信息的JSON对象。<br>
 		 * 此时可以使用子控件类型名称中"dorado.widget.grid"和"Column"之间的部分作为$type的简写。<br>
 		 * 另外，如果没有显式的定义$type，系统也会自动判断具体的列类型。
-		 * 		<ul>
-		 * 		<li>如果JSON对像中包含columns属性的定义，那么该对象将被实例化为{@link dorado.widget.grid.ColumnGroup}。</li>
-		 * 		<li>其他情况下该对象将被实例化为{@link dorado.widget.grid.DataColumn}。</li>
-		 * 		</ul>
-		 * 	</li>
-		 * 	<li>传入一个字符串，系统会将此字符床识别为$type，并依次创建具体的表格列。</li>
-		 * 	</ul>
+		 *        <ul>
+		 *        <li>如果JSON对像中包含columns属性的定义，那么该对象将被实例化为{@link dorado.widget.grid.ColumnGroup}。</li>
+		 *        <li>其他情况下该对象将被实例化为{@link dorado.widget.grid.DataColumn}。</li>
+		 *        </ul>
+		 *    </li>
+		 *    <li>传入一个字符串，系统会将此字符床识别为$type，并依次创建具体的表格列。</li>
+		 *    </ul>
 		 * </p>
 		 * @param {dorado.widget.grid.Column|Object|String} columnConfig 表格列或含表格列信息的JSON对象。
 		 * @param {String} [insertMode] 插入模式。
@@ -149,19 +151,20 @@
 			var column;
 			if (columnConfig instanceof dorado.widget.grid.Column) {
 				column = columnConfig;
-			} else{		
+			}
+			else {
 				if (!columnConfig.name && columnConfig.property) {
 					var name = columnConfig.property;
 					if (this.getColumn(name)) {
 						var j = 2;
-						while (!this.getColumn(name + '_' + j)) {
+						while(!this.getColumn(name + '_' + j)) {
 							j++;
 						}
 						name = name + '_' + j;
 					}
 					columnConfig.name = name;
 				}
-				
+
 				column = dorado.Toolkits.createInstance("gridcolumn", columnConfig, function(type) {
 					if (type) return dorado.util.Common.getClassType("dorado.widget.grid." + type + "Column", true);
 					return (columnConfig.columns && columnConfig.columns.length) ? dorado.widget.grid.ColumnGroup : dorado.widget.grid.DataColumn;
@@ -172,13 +175,13 @@
 			column.set("grid", this._grid);
 			return column;
 		},
-		
+
 		/**
 		 * 通过包含子列信息的JSON对象自动初始化所有子列。
 		 * @param {Object[]} columnConfigs 包含子列信息的JSON对象数组。
 		 */
 		addColumns: function(columnConfigs) {
-			for (var i = 0; i < columnConfigs.length; i++) {
+			for(var i = 0; i < columnConfigs.length; i++) {
 				this.addColumn(columnConfigs[i]);
 			}
 		},
@@ -198,11 +201,11 @@
 		 */
 		removeAllColumns: function() {
 			var columns = this._columns.items;
-			for (var i = columns.length - 1; i >= 0; i--) {
+			for(var i = columns.length - 1; i >= 0; i--) {
 				this.removeColumn(columns[i]);
 			}
 		},
-		
+
 		/**
 		 * 根据名称返回相应的表格列。
 		 * @param {String} name 表格列的名称。
@@ -211,38 +214,38 @@
 		getColumn: function(name) {
 			return this._columns.get(name);
 		},
-		
+
 		/**
 		 * 按照列名寻找表格列（包含组合列中的子列）。
 		 * @param {Object} name 列名。
 		 * @return {dorado.widget.grid.Column[]} 找到的表格列的数组。
 		 */
 		findColumns: function(name) {
-		
+
 			function doFindColumns(column, name, result) {
 				var cols = column._columns.items;
-				for (var i = 0; i < cols.length; i++) {
+				for(var i = 0; i < cols.length; i++) {
 					var col = cols[i];
 					if (col._name == name) result.push(col);
 					if (col instanceof dorado.widget.grid.ColumnGroup) doFindColumns(col, name, result);
 				}
 			}
-			
+
 			var result = [];
 			doFindColumns(this, name, result);
 			return result;
 		},
-		
+
 		getColumnsInfo: function(fixedColumnCount) {
-		
+
 			function getStructure(structure, cols, row) {
 				if (structure.length <= row) {
 					structure.push([]);
 					if (row >= maxRowCount) maxRowCount = row + 1;
 				}
-				
+
 				var cells = structure[row];
-				for (var i = 0; i < cols.length; i++) {
+				for(var i = 0; i < cols.length; i++) {
 					var col = cols[i];
 					if (!col._visible) continue;
 					idMap[col._uniqueId] = col;
@@ -258,7 +261,8 @@
 						getStructure(structure, col._columns.items, row + 1);
 						cell.colSpan = dataColCount - oldDataCellCount;
 						cell.rowSpan = 1;
-					} else {
+					}
+					else {
 						dataColCount++;
 						dataColumnInfos.push(cell);
 					}
@@ -266,13 +270,13 @@
 					cells.push(cell);
 				}
 			}
-			
+
 			function extractStructure(structure, start, end) {
 				var subStruct = [];
 				if (end == undefined) end = Number.MAX_VALUE;
-				for (var i = 0; i < structure.length; i++) {
+				for(var i = 0; i < structure.length; i++) {
 					var row = structure[i], subRow = [];
-					for (var j = 0; j < row.length; j++) {
+					for(var j = 0; j < row.length; j++) {
 						var col = row[j];
 						if (col.topColIndex >= start && col.topColIndex <= end) subRow.push(col);
 					}
@@ -280,42 +284,42 @@
 				}
 				return subStruct;
 			}
-			
+
 			function extractDataColumns(dataColumnInfos, start, end) {
 				var dataCols = [];
 				if (end == undefined) end = Number.MAX_VALUE;
-				for (var i = 0; i < dataColumnInfos.length; i++) {
+				for(var i = 0; i < dataColumnInfos.length; i++) {
 					var col = dataColumnInfos[i];
 					if (col.topColIndex >= start && col.topColIndex <= end) dataCols.push(col.column);
 				}
 				return dataCols;
 			}
-			
+
 			var cols = this._columns.items, topColIndex = 0, dataColCount = 0, maxRowCount = 0;
 			var idMap = {}, fixedColumns, mainColumns = {}, dataColumnInfos = [];
-			
+
 			var tempStruct = [];
 			getStructure(tempStruct, cols, 0);
-			
+
 			fixedColumnCount = fixedColumnCount || 0;
 			if (fixedColumnCount > 0) {
 				fixedColumns = {};
 				fixedColumns.structure = extractStructure(tempStruct, 0, fixedColumnCount - 1);
 				fixedColumns.dataColumns = extractDataColumns(dataColumnInfos, 0, fixedColumnCount - 1);
 			}
-			
+
 			mainColumns.structure = extractStructure(tempStruct, fixedColumnCount);
 			mainColumns.dataColumns = extractDataColumns(dataColumnInfos, fixedColumnCount);
-			
+
 			var allDataColumns = [], propertyPaths = [];
-			for (var i = 0; i < dataColumnInfos.length; i++) {
+			for(var i = 0; i < dataColumnInfos.length; i++) {
 				var col = dataColumnInfos[i], column = col.column;
 				allDataColumns.push(col.column);
 				if (column._property && column._property.indexOf('.') > 0) {
 					propertyPaths.push(column._property);
 				}
 			}
-			
+
 			return {
 				idMap: idMap,
 				fixed: fixedColumns,
@@ -325,14 +329,14 @@
 			};
 		}
 	});
-	
+
 	/**
- 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
- 	 * @class 默认的表格列头渲染器。
- 	 * @extends dorado.Renderer
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @class 默认的表格列头渲染器。
+	 * @extends dorado.Renderer
 	 */
 	dorado.widget.grid.DefaultCellHeaderRenderer = $extend(dorado.Renderer, /** @scope dorado.widget.grid.DefaultCellHeaderRenderer.prototype */{
-		
+
 		/**
 		 * 渲染。
 		 * @param {HTMLElement} dom 表格列头对应的DOM对象。
@@ -344,7 +348,8 @@
 			var column = arg.column, cell = dom.parentNode, label;
 			if (dom.childNodes.length == 1) {
 				label = dom.firstChild;
-			} else {
+			}
+			else {
 				$fly(dom).empty();
 				label = $DomUtils.xCreate({
 					tagName: "LABEL",
@@ -353,10 +358,10 @@
 				dom.appendChild(label);
 			}
 			label.innerText = column.get("caption") || "";
-			
+
 			if (column instanceof dorado.widget.grid.DataColumn) {
 				$fly(label).toggleClass("caption-required", !!column.get("required"));
-				
+
 				var sortState = column.get("sortState"), sortIndicator;
 				if (sortState) {
 					sortIndicator = $DomUtils.xCreate({
@@ -368,9 +373,9 @@
 			}
 		}
 	});
-	
+
 	/**
- 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表格列的抽象类。
 	 * @abstract
 	 * @extends dorado.widget.ViewElement
@@ -378,7 +383,7 @@
 	 */
 	dorado.widget.grid.Column = $extend(dorado.widget.ViewElement, /** @scope dorado.widget.grid.Column.prototype */ {
 		$className: "dorado.widget.grid.Column",
-		
+
 		/**
 		 * @name dorado.widget.grid.Column#id
 		 * @property
@@ -387,16 +392,16 @@
 		 * @type String
 		 */
 		// =====
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.grid.Column.prototype */ {
-		
+
 			/**
 			 * 所属的表格。
 			 * @type dorado.widget.grid.AbstractGrid
 			 * @attribute readOnly
 			 */
 			grid: {},
-			
+
 			/**
 			 * 列名称。
 			 * @type String
@@ -405,7 +410,7 @@
 			name: {
 				writeOnce: true
 			},
-			
+
 			/**
 			 * 列标题。
 			 * @type String
@@ -418,7 +423,7 @@
 					return caption;
 				}
 			},
-			
+
 			/**
 			 * 列头中内容的水平对齐方式。 取值范围如下：
 			 * <ul>
@@ -432,14 +437,14 @@
 			headerAlign: {
 				defaultValue: "center"
 			},
-			
+
 			/**
 			 * 列头的渲染器。
 			 * @type dorado.Renderer
 			 * @attribute
 			 */
 			headerRenderer: {},
-			
+
 			/**
 			 * 是否可见。
 			 * @type boolean
@@ -449,7 +454,7 @@
 			visible: {
 				defaultValue: true
 			},
-			
+
 			/**
 			 * 是否支持选项菜单。
 			 * @type boolean
@@ -461,7 +466,7 @@
 				defaultValue: true
 			}
 		},
-		
+
 		EVENTS: /** @scope dorado.widget.grid.Column.prototype */ {
 			/**
 			 * 当系统渲染列头时触发的事件。
@@ -473,8 +478,8 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onRenderHeaderCell:{},
-			
+			onRenderHeaderCell: {},
+
 			/**
 			 * 当用户点击列头时触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
@@ -484,19 +489,20 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onHeaderClick:{}
+			onHeaderClick: {}
 		},
-		
+
 		constructor: function(config) {
 			$invokeSuper.call(this, [config]);
 			if (!this._name) this._name = this._uniqueId;
 		},
 
-		destroy: function() {},
-		
+		destroy: function() {
+		},
+
 		doSet: function(attr, value) {
 			$invokeSuper.call(this, [attr, value]);
-			
+
 			var grid = this._grid;
 			if (grid && grid._rendered) {
 				var def = this.ATTRIBUTES[attr];
@@ -504,15 +510,15 @@
 			}
 		}
 	});
-	
+
 	/**
- 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 抽象的表格行渲染器。
 	 * @abstract
 	 * @extends dorado.Renderer
 	 */
 	dorado.widget.grid.RowRenderer = $extend(dorado.Renderer, /** @scope dorado.widget.grid.RowRenderer.prototype */ {
-		
+
 		/**
 		 * @name dorado.widget.grid.RowRenderer#doRender
 		 * @protected
@@ -523,7 +529,7 @@
 		 * 内部的渲染方法，供复写。
 		 */
 		// =====
-	
+
 		rebuildRow: function(grid, innerGrid, row, rowType) {
 			var dataColumns = innerGrid._columnsInfo.dataColumns, len = dataColumns.length, oldRowType = row.rowType, $row = jQuery(row);
 			if (oldRowType == "header") $row.empty();
@@ -533,17 +539,22 @@
 				var cell = innerGrid.createCell();
 				cell.colSpan = len;
 				row.appendChild(cell);
-			} else {
+			}
+			else {
 				$fly(row).empty();
-				for (var i = 0; i < len; i++) {
+				for(var i = 0; i < len; i++) {
 					$DomUtils.getOrCreateChild(row, i, innerGrid.createCell);
 				}
 				row.columnModelTimestamp = grid._columnModelTimestamp;
 			}
-			if (rowType) row.rowType = rowType;
-			else row.removeAttribute("rowType");
+			if (rowType) {
+				row.rowType = rowType;
+			}
+			else {
+				row.removeAttribute("rowType");
+			}
 		},
-		
+
 		/**
 		 * 渲染。
 		 * <p><b>如有需要应在子类中复写doRender方法，而不是此方法。</b></p>
@@ -566,14 +577,14 @@
 			this.doRender(row, arg);
 		}
 	});
-	
+
 	/**
- 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 默认的表格行渲染器。
 	 * @extends dorado.widget.grid.RowRenderer
 	 */
 	dorado.widget.grid.DefaultRowRenderer = $extend(dorado.widget.grid.RowRenderer, /** @scope dorado.widget.grid.DefaultRowRenderer.prototype */ {
-		
+
 		/**
 		 * 渲染一个单元格。
 		 * @protected
@@ -586,13 +597,13 @@
 		 */
 		renderCell: function(cellRenderer, dom, arg) {
 			var grid = arg.grid, column = arg.column, entity = arg.data, processDefault = true, eventArg = {
-					dom: dom,
-					data: entity,
-					column: column,
-					rowType: entity.rowType,
-					cellRenderer: cellRenderer,
-					processDefault: false
-				};
+				dom: dom,
+				data: entity,
+				column: column,
+				rowType: entity.rowType,
+				cellRenderer: cellRenderer,
+				processDefault: false
+			};
 			if (grid.getListenerCount("onRenderCell")) {
 				grid.fireEvent("onRenderCell", grid, eventArg);
 				processDefault = eventArg.processDefault;
@@ -610,7 +621,7 @@
 				}
 			}
 		},
-		
+
 		doRender: function(row, arg) {
 			if (row._lazyRender) return;
 			var grid = arg.grid, innerGrid = arg.innerGrid, entity = arg.data, dataColumns = innerGrid._columnsInfo.dataColumns;
@@ -618,10 +629,10 @@
 			if (grid._dynaRowHeight) {
 				if (innerGrid.fixed) {
 					/*
-					if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-						oldHeight = row.firstChild.clientHeight;
-					} else {
-					*/
+					 if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+					 oldHeight = row.firstChild.clientHeight;
+					 } else {
+					 */
 					oldHeight = row.clientHeight;
 				}
 				else if (rowHeightInfos) {
@@ -631,31 +642,32 @@
 				row.style.height = "";
 				if (dorado.Browser.msie && dorado.Browser.version == 8) {
 					$fly(row).addClass("fix-valign-bug");
-				} 
-				/*
-				else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-					row.firstChild.style.height = '';
 				}
-				*/
+				/*
+				 else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+				 row.firstChild.style.height = '';
+				 }
+				 */
 			}
-			
-			for (var i = 0; i < dataColumns.length; i++) {
+
+			for(var i = 0; i < dataColumns.length; i++) {
 				var col = dataColumns[i];
 				var cell = row.cells[i];
-				
+
 				var label = cell.firstChild;
 				if (grid._dynaRowHeight && col._dynaRowHeight) {
 					label.style.overflowY = "visible";
 					cell.style.height = grid._rowHeight + "px";
-				} else {
+				}
+				else {
 					cell.style.height = '';
 					label.style.height = (grid._rowHeight - 1) + "px";
 				}
-				
+
 				if (col instanceof dorado.widget.grid.DataColumn) {
 					label.style.width = col._realWidth + "px";
 				}
-				
+
 				var align = '', renderer = col._renderer || grid._cellRenderer;
 				if (!renderer) {
 					var dt = col.get("dataType");
@@ -664,16 +676,17 @@
 						var pd = col._propertyDef;
 						if (pd && pd._mapping) {
 							renderer = $singleton(dorado.widget.grid.DefaultCellRenderer);
-						} else {
+						}
+						else {
 							renderer = $singleton(dorado.widget.grid.CheckBoxCellRenderer);
 							align = "center";
 						}
-					} 
+					}
 					else {
 						renderer = $singleton(dorado.widget.grid.DefaultCellRenderer);
 					}
 				}
-				
+
 				cell.align = col._align || align || "left";
 				this.renderCell(renderer, label, {
 					grid: grid,
@@ -683,26 +696,27 @@
 				});
 				cell.colId = col._uniqueId;
 			}
-			
+
 			if (grid._dynaRowHeight) {
 				var h = row.clientHeight;
 				/*
-				if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-					h = row.firstChild.scrollHeight;
-				} else {
-					h = row.clientHeight;
-				}
-				*/
-				
+				 if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+				 h = row.firstChild.scrollHeight;
+				 } else {
+				 h = row.clientHeight;
+				 }
+				 */
+
 				if (oldHeight != h) {
 					if (!grid.xScroll || !grid.yScroll) grid.notifySizeChange();
 				}
-				
+
 				if (grid._realFixedColumnCount && rowHeightInfos) {
 					if (innerGrid.fixed) {
 						rowHeightInfos.rows[itemId] = h;
 						rowHeightInfos.unfound[itemId] = true;
-					} else if (oldHeight != h) {
+					}
+					else if (oldHeight != h) {
 						delete rowHeightInfos.unfound[itemId];
 						var fh = rowHeightInfos.rows[itemId];
 						if (h > fh) {
@@ -711,33 +725,35 @@
 							if (!innerGrid._duringRefreshDom) {
 								grid._fixedInnerGrid.syncroRowHeight(itemId);
 							}
-						} else if (fh > 0) {
+						}
+						else if (fh > 0) {
 							if (dorado.Browser.msie && dorado.Browser.version == 8) {
 								row.style.height = fh + "px";
 								$fly(row).toggleClass("fix-valign-bug");
-							} else {
+							}
+							else {
 								row.style.height = fh + "px";
 							}
 							/*
-							else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-								row.firstChild.style.height = fh + "px";
-							}
-							*/
+							 else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+							 row.firstChild.style.height = fh + "px";
+							 }
+							 */
 						}
 					}
 				}
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 抽象的表格单元格渲染器。
 	 * @abstract
 	 * @extends dorado.Renderer
 	 */
-	dorado.widget.grid.CellRenderer = $extend(dorado.Renderer,  /** @scope dorado.widget.grid.CellRenderer.prototype */{		
-		
+	dorado.widget.grid.CellRenderer = $extend(dorado.Renderer, /** @scope dorado.widget.grid.CellRenderer.prototype */{
+
 		/**
 		 * @name dorado.widget.grid.RowRenderer#doRender
 		 * @protected
@@ -749,7 +765,7 @@
 		 * 内部的渲染方法，供复写。
 		 */
 		// =====
-		
+
 		/**
 		 * 返回单元格中要显示的文本。
 		 * @protected
@@ -759,7 +775,7 @@
 		 */
 		getText: function(entity, column) {
 			var text = '';
-			if (entity) {				
+			if (entity) {
 				if (column._property) {
 					var property;
 					if (column._propertyPath && !entity.rowType) {
@@ -769,13 +785,14 @@
 					else {
 						property = column._property;
 					}
-					
+
 					if (entity) {
 						var dataType = column.get("dataType"), displayFormat = column.get("displayFormat");
 						if (displayFormat) {
 							var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
 							text = (dataType || dorado.$String).toText(value, displayFormat);
-						} else {
+						}
+						else {
 							text = (entity instanceof dorado.Entity) ? entity.getText(property) : (entity[property] || "");
 						}
 					}
@@ -786,7 +803,7 @@
 			}
 			return text;
 		},
-		
+
 		/**
 		 * 当单元格中的数据被修改之前激活的方法。
 		 * <p>此处的数据修改操作特指那些用户操作由本渲染器渲染出的DOM对象或控件，从而因此数据被修改的情况。</p>
@@ -798,7 +815,7 @@
 		beforeCellValueEdit: function(entity, column, value) {
 			column._grid.beforeCellValueEdit(entity, column, value);
 		},
-		
+
 		/**
 		 * 当单元格中的数据被修改时激活的方法。
 		 * <p>此处的数据修改操作特指那些用户操作由本渲染器渲染出的DOM对象或控件，从而因此数据被修改的情况。</p>
@@ -809,7 +826,7 @@
 		onCellValueEdit: function(entity, column) {
 			column._grid.onCellValueEdit(entity, column);
 		},
-		
+
 		renderFlag: function(dom, arg) {
 			var entity = arg.data, column = arg.column;
 			if (!entity.rowType && entity instanceof dorado.Entity && column._property) {
@@ -821,19 +838,20 @@
 				else {
 					property = column._property;
 				}
-				
+
 				if (entity) {
 					var state = entity.getMessageState(property), exCls;
 					if (state == "error" || state == "warn") {
 						exCls = "cell-flag-" + state;
-					} else if (entity.isDirty(property)) {
+					}
+					else if (entity.isDirty(property)) {
 						exCls = "cell-flag-dirty";
 					}
 					dom.parentNode.className = exCls || "";
 				}
 			}
 		},
-		
+
 		/**
 		 * 渲染。
 		 * <p><b>如有需要应在子类中复写doRender方法，而不是此方法。</b></p>
@@ -848,7 +866,7 @@
 			this.doRender.apply(this, arguments);
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 默认的表格单元格渲染器。
@@ -858,12 +876,12 @@
 		doRender: function(dom, arg) {
 			var text = this.getText(arg.data, arg.column);
 			dom.innerText = text;
-            dom.title = text.length > 5 ? text : "";
+			dom.title = text.length > 5 ? text : "";
 			$fly(dom.parentNode).toggleClass("wrappable", !!arg.column._wrappable);
 			this.renderFlag(dom, arg);
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 默认的表格列脚渲染器。
@@ -875,7 +893,7 @@
 			dom.innerText = expired ? (arg.column._summaryType ? '...' : '') : this.getText(entity, arg.column);
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @abstract
@@ -910,7 +928,7 @@
 		 * @param {dorado.widget.grid.Column} arg.column 对应的表格列。
 		 */
 		// =====
-		
+
 		doRender: function(dom, arg) {
 			var subControl;
 			if (dom.subControlId && dom.parentNode && dom.parentNode.colId == arg.column._uniqueId) {
@@ -923,7 +941,7 @@
 				}
 				attach = true;
 			}
-			
+
 			if (subControl === null) {
 				$fly(dom).empty();
 				return;
@@ -932,47 +950,48 @@
 				$invokeSuper.call(this, arguments);
 				return;
 			}
-			
+
 			this.refreshSubControl(subControl, arg);
 			if (attach) {
 				var controlEl = subControl.getDom();
 				if (controlEl.parentNode == dom) {
 					subControl.refresh();
-				} else {
+				}
+				else {
 					$fly(dom).empty();
 					subControl.render(dom);
 					dom.subControlId = subControl._uniqueId;
 				}
-				
+
 				jQuery(controlEl).bind("remove", function() {
 					var sc = dorado.widget.ViewElement.ALL[dom.subControlId];
 					if (sc) sc.destroy();
 				});
 				arg.innerGrid.registerInnerControl(subControl);
 			}
-			
+
 			this.renderFlag(dom, arg);
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 用于将一个复选框填充到表格单元格中单元格渲染器。
 	 * @extends dorado.widget.grid.SubControlCellRenderer
 	 */
 	dorado.widget.grid.CheckBoxCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.CheckBoxCellRenderer.prototype */{
-		
+
 		preventCellEditing: true,
-		
+
 		createSubControl: function(arg) {
 			var self = this;
 			var checkbox = new dorado.widget.CheckBox({
 				iconOnly: true,
-				
+
 				beforePost: function(control, arg) {
 					arg.processDefault = self.beforeCellValueEdit(control._cellEntity, control._cellColumn, control.get("value"));
 				},
-				
+
 				onPost: function(control) {
 					var column = control._cellColumn, entity = control._cellEntity, value = control.get("value"), property;
 					if (column._propertyPath) {
@@ -983,21 +1002,23 @@
 					else {
 						property = column._property;
 					}
-					
+
 					(entity instanceof dorado.Entity) ? entity.set(property, value) : entity[property] = value;
 					self.onCellValueEdit(entity, column);
 				}
 			});
-			
+
 			var dt = arg.column.get("dataType");
 			if (dt) {
-				switch (dt._code) {
-					case dorado.DataType.BOOLEAN: {
+				switch(dt._code) {
+					case dorado.DataType.BOOLEAN:
+					{
 						checkbox.set("triState", true);
 						break;
 					}
 					case dorado.DataType.PRIMITIVE_INT:
-					case dorado.DataType.PRIMITIVE_FLOAT: {
+					case dorado.DataType.PRIMITIVE_FLOAT:
+					{
 						checkbox.set({
 							offValue: 0,
 							onValue: 1
@@ -1005,7 +1026,8 @@
 						break;
 					}
 					case dorado.DataType.INTEGER:
-					case dorado.DataType.FLOAT: {
+					case dorado.DataType.FLOAT:
+					{
 						checkbox.set({
 							offValue: 0,
 							onValue: 1,
@@ -1015,9 +1037,9 @@
 					}
 				}
 			}
-			return checkbox; 
+			return checkbox;
 		},
-		
+
 		refreshSubControl: function(checkbox, arg) {
 			var column = arg.column, entity = arg.data, property;
 			if (column._propertyPath) {
@@ -1028,7 +1050,7 @@
 			else {
 				property = column._property;
 			}
-			
+
 			var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
 			checkbox._cellEntity = entity;
 			checkbox._cellColumn = column;
@@ -1041,16 +1063,16 @@
 			checkbox.enableListeners();
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 用于将一个单选框组填充到表格单元格中单元格渲染器。
 	 * @extends dorado.widget.grid.SubControlCellRenderer
 	 */
 	dorado.widget.grid.RadioGroupCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.RadioGroupCellRenderer.prototype */{
-		
+
 		preventCellEditing: true,
-		
+
 		/**
 		 * 返回单选框的数组。
 		 * @param {Object} arg 渲染参数。
@@ -1063,7 +1085,7 @@
 			var radioButtons = [];
 			var pd = arg.column._propertyDef;
 			if (pd && pd._mapping) {
-				for (var i = 0; i < pd._mapping.length; i++) {
+				for(var i = 0; i < pd._mapping.length; i++) {
 					var item = pd._mapping[i];
 					radioButtons.push({
 						value: item.key,
@@ -1073,45 +1095,45 @@
 			}
 			return radioButtons;
 		},
-		
+
 		createSubControl: function(arg) {
 			var self = this;
 			return new dorado.widget.RadioGroup({
 				width: "100%",
 				radioButtons: this.getRadioButtons(arg),
-				
+
 				beforePost: function(control, arg) {
 					arg.processDefault = self.beforeCellValueEdit(control._cellEntity, control._cellColumn, control.get("value"));
 				},
-				
+
 				onPost: function(control) {
 					var column = control._cellColumn, entity = control._cellEntity, value = control.get("value"), property;
 					if (column._propertyPath) {
 						entity = column._propertyPath.evaluate(entity, true);
-						if (!entity) return;						
+						if (!entity) return;
 						property = column._subProperty;
 					}
 					else {
 						property = column._property;
 					}
-					
+
 					(entity instanceof dorado.Entity) ? entity.set(property, value) : entity[property] = value;
 					self.onCellValueEdit(entity, column);
 				}
 			});
 		},
-		
+
 		refreshSubControl: function(radioGroup, arg) {
 			var column = arg.column, entity = arg.data, property;
 			if (column._propertyPath) {
 				entity = column._propertyPath.evaluate(entity, true);
-				if (!entity) return;				
+				if (!entity) return;
 				property = column._subProperty;
 			}
 			else {
 				property = column._property;
 			}
-			
+
 			var value = (entity instanceof dorado.Entity) ? entity.get(property) : entity[property];
 			radioGroup._cellEntity = entity;
 			radioGroup._cellColumn = column;
@@ -1124,7 +1146,7 @@
 			radioGroup.enableListeners();
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 用于将一个进度条填充到表格单元格中单元格渲染器。
@@ -1132,14 +1154,14 @@
 	 */
 	dorado.widget.grid.ProgressBarCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.ProgressBarCellRenderer.prototype */{
 		createSubControl: function(arg) {
-			return new dorado.widget.ProgressBar(); 
+			return new dorado.widget.ProgressBar();
 		},
-		
+
 		refreshSubControl: function(progressBar, arg) {
 			var column = arg.column, entity = arg.data, property;
 			if (column._propertyPath) {
 				entity = column._propertyPath.evaluate(entity, true);
-				if (!entity) return;				
+				if (!entity) return;
 				property = column._subProperty;
 			}
 			else {
@@ -1149,16 +1171,16 @@
 			progressBar.set("value", parseFloat(value) || 0);
 		}
 	});
-	
+
 	/**
- 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 分组标题行的渲染器。
 	 * @extends dorado.widget.grid.RowRenderer
 	 */
 	dorado.widget.grid.GroupHeaderRenderer = $extend(dorado.widget.grid.RowRenderer, /** @scope dorado.widget.grid.GroupHeaderRenderer.prototype */ {
 		doRender: function(dom, arg) {
 			if (dom._lazyRender) return;
-			
+
 			var grid = arg.grid, entity = arg.data, processDefault = true;
 			if (grid.getListenerCount("onRenderCell")) {
 				var arg = {
@@ -1175,9 +1197,9 @@
 			}
 		}
 	});
-	
+
 	/**
- 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 分组汇总栏行渲染器。
 	 * @extends dorado.widget.grid.DefaultRowRenderer
 	 */
@@ -1196,12 +1218,16 @@
 				processDefault = arg.processDefault;
 			}
 			if (processDefault) {
-				if (!!entity.get("$expired")) dom.innerText = arg.column._summaryType ? '...' : '';
-				else dorado.Renderer.render(cellRenderer, dom, arg);
+				if (!!entity.get("$expired")) {
+					dom.innerText = arg.column._summaryType ? '...' : '';
+				}
+				else {
+					dorado.Renderer.render(cellRenderer, dom, arg);
+				}
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 表格控件中单元格编辑器的抽象类。
@@ -1210,7 +1236,7 @@
 	 */
 	dorado.widget.grid.CellEditor = $class(/** @scope dorado.widget.grid.CellEditor.prototype */{
 		$className: "dorado.widget.grid.CellEditor",
-		
+
 		/**
 		 * 所属的表格控件。
 		 * @name dorado.widget.grid.CellEditor#grid
@@ -1261,7 +1287,7 @@
 		 * @readOnly
 		 */
 		// ====
-		
+
 		/**
 		 * 初始化编辑器对应的DOM元素对象。
 		 * @name dorado.widget.grid.CellEditor#initDom
@@ -1279,7 +1305,7 @@
 		 * @function
 		 */
 		// =====
-		
+
 		/**
 		 * 是否启用缓存。默认为启用。
 		 * <p>是使用后系统并不销毁该编辑器，而是将其缓存起来供同一列的其他单元格备用。
@@ -1288,7 +1314,7 @@
 		 * @default true
 		 */
 		cachable: true,
-		
+
 		/**
 		 * 是否要在编辑过程中隐藏表格单元格中的内容。
 		 * @type boolean
@@ -1296,13 +1322,14 @@
 		 */
 		hideCellContent: true,
 
-		destroy: function() {},
-		
+		destroy: function() {
+		},
+
 		bindColumn: function(column) {
 			this.grid = column._grid;
 			this.column = column;
 		},
-		
+
 		/**
 		 * 创建单元格编辑器对应的DOM对象。
 		 * @return {HTMLElement} DOM对象。
@@ -1317,7 +1344,7 @@
 				}
 			});
 		},
-		
+
 		/**
 		 * 返回单元格编辑器对应的DOM对象。
 		 * @return {HTMLElement} DOM对象。
@@ -1333,21 +1360,22 @@
 			}
 			return this._dom;
 		},
-		
+
 		/**
 		 * 当单元格的尺寸发生变化是被激活的方法。
 		 * @protected
 		 */
 		resize: function() {
 			var dom = this.getDom(), cell = this.cell, $gridDom = jQuery(this.grid.getDom());
-			if (!dom ||!cell) return;
-			
-			var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();;
+			if (!dom || !cell) return;
+
+			var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();
+			;
 			var l = offsetCell.left - offsetGrid.left - $gridDom.edgeLeft(), t = offsetCell.top - offsetGrid.top - $gridDom.edgeTop(),
 				w = cell.offsetWidth, h = cell.offsetHeight;
 
 			//Grid不定义高度情况下将使用浏览器自身的滚动栏
-			if (!this.grid._divScroll && $gridDom.scrollLeft() > 0){
+			if (!this.grid._divScroll && $gridDom.scrollLeft() > 0) {
 				l += $gridDom.scrollLeft();
 			}
 
@@ -1358,7 +1386,7 @@
 				top: t
 			}).outerWidth(w).outerHeight(h);
 		},
-		
+
 		/**
 		 * 用于告知系统某单元格当前是否可以进入编辑状态。
 		 * @param {HTMLElement} cell 对应的表格单元格。
@@ -1367,7 +1395,7 @@
 		shouldShow: function() {
 			return this.column && this.column._property;
 		},
-		
+
 		/**
 		 * 显示该单元格编辑器。
 		 * @param {dorado.widget.AbstractGrid} parent 所属的表格控件。
@@ -1379,14 +1407,15 @@
 			this.grid.getDom().appendChild(dom);
 			this.initDom(dom);
 			this.refresh();
-			
+
 			var self = this;
 			if (dorado.Browser.mozilla) {
 				// Moziila BUG, offsetLeft doesn't according to scrollLeft immidately
 				setTimeout(function() {
 					self.resize();
 				}, 0);
-			} else {
+			}
+			else {
 				self.resize();
 			}
 			$fly(window).one("resize", function() {
@@ -1395,14 +1424,19 @@
 			if (this.hideCellContent) cell.firstChild.style.visibility = "hidden";
 			this.visible = true;
 		},
-		
+
 		/**
 		 * 隐藏该单元格编辑器。
 		 * @param {boolean} post 是否要在隐藏的同时尝试确认编辑器中的修改。
 		 */
 		hide: function(post) {
 			var grid = this.grid;
-			if (post !== false && this.post) this.post();
+			if (post !== false) {
+				if (this.post) this.post();
+			}
+			else {
+				if (this.cancel) this.cancel();
+			}
 			$DomUtils.getUndisplayContainer().appendChild(this.getDom());
 			delete this.data;
 			if (grid._currentCellEditor == this) {
@@ -1414,7 +1448,7 @@
 				this.cell = null;
 			}
 		},
-		
+
 		/**
 		 * 返回单元格编辑器中当前的数值。
 		 * @protected
@@ -1422,15 +1456,16 @@
 		getEditorValue: function() {
 			return null;
 		},
-		
+
 		/**
 		 * 当单元格编辑器中的修改将被确认之前激活的方法。
 		 * @protected
 		 */
 		beforePost: function(arg) {
-			arg.processDefault = this.grid.beforeCellValueEdit(this.data, this.column, this.getEditorValue());;
+			arg.processDefault = this.grid.beforeCellValueEdit(this.data, this.column, this.getEditorValue());
+			;
 		},
-		
+
 		/**
 		 * 当单元格编辑器中的修改被确认时激活的方法。
 		 * @protected
@@ -1441,7 +1476,7 @@
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 控件型的单元格编辑器的抽象类。
@@ -1450,7 +1485,7 @@
 	 * @extends dorado.widget.grid.CellEditor
 	 */
 	dorado.widget.grid.ControlCellEditor = $extend(dorado.widget.grid.CellEditor, /** @scope dorado.widget.grid.ControlCellEditor.prototype */ {
-	
+
 		/**
 		 * 创建具体的单元格编辑器控件。
 		 * @name dorado.widget.grid.ControlCellEditor#createEditorControl
@@ -1466,7 +1501,7 @@
 			}
 			$invokeSuper.call(this);
 		},
-		
+
 		shouldShow: function() {
 			var shouldShow = $invokeSuper.call(this);
 			if (shouldShow) {
@@ -1478,7 +1513,7 @@
 			}
 			return shouldShow;
 		},
-		
+
 		/**
 		 * 设置具体的单元格编辑器控件。
 		 * @param {dorado.widget.Control} editorControl
@@ -1489,18 +1524,20 @@
 			}
 			this._editorControl = editorControl;
 		},
-		
+
 		getEditorControl: function(create) {
 			var editorControl = null;
 			if (this._editorControl) {
 				editorControl = this._editorControl;
-			} else {
+			}
+			else {
 				if (create === false) return null;
-				
+
 				var column = this.column;
 				if (column._editor) {
 					editorControl = column._editor;
-				} else if (column._editorType) {
+				}
+				else if (column._editorType) {
 					if (column._editorType != "None") {
 						var cacheKey = "_cache_" + column._editorType;
 						editorControl = this[cacheKey];
@@ -1512,33 +1549,36 @@
 				}
 				else {
 					editorControl = this.createEditorControl();
+					if (editorControl) this.grid.registerInnerControl(editorControl);
 				}
 				if (this.cachable) this._editorControl = editorControl;
-				
+
 				if (editorControl instanceof dorado.widget.TextArea) {
 					var attrWatcher = editorControl.getAttributeWatcher();
 					this.minWidth = (attrWatcher.getWritingTimes("width")) ? editorControl.get("width") : 120;
 					this.minHeight = (attrWatcher.getWritingTimes("height")) ? editorControl.get("height") : 40;
 				}
 			}
-				
+
 			var column = this.column, cellEditor = this, pd = column._propertyDef;
 			var dataType = column.get("dataType"), dtCode = dataType ? dataType._code : -1;
 			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 			if (!dtCode || (pd && pd._mapping)) dataType = undefined;
-			
+
 			if (trigger === undefined) {
 				if (pd && pd._mapping) {
 					trigger = new dorado.widget.AutoMappingDropDown({
 						items: pd._mapping
 					});
-				} else if (dtCode == dorado.DataType.DATE) {
+				}
+				else if (dtCode == dorado.DataType.DATE) {
 					trigger = "defaultDateDropDown";
-				} else if (dtCode == dorado.DataType.DATETIME) {
+				}
+				else if (dtCode == dorado.DataType.DATETIME) {
 					trigger = "defaultDateTimeDropDown";
 				}
 			}
-		
+
 			editorControl.set({
 				dataType: dataType,
 				displayFormat: displayFormat,
@@ -1551,32 +1591,32 @@
 				preventOverwriting: true,
 				lockWritingTimes: true
 			});
-			
+
 			if (editorControl && !editorControl._initedForCellEditor) {
 				editorControl._initedForCellEditor = true;
-				
+
 				editorControl.bind("onBlur", function(self) {
 					if ((new Date() - cellEditor._showTimestamp) > 300) cellEditor.hide();
 				})
 				if (editorControl instanceof dorado.widget.AbstractEditor) {
-					editorControl.bind("beforePost", function(self, arg) {
+					editorControl.bind("beforePost",function(self, arg) {
 						cellEditor.beforePost(arg);
 					}).bind("onPost", function(self, arg) {
-						cellEditor.onPost(arg);
-					});
+							cellEditor.onPost(arg);
+						});
 					editorControl._cellEditor = cellEditor; // 主要供DropDown进行判断
 					editorControl._propertyDef = column._propertyDef; // 主要供AutoMappingDropDown使用
 				}
-				
+
 				this.grid.registerInnerControl(editorControl);
 			}
 			return editorControl;
 		},
-		
+
 		getContainerElement: function(dom) {
 			return dom;
 		},
-		
+
 		initDom: function(dom) {
 			var editorControl = this.getEditorControl();
 			var containerElement = this.getContainerElement(dom);
@@ -1590,7 +1630,7 @@
 				editorControl.render(containerElement);
 			}
 		},
-		
+
 		resize: function() {
 			var dom = this.getDom(), control = this.getEditorControl();
 			var ie6 = (dorado.Browser.msie && dorado.Browser.version < 7);
@@ -1599,7 +1639,7 @@
 			}
 
 			$invokeSuper.call(this);
-			
+
 			if (control) {
 				var w = dom.clientWidth, h = dom.clientHeight;
 				if (ie6) control.getDom().style.display = '';
@@ -1612,23 +1652,35 @@
 				control.refresh();
 			}
 		},
-		
+
 		show: function(parent, cell) {
 			$invokeSuper.call(this, [parent, cell]);
 
 			var control = this.getEditorControl();
 			if (!control) return;
-			control._focusParent = parent;
+			control.set("focusParent", parent);
+			control.setActualVisible(true);
 			control.setFocus();
 		},
-		
+
 		hide: function(post) {
-			var control = this.getEditorControl(false);
-			if (control) delete control._focusParent;
-			$invokeSuper.call(this, [post]);
+			if (this._processingHide) return;
+			this._processingHide = true;
+			try {
+				var control = this.getEditorControl(false);
+				if (control) {
+					dorado.widget.onControlGainedFocus(control.get("focusParent"));
+					control.set("focusParent", null);
+					control.setActualVisible(false);
+				}
+				$invokeSuper.call(this, [post]);
+			}
+			finally {
+				this._processingHide = false;
+			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 较简单的单元格编辑器的抽象类。
@@ -1639,7 +1691,7 @@
 		refresh: function() {
 			var editor = this.getEditorControl();
 			if (!editor) return;
-			
+
 			var entity = this.data, column = this.column, property, value;
 			if (column._propertyPath) {
 				property = column._subProperty;
@@ -1647,7 +1699,7 @@
 			else {
 				property = column._property;
 			}
-			
+
 			if (entity) {
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
@@ -1666,29 +1718,31 @@
 						value = entity.get(property);
 						editor.set("value", value);
 					}
-				} else {
+				}
+				else {
 					value = entity[property];
 					editor.set("value", value);
 				}
-			} else {
+			}
+			else {
 				editor.set("value", null);
 			}
 		},
-		
+
 		getEditorValue: function() {
 			var editor = this.getEditorControl();
 			return editor ? editor.get("value") : null;
 		},
-		
+
 		post: function() {
 			var editor = this.getEditorControl(false);
 			return (editor) ? editor.post() : false;
 		},
-		
+
 		onPost: function(arg) {
 			var editor = this.getEditorControl(false);
 			if (!editor) return;
-			
+
 			var entity = this.data, column = this.column, property, value;
 			if (column._propertyPath) {
 				property = column._subProperty;
@@ -1696,7 +1750,7 @@
 			else {
 				property = column._property;
 			}
-			
+
 			if (entity) {
 				if (entity instanceof dorado.Entity) {
 					if (editor instanceof dorado.widget.AbstractTextEditor) {
@@ -1711,11 +1765,13 @@
 							entity.set(property, value);
 						}
 						// }
-					} else {
+					}
+					else {
 						value = editor.get("value");
 						entity.set(property, value);
 					}
-				} else {
+				}
+				else {
 					value = editor.get("value");
 					entity[property] = value;
 				}
@@ -1723,26 +1779,27 @@
 			$invokeSuper.call(this, [arg]);
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 默认的单元格编辑器的抽象类。
 	 * @extends dorado.widget.grid.SimpleCellEditor
 	 */
 	dorado.widget.grid.DefaultCellEditor = $extend(dorado.widget.grid.SimpleCellEditor, /** @scope dorado.widget.grid.DefaultCellEditor.prototype */ {
-	
+
 		createEditorControl: function() {
 			var editor, column = this.column, grid = column._grid;
 			var dt = column.get("dataType"), dtCode = dt ? dt._code : -1;
 			var trigger = column.get("trigger"), displayFormat = column.get("displayFormat"), typeFormat = column.get("typeFormat");
 			var pd = column._propertyDef;
-			
+
 			if (trigger === undefined) {
 				if (pd && pd._mapping) {
 					trigger = new dorado.widget.AutoMappingDropDown({
 						items: pd._mapping
 					});
-				} else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN || dtCode == dorado.DataType.BOOLEAN) {
+				}
+				else if (dtCode == dorado.DataType.PRIMITIVE_BOOLEAN || dtCode == dorado.DataType.BOOLEAN) {
 					editor = new dorado.widget.CheckBox({
 						onValue: true,
 						offValue: false,
@@ -1757,20 +1814,21 @@
 					trigger = "defaultDateTimeDropDown";
 				}
 			}
-			
+
 			if (editor === undefined) {
 				if (column._wrappable) {
 					editor = new dorado.widget.TextArea();
-				} else {
+				}
+				else {
 					editor = new dorado.widget.TextEditor();
 				}
 			}
 			return editor;
 		},
-		
+
 		show: function(parent, cell) {
 			this._showTimestamp = new Date();
-			
+
 			var editor = this.getEditorControl();
 			var sameEditor = (dorado.widget.getMainFocusedControl() == editor);
 			if (sameEditor && editor) editor.onBlur();
@@ -1778,7 +1836,7 @@
 			if (sameEditor && editor) editor.onFocus();
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 数据列。
@@ -1787,9 +1845,9 @@
 	 */
 	dorado.widget.grid.DataColumn = $extend(dorado.widget.grid.Column, /** @scope dorado.widget.grid.DataColumn.prototype */ {
 		$className: "dorado.widget.grid.DataColumn",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.grid.DataColumn.prototype */ {
-		
+
 			/**
 			 * 列的宽度。
 			 * @type int|String
@@ -1807,7 +1865,7 @@
 			dynaRowHeight: {
 				defaultValue: true
 			},
-			
+
 			caption: {
 				getter: function() {
 					var caption = this._caption;
@@ -1818,24 +1876,24 @@
 					return caption;
 				}
 			},
-			
+
 			name: {
 				setter: function(v) {
 					this._name = v;
 					if (!this.getAttributeWatcher().getWritingTimes("property") && !this.ATTRIBUTES.property.defaultValue) this._property = v;
 				}
 			},
-			
+
 			/**
 			 * 数据列关联的属性名。
 			 * @type String
 			 * @attribute writeOnce
 			 */
 			property: {
-				writeOnce: true,				
+				writeOnce: true,
 				setter: function(property) {
 					this._property = property;
-					
+
 					var i = 0;
 					if (property) {
 						i = property.lastIndexOf('.');
@@ -1844,15 +1902,15 @@
 							this._subProperty = property.substring(i + 1);
 						}
 					}
-					
+
 					if (i <= 0) {
 						delete this._propertyPath;
 						delete this._subProperty;
 					}
 					if (!this.getAttributeWatcher().getWritingTimes("name") && !this.ATTRIBUTES.name.defaultValue) this._name = property;
 				}
-			},			
-			
+			},
+
 			/**
 			 * 水平对齐方式。 取值范围如下：
 			 * <ul>
@@ -1871,7 +1929,7 @@
 					}
 				}
 			},
-			
+
 			/**
 			 * 列脚中内容的水平对齐方式。 取值范围如下：
 			 * <ul>
@@ -1883,7 +1941,7 @@
 			 * @attribute
 			 */
 			footerAlign: {},
-			
+
 			/**
 			 * 列中数据的数据类型。
 			 * @type dorado.DataType
@@ -1896,7 +1954,7 @@
 					return dt;
 				}
 			},
-			
+
 			/**
 			 * 所属的视图对象使用的数据类型管理器。
 			 * @type dorado.DataTypeRepository
@@ -1912,7 +1970,7 @@
 				},
 				readOnly: true
 			},
-			
+
 			/**
 			 * 是否只读。
 			 * @type boolean
@@ -1928,7 +1986,7 @@
 					return readOnly;
 				}
 			},
-			
+
 			/**
 			 * 是否必填。
 			 * @type boolean
@@ -1943,7 +2001,7 @@
 					return required;
 				}
 			},
-			
+
 			/**
 			 * 输入格式。此属性只在定义了dataType时才有效。
 			 * @type String
@@ -1959,7 +2017,7 @@
 					return typeFormat;
 				}
 			},
-			
+
 			/**
 			 * 显示格式。此属性只在定义了dataType时才有效。
 			 * @type String
@@ -1974,7 +2032,7 @@
 					return displayFormat;
 				}
 			},
-			
+
 			/**
 			 * 此列中的编辑器绑定的下拉框。
 			 * @type dorado.widget.form.Trigger
@@ -1983,7 +2041,7 @@
 			trigger: {
 				skipRefresh: true
 			},
-			
+
 			/**
 			 * 单元格的文本编辑器是否可以编辑。
 			 * 此属性仅在单元格编辑器为TextEditor或TextArea是有效，用于定义文本编辑器是否可以编辑。因为有时我们希望仅允许用户通过下拉框进行选择。
@@ -1994,7 +2052,7 @@
 			editable: {
 				defaultValue: true
 			},
-			
+
 			/**
 			 * 单元格的渲染器。
 			 * @type dorado.Renderer
@@ -2006,7 +2064,7 @@
 					this._renderer = value;
 				}
 			},
-			
+
 			/**
 			 * 汇总栏的渲染器。
 			 * @type dorado.Renderer
@@ -2030,7 +2088,7 @@
 					this._filterBarRenderer = value;
 				}
 			},
-			
+
 			/**
 			 * 汇总值计算器的类型。
 			 * @type String
@@ -2040,7 +2098,7 @@
 			summaryType: {
 				writeOnce: true
 			},
-			
+
 			/**
 			 * 表单项类型。
 			 * <p>
@@ -2054,10 +2112,10 @@
 			 * 如{@link dorado.widget.CustomSpinner}必须定义pattern属性才能正常使用，在这种情况下应该通过editor属性直接声明具体的编辑器。
 			 * </p>
 			 * @type String
-			 * @attribute 
+			 * @attribute
 			 */
 			editorType: {},
-			
+
 			/**
 			 * 内部使用的编辑器。
 			 * @type dorado.widget.Control
@@ -2073,16 +2131,16 @@
 					this._editor = editor;
 				}
 			},
-			
+
 			/**
 			 * 内部使用的单元格编辑器。
 			 * @type dorado.widget.grid.CellEditor
 			 * @attribute
 			 */
-			cellEditor:  {
+			cellEditor: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 排序标记。此标记仅用于显示，与实际的排序效果无关。可有如下几种取值：
 			 * <ul>
@@ -2096,14 +2154,14 @@
 			sortState: {
 				skipRefresh: true
 			},
-			
+
 			/**
 			 * 是否支持文本换行。
 			 * @type boolean
 			 * @attribute
 			 */
 			wrappable: {},
-			
+
 			/**
 			 * 返回列关联的属性声明对象。
 			 * @type dorado.PropertyDef
@@ -2112,7 +2170,7 @@
 			propertyDef: {
 				readOnly: true
 			},
-			
+
 			/**
 			 * 本列是否支持数据过滤。
 			 * @attribute
@@ -2121,7 +2179,7 @@
 			filterable: {
 				defaultValue: true
 			},
-			
+
 			/**
 			 * 默认的过滤条件比较符。
 			 * <p>
@@ -2131,7 +2189,7 @@
 			 */
 			defaultFilterOperator: {
 			},
-			
+
 			/**
 			 * 本列是否支持用户调整列宽。
 			 * @attribute
@@ -2141,7 +2199,7 @@
 				defaultValue: true
 			}
 		},
-		
+
 		EVENTS: /** @scope dorado.widget.grid.DataColumn.prototype */ {
 			/**
 			 * 当系统渲染某个数据单元格时触发的事件。
@@ -2151,9 +2209,9 @@
 			 * @param {dorado.Entity|Object} arg.data 行对应的数据实体。
 			 * @param {String} arg.rowType 行的类型，目前可能的取值包括：
 			 * <ul>
-			 * <li>null或undefined	-	普通的数据行。</li>
-			 * <li>header	-	数据分组模式下的分组标题行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
-			 * <li>footer	-	数据分组模式下的分组汇总行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
+			 * <li>null或undefined    -    普通的数据行。</li>
+			 * <li>header    -    数据分组模式下的分组标题行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
+			 * <li>footer    -    数据分组模式下的分组汇总行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
 			 * </ul>
 			 * @param {dorado.widget.grid.DefaultCellRenderer} #arg.cellRenderer 系统将要使用的单元格渲染器。您可以直接修改或替换该渲染器。
 			 * <p>注意：此参数仅对普通数据行中的单元格有效。</p>
@@ -2161,8 +2219,8 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onRenderCell:{},
-			
+			onRenderCell: {},
+
 			/**
 			 * 当系统渲染列的汇总栏时触发的事件。
 			 * @param {Object} self 事件的发起者，即列本身。
@@ -2174,7 +2232,7 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onRenderFooterCell:{},
+			onRenderFooterCell: {},
 
 			/**
 			 * 当系统尝试获得某单元格对应的编辑器时触发的事件。
@@ -2193,9 +2251,9 @@
 				this._cellEditor.destroy();
 			}
 		}
-	
+
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 组合列。
@@ -2205,7 +2263,7 @@
 	 */
 	dorado.widget.grid.ColumnGroup = $extend([dorado.widget.grid.Column, dorado.widget.grid.ColumnModel], /** @scope dorado.widget.grid.ColumnGroup.prototype */ {
 		$className: "dorado.widget.grid.ColumnGroup",
-		
+
 		ATTRIBUTES: /** @scope dorado.widget.grid.ColumnGroup.prototype */ {
 			grid: {
 				setter: function(grid) {
@@ -2220,15 +2278,15 @@
 				}
 			}
 		},
-		
+
 		constructor: function(config) {
 			this._columns = new dorado.widget.grid.ColumnList(this);
 			$invokeSuper.call(this, [config]);
 		},
-		
+
 		doGet: dorado.widget.grid.ColumnModel.prototype.doGet
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 指示器列。
@@ -2273,8 +2331,9 @@
 						var messageState = entity.getMessageState();
 						if (messageState == "warn" || messageState == "error") {
 							className = "indicator-" + messageState;
-						} else {
-							switch (entity.state) {
+						}
+						else {
+							switch(entity.state) {
 								case dorado.Entity.STATE_NEW:
 									className = "indicator-new";
 									break;
@@ -2291,7 +2350,7 @@
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 行号列。
@@ -2338,34 +2397,35 @@
 		}
 	});
 
-    dorado.widget.grid.RowSelectorCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {
+	dorado.widget.grid.RowSelectorCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, {
 
-        ATTRIBUTES:{
-            checkboxMap: {}
-        },
+		ATTRIBUTES: {
+			checkboxMap: {}
+		},
 
 		cellMouseDownListener: function(arg) {
 			if (arg.grid._selectionMode == "multiRows") return false;
 		},
-		
+
 		gridOnSelectionChangedListener: function(grid, arg) {
 			var itemModel = grid._itemModel;
 			var selectionMode = grid._selectionMode, removed = arg.removed, added = arg.added, checkbox;
-			
+
 			if (selectionMode == "multiRows") {
 				if (removed) {
-					for (var i = 0; i < removed.length; i++) {
+					for(var i = 0; i < removed.length; i++) {
 						checkbox = this._checkboxMap[itemModel.getItemId(removed[i])];
 						if (checkbox) checkbox.set("checked", false);
 					}
 				}
 				if (added) {
-					for (var i = 0; i < added.length; i++) {
+					for(var i = 0; i < added.length; i++) {
 						checkbox = this._checkboxMap[itemModel.getItemId(added[i])];
 						if (checkbox) checkbox.set("checked", true);
 					}
 				}
-			} else if (selectionMode == "singleRow") {
+			}
+			else if (selectionMode == "singleRow") {
 				if (removed) {
 					checkbox = this._checkboxMap[itemModel.getItemId(removed)];
 					if (checkbox) checkbox.set("checked", false);
@@ -2376,14 +2436,14 @@
 				}
 			}
 		},
-		
+
 		createSubControl: function(arg) {
 			var self = this;
 			if (!this._listenerBinded) {
 				this._listenerBinded = true;
 				arg.grid.bind("onSelectionChange", $scopify(this, this.gridOnSelectionChangedListener));
 			}
-			
+
 			var checkbox = new dorado.widget.CheckBox({
 				iconOnly: true,
 				onValueChange: function(checkbox) {
@@ -2416,33 +2476,35 @@
 			});
 			return checkbox;
 		},
-		
+
 		refreshSubControl: function(checkbox, arg) {
 			if (arg.data.rowType) {
 				checkbox.destroy();
 				return;
 			}
-			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = grid._innerGrid._selection, selectionMode = grid._selectionMode, config = {};		
+			var grid = arg.grid, data = arg.dataForSelection || arg.data, selection = grid._innerGrid._selection, selectionMode = grid._selectionMode, config = {};
 			if (selectionMode == "multiRows") {
 				config.checked = (selection && selection.indexOf(data) >= 0);
 				config.readOnly = false;
-			} else if (selectionMode == "singleRow") {
+			}
+			else if (selectionMode == "singleRow") {
 				config.checked = (data == selection);
 				config.readOnly = false;
-			} else {
+			}
+			else {
 				config.checked = false;
 				config.readOnly = true;
 			}
 			checkbox.set(config);
 			checkbox.refresh();
 			checkbox._selectDataId = grid._itemModel.getItemId(data);
-            if (!this._checkboxMap) {
-                this._checkboxMap = {};
-            }
+			if (!this._checkboxMap) {
+				this._checkboxMap = {};
+			}
 			this._checkboxMap[checkbox._selectDataId] = checkbox;
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 选择器列。
@@ -2476,39 +2538,43 @@
 			headerRenderer: {
 				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
-				
+
 					function getMenu(column) {
 						var menu = column._rowSelectorMenu;
 						if (!menu) {
 							menu = column._rowSelectorMenu = new dorado.widget.Menu({
-								items: [{
-									name: "select-all",
-									caption: $resource("dorado.grid.SelectAll"),
-									onClick: function(self) {
-										grid.selectAll();
+								items: [
+									{
+										name: "select-all",
+										caption: $resource("dorado.grid.SelectAll"),
+										onClick: function(self) {
+											grid.selectAll();
+										}
+									},
+									{
+										name: "unselect-all",
+										caption: $resource("dorado.grid.UnselectAll"),
+										onClick: function(self) {
+											grid.unselectAll();
+										}
+									},
+									{
+										name: "select-invert",
+										caption: $resource("dorado.grid.SelectInvert"),
+										onClick: function(self) {
+											grid.selectInvert();
+										}
 									}
-								}, {
-									name: "unselect-all",
-									caption: $resource("dorado.grid.UnselectAll"),
-									onClick: function(self) {
-										grid.unselectAll();
-									}
-								}, {
-									name: "select-invert",
-									caption: $resource("dorado.grid.SelectInvert"),
-									onClick: function(self) {
-										grid.selectInvert();
-									}
-								}]
+								]
 							});
 							grid.registerInnerControl(menu);
 						}
 						return menu;
 					}
-					
+
 					var grid = arg.grid, column = arg.column, cell = dom.parentNode;
 					$fly(dom).empty();
-					
+
 					var $cell = $fly(cell);
 					$cell.addClass("row-selector");
 					if (!$cell.data("selectionMenuBinded")) {
@@ -2533,7 +2599,7 @@
 			}
 		}
 	});
-	
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 过滤栏单元格的渲染器。
@@ -2555,7 +2621,7 @@
 					filterEntity.disableObservers();
 					filterEntity.set(column._property, criterion);
 					filterEntity.enableObservers();
-				
+
 					grid.filter();
 				},
 				onKeyDown: function(textEditor, arg) {
@@ -2573,23 +2639,24 @@
 			textEditor.set("trigger", "defaultCriterionDropDown");
 			return textEditor;
 		},
-		
+
 		createSubControl: function(arg) {
 			var column = arg.column;
 			if (column._property && column._filterable) {
 				return this.createFilterExpressionEditor(arg);
-			} else {
+			}
+			else {
 				return null;
 			}
 		},
-		
+
 		refreshSubControl: function(textEditor, arg) {
 			var text, entity = arg.data, column = arg.column, property = column._property, criterion = entity.get(property);
-			
+
 			if (criterion) {
 				text = dorado.widget.grid.DataColumn.criterionToText(criterion, column);
 			}
-			
+
 			textEditor._cellColumn = arg.column;
 			textEditor.disableListeners();
 			if (text) {
@@ -2602,12 +2669,12 @@
 			textEditor.enableListeners();
 		}
 	});
-	
+
 	dorado.Toolkits.registerPrototype("gridcolumn", {
 		"Group": dorado.widget.grid.ColumnGroup,
 		"*": dorado.widget.grid.IndicatorColumn,
 		"#": dorado.widget.grid.RowNumColumn,
 		"[]": dorado.widget.grid.RowSelectorColumn
 	});
-	
+
 })();

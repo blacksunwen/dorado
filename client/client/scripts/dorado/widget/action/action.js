@@ -368,8 +368,15 @@
 				};
 				if (self._async) {
 					var taskId;
+					debugger;
 					if (self._executingMessage || this._modal) {
-						taskId = dorado.util.TaskIndicator.showTaskIndicator(self._executingMessage || $resource("dorado.core.DefaultTaskMessage"), this._modal ? "main" : "daemon");
+						var message = self._executingMessage || $resource("dorado.core.DefaultTaskMessage");
+						if (message && message != "none") {
+							taskId = dorado.util.TaskIndicator.showTaskIndicator(message, this._modal ? "main" : "daemon");
+						}
+						else {
+							taskId = 0;
+						}
 					}
 
 					var hasIcon, oldIcon, oldIconClass;
@@ -456,7 +463,7 @@
 			};
 			self.fireEvent("beforeExecute", self, eventArg);
 			if (eventArg.processDefault) {
-				if (this._confirmMessage) {
+				if (this._confirmMessage && this._confirmMessage != "none") {
 					var self = this;
 					dorado.MessageBox.confirm(this._confirmMessage, function () {
 						realCall.call(self, callback);
