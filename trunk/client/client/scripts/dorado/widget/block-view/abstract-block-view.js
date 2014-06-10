@@ -548,7 +548,7 @@
 			var blockView = this;
 			var scroller = blockView._scroller = dom.firstChild;
 			var container = blockView._container = scroller.firstChild;
-			blockView._modernScrolled = dorado.util.Dom.modernScroll(scroller);
+			blockView._modernScroller = dorado.util.Dom.modernScroll(scroller);
 
 			var $scroller = $(scroller);
 			$scroller.bind("modernScrolled", $scopify(blockView, blockView.onScroll));

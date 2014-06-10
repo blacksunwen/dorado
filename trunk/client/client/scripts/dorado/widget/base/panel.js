@@ -681,7 +681,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			panel._createMaximizeButton();
 		}
 
-		panel._modernScrolled = $DomUtils.modernScroll(doms.contentPanel);
+		panel._modernScroller = $DomUtils.modernScroll(doms.contentPanel);
 		return dom;
 	},
 

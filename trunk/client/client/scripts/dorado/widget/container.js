@@ -489,7 +489,7 @@
 					(overflowX == "auto" || overflowY == "auto" || overflowX == "scroll" || overflowY == "scroll")) {
 					contentCt.style.overflowX = overflowX;
 					contentCt.style.overflowY = overflowY;
-					this._modernScrolled = $DomUtils.modernScroll(contentCt, {
+					this._modernScroller = $DomUtils.modernScroll(contentCt, {
 						autoDisable: true
 					});
 				}

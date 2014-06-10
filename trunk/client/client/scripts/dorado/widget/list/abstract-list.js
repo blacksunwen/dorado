@@ -654,7 +654,7 @@
 			});
 			
 			var container = this._container = dom.firstChild;
-			this._modernScrolled = $DomUtils.modernScroll(container);
+			this._modernScroller = $DomUtils.modernScroll(container);
 			return dom;
 		},
 		
