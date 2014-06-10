@@ -1249,8 +1249,7 @@
 					}
 					if (scrollTop != divScroll.scrollTop) {
 						divScroll.scrollTop = scrollTop;
-						//this.hideCellEditor();
-						this.setFocus();
+						this.hideCellEditor();
 						return false;
 					}
 				}

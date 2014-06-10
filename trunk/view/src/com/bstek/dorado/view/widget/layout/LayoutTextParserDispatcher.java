@@ -63,7 +63,7 @@ public class LayoutTextParserDispatcher extends DispatchableTextParser {
 			layout = new LayoutDefinition();
 			layout.setType(info.getType());
 			Class<? extends Layout> classType = info.getClassType();
-			layout.setImpl(classType.getName());
+			layout.setImplType(classType);
 			TextParser layoutParser = textParserHelper.getTextParser(info
 					.getClassType());
 

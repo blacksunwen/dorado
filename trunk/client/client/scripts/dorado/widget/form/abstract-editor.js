@@ -189,6 +189,10 @@
 			}
 			$invokeSuper.call(this, [dom]);
 		},
+
+		cancel: function() {
+			this.refreshDom();
+		},
 		
 		/**
 		 * 确认编辑器中的编辑内容，即将编辑器中的数值写入到与之关联的数据对象中。
