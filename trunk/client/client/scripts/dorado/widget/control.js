@@ -681,7 +681,7 @@
 					this.refresh();
 				}
 				notifyChildren(this, actualVisible);
-				this.notifySizeChange();
+				this.notifySizeChange(false, true);
 			},
 
 			refresh: function(delay) {
@@ -869,11 +869,12 @@
 			/**
 			 * 向控件所在的布局管理器通知本控件的尺寸已经发生了变化。
 			 * @param {boolean} delay
+			 * @param {boolean} force 是否强制通知父容器
 			 * @protected
 			 */
-			notifySizeChange: function(delay) {
+			notifySizeChange: function(delay, force) {
 				if (this._parentLayout && this._parentLayout.onControlSizeChange) {
-					this._parentLayout.onControlSizeChange(this, delay);
+					this._parentLayout.onControlSizeChange(this, delay, force);
 				}
 			},
 

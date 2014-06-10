@@ -24,7 +24,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.util.ClassUtils;
 
 import com.bstek.dorado.common.service.ExposedServiceDefintion;
 import com.bstek.dorado.common.service.ExposedServiceManager;
