@@ -886,7 +886,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 		if (dorado.Browser.isTouch) {
 			if (isInIFrame) {
-				doInitDorado();
+				setTimeout(doInitDorado, 10);
 			}
 			else {
 				rootViewport.init(function() {
