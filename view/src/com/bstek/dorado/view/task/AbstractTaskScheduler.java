@@ -98,7 +98,7 @@ public class AbstractTaskScheduler implements TaskScheduler,
 				.unmodifiableSet(waitingTasks) : Collections.EMPTY_SET;
 	}
 
-	protected void onTaskTernimate(LongTaskThread taskThread) {
+	protected void onTaskTerminate(LongTaskThread taskThread) {
 		taskThread.removeExecutionListener(this);
 		boolean removed = runningTasks.remove(taskThread);
 		if (removed && maxWaiting > 0) {
@@ -114,15 +114,15 @@ public class AbstractTaskScheduler implements TaskScheduler,
 	}
 
 	public void onSuccess(LongTaskThread taskThread, Object result) {
-		onTaskTernimate(taskThread);
+		onTaskTerminate(taskThread);
 	}
 
 	public void onFailure(LongTaskThread taskThread, Exception e) {
-		onTaskTernimate(taskThread);
+		onTaskTerminate(taskThread);
 	}
 
 	public void onAbort(LongTaskThread taskThread) {
-		onTaskTernimate(taskThread);
+		onTaskTerminate(taskThread);
 	}
 
 }
