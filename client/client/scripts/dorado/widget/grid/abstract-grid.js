@@ -1294,7 +1294,7 @@
 				this._divViewPort = div.firstChild;
 				dom.appendChild(div);
 
-				this._modernScrolled = $DomUtils.modernScroll(div);
+				this._modernScroller = $DomUtils.modernScroll(div);
 				$fly(div).bind("modernScrolled", $scopify(this, this.onScroll));
 				return div;
 			}
@@ -1732,8 +1732,8 @@
 				}
 			}
 
-			if (dorado.Browser.isTouch && this._modernScrolled) {
-				this._modernScrolled.update();
+			if (dorado.Browser.isTouch && this._modernScroller) {
+				this._modernScroller.update();
 			}
 		},
 

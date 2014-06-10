@@ -564,8 +564,8 @@
 					}
 				}
 
-				if (this._modernScrolled) {
-					this._modernScrolled.destroy();
+				if (this._modernScroller) {
+					this._modernScroller.destroy();
 				}
 
 				var dom = this._dom;
@@ -826,17 +826,17 @@
 			},
 
 			updateModernScroller: function(delay) {
-				if (!this._modernScrolled) return;
+				if (!this._modernScroller) return;
 
 				if (delay) {
 					dorado.Toolkits.setDelayedAction(this, "$updateModernScrollerTimerId", function() {
-						if (this._modernScrolled) {
-							this._modernScrolled.update();
+						if (this._modernScroller) {
+							this._modernScroller.update();
 						}
 					}, 50);
 				}
 				else {
-					this._modernScrolled.update();
+					this._modernScroller.update();
 				}
 			},
 
@@ -1479,6 +1479,26 @@
 					targetControl: null
 				});
 				return retval;
+			},
+
+			scrollIntoView: function() {
+
+				function doScrollIntoView(container, dom) {
+					if (container instanceof dorado.widget.Container) {
+						var contentContainer = container.getContentContainer();
+						if (contentContainer && $DomUtils.isOwnerOf(dom, contentContainer)) {
+							container._modernScroller && container._modernScroller.scrollToElement(dom);
+						}
+					}
+
+					var parent = container._parent;
+					if (parent) doScrollIntoView(parent, dom);
+				}
+
+				if (!this.isActualVisible() || !this._rendered) return;
+
+				var container = this._parent;
+				if (container) doScrollIntoView(container, this._dom);
 			}
 		});
 

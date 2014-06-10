@@ -81,7 +81,7 @@
 			if (this._text) this.doSetText(this._text);
 			
 			if (!dorado.Browser.isTouch) {
-				this._modernScrolled = $DomUtils.modernScroll(this._textDom, {
+				this._modernScroller = $DomUtils.modernScroll(this._textDom, {
 					listenContentSize: true
 				});
 			}
