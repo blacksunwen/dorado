@@ -1481,6 +1481,10 @@
 				return retval;
 			},
 
+			/**
+			 * 将此控件滚动到可见区域内。
+			 * 此方法可能导致该控件的每一级父控件发生滚动（如果有需要的话），以便于尽可能的是该控件可见。
+			 */
 			scrollIntoView: function() {
 
 				function doScrollIntoView(container, dom) {

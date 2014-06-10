@@ -455,14 +455,18 @@
 			var scrollRight = scrollLeft + container.clientWidth, scrollBottom = scrollTop + container.clientHeight;
 
 			if (offsetLeft < scrollLeft) {
-				this.setScrollLeft(offsetLeft);
+				if (offsetRight <= scrollRight) {
+					this.setScrollLeft(offsetLeft);
+				}
 			}
 			else if (offsetRight > scrollRight) {
 				this.setScrollLeft(container.clientWidth + dom.offsetWidth);
 			}
 
 			if (offsetTop < scrollTop) {
-				this.setScrollTop(offsetTop);
+				if (offsetBottom <= scrollBottom) {
+					this.setScrollTop(offsetTop);
+				}
 			}
 			else if (offsetBottom > scrollBottom) {
 				this.setScrollTop(container.clientHeight + dom.offsetHeight);
