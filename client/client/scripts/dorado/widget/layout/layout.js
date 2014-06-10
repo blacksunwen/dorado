@@ -366,8 +366,9 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @protected
 	 * @param {dorado.widget.Control} control 尺寸发生改变的控件
 	 * @param {boolean} delay 尺寸发生改变的控件
+	 * @param {boolean} force 是否强制通知父容器
 	 */
-	onControlSizeChange: function(control, delay) {
+	onControlSizeChange: function(control, delay, force) {
 		if (this._ignoreControlSizeChange) return;
 		dorado.Toolkits.cancelDelayedAction(this, "$notifySizeChangeTimerId");
 
@@ -375,9 +376,14 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			var container = this._container, dom = this._dom;
 			if (!container || !dom) return;
 
-			var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
+			var currentWidth, currentHeight;
+			if (!force) {
+				currentWidth = dom.offsetWidth;
+				currentHeight = dom.offsetHeight;
+			}
 			if (this.doOnControlSizeChange) this.doOnControlSizeChange(control);
-			if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
+
+			if (force || currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
 				container.onContentSizeChange();
 			}
 		}
