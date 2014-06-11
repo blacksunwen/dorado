@@ -238,7 +238,8 @@ public class RuleSetBuilder {
 				}
 
 				if (!subRuleTemplate.isAbstract()
-						&& (!validateScope || "public".equals(scope))) {
+						&& (!validateScope || StringUtils.isEmpty(scope) || "public"
+								.equals(scope))) {
 					concreteRules.add(exportRule(subRuleTemplate, ruleSet));
 				}
 
