@@ -50,6 +50,7 @@
 
 					frame._path = value;
 
+					if (oldPath == value) return;
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
 
@@ -282,24 +283,32 @@
 				}
 			}
 
-			var window = frame.getIFrameWindow();
-			if (frame._ready && frame.isSameDomain()) {
-				if (window && window.dorado && window.dorado.widget) {
+			if (dorado.Browser.android) return;
+
+			var iframeWindow = frame.getIFrameWindow();
+			if (frame._ready && frame._loaded && frame.isSameDomain()) {
+				if (iframeWindow && iframeWindow.$topView && iframeWindow.dorado && iframeWindow.dorado.widget) {
 					// 在Chrome中，一旦通过UpdateAction的回调方法关闭一个含有iFrame的Dialog，
 					// 会在下载触发主窗体事件时引发jQuery报compareDocumentPosition找不到的错误。
 					// 通过下面的setTimeout可以避免，但原因不详。
 					// 2012/11/26
-					if (dorado.Browser.chrome) {
+					if (dorado.Browser.chrome || dorado.Browser.android) {
 						setTimeout(function() {
-							window.$topView.setActualVisible(actualVisible);
+							if (!iframeWindow.document || !iframeWindow.document.body) {
+								return;
+							}
+							iframeWindow.$topView.setActualVisible(actualVisible);
 							if (frame._notifyResizeOnVisible && actualVisible) {
-								resizeSubView(window.$topView);
+								resizeSubView(iframeWindow.$topView);
 							}
 						}, 50);
 					} else {
-						window.$topView.setActualVisible(actualVisible);
+						if (!iframeWindow.document || !iframeWindow.document.body) {
+							return;
+						}
+						iframeWindow.$topView.setActualVisible(actualVisible);
 						if (frame._notifyResizeOnVisible && actualVisible) {
-							resizeSubView(window.$topView);
+							resizeSubView(iframeWindow.$topView);
 						}
 					}
 				}
