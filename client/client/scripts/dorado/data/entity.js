@@ -54,6 +54,38 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		mergeValidationContext(context, "executing", subContext);
 	}
 
+	function doDefineProperty(proto, property) {
+		var getter = function () {
+			var value;
+			if (this._textMode) {
+				value = this._entity.getText(property);
+			}
+			else {
+				value = this._entity.get(property);
+			}
+			if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
+				value = value.getWrapper(this._options);
+			}
+			return value;
+		};
+		var setter = function (value) {
+			if (this._readOnly) {
+				throw new dorado.Exception("Wrapper is readOnly.");
+			}
+			this._entity.set(property, value);
+		};
+
+		try {
+			proto.__defineGetter__(property, getter);
+			proto.__defineSetter__(property, setter);
+		} catch (e) {
+			Object.defineProperty(proto, property, {
+				get: getter,
+				set: setter
+			});
+		}
+	}
+
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
 	 * @class 实体对象。
@@ -1588,46 +1620,18 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 */
 		getWrapper: function(options) {
 			if (this.acceptUnknownProperty) {
-				wrapperType = function(entity, options) {
+				var wrapperType = function(entity, options) {
 					this._entity = entity;
 					this._options = options;
 					this._textMode = options && options.textMode;
 					this._readOnly = options && options.readOnly;
 				}, wrapperPrototype = wrapperType.prototype;
 				
-				var data = this._data, textMode = options && options.textMode;
+				var data = this._data;
 				for (var property in data) {
 					if (!data.hasOwnProperty(property)) continue;
-					
-					var getter = function() {
-						var value;
-						if (this._textMode) {
-							value = this._entity.getText(property);
-						}
-						else {
-							value = this._entity.get(property);
-						}
-						if (value instanceof dorado.Entity || value instanceof dorado.EntityList) {
-							value = value.getWrapper(this._options);
-						}
-						return value;
-					};
-					var setter = function(value) {
-						if (this._readOnly) {
-							throw new dorado.Exception("Wrapper is readOnly.");
-						}
-						this._entity.set(property, value);
-					};
-					
-					try {
-						wrapperPrototype.__defineGetter__(property, getter);	
-						wrapperPrototype.__defineSetter__(property, setter);		
-					} catch (e) {
-						Object.defineProperty(wrapperPrototype, property, {  
-					        get: getter,
-					        set: setter
-					    });
-					}
+
+					doDefineProperty(wrapperPrototype, property);
 				}
 			}
 			else {
