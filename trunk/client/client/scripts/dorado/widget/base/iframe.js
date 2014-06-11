@@ -62,9 +62,7 @@
 						if (frame.isActualVisible())
 							frame.replaceUrl(value);
 						else
-							setTimeout(function() {
-								frame.replaceUrl(value);
-							}, 10);
+							frame._toReplaceUrl = value;
 					}
 				}
 			},
@@ -270,10 +268,21 @@
 
 			$invokeSuper.call(this, arguments);
 
-			var frame = this, window = frame.getIFrameWindow(), actualVisible = frame.isActualVisible();
-			//FIX OpenFlashChart BUG: http://bsdn.org/projects/dorado7/issue/dorado7-240
+			var frame = this, actualVisible = frame.isActualVisible();
+
+			if (frame._toReplaceUrl) {
+				if (actualVisible) {
+					setTimeout(function() {
+						frame.replaceUrl(frame._toReplaceUrl);
+						frame._toReplaceUrl = null;
+					}, 10);
+				} else {
+					return;
+				}
+			}
+
+			var window = frame.getIFrameWindow();
 			if (frame._ready && frame.isSameDomain()) {
-				//if (dorado.Browser.mozilla && window && window.dorado && window.dorado.widget && window.dorado.widget.ofc) {
 				if (window && window.dorado && window.dorado.widget) {
 					// 在Chrome中，一旦通过UpdateAction的回调方法关闭一个含有iFrame的Dialog，
 					// 会在下载触发主窗体事件时引发jQuery报compareDocumentPosition找不到的错误。
@@ -285,12 +294,11 @@
 							if (frame._notifyResizeOnVisible && actualVisible) {
 								resizeSubView(window.$topView);
 							}
-						}, 0);
-					}
-					else {
+						}, 50);
+					} else {
 						window.$topView.setActualVisible(actualVisible);
 						if (frame._notifyResizeOnVisible && actualVisible) {
-								resizeSubView(window.$topView);
+							resizeSubView(window.$topView);
 						}
 					}
 				}
