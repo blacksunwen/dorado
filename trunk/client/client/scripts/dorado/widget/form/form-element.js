@@ -12,7 +12,7 @@
 
 (function() {
 
-	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstriant", "readOnly", "style"];
+	var specialFormConfigProps = ["view", "tags", "formProfile", "width", "height", "className", "exClassName", "visible", "hideMode", "layoutConstraint", "readOnly", "style"];
 
 	var DEFAULT_OK_MESSAGES = [
 		{
