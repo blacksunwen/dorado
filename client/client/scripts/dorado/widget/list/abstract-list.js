@@ -659,6 +659,8 @@
 		},
 		
 		refreshItemDoms: function(itemDomContainer, reverse, fn, keepItemsOutOfViewPort) {
+			$fly(itemDomContainer).addClass("d-rendering");
+
 			if (!this._itemDomMap) this._itemDomMap = {};
 			
 			var startIndex = this._itemModel.getStartIndex();
@@ -720,6 +722,8 @@
 			}
 			this.startIndex = reverse ? startIndex - fillCount - itemDomCount + 1 : startIndex + fillCount;
 			// this._itemModel.setStartIndex(this.startIndex = reverse ? startIndex - fillCount - itemDomCount + 1 : startIndex + fillCount);
+
+			$fly(itemDomContainer).removeClass("d-rendering");
 			
 			this.itemCount = this._itemModel.getItemCount();
 			this.itemDomCount = itemDomCount;

@@ -574,7 +574,7 @@
 					if (arg.entityList == this._itemModel.getItems()) {
 						var oldCurrentEntity = this.getCurrentEntity();
 						if (!this._supportsPaging &&
-							(!oldCurrentEntity || (oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo))) {
+							(oldCurrentEntity && oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
 							if (this._itemModel.criterions && this._filterMode == "clientSide") {
 								this.get("filterEntity").clearData();
 								this.filter();

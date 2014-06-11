@@ -369,7 +369,7 @@
 		},
 		
 		refreshEntity: function(entity) {
-			var itemId = entity._id, row, innerGrid;
+			var itemId = entity._uniqueId, row, innerGrid;
 			if (this._domMode == 2) {
 				innerGrid = this._fixedInnerGrid;
 				row = innerGrid._itemDomMap[itemId];

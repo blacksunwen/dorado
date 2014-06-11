@@ -1667,13 +1667,13 @@
 			if (this._processingHide) return;
 			this._processingHide = true;
 			try {
+				$invokeSuper.call(this, [post]);
 				var control = this.getEditorControl(false);
 				if (control) {
 					dorado.widget.onControlGainedFocus(control.get("focusParent"));
 					control.set("focusParent", null);
 					control.setActualVisible(false);
 				}
-				$invokeSuper.call(this, [post]);
 			}
 			finally {
 				this._processingHide = false;

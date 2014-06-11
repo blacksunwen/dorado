@@ -11,7 +11,8 @@
  */
 (function($) {
 
-	var SCROLLER_SIZE = 3, ACTIVE_SCROLLER_SIZE = 15, SCROLLER_PADDING = 0, MIN_SLIDER_SIZE = ACTIVE_SCROLLER_SIZE, MIN_SPILLAGE = 2;
+	var SCROLLER_SIZE = $setting["widget.scrollerSize"] || 4, SCROLLER_EXPANDED_SIZE = $setting["widget.scrollerExpandedSize"] || 16;
+	var SCROLLER_PADDING = 0, MIN_SLIDER_SIZE = SCROLLER_EXPANDED_SIZE, MIN_SPILLAGE = 2;
 
 	function insertAfter(element, refElement) {
 		var parent = refElement.parentNode;
@@ -160,12 +161,12 @@
 			var animOptions;
 			if (scroller.direction == "h") {
 				animOptions = {
-					height: ACTIVE_SCROLLER_SIZE
+					height: SCROLLER_EXPANDED_SIZE
 				};
 			}
 			else {
 				animOptions = {
-					width: ACTIVE_SCROLLER_SIZE
+					width: SCROLLER_EXPANDED_SIZE
 				};
 			}
 
@@ -178,7 +179,7 @@
 			}
 			else {
 				scroller.duringAnimation = true;
-				$dom.animate(animOptions, "fast", function() {
+				$dom.animate(animOptions, 0, function() {
 					scroller.duringAnimation = false;
 				});
 			}
@@ -206,7 +207,7 @@
 				}
 				else {
 					scroller.duringAnimation = true;
-					$dom.animate(animOptions, "fast", function() {
+					$dom.animate(animOptions, 300, function() {
 						scroller.expanded = false;
 						scroller.duringAnimation = false;
 						$dom.removeClass("d-modern-scroller-expand");
@@ -219,7 +220,7 @@
 			var scroller = this, container = scroller.container;
 			if (!container) return;
 
-			var dom = scroller.dom, $container = $(container), scrollerSize = scroller.expanded ? ACTIVE_SCROLLER_SIZE : SCROLLER_SIZE;
+			var dom = scroller.dom, $container = $(container), scrollerSize = scroller.expanded ? SCROLLER_EXPANDED_SIZE : SCROLLER_SIZE;
 
 			if (scroller.direction == "h") {
 				if (container.scrollWidth > (container.clientWidth + MIN_SPILLAGE) && container.clientWidth > 0) {
@@ -389,10 +390,13 @@
 						else if (scrollTop + container.clientHeight > container.scrollHeight) {
 							scrollTop = container.scrollHeight - container.clientHeight;
 						}
+						modernScroller.expand();
 						var gap = container.scrollTop - scrollTop
 						if (gap) {
 							container.scrollTop = scrollTop;
-							if (Math.abs(gap) > MIN_SPILLAGE) return false;
+							if (Math.abs(gap) > MIN_SPILLAGE) {
+								return false;
+							}
 						}
 					}
 					/*
