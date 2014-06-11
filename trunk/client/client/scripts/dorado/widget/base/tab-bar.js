@@ -65,15 +65,19 @@
 			currentIndex: {
 				skipRefresh: true,
 				getter: function() {
-					var tabgroup = this, tabs = tabgroup._tabs;
-					if (tabgroup._currentTab) {
-						return tabs.indexOf(tabgroup._currentTab);
+					var tabgroup = this, tabs = tabgroup._tabs, currentTab = tabgroup._currentTab;
+					if (currentTab) {
+						if (typeof currentTab == "number") {
+							return currentTab;
+						}
+						else {
+							return tabs.indexOf(currentTab);
+						}
 					}
 					return -1;
 				},
 				setter: function(index) {
-					var tabgroup = this;
-					tabgroup.set("currentTab", tabgroup._tabs.get(index));
+					this.set("currentTab", index);
 				}
 			},
 
@@ -445,7 +449,7 @@
 			for(var i = 0, j = tabs.size; i < j; i++) {
 				tabgroup.removeTab(tabs.get(0));
 			}
-			tabgroup._currentTab = null;
+			if (this._rendered) tabgroup._currentTab = null;
 		},
 
 		/**
