@@ -781,6 +781,8 @@ dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.Aja
 		if (this.status === 1223) {
 			this.status = 204;
 		}
+
+		$invokeSuper.call(this, arguments);
 	},
 	
 	toString : function() {
