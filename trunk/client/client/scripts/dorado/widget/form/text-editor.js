@@ -387,6 +387,8 @@
 			// if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = !!this._realEditable;
 			if (this._realReadOnly) return;
 
+			this._focusTime = new Date();
+
 			this._editorFocused = true;
 			this._lastPost = this._lastObserve = this.get("text");
 			if (this._useBlankText) this.doSetText('');
