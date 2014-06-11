@@ -373,7 +373,6 @@
 			{
 				beforeExecute: {
 					interceptor: function(superFire, self, arg) {
-						debugger;
 						var retval = superFire(self, arg);
 						this._realExecutingMessage = this._executingMessage;
 						this._executingMessage = "none";
