@@ -368,7 +368,6 @@
 				};
 				if (self._async) {
 					var taskId;
-					debugger;
 					if (self._executingMessage || this._modal) {
 						var message = self._executingMessage || $resource("dorado.core.DefaultTaskMessage");
 						if (message && message != "none") {
