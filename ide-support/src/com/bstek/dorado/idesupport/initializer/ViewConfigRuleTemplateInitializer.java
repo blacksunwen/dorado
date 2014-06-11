@@ -137,6 +137,7 @@ public class ViewConfigRuleTemplateInitializer implements
 			componentRuleTemplate.setCategory(registerInfo.getCategory());
 
 			if (isAssembledComponent) {
+				componentRuleTemplate.setScope("public");
 				componentRuleTemplate.setNodeName(name);
 
 				AssembledComponentTypeRegisterInfo assembledComponentTypeRegisterInfo = (AssembledComponentTypeRegisterInfo) registerInfo;
@@ -193,6 +194,8 @@ public class ViewConfigRuleTemplateInitializer implements
 							componentRuleTemplate.addClientEvent(event);
 						}
 					}
+				} else if (classType != null) {
+					componentRuleTemplate.setType(classType.getName());
 				}
 			} else if (classType != null) {
 				componentRuleTemplate.setType(classType.getName());

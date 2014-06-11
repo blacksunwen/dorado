@@ -147,7 +147,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			}
 		}
 		if (StringUtils.isNotEmpty(scope)
-				&& "public".equals(ruleTemplate.getScope())) {
+				&& StringUtils.isEmpty(ruleTemplate.getScope())) {
 			ruleTemplate.setScope(scope);
 		}
 
