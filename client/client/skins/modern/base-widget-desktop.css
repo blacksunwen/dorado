@@ -1203,6 +1203,21 @@
   -o-transform: rotate(-180deg);
   transform: rotate(-180deg);
 }
+.d-panel .d-close-button {
+  width: 16px;
+  height: 16px;
+  line-height: 14px;
+  text-align: center;
+  font-size: 14px;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-panel .d-close-button:before {
+  content: "\e605";
+}
 .d-panel-collapsed {
   border-bottom: 0;
 }
