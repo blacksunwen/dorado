@@ -66,6 +66,14 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		}
 	},
 
+	destroy: function() {
+		if (this._divFormInnerHtml)  {
+			$fly(this._divFormInnerHtml).remove();
+			delete this._divFormInnerHtml;
+		}
+		$invokeSuper.call(this);
+	},
+
 	assignDom: function(dom) {
 		this._dom = dom;
 		if (dom) {
@@ -90,19 +98,14 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		var layoutDom;
 		if (this._layout && this._layout._dom) {
 			layoutDom = this._layout._dom;
+			layoutDom.parentNode.removeChild(layoutDom);
 		}
 
-		this._xCreateContext = {};
 		if (content) {
-			if (content.constructor == String) {
-				dom.innerHTML = content;
-			}
-			else if (content.nodeType) {
-				dom.appendChild(content);
-			}
-			else {
-				$fly(dom).xCreate(content, null, this._xCreateContext);
-			}
+			this._xCreateContext = {};
+			var doms = [];
+			this.pushHtmlElement(doms, this._content);
+			$fly(dom).empty().append(doms);
 		}
 
 		var container = dom;
@@ -118,6 +121,43 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 
 		if (this._ready && this._rendered) {
 			this.updateModernScroller();
+		}
+	},
+
+	pushHtmlElement: function(doms, content) {
+
+		function doPush(doms, content, context) {
+			if (!content) return;
+
+			if (content.constructor == String) {
+				var div = this._divFormInnerHtml;
+				if (!div) this._divFormInnerHtml = div = document.createElement("DIV");
+				div.innerHTML = content;
+				while(div.firstChild) {
+					var node = div.firstChild;
+					div.removeChild(node);
+					if (dorado.Browser.msie && node.nodeType == 3) { // IE may crash on div.appendChild(#text)
+						var span = document.createElement("SPAN");
+						span.appendChild(node);
+						node = span;
+					}
+					doms.push(node);
+				}
+			}
+			else if (content.nodeType) {
+				doms.push(content);
+			}
+			else {
+				doms.push($DomUtils.xCreate(content, null, context));
+			}
+		}
+
+		if (content instanceof Array) {
+			for(var i = 0; i < content.length; i++)
+				doPush(doms, content[i], this._xCreateContext);
+		}
+		else {
+			doPush(doms, content, this._xCreateContext);
 		}
 	},
 

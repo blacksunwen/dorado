@@ -390,7 +390,6 @@
 						else if (scrollTop + container.clientHeight > container.scrollHeight) {
 							scrollTop = container.scrollHeight - container.clientHeight;
 						}
-						modernScroller.expand();
 						var gap = container.scrollTop - scrollTop
 						if (gap) {
 							container.scrollTop = scrollTop;
