@@ -13,17 +13,17 @@
 package com.bstek.dorado.view.widget.layout;
 
 import com.bstek.dorado.annotation.ClientProperty;
-import com.bstek.dorado.view.widget.VerticalAlign;
+import com.bstek.dorado.view.widget.Align;
 
-public class HBoxLayoutConstraint extends LayoutConstraintSupport {
-	private VerticalAlign align = VerticalAlign.center;
+public class VBoxLayoutConstraintSupport extends LayoutConstraintSupport {
+	private Align align = Align.left;
 
-	@ClientProperty(escapeValue = "center")
-	public VerticalAlign getAlign() {
+	@ClientProperty(escapeValue = "left")
+	public Align getAlign() {
 		return align;
 	}
 
-	public void setAlign(VerticalAlign align) {
+	public void setAlign(Align align) {
 		this.align = align;
 	}
 }
