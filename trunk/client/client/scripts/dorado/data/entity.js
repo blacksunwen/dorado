@@ -1619,13 +1619,16 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @return {Object} 得到的代理对象。
 		 */
 		getWrapper: function(options) {
+			var wrapperType;
 			if (this.acceptUnknownProperty) {
-				var wrapperType = function(entity, options) {
+				wrapperType = function(entity, options) {
 					this._entity = entity;
 					this._options = options;
 					this._textMode = options && options.textMode;
 					this._readOnly = options && options.readOnly;
-				}, wrapperPrototype = wrapperType.prototype;
+				};
+
+				var wrapperPrototype = wrapperType.prototype;
 				
 				var data = this._data;
 				for (var property in data) {
