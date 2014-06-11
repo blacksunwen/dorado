@@ -557,13 +557,19 @@
 	}
 
 	jQuery.fn.anim = function(properties, duration, ease, callback){
-		var transforms = [], opacity, key;
+		var transforms = [], opacity, key, callbackCalled = false;
 		for (key in properties)
 			if (key === 'opacity') opacity = properties[key];
 			else transforms.push(key + '(' + properties[key] + ')');
 
-		if (parseFloat(duration) !== 0) {
-			isFunction(callback) && this.one(transitionEnd, callback);
+		if (parseFloat(duration) !== 0 && isFunction(callback)) {
+			this.one(transitionEnd, function() { callback(); callbackCalled = true; });
+			setTimeout(function() {
+				if (!callbackCalled) {
+					callback();
+					callbackCalled = true;
+				}
+			}, duration * 1000);
 		} else {
 			setTimeout(callback, 0);
 		}
