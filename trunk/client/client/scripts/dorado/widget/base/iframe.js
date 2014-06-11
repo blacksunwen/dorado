@@ -276,6 +276,7 @@
 						frame.replaceUrl(frame._toReplaceUrl);
 						frame._toReplaceUrl = null;
 					}, 10);
+					return;
 				} else {
 					return;
 				}
