@@ -463,7 +463,7 @@
 				}
 			}
 			else if (offsetRight > scrollRight) {
-				this.setScrollLeft(container.clientWidth + dom.offsetWidth);
+				this.setScrollLeft(offsetRight + dom.offsetWidth);
 			}
 
 			if (offsetTop < scrollTop) {
@@ -472,7 +472,7 @@
 				}
 			}
 			else if (offsetBottom > scrollBottom) {
-				this.setScrollTop(container.clientHeight + dom.offsetHeight);
+				this.setScrollTop(offsetBottom + dom.offsetHeight);
 			}
 		},
 

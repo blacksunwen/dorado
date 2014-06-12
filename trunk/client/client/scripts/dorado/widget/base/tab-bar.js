@@ -446,10 +446,10 @@
 		 */
 		clearTabs: function() {
 			var tabgroup = this, tabs = tabgroup._tabs;
+			if (tabs.size) tabgroup._currentTab = null;
 			for(var i = 0, j = tabs.size; i < j; i++) {
 				tabgroup.removeTab(tabs.get(0));
 			}
-			if (this._rendered) tabgroup._currentTab = null;
 		},
 
 		/**
