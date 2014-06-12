@@ -183,6 +183,7 @@
 .d-menu .group-content .menu-item .menu-item-content {
   display: block;
   white-space: nowrap;
+  height: 32px;
   line-height: 20px;
   padding: 2px 10px 2px 3px;
 }
@@ -226,12 +227,19 @@
   border-width: 1px 0px 0px 0px;
 }
 .d-menu-icon-top .group-content .menu-item .menu-item-content {
+  height: 56px;
   background-repeat: repeat-x;
   background-position: 0 0;
   text-align: center;
 }
 .d-menu-icon-top .group-content .menu-item .menu-item-content .d-icon {
+  float: none;
   display: inline-block;
+  text-align: center;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 24px;
 }
 .d-menu-icon-top .group-content .menu-item .menu-item-content .caption {
   display: block;
@@ -1050,18 +1058,6 @@
 }
 .d-panel .expand-icon-bottom {
   background-position: 0 0;
-}
-.d-panel .d-close-button {
-  cursor: pointer;
-  background: url(base/dialog-buttons.png) no-repeat -180px 0;
-  width: 20px;
-  height: 20px;
-}
-.d-panel .d-close-button-hover {
-  background-position: -200px 0;
-}
-.d-panel .d-close-button-click {
-  background-position: -220px 0;
 }
 .d-panel-collapsed {
   border-bottom: 0;
