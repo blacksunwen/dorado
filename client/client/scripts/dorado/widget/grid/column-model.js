@@ -2638,7 +2638,8 @@
 				},
 				onTextEdit: function(textEditor) {
 					var criterionDropDown = textEditor.get("trigger");
-					if (criterionDropDown && criterionDropDown instanceof dorado.widget.Component && criterionDropDown.get("opened")) {
+					if (criterionDropDown && criterionDropDown instanceof dorado.widget.Component &&
+						criterionDropDown.get("opened") && criterionDropDown.get("editor") == textEditor) {
 						criterionDropDown.close();
 					}
 				}

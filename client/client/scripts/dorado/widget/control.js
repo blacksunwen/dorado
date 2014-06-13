@@ -1417,7 +1417,7 @@
 				if (!b) return b;
 
 				var p = this.get("parent");
-				if (p && dorado.widget.disableKeyBubble != p) b = p.onKeyDown(evt);
+				if (p && !dorado.widget.disableKeyBubble) b = p.onKeyDown(evt);
 				return b;
 			},
 
@@ -1452,7 +1452,7 @@
 				if (!b) return b;
 
 				var p = this.get("parent");
-				if (p && dorado.widget.disableKeyBubble != p) b = p.onKeyPress(evt);
+				if (p && !dorado.widget.disableKeyBubble) b = p.onKeyPress(evt);
 				return b;
 			},
 
