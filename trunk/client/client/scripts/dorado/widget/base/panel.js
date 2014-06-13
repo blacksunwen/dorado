@@ -645,6 +645,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 			var captionBar = panel._captionBar = new dorado.widget.CaptionBar({
 				caption: panel._caption,
 				icon: panel._icon,
+				iconClass: panel._iconClass,
 				buttons: toolButtons
 			});
 

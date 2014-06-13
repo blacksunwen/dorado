@@ -252,10 +252,7 @@ dorado.widget.CaptionBar = $extend(dorado.widget.Control, /** @scope dorado.widg
 			
 			if (icon) {
 				$DomUtils.setBackgroundImage(doms.icon, icon);
-			} else if (doms.icon) {
-				$fly(doms.icon).css("background-image", "none");
 			}
-			
 			if (iconCls) {
 				$fly(doms.icon).addClass(iconCls);
 			}

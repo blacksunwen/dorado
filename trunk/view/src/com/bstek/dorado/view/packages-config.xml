@@ -15,21 +15,24 @@
 
 	<Packages>
 		<Package name="common" pattern="res-js" />
-		
-		<Package name="silk" pattern="res-css">
+
+		<Package name="silk" pattern="res-css"
+			baseUri=">dorado/client/resources/icons/silk">
 			classpath:dorado/resources/icons/silk/silk
 		</Package>
 
-		<Package name="font-awesome-support" pattern="res-css">
+		<Package name="font-awesome-support" pattern="res-css"
+			baseUri=">dorado/client/resources/icons/font-awesome">
 			font-awesome:font-face
 		</Package>
 		<Package name="font-awesome" pattern="res-css" mergeRequests="false"
-			baseUri=">dorado/client/resources/icons" cacheable="false"
+			baseUri=">dorado/client/resources/icons/font-awesome" cacheable="false"
 			depends="font-awesome-support">
 			font-awesome:font-awesome
 		</Package>
 
-		<Package name="entypo-support" pattern="res-css">
+		<Package name="entypo-support" pattern="res-css"
+			baseUri=">dorado/client/resources/icons/entypo">
 			classpath:dorado/resources/icons/entypo/font-face
 		</Package>
 		<Package name="entypo" pattern="res-css" depends="entypo-support">
