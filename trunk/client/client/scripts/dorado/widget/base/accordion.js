@@ -206,8 +206,8 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	doRenderControl: function() {
 		var section = this, doms = section._doms, control = section._control;
 		if (control) {
-			control.render(doms.container);
 			control.set("visible", true);
+			control.render(doms.container);
 		}
 	}
 });
@@ -547,7 +547,7 @@ dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widge
 				
 				if (currentSection != section) {
 					$fly(section._dom).removeClass("current-section");
-					if (section._control) {
+					if (section._control && section._control._rendered) {
 						section._control.setActualVisible(false);
 					}
 				}
