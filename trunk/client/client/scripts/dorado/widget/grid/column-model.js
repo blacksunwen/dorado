@@ -943,7 +943,7 @@
 			if (!subControl) {
 				if (data && data.rowType != "header" && data.rowType != "footer") {
 					subControl = this.createSubControl(arg);
-					subControl._gridRowData = data;
+					if (subControl) subControl._gridRowData = data;
 				}
 				attach = true;
 			}
