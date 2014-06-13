@@ -15,6 +15,10 @@
 
 	<Packages>
 		<Package name="common" pattern="res-js" />
+		
+		<Package name="silk" pattern="res-css">
+			classpath:dorado/resources/icons/silk/silk
+		</Package>
 
 		<Package name="font-awesome-support" pattern="res-css">
 			font-awesome:font-face
