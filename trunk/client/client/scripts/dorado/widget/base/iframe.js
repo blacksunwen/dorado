@@ -159,7 +159,7 @@
 					tagName: "iframe",
 					className: "iframe hidden",
 					contextKey: "iframe",
-					scrolling: dorado.Browser.isTouch ? "no" : "auto",
+					scrolling: dorado.Browser.iOS ? "no" : "auto",
 					frameBorder: 0
 				}, {
 					tagName: "div",
