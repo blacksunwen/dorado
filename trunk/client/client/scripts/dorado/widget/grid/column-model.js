@@ -930,14 +930,20 @@
 		// =====
 
 		doRender: function(dom, arg) {
-			var subControl;
-			if (dom.subControlId && dom.parentNode && dom.parentNode.colId == arg.column._uniqueId) {
-				subControl = dorado.widget.ViewElement.ALL[dom.subControlId];
+			var subControl, data = arg.data;
+			if (dom._subControlId && dom.parentNode && dom.parentNode.colId == arg.column._uniqueId) {
+				subControl = dorado.widget.ViewElement.ALL[dom._subControlId];
+				if (subControl && subControl._gridRowData != data) {
+					dom._subControlId = null;
+					subControl.destroy();
+					subControl = null;
+				}
 			}
 			var attach;
 			if (!subControl) {
-				if (arg.data && arg.data.rowType != "header" && arg.data.rowType != "footer") {
+				if (data && data.rowType != "header" && data.rowType != "footer") {
 					subControl = this.createSubControl(arg);
+					subControl._gridRowData = data;
 				}
 				attach = true;
 			}
@@ -951,7 +957,7 @@
 				return;
 			}
 
-			this.refreshSubControl(subControl, arg);
+			if (this.refreshSubControl) this.refreshSubControl(subControl, arg);
 			if (attach) {
 				var controlEl = subControl.getDom();
 				if (controlEl.parentNode == dom) {
@@ -960,12 +966,13 @@
 				else {
 					$fly(dom).empty();
 					subControl.render(dom);
-					dom.subControlId = subControl._uniqueId;
+					dom._subControlId = subControl._uniqueId;
 				}
 
 				jQuery(controlEl).bind("remove", function() {
-					var sc = dorado.widget.ViewElement.ALL[dom.subControlId];
-					if (sc) sc.destroy();
+					var control = dorado.widget.ViewElement.ALL[dom._subControlId];
+					dom._subControlId = null;
+					if (control) control.destroy();
 				});
 				arg.innerGrid.registerInnerControl(subControl);
 			}
