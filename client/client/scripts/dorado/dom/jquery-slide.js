@@ -562,14 +562,16 @@
 			if (key === 'opacity') opacity = properties[key];
 			else transforms.push(key + '(' + properties[key] + ')');
 
+		var invokeCallback = function() {
+			if (!callbackCalled) {
+				callback();
+				callbackCalled = true;
+			}
+		};
+
 		if (parseFloat(duration) !== 0 && isFunction(callback)) {
-			this.one(transitionEnd, function() { callback(); callbackCalled = true; });
-			setTimeout(function() {
-				if (!callbackCalled) {
-					callback();
-					callbackCalled = true;
-				}
-			}, duration * 1000);
+			this.one(transitionEnd, invokeCallback);
+			setTimeout(invokeCallback, duration * 1000 + 50);
 		} else {
 			setTimeout(callback, 0);
 		}
