@@ -592,7 +592,7 @@
 					className: "d-dialog-caption-bar",
 					caption: dialog.get("caption") || dialog._caption,
 					icon: dialog._icon,
-					iconCLass: dialog._iconCLass,
+					iconClass: dialog._iconClass,
 					buttons: toolButtons
 				});
 				dialog.registerInnerControl(captionBar);

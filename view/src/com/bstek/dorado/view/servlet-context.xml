@@ -169,6 +169,16 @@
 			</bean>
 		</property>
 	</bean>
+	<bean parent="dorado.resolverRegister">
+		<property name="order" value="30" />
+		<property name="url" value="/dorado/client/resources/icons/font-awesome/*.png" />
+		<property name="resolver">
+			<bean class="com.bstek.dorado.view.resolver.FontAwesomePngFileResolver">
+				<property name="baseUri" value="/dorado/client" />
+				<property name="resourcePrefix" value="${view.libraryRoot}" />
+			</bean>
+		</property>
+	</bean>
 	<bean class="com.bstek.dorado.core.io.LocationTranformerRegister">
 		<property name="protocal" value="font-awesome:" />
 		<property name="transformer">
