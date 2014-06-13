@@ -32,8 +32,11 @@ public class SpringLocaleResolverAdapter implements LocaleResolver {
 	public Locale resolveLocale() throws Exception {
 		Locale locale = null;
 		if (springLocaleResolver != null) {
-			locale = springLocaleResolver.resolveLocale(DoradoContext
-					.getAttachedRequest());
+			DoradoContext content = DoradoContext.getCurrent();
+			if (content instanceof DoradoContext) {
+				locale = springLocaleResolver.resolveLocale(DoradoContext
+						.getAttachedRequest());
+			}
 		}
 		return locale;
 	}
