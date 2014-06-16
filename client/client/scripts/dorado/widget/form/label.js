@@ -192,8 +192,19 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		image: {},
 		
 		/**
-		 * 图片拉伸方式。keepRatio,fit,none
-		 * 
+		 * 图片拉伸方式，可选值：fitWidth, fitHeight, keepRatio，fit, none。
+		 *
+		 * 根据拉伸模式的不同，图片的大小会有所不同。不同的模式的拉伸方式见下：
+		 * <ul>
+		 *  <li> fitWidth - 图片的宽度与组件相同，图片垂直方向的位置由packMode决定。</li>
+		 *  <li> fitHeight - 图片的高度与组件相同，图片水平方向的位置由packMode决定。</li>
+		 *  <li>
+		 *   keepRatio - 图片会完全在组件的可见区域中，根据组件的大小、图片的大小不同，有可能图片的宽度与组件相同，也有可能图片的高度与组件相同。
+		 *   也就是说有可能是fitWidth模式，也有可能是fitHeight模式。
+		 *  </li>
+		 *  <li> fit - 图片的大小和组件的大小完全相同，不会保持图片原本的宽高比。</li>
+		 *  <li> none - 不对图片进行拉伸，保持图片的原大小。</li>
+		 * <ul>
 		 * @type String
 		 * @attribute writeBeforeReady
 		 * @default "fit"
@@ -202,7 +213,26 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 			writeBeforeReady: true,
 			defaultValue: "keepRatio"
 		},
-		
+
+		/**
+		 * 图片在某个方向拉伸后在其对应的垂直方向上的对齐方式，可选值：start、center、end。
+		 * <p>
+		 * 不同的stretchMode，packMode的start、center、end的含义不同。
+		 * <ul>
+		 *  <li>fitWidth则start、end表示的是垂直方向的对齐，修改的是top的值。</li>
+		 *  <li>fitHeight则start、end表示的是水平方向的对齐，修改的是left的值。</li>
+		 *  <li>keepRatio则有可能修改的是top的值，也有可能是left的值，和图片的宽高比有关系。</li>
+		 * </ul>
+		 * <p>
+		 * @type String
+		 * @attribute writeBeforeReady
+		 * @default "center"
+		 */
+		packMode: {
+			writeBeforeReady: true,
+			defaultValue: "center"
+		},
+
 		/**
 		 * 空白图片。
 		 * 
@@ -212,9 +242,47 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 			defaultValue: ">dorado/client/resources/blank.gif"
 		}
 	},
-	
+
+	doStretchAndPack: function () {
+		if (!this._srcLoaded) return;
+		var image = this, dom = image._dom, imageDom = dom.firstChild,
+			stretchMode = image._stretchMode, packMode = image._packMode || "center",
+			controlWidth = dom.clientWidth, controlHeight = dom.clientHeight, left = 0, top = 0,
+			imageWidth = image._originalWidth, imageHeight = image._originalHeight;
+
+		if (stretchMode == "keepRatio" || stretchMode == "fitWidth") {
+			if (imageWidth > controlWidth) {
+				imageHeight = Math.round(controlWidth * imageHeight / imageWidth);
+				imageWidth = controlWidth;
+			}
+		}
+
+		if (stretchMode == "keepRatio" || stretchMode == "fitHeight") {
+			if (imageHeight > controlHeight) {
+				imageWidth = parseInt(controlHeight * imageWidth / imageHeight);
+				imageHeight = controlHeight;
+			}
+		}
+
+		if (packMode == "center") {
+			left = Math.round((controlWidth - imageWidth) / 2);
+			top = Math.round((controlHeight - imageHeight) / 2);
+		} else if (packMode == "end") {
+			left = Math.round(controlWidth - imageWidth);
+			top = Math.round(controlHeight - imageHeight);
+		}
+
+		$fly(imageDom).css({
+			left: left,
+			top: top,
+			width: imageWidth,
+			height: imageHeight,
+			visibility: ""
+		});
+	},
+
 	createDom: function() {
-		var dom = $DomUtils.xCreate({
+		var image = this, dom = $DomUtils.xCreate({
 			tagName: "DIV",
 			content: {
 				tagName: "IMG"
@@ -223,38 +291,23 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 				position: "relative"
 			}
 		});
-		var imageDom = this._imageDom = dom.firstChild, $imageDom = $fly(imageDom);
-		
-		if (this._stretchMode == "keepRatio") {
+
+		var imageDom = image._imageDom = dom.firstChild, $imageDom = $fly(imageDom), stretchMode = image._stretchMode;
+
+		if (stretchMode == "keepRatio" || stretchMode == "fitWidth" || stretchMode == "fitHeight") {
 			$imageDom.css({
 				position: "absolute",
 				width: "",
 				height: "",
 				visibility: "hidden"
 			}).bind("load", function() {
-				var maxWidth = dom.clientWidth;
-				var maxHeight = dom.clientHeight;
-				var left, top, width = imageDom.offsetWidth, height = imageDom.offsetHeight;
-				if (width > maxWidth) {
-					height = Math.round(maxWidth * height / width);
-					width = maxWidth;
-				}
-				if (height > maxHeight) {
-					width = parseInt(maxHeight * width / height);
-					height = maxHeight;
-				}
-				left = Math.round((dom.clientWidth - width) / 2);
-				top = Math.round((dom.clientHeight - height) / 2);
-				$fly(imageDom).css({
-					left: left,
-					top: top,
-					width: width,
-					height: height,
-					visibility: ""
-				});
+				image._srcLoaded = true;
+				image._originalWidth = imageDom.offsetWidth;
+				image._originalHeight = imageDom.offsetHeight;
+				image.doStretchAndPack();
 			});
 		}
-		else if (this._stretchMode == "fit") {
+		else if (stretchMode == "fit") {
 			$imageDom.css({
 				position: "",
 				width: "100%",
@@ -274,10 +327,13 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 				break;
 		}
 	},
+
+	doOnResize: function() {
+		$invokeSuper.call(this, arguments);
+		this.doStretchAndPack();
+	},
 	
 	refreshDom: function(dom) {
-		$invokeSuper.call(this, arguments);
-		
 		var imgUrl;
 		var entity = this.getBindingData(true);
 		if (entity) {
@@ -298,7 +354,15 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 				height: ""
 			});
 		}
+		if (this._lastImgUrl != imgUrl) {
+			this._lastImgUrl = imgUrl;
+			this._srcLoaded = false;
+			this._originalWidth = null;
+			this._originalHeight = null;
+		}
 		$imageDom.attr("src", $url(imgUrl));
+
+		$invokeSuper.call(this, arguments);
 	}
 });
 
