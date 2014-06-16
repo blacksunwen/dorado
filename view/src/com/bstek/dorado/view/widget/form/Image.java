@@ -31,6 +31,7 @@ public class Image extends AbstractPropertyDataControl {
 	private String image;
 	private String blankImage;
 	private ImageStretchMode stretchMode = ImageStretchMode.keepRatio;
+	private ImagePackMode packMode = ImagePackMode.center;
 
 	@IdeProperty(highlight = 1)
 	public String getImage() {
@@ -49,12 +50,21 @@ public class Image extends AbstractPropertyDataControl {
 		this.blankImage = blankImage;
 	}
 
+	@ClientProperty(escapeValue = "keepRatio")
 	public ImageStretchMode getStretchMode() {
 		return stretchMode;
 	}
 
-	@ClientProperty(escapeValue = "keepRatio")
 	public void setStretchMode(ImageStretchMode stretchMode) {
 		this.stretchMode = stretchMode;
+	}
+
+	@ClientProperty(escapeValue = "center")
+	public ImagePackMode getPackMode() {
+		return packMode;
+	}
+
+	public void setPackMode(ImagePackMode packMode) {
+		this.packMode = packMode;
 	}
 }

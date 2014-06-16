@@ -16,6 +16,6 @@ package com.bstek.dorado.view.widget.form;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-6-19
  */
-public enum ImageStretchMode {
-	fitWidth, fitHeight, keepRatio, fit, none
+public enum ImagePackMode {
+	start, center, end
 }
