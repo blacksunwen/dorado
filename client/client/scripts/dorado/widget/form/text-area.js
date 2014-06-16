@@ -84,6 +84,19 @@
 				this._modernScroller = $DomUtils.modernScroll(this._textDom, {
 					listenContentSize: true
 				});
+			} else {
+				this._modernScroller = $DomUtils.modernScroll(this._textDom.parentNode, {
+					updateBeforeScroll: true,
+					scrollSize: function(dir, container, content) {
+						return dir == "h" ?  content.scrollHeight : content.scrollWidth;
+					},
+					render: function(left, top) {
+						if (this.content) {
+							this.content.scrollTop = top;
+							this.content.scrollLeft = left;
+						}
+					}
+				});
 			}
 			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				this.doOnAttachToDocument = this.doOnResize;
@@ -157,12 +170,12 @@
 		
 		doOnFocus: function() {
 			if (this._useBlankText) this.doSetText('');
-            var maxLength = this._maxLength || 0;
-            if (maxLength) {
-                this._textDom.setAttribute("maxLength", maxLength);
-            } else {
-                this._textDom.removeAttribute("maxLength");
-            }
+			var maxLength = this._maxLength || 0;
+			if (maxLength) {
+				this._textDom.setAttribute("maxLength", maxLength);
+			} else {
+				this._textDom.removeAttribute("maxLength");
+			}
 			$invokeSuper.call(this, arguments);
 		},
 		
