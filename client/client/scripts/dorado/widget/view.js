@@ -838,7 +838,13 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					//me.scrollToTop();
 				}, true);
 
-				$fly(document).bind("touchmove", function (e) { e.preventDefault(); });
+				jQuery(body).delegate(".scrollable, textarea", 'touchmove', function(event) {
+					event.stopImmediatePropagation();
+				});
+
+				jQuery(document).bind("touchmove", function (event) {
+					event.preventDefault();
+				});
 
 				this.initialHeight = window.innerHeight;
 
