@@ -839,7 +839,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}, true);
 
 				jQuery(body).delegate(".scrollable, textarea", 'touchmove', function(event) {
-					event.stopImmediatePropagation();
+					//event.stopImmediatePropagation();
 				});
 
 				jQuery(document).bind("touchmove", function (event) {
