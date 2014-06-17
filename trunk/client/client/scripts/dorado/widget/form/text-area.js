@@ -84,24 +84,42 @@
 				this._modernScroller = $DomUtils.modernScroll(this._textDom, {
 					listenContentSize: true
 				});
-			} else {
-				this._modernScroller = $DomUtils.modernScroll(this._textDom.parentNode, {
-					updateBeforeScroll: true,
-					scrollSize: function(dir, container, content) {
-						return dir == "h" ?  content.scrollHeight : content.scrollWidth;
-					},
-					render: function(left, top) {
-						if (this.content) {
-							this.content.scrollTop = top;
-							this.content.scrollLeft = left;
-						}
-					}
-				});
 			}
 			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				this.doOnAttachToDocument = this.doOnResize;
 			}
 			return dom;
+		},
+
+		doOnAttachToDocument: function() {
+			$invokeSuper.call(this, arguments);
+			if (dorado.Browser.isTouch) {
+				var textarea = this;
+				textarea._modernScroller = $DomUtils.modernScroll(textarea._textDom.parentNode, {
+					updateBeforeScroll: true,
+					scrollSize: function(dir, container, content) {
+						return dir == "h" ?  content.scrollWidth : content.scrollHeight;
+					},
+					render: function(left, top) {
+						if (this.content && !this._renderScrollAttr) {
+							this.content.scrollTop = top;
+							this.content.scrollLeft = left;
+						}
+					},
+					autoHide: false,
+					bouncing: false
+				});
+				$fly(textarea._textDom).bind("scroll", function() {
+					textarea._modernScroller._renderScrollAttr = true;
+					textarea._modernScroller.update();
+					textarea._modernScroller.scrollTo(this.scrollLeft, this.scrollTop, false);
+					textarea._modernScroller._renderScrollAttr = false;
+				}).bind("focus", function() {
+					textarea._modernScroller.showScrollbar();
+				}).bind("blur", function() {
+					textarea._modernScroller.hideScrollbar();
+				});
+			}
 		},
 
 		refreshTriggerDoms: function() {
