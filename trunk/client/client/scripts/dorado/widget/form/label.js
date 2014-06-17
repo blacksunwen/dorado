@@ -202,12 +202,12 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		 *   keepRatio - 图片会完全在组件的可见区域中，根据组件的大小、图片的大小不同，有可能图片的宽度与组件相同，也有可能图片的高度与组件相同。
 		 *   也就是说有可能是fitWidth模式，也有可能是fitHeight模式。
 		 *  </li>
-		 *  <li> fit - 图片的大小和组件的大小完全相同，不会保持图片原本的宽高比。</li>
+		 *  <li> stretch - 图片的大小和组件的大小完全相同，不会保持图片原本的宽高比。</li>
 		 *  <li> none - 不对图片进行拉伸，保持图片的原大小。</li>
 		 * <ul>
 		 * @type String
 		 * @attribute writeBeforeReady
-		 * @default "fit"
+		 * @default "stretch"
 		 */
 		stretchMode: {
 			writeBeforeReady: true,
@@ -307,7 +307,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 				image.doStretchAndPack();
 			});
 		}
-		else if (stretchMode == "fit") {
+		else if (stretchMode == "stretch" || stretchMode == "fit") {	// fit is deprecated
 			$imageDom.css({
 				position: "",
 				width: "100%",
