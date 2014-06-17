@@ -831,7 +831,9 @@ dorado.dequeue = function(namespace) {
 	});
 	
 	dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS = [];
-	
+
+	dorado.widget.FloatControl.layerModalPool = layerModalPool;
+
 	var slideShow = function(options, safe) {
 		var control = this, align = options.align, vAlign = options.vAlign, direction = options.direction, dom = control._dom;
 		$fly(dom).css("visibility", "");
