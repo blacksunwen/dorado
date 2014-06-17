@@ -48,22 +48,23 @@ var dorado = {
 		}
 
 		function detect(ua) {
-			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/),
-				ipad = ua.match(/(iPad).*OS\s([\d_]+)/), iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
+			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/), ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+				iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/), miui = ua.match(/(MiuiBrowser)\/([\d.]+)/i);
 
 			if (android) {
 				os.android = true;
 				os.version = android[2];
-			}
-			else if (iphone) {
+			} else if (iphone) {
 				os.ios = true;
 				os.version = iphone[2].replace(/_/g, '.');
 				os.iphone = true;
-			}
-			else if (ipad) {
+			} else if (ipad) {
 				os.ios = true;
 				os.version = ipad[2].replace(/_/g, '.');
 				os.ipad = true;
+			}
+			if (miui) {
+				os.miui = true;
 			}
 			return os;
 		}
@@ -71,11 +72,13 @@ var dorado = {
 		var ua = navigator.userAgent, os = detect(ua);
 		if (os.iphone) {
 			browser.isPhone = os.iphone;
-		}
-		else if (os.android) {
+		} else if (os.android) {
 			var screenSize = window.screen.width;
 			if (screenSize > window.screen.height) screenSize = window.screen.height;
 			browser.isPhone = (screenSize / window.devicePixelRatio) < 768;
+			if (os.miui) {
+				browser.miui = true;
+			}
 		}
 
 		browser.android = os.android;

@@ -565,10 +565,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		resizeCallbacks.push(callback);
 	};
 
-	dorado.fireResizeCallback = function() {
+	dorado.fireResizeCallback = function(keyboardVisible) {
 		for(var i = 0, j = resizeCallbacks.length; i < j; i++) {
 			var callback = resizeCallbacks[i];
-			callback.call(null);
+			callback.call(null, keyboardVisible);
 		}
 	};
 
@@ -799,7 +799,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				if (!topView._destroyed) topView.destroy();
 			});
 
-			var oldResize = window.onresize;
+			var oldResize = window.onresize, keyboardVisible;
 
 			window.onresize = function() {
 				oldResize && oldResize.apply(window, arguments);
@@ -807,6 +807,11 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					var width = $fly(window).width(), height = $fly(window).height();
 					if ((oldWidth === undefined && oldHeight === undefined) || (width !== oldWidth && height !== oldHeight)) {
 						resizeTopView();
+					} else if (dorado.Browser.miui && !keyboardVisible && Math.abs(height - oldHeight) < 100) {
+						resizeTopView();
+					} else if (dorado.Browser.android && Math.abs(height - oldHeight) > 100) {
+						keyboardVisible = height - oldHeight < 0;
+						dorado.fireResizeCallback(keyboardVisible);
 					}
 					oldWidth = width;
 					oldHeight = height;
@@ -833,15 +838,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				var me = this, stretchSize = Math.max(window.innerHeight, window.innerWidth) * 2,
 					body = document.body;
 
-				document.addEventListener('touchstart', function() {
-					//为了修复双次点击TextEditor导致位置不正确的Bug，先屏蔽此行代码。
-					//me.scrollToTop();
-				}, true);
-
-				jQuery(body).delegate(".scrollable, textarea", 'touchmove', function(event) {
-					//event.stopImmediatePropagation();
-				});
-
 				jQuery(document).bind("touchmove", function (event) {
 					event.preventDefault();
 				});
@@ -852,7 +848,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 				this.scrollToTop();
 
-				// These 2 timers here are ugly but it's the only way to make address bar hiding works on all the devices we have including the new Galaxy Tab
 				setTimeout(function() {
 					me.scrollToTop();
 					setTimeout(function() {
@@ -878,15 +873,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				}
 			},
 			updateBodySize: function() {
-				var $body = $fly(document.body);
-				if (isInIFrame) {
-					return;
-				}
-				else {
-					var width = jQuery(window).width(), height = jQuery(window).height();
-					//alert(width + "," + height + ";" + window.innerWidth + "," + window.innerHeight + ";");
-					jQuery(document.body).height(height).width(width);
-				}
+				if (isInIFrame) return;
+				var $body = $fly(document.body), width = jQuery(window).width(), height = jQuery(window).height();
+				$body.height(height).width(width);
 			}
 		};
 
