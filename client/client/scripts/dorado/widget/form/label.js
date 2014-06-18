@@ -192,7 +192,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		image: {},
 		
 		/**
-		 * 图片拉伸方式，可选值：fitWidth, fitHeight, keepRatio，fit, none。
+		 * 图片拉伸方式，可选值：fitWidth, fitHeight, keepRatio，stretch, none。
 		 *
 		 * 根据拉伸模式的不同，图片的大小会有所不同。不同的模式的拉伸方式见下：
 		 * <ul>
