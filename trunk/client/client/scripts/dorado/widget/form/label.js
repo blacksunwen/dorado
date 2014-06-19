@@ -207,7 +207,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		 * <ul>
 		 * @type String
 		 * @attribute writeBeforeReady
-		 * @default "stretch"
+		 * @default "keepRatio"
 		 */
 		stretchMode: {
 			writeBeforeReady: true,
