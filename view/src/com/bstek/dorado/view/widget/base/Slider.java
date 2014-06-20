@@ -28,7 +28,7 @@ import com.bstek.dorado.view.widget.Orientation;
  */
 @Widget(name = "Slider", category = "General", dependsPackage = "base-widget")
 @ClientObject(prototype = "dorado.widget.Slider", shortTypeName = "Slider")
-@XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
+@XmlNode(clientTypes = { ClientType.DESKTOP })
 @ClientEvents({ @ClientEvent(name = "beforeValueChange"),
 		@ClientEvent(name = "onValueChange") })
 public class Slider extends Control {
