@@ -160,7 +160,6 @@
 				<file name="base/simple-button.js" />
 				<file name="base/iframe.js" />
 				<file name="base/card-book.js" />
-				<file name="base/slider.js" />
 				<file name="base/progress-bar.js" />
 				<file name="base/tip.js" />
 				<file name="base/float-container.js" />
@@ -173,6 +172,7 @@
 				<file name="base/button.js" />
 				<file name="base/menu-item.js" />
 				<file name="base/menu.js" />
+				<file name="base/slider.js" />
 				<file name="base/tab.js" />
 				<file name="base/tab-bar.js" />
 				<file name="base/panel.js" />
