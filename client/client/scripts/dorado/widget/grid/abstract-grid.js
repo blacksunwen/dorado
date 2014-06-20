@@ -1078,6 +1078,13 @@
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件的参数。
 			 * @param {dorado.widget.grid.Column} arg.column 被点中的列。
+			 * @param {dorado.Entity|Object} arg.data 行对应的数据实体。
+			 * @param {String} arg.rowType 行的类型，目前可能的取值包括：
+			 * <ul>
+			 * <li>null    -    普通的数据行。</li>
+			 * <li>header    -    数据分组模式下的分组标题行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
+			 * <li>footer    -    数据分组模式下的分组汇总行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
+			 * </ul>
 			 * @param {Event} arg.event DHTML中的事件event参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -1088,6 +1095,14 @@
 			 * 当数据行被双击时触发的事件。
 			 * @param {Object} self 事件的发起者，即控件本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {dorado.widget.grid.Column} arg.column 被点中的列。
+			 * @param {dorado.Entity|Object} arg.data 行对应的数据实体。
+			 * @param {String} arg.rowType 行的类型，目前可能的取值包括：
+			 * <ul>
+			 * <li>null    -    普通的数据行。</li>
+			 * <li>header    -    数据分组模式下的分组标题行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
+			 * <li>footer    -    数据分组模式下的分组汇总行，参考{@link dorado.widget.AbstractGrid#attribute:groupProperty}。</li>
+			 * </ul>
 			 * @param {Event} arg.event DHTML中的事件event参数。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
@@ -1300,10 +1315,14 @@
 
 			function registerInnerControl(innerGrid) {
 
-				function findColumnByEvent(grid, innerGrid, event) {
-					var column = null, row = $DomUtils.findParent(event.target, function(parentNode) {
+				function findRowByEvent(grid, innerGrid, event) {
+					return $DomUtils.findParent(event.target, function(parentNode) {
 						return (parentNode.parentNode == innerGrid._dataTBody);
 					});
+				}
+
+				function findColumnByEvent(grid, row, event) {
+					var column = null;
 					if (row) {
 						var cell = $DomUtils.findParent(event.target, function(parentNode) {
 							return parentNode.parentNode == row;
@@ -1316,13 +1335,19 @@
 				var grid = this;
 				innerGrid.bind("onDataRowClick", function(self, arg) {
 					if (grid.getListenerCount("onDataRowClick")) {
-						arg.column = findColumnByEvent(grid, innerGrid, arg.event);
+						var row = findRowByEvent(grid, innerGrid, arg.event);
+						arg.column = findColumnByEvent(grid, row, arg.event);
+						arg.data = $fly(row).data("item");
+						arg.rowType = row.rowType;
 						grid.fireEvent("onDataRowClick", grid, arg);
 					}
 				});
 				innerGrid.bind("onDataRowDoubleClick", function(self, arg) {
 					if (grid.getListenerCount("onDataRowDoubleClick")) {
-						arg.column = findColumnByEvent(grid, innerGrid, arg.event);
+						var row = findRowByEvent(grid, innerGrid, arg.event);
+						arg.column = findColumnByEvent(grid, row, arg.event);
+						arg.data = $fly(row).data("item");
+						arg.rowType = row.rowType;
 						grid.fireEvent("onDataRowDoubleClick", grid, arg);
 					}
 				});

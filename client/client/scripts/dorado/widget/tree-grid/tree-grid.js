@@ -717,6 +717,15 @@
 				skipRefresh: true,
 				setter: function(currentNode) {
 					if (this._currentNode == currentNode) return;
+					
+					var eventArg = {
+						oldCurrent: this._currentNode,
+						newCurrent: currentNode,
+						processDefault: true
+					};
+					this.fireEvent("beforeCurrentChange", this, eventArg);
+					if (!eventArg.processDefault) return;
+					
 					this._currentNode = currentNode;
 					
 					// 确保先让fixedInnerGrid执行刷新动作，以便于更高效的完成与innerGrid之间的行高同步
@@ -727,7 +736,7 @@
 					}
 					
 					var grid = this.grid;
-					grid.fireEvent("onCurrentChange", grid);
+					grid.fireEvent("onCurrentChange", grid, eventArg);
 					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._uniqueId : null);
 				}
 			}
