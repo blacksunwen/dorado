@@ -410,7 +410,7 @@
 										tagName: "DIV",
 										className: "d-fix-text-align",
 										// 用于防止TD.align=center的设置传染到内部子控件
-										style: "display:inline-block;zoom:1"
+										style: !dorado.Browser.webkit ? "display:inline-block;zoom:1" : "display:table-cell"
 									};
 								}
 							})()
