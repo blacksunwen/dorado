@@ -825,6 +825,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				$fly(window).bind("orientationchange", function() {
 					resizeTopView();
 				});
+
+				$fly(document).bind("touchmove", function (event) {
+					event.preventDefault();
+				});v
 			}
 
 			dorado.fireAfterInit();
@@ -837,10 +841,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			init: function(fn, scope) {
 				var me = this, stretchSize = Math.max(window.innerHeight, window.innerWidth) * 2,
 					body = document.body;
-
-				jQuery(document).bind("touchmove", function (event) {
-					event.preventDefault();
-				});
 
 				this.initialHeight = window.innerHeight;
 
