@@ -344,9 +344,13 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 	
 	_setTree: function(tree) {
 		if (this._tree != tree) {
-			if (this._tree != null && this._tree.onNodeDetached) this._tree.onNodeDetached(this);
+			var oldTree = this._tree;
+			if (oldTree != null && oldTree.onNodeDetached) oldTree.onNodeDetached(this);
+			if (oldTree) oldTree.unregisterInnerViewElement(this);
+
 			this._tree = tree;
 			if (tree != null && tree.onNodeAttached) tree.onNodeAttached(this);
+			if (tree) tree.registerInnerViewElement(this);
 			
 			this._nodes.each(function(child) {
 				child._setTree(tree);
@@ -680,13 +684,6 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 dorado.widget.tree.Node = $extend([dorado.widget.tree.BaseNode, dorado.EventSupport], /** @scope dorado.widget.tree.Node.prototype */ {
 	$className: "dorado.widget.tree.Node",
 
-	constructor: function(config) {
-		$invokeSuper.call(this, arguments);
-		if (config && typeof config == "object") {
-			this._id = config.id;
-		}
-	},
-
 	_setTree: function(tree) {
 		if (this._tree !== tree && this._id) {
 			var oldTree = this._tree, oldView, newView;
@@ -701,9 +698,7 @@ dorado.widget.tree.Node = $extend([dorado.widget.tree.BaseNode, dorado.EventSupp
 			}
 
 			if (oldView !== newView) {
-				if (oldView) oldView.unregisterViewElement(this._id);
 				$invokeSuper.call(this, [tree]);
-				if (newView) newView.registerViewElement(this._id, this);
 				return;
 			}
 		}
