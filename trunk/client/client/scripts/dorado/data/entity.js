@@ -1584,6 +1584,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 					} else if (value instanceof dorado.EntityList) {
 						value = value.toJSON(options, context);
 					}
+					else if (value instanceof Object && value.isDataPipeWrapper) {
+						value = undefined;
+					}
 				}
 				if (generateOldData && propertyDef && oldData != null) {
 					if (!oldDataHolder) oldDataHolder = {};
