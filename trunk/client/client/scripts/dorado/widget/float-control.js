@@ -40,7 +40,8 @@ dorado.dequeue = function(namespace) {
 (function() {
 	var SHOWHIDE_SUFFIX = "_SHOWHIDE";
 
-	var queue = [], needUseModal = dorado.Browser.isTouch && (dorado.Browser.iOS || dorado.Browser.android), modalKey = "DORADO_TOUCH_MODAL";
+	//在Touch项目中使用了新的方式来防止幽灵点击，所以此处needUseModal强制设置为false，当Touch的新方式证明稳定以后会移除相关代码。
+	var queue = [], needUseModal = false/**dorado.Browser.isTouch && (dorado.Browser.iOS || dorado.Browser.android)*/, modalKey = "DORADO_TOUCH_MODAL";
 	jQuery(function() {
 		document.onclick = function() {
 			if (queue.length > 0) {
@@ -60,7 +61,7 @@ dorado.dequeue = function(namespace) {
 
 	var layerModalPool = new dorado.util.ObjectPool({
 		makeObject: function() {
-			var dom = document.createElement("div"), width = $fly(window).width(), height = $fly(window).height();
+			var dom = document.createElement("div");
 			$fly(dom).css({
 				position: "absolute",
 				left: 0,
