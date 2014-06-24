@@ -93,8 +93,11 @@
 
 		doOnAttachToDocument: function() {
 			$invokeSuper.call(this, arguments);
+			var textarea = this;
 			if (dorado.Browser.isTouch) {
-				var textarea = this;
+				if (dorado.Browser.android && dorado.Browser.chrome) {
+					$fly(textarea._textDom).css("overflow", "hidden");
+				}
 				textarea._modernScroller = $DomUtils.modernScroll(textarea._textDom.parentNode, {
 					updateBeforeScroll: true,
 					scrollSize: function(dir, container, content) {
