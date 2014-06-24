@@ -84,8 +84,7 @@
 					service: socket._service,
 					parameter: socket._parameter,
 					responseDelay: ((socket._responseDelay >= 0) ? socket._responseDelay : -1)
-				},
-				batchable: true
+				}
 			}, {
 				callback: function (success, result) {
 					if (success) {
@@ -122,8 +121,7 @@
 					action: self.serviceAction,
 					subAction: "disconnect",
 					socketId: socket._socketId
-				},
-				batchable: true
+				}
 			}, {
 				callback: function (success, result) {
 					if (success) {
@@ -153,8 +151,7 @@
 					subAction: "poll",
 					groupId: self._groupId,
 					socketIds: self._socketIds
-				},
-				batchable: true
+				}
 			}, {
 				callback: function (success, result) {
 					if (!success) self._pollingErrorTimes++;
@@ -204,8 +201,7 @@
 					action: self.serviceAction,
 					subAction: "stop-poll",
 					groupId: self._groupId
-				},
-				batchable: true
+				}
 			}, {
 				callback: function (success, result) {
 					if (success) {
@@ -227,8 +223,7 @@
 					socketId: socket._socketId,
 					type: type,
 					data: data
-				},
-				batchable: true
+				}
 			}, {
 				callback: function (success, result) {
 					if (success) {

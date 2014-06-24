@@ -404,6 +404,10 @@
 				});
 
 			$fly(dom).addClass(tab._className + TAB_CLOSEABLE_CLASS);
+		},
+
+		doSetParentViewElement: function(parentViewElement) {
+			this._parent = parentViewElement;
 		}
 	});
 
