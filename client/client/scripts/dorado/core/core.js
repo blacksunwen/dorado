@@ -48,8 +48,8 @@ var dorado = {
 		}
 
 		function detect(ua) {
-			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/), ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
-				iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/), miui = ua.match(/(MiuiBrowser)\/([\d.]+)/i);
+			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/), android_40 = ua.match(/(Android)\s+(4.0)/),
+				ipad = ua.match(/(iPad).*OS\s([\d_]+)/), iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/), miui = ua.match(/(MiuiBrowser)\/([\d.]+)/i);
 
 			if (android) {
 				os.android = true;
@@ -65,6 +65,9 @@ var dorado = {
 			}
 			if (miui) {
 				os.miui = true;
+			}
+			if (android_40) {
+				os.android_40 = true;
 			}
 			return os;
 		}
@@ -82,18 +85,11 @@ var dorado = {
 		}
 
 		browser.android = os.android;
+		browser.android_40 = os.android_40;
 		browser.iOS = os.ios;
 		browser.osVersion = os.version;
 
 		browser.isTouch = (browser.android || browser.iOS) && !!("ontouchstart" in window || (window["$setting"] && $setting["common.simulateTouch"]));
-		if (browser.chrome) {
-			try {
-				document.createEvent("TouchEvent");
-			}
-			catch(e) {
-				browser.isTouch = false;
-			}
-		}
 		browser.version = parseInt(browser.version);
 		return browser;
 	})(),

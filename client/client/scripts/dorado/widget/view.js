@@ -751,6 +751,9 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (v) {
 			cls += " " + cls + v;
 		}
+		if (b.android_40) {
+			cls += " d-android-40";
+		}
 
 		$fly(document.body).addClass(cls + " d-rendering");
 		if (!dorado.Browser.isTouch) {
