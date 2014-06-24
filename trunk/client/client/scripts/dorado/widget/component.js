@@ -95,6 +95,10 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 		var retVal = $invokeSuper.call(this, arguments);
 		if (optimized) AUTO_APPEND_TO_TOPVIEW = false;
 		return retVal;
+	},
+
+	doSetParentViewElement: function(parentViewElement) {
+		this._parent = parentViewElement;
 	}
 
 });

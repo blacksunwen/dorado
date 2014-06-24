@@ -106,7 +106,7 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 		tree: {
 			readOnly: true
 		},
-		
+
 		/**
 		 * 该节点所隶属父节点。
 		 * @type dorado.widget.tree.BaseNode
@@ -325,9 +325,6 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 				while (n) {
 					level++;
 					n = n._parent;
-					if (dorado.Object.isInstanceOf(n, dorado.widget.AbstractTree)) {
-						break;
-					}
 				}
 				return level;
 			}

@@ -425,6 +425,13 @@
 			},
 
 			/**
+			 * 父列。
+			 * @type dorado.widget.grid.GroupColumn
+			 * @attribute
+			 */
+			parent: {},
+
+			/**
 			 * 列头中内容的水平对齐方式。 取值范围如下：
 			 * <ul>
 			 * <li>left</li>

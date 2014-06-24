@@ -52,7 +52,7 @@
 			 * @type dorado.widget.ViewElement
 			 * @attribute readOnly
 			 */
-			parent: {
+			parentViewElement: {
 				readOnly: true
 			},
 
@@ -247,7 +247,8 @@
 		registerInnerViewElement: function(viewElement) {
 			if (!this._innerViewElements) this._innerViewElements = [];
 			this._innerViewElements.push(viewElement);
-			viewElement._parent = this;
+			viewElement._parentViewElement = this;
+			if (viewElement.doSetParent) viewElement.doSetParent(this);
 			viewElement.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 			if (viewElement.parentChanged) viewElement.parentChanged();
 		},
@@ -260,7 +261,8 @@
 		unregisterInnerViewElement: function(viewElement) {
 			if (!this._innerViewElements) return;
 			this._innerViewElements.remove(viewElement);
-			viewElement._parent = null;
+			viewElement._parentViewElement = null;
+			if (viewElement.doSetParent) viewElement.doSetParent(null);
 			viewElement.set("view", null);
 			if (viewElement.parentChanged) viewElement.parentChanged();
 		}
@@ -400,13 +402,13 @@
 	 *
 	 * @example
 	 * // 查找某Element所属的控件。
-	 * var control = dorado.widget.ViewElement.findParentVieElement(div);
+	 * var control = dorado.widget.ViewElement.findParentViewElement(div);
 	 *
 	 * @example
 	 * // 查找某Element元素所属的Dialog控件。
-	 * var dialog = dorado.widget.ViewElement.findParentVieElement(div, dorado.widget.Dialog);
+	 * var dialog = dorado.widget.ViewElement.findParentViewElement(div, dorado.widget.Dialog);
 	 */
-	dorado.widget.ViewElement.findParentVieElement = function(element, type) {
+	dorado.widget.ViewElement.findParentViewElement = function(element, type) {
 
 		function find(win, dom, className) {
 			var control = null;
@@ -423,7 +425,7 @@
 						}
 						else {
 							while(!viewElement._isDoradoControl) {
-								viewElement = viewElement._parent;
+								viewElement = viewElement._parentViewElement;
 								if (viewElement && viewElement.constructor.className === className) {
 									match = true;
 									break;
