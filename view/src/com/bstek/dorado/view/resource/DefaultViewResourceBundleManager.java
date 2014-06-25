@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.resource.DefaultResourceBundle;
 import com.bstek.dorado.core.resource.ResourceBundle;
+import com.bstek.dorado.util.PathUtils;
 import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
 
 /**
@@ -34,8 +35,6 @@ import com.bstek.dorado.view.config.definition.ViewConfigDefinition;
  */
 public class DefaultViewResourceBundleManager implements
 		ViewResourceBundleManager {
-	private static final String VIEW_FILE_SUFFIX = ".view.xml";
-	private static final int VIEW_FILE_SUFFIX_LENTH = VIEW_FILE_SUFFIX.length();
 	private static final String RESOURCE_FILE_SUFFIX = ".properties";
 
 	private Ehcache cache;
@@ -54,9 +53,7 @@ public class DefaultViewResourceBundleManager implements
 				return null;
 			}
 
-			path = path.substring(0, path.length() - VIEW_FILE_SUFFIX_LENTH);
-
-			int i = path.lastIndexOf('/');
+			int i = path.lastIndexOf(PathUtils.PATH_DELIM);
 			if (i >= 0) {
 				path = path.substring(i + 1);
 			} else {
@@ -64,6 +61,10 @@ public class DefaultViewResourceBundleManager implements
 				if (i >= 0) {
 					path = path.substring(i + 1);
 				}
+			}
+			i = path.indexOf('.');
+			if (i >= 0) {
+				path = path.substring(0, i);
 			}
 
 			if (locale != null) {
@@ -116,10 +117,9 @@ public class DefaultViewResourceBundleManager implements
 			return null;
 		}
 		String path = resource.getPath();
-		if (StringUtils.isEmpty(path) || !path.endsWith(VIEW_FILE_SUFFIX)) {
+		if (StringUtils.isEmpty(path)) {
 			return null;
 		}
-		path = path.substring(0, path.length() - VIEW_FILE_SUFFIX_LENTH);
 
 		Object cacheKey = new MultiKey(path, locale);
 		synchronized (cache) {
