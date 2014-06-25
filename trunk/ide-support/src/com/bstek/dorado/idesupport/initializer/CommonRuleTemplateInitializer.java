@@ -66,6 +66,7 @@ import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.util.clazz.TypeInfo;
 import com.bstek.dorado.view.annotation.ComponentReference;
 import com.bstek.dorado.view.annotation.Widget;
+import com.bstek.dorado.view.widget.AssembledComponent;
 import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.view.widget.datacontrol.DataControl;
@@ -133,16 +134,18 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 		if (StringUtils.isEmpty(scope)
 				&& Component.class.isAssignableFrom(type)) {
 			Widget widget = type.getAnnotation(Widget.class);
-			if (widget != null) {
+			boolean isDeclaredAnnotation = (widget != null && ArrayUtils
+					.indexOf(type.getDeclaredAnnotations(), widget) >= 0);
+			if (widget != null && !ruleTemplate.isAbstract()) {
 				if (StringUtils.isNotEmpty(widget.name())
-						&& !widget.name().equals(ruleTemplate.getName())) {
+						&& !widget.name().equals(ruleTemplate.getName())
+						&& (isDeclaredAnnotation || !AssembledComponent.class
+								.isAssignableFrom(type))) {
 					ruleTemplate.setLabel(widget.name());
 				}
 			}
-			if (!(widget != null
-					&& ArrayUtils
-							.indexOf(type.getDeclaredAnnotations(), widget) >= 0 && !Modifier
-						.isAbstract(type.getModifiers()))) {
+			if (!(widget != null && isDeclaredAnnotation && !Modifier
+					.isAbstract(type.getModifiers()))) {
 				scope = "protected";
 			}
 		}
