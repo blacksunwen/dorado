@@ -50,7 +50,7 @@
 				self.doConnection(socket, callback);
 			}
 		},
-		
+
 		doConnection: function(socket, callback) {
 			var self = this;
 			
