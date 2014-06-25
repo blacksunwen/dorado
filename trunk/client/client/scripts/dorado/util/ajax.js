@@ -1030,7 +1030,7 @@ dorado.util.AjaxEngine.getInstance = function(options) {
 		defaultOptions = dorado.Object.apply({}, defaultOptions);
 		options = dorado.Object.apply(defaultOptions, options);
 	}
-	var key = (options.url || "#EMPTY") + '|' + (options.autoBatchEnabled || false);
+	var key = (options.url || "#EMPTY") + '|' + (options.batchable || false);
 	var ajax = dorado.util.AjaxEngine.SHARED_INSTANCES[key];
 	if (ajax === undefined) {
 		ajax = new dorado.util.AjaxEngine({

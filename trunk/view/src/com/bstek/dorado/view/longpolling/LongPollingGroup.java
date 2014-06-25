@@ -99,27 +99,23 @@ public class LongPollingGroup implements SocketSendListener,
 
 	public List<MessageWrapper> polling(long pollDuration, long responseDelay)
 			throws InterruptedException {
-		try {
-			if (outMessages.isEmpty()) {
-				synchronized (this) {
-					polling = true;
-					wait(pollDuration);
-					polling = false;
-				}
+		if (outMessages.isEmpty()) {
+			synchronized (this) {
+				polling = true;
+				wait(pollDuration);
+				polling = false;
 			}
-
-			if (!outMessages.isEmpty()) {
-				synchronized (responseLock) {
-					responsing = true;
-					responseLock.wait(responseDelay);
-					responsing = false;
-				}
-			}
-
-			unbind();
-			return new ArrayList<MessageWrapper>(outMessages);
-		} finally {
-
 		}
+
+		if (!outMessages.isEmpty()) {
+			synchronized (responseLock) {
+				responsing = true;
+				responseLock.wait(responseDelay);
+				responsing = false;
+			}
+		}
+
+		unbind();
+		return new ArrayList<MessageWrapper>(outMessages);
 	}
 }

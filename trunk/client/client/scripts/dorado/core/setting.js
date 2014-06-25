@@ -47,7 +47,7 @@
 		"common.defaultDisplayDateTimeFormat": "Y-m-d H:i:s",
 		
 		"ajax.defaultOptions": {
-			autoBatchEnabled: true
+			batchable: true
 		},
 		"ajax.dataTypeRepositoryOptions": {
 			url: doradoServierURI,
@@ -62,12 +62,12 @@
 		"ajax.dataResolverOptions": {
 			url: doradoServierURI,
 			method: "POST",
-			batchable: false
+			batchable: true
 		},
 		"ajax.remoteServiceOptions": {
 			url: doradoServierURI,
 			method: "POST",
-			batchable: false
+			batchable: true
 		},
 		"longPolling.pollingOptions": {
 			url: doradoServierURI,
