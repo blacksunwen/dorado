@@ -37,6 +37,15 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 		},
 
 		/**
+		 * 父控件。
+		 * @type dorado.widget.Component
+		 * @attribute readOnly
+		 */
+		parent: {
+			readOnly: true
+		},
+
+		/**
 		 * 此视图对象使用的数据类型管理器。
 		 * @type dorado.DataTypeRepository
 		 * @attribute readOnly

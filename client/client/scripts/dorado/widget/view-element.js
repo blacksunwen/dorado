@@ -248,7 +248,7 @@
 			if (!this._innerViewElements) this._innerViewElements = [];
 			this._innerViewElements.push(viewElement);
 			viewElement._parentViewElement = this;
-			if (viewElement.doSetParent) viewElement.doSetParent(this);
+			if (viewElement.doSetParentViewElement) viewElement.doSetParentViewElement(this);
 			viewElement.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 			if (viewElement.parentChanged) viewElement.parentChanged();
 		},
@@ -262,7 +262,7 @@
 			if (!this._innerViewElements) return;
 			this._innerViewElements.remove(viewElement);
 			viewElement._parentViewElement = null;
-			if (viewElement.doSetParent) viewElement.doSetParent(null);
+			if (viewElement.doSetParentViewElement) viewElement.doSetParentViewElement(null);
 			viewElement.set("view", null);
 			if (viewElement.parentChanged) viewElement.parentChanged();
 		}
