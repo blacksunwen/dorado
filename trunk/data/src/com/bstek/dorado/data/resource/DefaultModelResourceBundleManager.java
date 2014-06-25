@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.config.definition.Definition;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.resource.ResourceBundle;
+import com.bstek.dorado.util.PathUtils;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -33,9 +34,6 @@ import com.bstek.dorado.core.resource.ResourceBundle;
  */
 public class DefaultModelResourceBundleManager implements
 		ModelResourceBundleManager {
-	private static final String MODEL_FILE_SUFFIX = ".model.xml";
-	private static final int MODEL_FILE_SUFFIX_LENTH = MODEL_FILE_SUFFIX
-			.length();
 	private static final String RESOURCE_FILE_SUFFIX = ".properties";
 
 	private Ehcache cache;
@@ -53,9 +51,7 @@ public class DefaultModelResourceBundleManager implements
 				return null;
 			}
 
-			path = path.substring(0, path.length() - MODEL_FILE_SUFFIX_LENTH);
-
-			int i = path.lastIndexOf('/');
+			int i = path.lastIndexOf(PathUtils.PATH_DELIM);
 			if (i >= 0) {
 				path = path.substring(i + 1);
 			} else {
@@ -63,6 +59,10 @@ public class DefaultModelResourceBundleManager implements
 				if (i >= 0) {
 					path = path.substring(i + 1);
 				}
+			}
+			i = path.indexOf('.');
+			if (i >= 0) {
+				path = path.substring(0, i);
 			}
 
 			if (locale != null) {
@@ -113,10 +113,9 @@ public class DefaultModelResourceBundleManager implements
 			return null;
 		}
 		String path = resource.getPath();
-		if (StringUtils.isEmpty(path) || !path.endsWith(MODEL_FILE_SUFFIX)) {
+		if (StringUtils.isEmpty(path)) {
 			return null;
 		}
-		path = path.substring(0, path.length() - MODEL_FILE_SUFFIX_LENTH);
 
 		Object cacheKey = new MultiKey(path, locale);
 		synchronized (cache) {

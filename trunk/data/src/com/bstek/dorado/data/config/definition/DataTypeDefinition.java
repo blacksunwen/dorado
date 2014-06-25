@@ -54,7 +54,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private static final String[] DEFAULT_PROPERTIES = new String[] {
 			"caption", "label", "title" };
 	private static final String SELF_AGGREGATION_DATA_TYPE_SCTION = '[' + PropertyDef.SELF_DATA_TYPE_NAME + ']';
-	public static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
+	private static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
 
 	private String name;
 	private String id;
