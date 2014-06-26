@@ -56,7 +56,7 @@
 
 		getTopMenu: function() {
 			var menu = this._parent, opener = menu.opener, result;
-			while (opener) {
+			while(opener) {
 				var parent = opener._parent;
 				if (opener instanceof dorado.widget.menu.AbstractMenuItem && parent instanceof dorado.widget.Menu) {
 					result = parent;
@@ -64,6 +64,10 @@
 				opener = parent ? parent.opener : null;
 			}
 			return result;
+		}
+
+		doSetParentViewElement: function(parentViewElement) {
+			this._parent = parentViewElement;
 		}
 	});
 
@@ -150,7 +154,7 @@
 			 * @type String
 			 */
 			iconClass: {},
-			
+
 			action: {
 				componentReference: true
 			}
@@ -179,7 +183,8 @@
 			$fly(doms.caption).text(item._caption || action._caption);
 			if (icon) {
 				$DomUtils.setBackgroundImage(doms.icon, icon);
-			} else {
+			}
+			else {
 				$fly(doms.icon).css("background-image", "");
 			}
 			$fly(doms.icon).prop("className", "d-icon");
@@ -196,17 +201,20 @@
 					tagName: "span",
 					className: "menu-item-content",
 					contextKey: "itemContent",
-					content: [{
-						tagName: "span",
-						className: "d-icon",
-						contextKey: "icon",
-						content: "&nbsp;"
-					}, {
-						tagName: "span",
-						className: "caption",
-						content: item._caption || action._caption,
-						contextKey: "caption"
-					}]
+					content: [
+						{
+							tagName: "span",
+							className: "d-icon",
+							contextKey: "icon",
+							content: "&nbsp;"
+						},
+						{
+							tagName: "span",
+							className: "caption",
+							content: item._caption || action._caption,
+							contextKey: "caption"
+						}
+					]
 				}
 			}, null, doms), disabled = item._disabled || action._disabled || action._sysDisabled, icon = item._icon || action._icon;
 
@@ -218,7 +226,8 @@
 
 			if (icon) {
 				$DomUtils.setBackgroundImage(doms.icon, icon);
-			} else {
+			}
+			else {
 				$fly(doms.icon).css("background-image", "");
 			}
 
@@ -252,7 +261,7 @@
 			control: {
 				setter: function(control) {
 					if (this._control) this.unregisterInnerViewElement(this._control);
-					
+
 					if (!(control instanceof dorado.widget.Control)) {
 						control = dorado.Toolkits.createInstance("widget", control, function(type) {
 							return dorado.Toolkits.getPrototype("widget");
@@ -267,7 +276,7 @@
 			view: {
 				setter: function(view) {
 					$invokeSuper.call(this, arguments);
-					
+
 					if (this._control) this._control.set("view", view);
 				}
 			}
@@ -288,7 +297,8 @@
 			if (item._showControlTimer) {
 				clearTimeout(item._showControlTimer);
 				item._showControlTimer = null;
-			} else if (item._control) {
+			}
+			else if (item._control) {
 				item._control.hide();
 			}
 		},
@@ -300,11 +310,11 @@
 		},
 
 		onClick: function() {
-            var item = this, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
-            if (!disabled) {
-                action.execute && action.execute();
-                item.fireEvent("onClick", item);
-            }
+			var item = this, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
+			if (!disabled) {
+				action.execute && action.execute();
+				item.fireEvent("onClick", item);
+			}
 		},
 
 		onFocus: function() {
@@ -362,19 +372,20 @@
 			submenu: {
 				setter: function(value) {
 					if (this._submenu) this.unregisterInnerViewElement(this._submenu);
-					
+
 					var submenu;
 					if (!value) {
 						submenu = null;
-					} else if (value.constructor == Object.prototype.constructor) {
+					}
+					else if (value.constructor == Object.prototype.constructor) {
 						submenu = new dorado.widget.Menu(value);
-					} else if (value instanceof dorado.widget.Menu) {
+					}
+					else if (value instanceof dorado.widget.Menu) {
 						submenu = value;
 					}
-					
+
 					if (submenu) this.registerInnerViewElement(submenu);
 					this._submenu = submenu;
-					
 
 					var dom = this._dom;
 					if (dom) {
@@ -403,12 +414,12 @@
 							originSkipRefresh = submenu._skipRefresh;
 							submenu._skipRefresh = true;
 						}
-						
+
 						parentItem.clearItems();
 						value.each(function(item) {
 							parentItem.addItem(item);
 						});
-						
+
 						if (submenu) {
 							submenu._skipRefresh = originSkipRefresh;
 						}
@@ -422,7 +433,8 @@
 			if (c == '#' || c == '&') {
 				var itemName = attr.substring(1);
 				return this.getItem(itemName);
-			} else {
+			}
+			else {
 				return $invokeSuper.call(this, [attr]);
 			}
 		},
@@ -513,7 +525,7 @@
 
 					if (owner && owner.getListenerCount("onContextMenu") > 0 && submenu.getListenerCount("onContextMenu") == 0) {
 						var handles = item._parent._events["onContextMenu"];
-						for (var i = 0, j = handles.length; i < j; i++) {
+						for(var i = 0, j = handles.length; i < j; i++) {
 							var handler = handles[i];
 							submenu.bind("onContextMenu", handler.listener, handler.options);
 						}
@@ -543,7 +555,8 @@
 					item.fireEvent("onClick", item);
 					//注：为了修复dorado7-2367把这句给屏蔽了，记不清为什么要添加这句了。
 					//event.stopImmediatePropagation();
-				} else {
+				}
+				else {
 					action.execute && action.execute();
 					item.fireEvent("onClick", item);
 					if (item._hideOnClick) {
@@ -562,7 +575,8 @@
 				if (item._showSubmenuTimer) {
 					clearTimeout(item._showSubmenuTimer);
 					item._showSubmenuTimer = null;
-				} else {
+				}
+				else {
 					if (submenu._inheritContextMenu) {
 						submenu.clearListeners("onContextMenu");
 					}
@@ -689,7 +703,8 @@
 			if (item._dom) {
 				if (item._checked) {
 					$fly(item._doms.icon).removeClass(UN_CHECKED_ICON).addClass(CHECKED_ICON);
-				} else {
+				}
+				else {
 					$fly(item._doms.icon).removeClass(CHECKED_ICON).addClass(UN_CHECKED_ICON);
 				}
 			}
@@ -698,8 +713,8 @@
 		onClick: function() {
 			var item = this, parent = item._parent, action = item._action || {}, disabled = item._disabled || action._disabled || action._sysDisabled;
 			if (!disabled) {
-                action.execute && action.execute();
-                item.fireEvent("onClick", item);
+				action.execute && action.execute();
+				item.fireEvent("onClick", item);
 				if (!item.hasSubmenu() && item._hideOnClick) {
 					parent.hideTopMenu();
 				}
