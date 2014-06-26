@@ -52,7 +52,7 @@ public class DefaultSkinResolver implements SkinResolver {
 				if (isIE) {
 					ieVersion = MSIE_VERSION_PATTERN.matcher(ua).replaceAll(
 							"$1");
-					if (StringUtils.isNotEmpty(ieVersion)) {
+					if (StringUtils.isNotEmpty(ieVersion) && ieVersion.length() == 1) {
 						if ("9".compareTo(ieVersion) > 0) {
 							isOldIE = true;
 							if ("7".compareTo(ieVersion) > 0) {
