@@ -723,7 +723,8 @@
 						newCurrent: currentNode,
 						processDefault: true
 					};
-					this.fireEvent("beforeCurrentChange", this, eventArg);
+                    var grid = this.grid;
+                    grid.fireEvent("beforeCurrentChange", this, eventArg);
 					if (!eventArg.processDefault) return;
 					
 					this._currentNode = currentNode;
@@ -735,7 +736,6 @@
 						if (row) this.scrollCurrentIntoView();
 					}
 					
-					var grid = this.grid;
 					grid.fireEvent("onCurrentChange", grid, eventArg);
 					grid.doInnerGridSetCurrentRow(this, currentNode ? currentNode._uniqueId : null);
 				}
