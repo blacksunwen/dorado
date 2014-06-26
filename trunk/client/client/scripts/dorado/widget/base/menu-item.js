@@ -64,7 +64,7 @@
 				opener = parent ? parent.opener : null;
 			}
 			return result;
-		}
+		},
 
 		doSetParentViewElement: function(parentViewElement) {
 			this._parent = parentViewElement;
