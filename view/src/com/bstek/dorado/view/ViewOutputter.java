@@ -71,15 +71,6 @@ public class ViewOutputter extends ContainerOutputter {
 		View originalView = context.getCurrentView();
 		context.setCurrentView(view);
 
-		String exPackages = view.getPackages();
-		if (StringUtils.isNotEmpty(exPackages)) {
-			for (String pkg : StringUtils.split(exPackages, ",;")) {
-				if (StringUtils.isNotEmpty(pkg)) {
-					context.addDependsPackage(pkg);
-				}
-			}
-		}
-
 		DoradoContext doradoContext = DoradoContext.getCurrent();
 
 		JexlContext jexlContext = null;
@@ -148,6 +139,15 @@ public class ViewOutputter extends ContainerOutputter {
 
 			// 输出DataType
 			outputIncludeDataTypes(view, context);
+
+			String exPackages = view.getPackages();
+			if (StringUtils.isNotEmpty(exPackages)) {
+				for (String pkg : StringUtils.split(exPackages, ",;")) {
+					if (StringUtils.isNotEmpty(pkg)) {
+						context.addDependsPackage(pkg);
+					}
+				}
+			}
 
 			writer.append("f(view);\n");
 		} finally {
