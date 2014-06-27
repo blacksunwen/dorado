@@ -45,7 +45,6 @@ public class TopViewOutputter extends ViewOutputter {
 		}
 
 		context.addDependsPackage("widget");
-		context.addDependsPackage("common");
 
 		Writer writer = context.getWriter();
 		writer.append("dorado.onInit(function(){\n");
@@ -78,6 +77,7 @@ public class TopViewOutputter extends ViewOutputter {
 				&& WebConfigure.getBoolean("view.debugEnabled")) {
 			context.addDependsPackage("debugger");
 		}
+		context.addDependsPackage("common");
 
 		Set<String> dependsPackages = context.getDependsPackages();
 		if (dependsPackages != null && !dependsPackages.isEmpty()) {
