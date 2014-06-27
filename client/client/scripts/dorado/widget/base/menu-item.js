@@ -37,6 +37,15 @@
 			name: {},
 
 			/**
+			 * 父菜单菜单。
+			 * @type dorado.widget.Menu
+			 * @attribute
+			 */
+			parent: {
+				readOnly: true
+			},
+
+			/**
 			 * 该MenuItem是否可见。
 			 * @type boolean
 			 * @default true
@@ -64,10 +73,6 @@
 				opener = parent ? parent.opener : null;
 			}
 			return result;
-		},
-
-		doSetParentViewElement: function(parentViewElement) {
-			this._parent = parentViewElement;
 		}
 	});
 
