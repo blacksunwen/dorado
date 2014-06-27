@@ -516,11 +516,12 @@ dorado.dequeue = function(namespace) {
 					dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
 					control.setActualVisible(true);
 					control.render(renderTo);
-					control.initObjectShimForIE();
 					control._visible = oldVisible;
 					dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
 					control.setActualVisible(oldActualVisible);
 				}
+				if (dorado.Browser.msie)
+					control.initObjectShimForIE();
 				control.doShow.apply(control, [options]);
 			});
 		},
