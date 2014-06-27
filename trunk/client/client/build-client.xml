@@ -36,9 +36,9 @@
 				<file name="core/attribute.js" />
 				<file name="core/event.js" />
 				<file name="util/util.js" />
+				<file name="util/resource.js" />
 				<file name="util/date.js" />
 				<file name="util/common.js" />
-				<file name="util/resource.js" />
 				<file name="util/iterator.js" />
 				<file name="util/keyed-array.js" />
 				<file name="util/keyed-list.js" />

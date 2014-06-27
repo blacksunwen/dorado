@@ -211,7 +211,7 @@
 		},
 
 		createDom: function() {
-			var monthLabel = $resource("dorado.baseWidget.AllMonths") || "", monthLabels = monthLabel.split(",");
+			var monthLabel = $resource("dorado.baseWidget.AllMonths") || $resource("dorado.core.AllMonths") || "", monthLabels = monthLabel.split(",");
 			this._formatter = function(value) {
 				return monthLabels[value];
 			};
