@@ -438,10 +438,12 @@ dorado.dequeue = function(namespace) {
 		 * <ol>
 		 * 	<li>指定anchorTarget</li>
 		 *  <li>指定position</li>
+		 *  <li>指定event</li>
 		 * 	<li>指定left、top</li>
 		 * </ol>
 		 * 指定anchorTarget以后，anchorTarget会作为fixedElement传入dockAround方法，除了dockAround方法用到的参数，其他参数会被忽略。<br />
 		 * 指定position以后，position会作为参数传入locateIn方法，除了locateIn方法用到的参数，其他参数会被忽略。<br />
+		 * 指定event以后，显示的位置则等于event.pageX和event.pageY<br />
 		 * 若不指定anchorTarget，也不指定position，则会判断用户是不是设置了center、left、top属性，根据这几个属性计算出组件显示的位置。
 		 * </p>
 		 *
@@ -451,6 +453,7 @@ dorado.dequeue = function(namespace) {
 		 * @param {Object} [options.position] 组件显示的位置，该参数应该为Object，用left、top属性表示绝对值。
 		 * @param {HTMLElement|dorado.widget.Control} [options.anchorTarget] 锚定对象，如果是window，则表示该要停靠的DOM元素相对于当前可视范围进行停靠。<br />
 		 *              如果是组件或者HTMLElement，则是相对于组件的dom元素或HTMLElement进行停靠。
+		 * @param {Event} [options.event] jQuery绑定的事件中传入的event。
 		 * @param {String} [options.align=innerleft] 在水平方向上，组件停靠在anchorTarget的位置。可选值为left、innerleft、center、innerright、top。
 		 * @param {String} [options.vAlign=innertop] 在垂直方向上，组件停靠在anchorTarget的位置。可选值为top、innertop、center、innerbottom、bottom。
 		 * @param {int} [options.gapX=0] 在水平方向上，停靠的DOM对象与固定位置的DOM对象之间的间隙大小，可以为正，可以为负。
