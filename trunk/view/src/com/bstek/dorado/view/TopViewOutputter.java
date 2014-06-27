@@ -46,6 +46,15 @@ public class TopViewOutputter extends ViewOutputter {
 
 		context.addDependsPackage("widget");
 
+		DoradoContext doradoContext = DoradoContext.getCurrent();
+		int currentClientType = VariantUtils.toInt(doradoContext
+				.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
+		if ((currentClientType == 0 || ClientType.supports(currentClientType,
+				ClientType.DESKTOP))
+				&& WebConfigure.getBoolean("view.debugEnabled")) {
+			context.addDependsPackage("debugger");
+		}
+
 		Writer writer = context.getWriter();
 		writer.append("dorado.onInit(function(){\n");
 		writer.append("try{\n");
@@ -53,7 +62,6 @@ public class TopViewOutputter extends ViewOutputter {
 		ViewOutputter outputter = (ViewOutputter) clientOutputHelper
 				.getOutputter(view.getClass());
 		outputter.outputView(view, context);
-
 
 		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");
 
@@ -68,15 +76,7 @@ public class TopViewOutputter extends ViewOutputter {
 		writer.append("}\n").append("catch(e){")
 				.append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");
-
-		DoradoContext doradoContext = DoradoContext.getCurrent();
-		int currentClientType = VariantUtils.toInt(doradoContext
-				.getAttribute(ClientType.CURRENT_CLIENT_TYPE_KEY));
-		if ((currentClientType == 0 || ClientType.supports(currentClientType,
-				ClientType.DESKTOP))
-				&& WebConfigure.getBoolean("view.debugEnabled")) {
-			context.addDependsPackage("debugger");
-		}
+		
 		context.addDependsPackage("common");
 
 		Set<String> dependsPackages = context.getDependsPackages();
