@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.web.DoradoContext;
@@ -44,10 +44,9 @@ public class OldIconsFileResolver extends AbstractWebFileResolver {
 		if (ua.indexOf(CHROME_FRAME) < 0) {
 			boolean isMSIE = (ua != null && ua.indexOf(MSIE) != -1);
 			if (isMSIE) {
-				String version = MSIE_VERSION_PATTERN.matcher(ua).replaceAll(
-						"$1");
-				if (StringUtils.isNotEmpty(version)
-						&& "7".compareTo(version) > 0) {
+				float version = NumberUtils.toFloat(MSIE_VERSION_PATTERN
+						.matcher(ua).replaceAll("$1"), Float.MAX_VALUE);
+				if (version < 7) {
 					resourceType = GIF;
 				}
 			}
