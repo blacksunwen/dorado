@@ -661,7 +661,7 @@
 		},
 		
 		createDom: function() {
-			var allWeeks = $resource("dorado.baseWidget.AllWeeks") || "", weeks = allWeeks.split(",");
+			var allWeeks = $resource("dorado.baseWidget.AllWeeks") || $resource("dorado.core.AllWeeks") || "", weeks = allWeeks.split(",");
 			
 			var dateRows = [];
 			
