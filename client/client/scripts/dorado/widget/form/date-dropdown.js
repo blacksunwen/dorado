@@ -1146,6 +1146,7 @@
 			 * @type boolean
 			 */
 			showTodayButton: {
+				defaultValue: true,
 				path: "_picker.showTodayButton"
 			},
 
@@ -1156,6 +1157,7 @@
 			 * @type boolean
 			 */
 			showConfirmButton: {
+				defaultValue: true,
 				path: "_picker.showConfirmButton"
 			},
 
@@ -1173,6 +1175,7 @@
 			 * @default "singleDate"
 			 */
 			selectionMode: {
+				defaultValue: "singleDate",
 				path: "_picker.selectionMode"
 			},
 
