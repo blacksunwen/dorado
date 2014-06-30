@@ -976,8 +976,7 @@
 								}
 							}
 							else {
-								if (!dorado.Browser.isTouch)
-									dorado.widget.setFocusedControl(self);
+								dorado.widget.setFocusedControl(self);
 							}
 							lastMouseDownTarget = evt.srcElement;
 							lastMouseDownTimestamp = new Date();
