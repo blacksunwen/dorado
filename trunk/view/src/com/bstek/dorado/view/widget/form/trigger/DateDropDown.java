@@ -43,12 +43,12 @@ public class DateDropDown extends DropDown {
 	public void setShowTimeSpinner(boolean showTimeSpinner) {
 		this.showTimeSpinner = showTimeSpinner;
 	}
-	
+
+	@ClientProperty(escapeValue = "true")
 	public boolean isShowTodayButton() {
 		return showTodayButton;
 	}
 
-	@ClientProperty(escapeValue = "true")
 	public void setShowTodayButton(boolean showTodayButton) {
 		this.showTodayButton = showTodayButton;
 	}
