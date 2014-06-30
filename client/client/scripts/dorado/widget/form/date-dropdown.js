@@ -76,51 +76,51 @@
 			 */
 			date: {
 				defaultValue: function() {
-                    return new Date();
-                },
+					return new Date();
+				},
 				setter: function(value) {
 					this._date = value;
 					this.refreshButtonOnFilterDate();
 				}
 			},
 
-            /**
-             * 选择模式。
-             * <p>
-             * 此属性具有如下几种取值：
-             * <ul>
-             * <li>singleDate - 单个日期选择。</li>
-             * <li>multiDate - 多个日期选择。</li>
-             * </ul>
-             * </p>
-             * @attribute
-             * @type String
-             * @default "singleDate"
-             */
-            selectionMode: {
-                defaultValue: "singleDate",
-                skipRefresh: true,
-                writeBeforeReady: true
-            },
+			/**
+			 * 选择模式。
+			 * <p>
+			 * 此属性具有如下几种取值：
+			 * <ul>
+			 * <li>singleDate - 单个日期选择。</li>
+			 * <li>multiDate - 多个日期选择。</li>
+			 * </ul>
+			 * </p>
+			 * @attribute
+			 * @type String
+			 * @default "singleDate"
+			 */
+			selectionMode: {
+				defaultValue: "singleDate",
+				skipRefresh: true,
+				writeBeforeReady: true
+			},
 
-            /**
-             * DatePicker中的选中项，单选模式下请使用date属性。
-             * @type Date|Date[]
-             * @attribute
-             */
-            selection: {
-                getter: function() {
-                    if (this._selection) {
-                        return this._selection;
-                    } else {
-                        return ("multiDate" == this._selectionMode) ? [] : this._date;
-                    }
-                },
-                setter: function(selection) {
-                    if (selection == null && this._selectionMode == "multiDate") selection = [];
-                    this._selection = selection;
-                }
-            },
+			/**
+			 * DatePicker中的选中项，单选模式下请使用date属性。
+			 * @type Date|Date[]
+			 * @attribute
+			 */
+			selection: {
+				getter: function() {
+					if (this._selection) {
+						return this._selection;
+					} else {
+						return ("multiDate" == this._selectionMode) ? [] : this._date;
+					}
+				},
+				setter: function(selection) {
+					if (selection == null && this._selectionMode == "multiDate") selection = [];
+					this._selection = selection;
+				}
+			},
 
 			/**
 			 * 是否显示TimeSpinner。
@@ -244,28 +244,28 @@
 			onFilterDate: {}
 		},
 
-        addSelection: function(date) {
-            var selection = this._selection;
-            if (!selection) selection = this._selection = [];
-            selection.push(date);
-        },
+		addSelection: function(date) {
+			var selection = this._selection;
+			if (!selection) selection = this._selection = [];
+			selection.push(date);
+		},
 
-        removeSelection: function(date) {
-            var selection = this._selection;
-            if (!selection || !date) return;
-            var targetIndex = null;
-            selection.forEach(function(item, index) {
-                if (item && item.getTime() == date.getTime())
-                    targetIndex = index;
-            });
-            if (targetIndex) selection.removeAt(targetIndex);
-        },
+		removeSelection: function(date) {
+			var selection = this._selection;
+			if (!selection || !date) return;
+			var targetIndex = null;
+			selection.forEach(function(item, index) {
+				if (item && item.getTime() == date.getTime())
+					targetIndex = index;
+			});
+			if (targetIndex) selection.removeAt(targetIndex);
+		},
 
-        clearSelections: function() {
-            var selection = this._selection;
-            this._selection = [];
-            this.refreshDate();
-        },
+		clearSelections: function() {
+			var selection = this._selection;
+			this._selection = [];
+			this.refreshDate();
+		},
 
 		/**
 		 * 设置Picker的年份。
@@ -518,21 +518,21 @@
 				$fly(cell).addClass(CELL_UNSELECTABLE_CLASS);
 			}
 
-            if (picker._selectionMode == "multiDate") {
-                var selection = this._selection;
-                if (!selection || !date) return;
-                var targetIndex = null;
-                selection.forEach(function(item, index) {
-                    if (item && item.getTime() == date.getTime()) {
-                        targetIndex = index;
-                    }
-                });
-                if (targetIndex != null){
-                    $fly(cell).addClass(CELL_SELECTED_CLASS);
-                } else {
-                    $fly(cell).removeClass(CELL_SELECTED_CLASS);
-                }
-            }
+			if (picker._selectionMode == "multiDate") {
+				var selection = this._selection;
+				if (!selection || !date) return;
+				var targetIndex = null;
+				selection.forEach(function(item, index) {
+					if (item && item.getTime() == date.getTime()) {
+						targetIndex = index;
+					}
+				});
+				if (targetIndex != null){
+					$fly(cell).addClass(CELL_SELECTED_CLASS);
+				} else {
+					$fly(cell).removeClass(CELL_SELECTED_CLASS);
+				}
+			}
 		},
 
 		/**
@@ -556,7 +556,7 @@
 			
 			day = (day == 0 ? 7 : day);
 
-            var isSingleSelect = picker._selectionMode != "multiDate";
+			var isSingleSelect = picker._selectionMode != "multiDate";
 
 			var startI = 0, startJ = 0;
 			region = region || picker._visibleDateRegion;
@@ -581,17 +581,17 @@
 						if (j - startJ >= day) {
 							cell.innerHTML = count++;
 							this.refreshDateCell(new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)), cell);
-                            if (isSingleSelect) {
-                                if (count - 1 == selectDay) {
-                                    if (!$fly(cell).hasClass(CELL_UNSELECTABLE_CLASS)) {
-                                        cell.className = CELL_SELECTED_CLASS;
-                                    } else {
-                                        cell.className = CELL_UNSELECTABLE_CLASS;
-                                    }
-                                } else {
-                                    $fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
-                                }
-                            }
+							if (isSingleSelect) {
+								if (count - 1 == selectDay) {
+									if (!$fly(cell).hasClass(CELL_UNSELECTABLE_CLASS)) {
+										cell.className = CELL_SELECTED_CLASS;
+									} else {
+										cell.className = CELL_UNSELECTABLE_CLASS;
+									}
+								} else {
+									$fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
+								}
+							}
 						} else {
 							cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
 							
@@ -602,17 +602,17 @@
 						if (count <= maxDay) {
 							cell.innerHTML = count++;
 							this.refreshDateCell(new Date(date.getFullYear(), date.getMonth(), parseInt(cell.innerHTML, 10)), cell);
-                            if (isSingleSelect) {
-                                if (count - 1 == selectDay) {
-                                    if (!$fly(cell).hasClass(CELL_UNSELECTABLE_CLASS)) {
-                                        cell.className = CELL_SELECTED_CLASS;
-                                    } else {
-                                        cell.className = CELL_UNSELECTABLE_CLASS;
-                                    }
-                                } else {
-                                    $fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
-                                }
-                            }
+							if (isSingleSelect) {
+								if (count - 1 == selectDay) {
+									if (!$fly(cell).hasClass(CELL_UNSELECTABLE_CLASS)) {
+										cell.className = CELL_SELECTED_CLASS;
+									} else {
+										cell.className = CELL_UNSELECTABLE_CLASS;
+									}
+								} else {
+									$fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
+								}
+							}
 						} else {
 							cell.innerHTML = count++ - maxDay;
 							cell.className = NEXT_MONTH_CLASS;
@@ -781,13 +781,13 @@
 					caption: $resource("dorado.baseWidget.DatePickerToday"),
 					listener: {
 						onClick: function() {
-                            var now = new Date(), oldDate = picker._date;
-                            picker.set("date", now);
-                            if (now.getFullYear() === oldDate.getFullYear() && now.getMonth() === oldDate.getMonth()) {
-                                picker.fireEvent("onPick", picker, {
-                                    date: picker._showTimeSpinner ? new Date(now.getTime()) : new Date(now.getFullYear(), now.getMonth(), now.getDate())
-                                });
-                            }
+							var now = new Date(), oldDate = picker._date;
+							picker.set("date", now);
+							if (now.getFullYear() === oldDate.getFullYear() && now.getMonth() === oldDate.getMonth()) {
+								picker.fireEvent("onPick", picker, {
+									date: picker._showTimeSpinner ? new Date(now.getTime()) : new Date(now.getFullYear(), now.getMonth(), now.getDate())
+								});
+							}
 						}
 					}
 				});
@@ -848,7 +848,7 @@
 			}
 			
 			var dateTable = doms.dateTable;
-            var isSingleSelect = picker._selectionMode != "multiDate";
+			var isSingleSelect = picker._selectionMode != "multiDate";
 
 			$fly(dateTable).click(function(event) {
 				var position = $DomUtils.getCellPosition(event), element = position.element, date = picker._date;
@@ -864,44 +864,44 @@
 						}
 					}
 
-                    if (isSingleSelect) {
-                        picker.setDate(parseInt(element.innerHTML, 10), true);
+					if (isSingleSelect) {
+						picker.setDate(parseInt(element.innerHTML, 10), true);
 
-                        picker.fireEvent("onPick", picker, {
-                            date: new Date(date.getTime())
-                        });
-                    } else {
-                        if (className.indexOf("next-month") != -1  || className.indexOf("pre-month") != -1) {
-                            picker.setDate(parseInt(element.innerHTML, 10), true);
-                            return;
-                        }
-                        var selectDate = new Date(date.getFullYear(), date.getMonth(), parseInt(element.innerHTML, 10));
-                        if (className.indexOf(CELL_SELECTED_CLASS) != -1) {
-                            picker.removeSelection(selectDate);
-                            $fly(element).removeClass(CELL_SELECTED_CLASS);
-                        } else {
-                            picker.addSelection(selectDate);
-                            $fly(element).addClass(CELL_SELECTED_CLASS);
-                        }
-                    }
+						picker.fireEvent("onPick", picker, {
+							date: new Date(date.getTime())
+						});
+					} else {
+						if (className.indexOf("next-month") != -1  || className.indexOf("pre-month") != -1) {
+							picker.setDate(parseInt(element.innerHTML, 10), true);
+							return;
+						}
+						var selectDate = new Date(date.getFullYear(), date.getMonth(), parseInt(element.innerHTML, 10));
+						if (className.indexOf(CELL_SELECTED_CLASS) != -1) {
+							picker.removeSelection(selectDate);
+							$fly(element).removeClass(CELL_SELECTED_CLASS);
+						} else {
+							picker.addSelection(selectDate);
+							$fly(element).addClass(CELL_SELECTED_CLASS);
+						}
+					}
 				}
 			}).dblclick(function(event) {
-                if (picker._showTimeSpinner == false) return;
-                var position = $DomUtils.getCellPosition(event), element = position.element, date = picker._date;
+				if (picker._showTimeSpinner == false) return;
+				var position = $DomUtils.getCellPosition(event), element = position.element, date = picker._date;
 
-                if (position && element) {
-                    var className = element.className;
-                    if (className.indexOf(CELL_UNSELECTABLE_CLASS) != -1) return;
-                    if (className.indexOf("next-month") != -1 || className.indexOf("pre-month") != -1) {
-                        return;
-                    }
-                    picker.setDate(parseInt(element.innerHTML, 10), true);
+				if (position && element) {
+					var className = element.className;
+					if (className.indexOf(CELL_UNSELECTABLE_CLASS) != -1) return;
+					if (className.indexOf("next-month") != -1 || className.indexOf("pre-month") != -1) {
+						return;
+					}
+					picker.setDate(parseInt(element.innerHTML, 10), true);
 
-                    picker.fireEvent("onConfirm", picker, {
-                        date: new Date(date.getTime())
-                    });
-                }
-            });
+					picker.fireEvent("onConfirm", picker, {
+						date: new Date(date.getTime())
+					});
+				}
+			});
 			
 			var prevYearButton = new dorado.widget.SimpleIconButton({
 				iconClass: "pre-year-button",
@@ -1095,9 +1095,9 @@
 						}
 						break;
 					case 13://enter
-                        if (picker.isDateSelectable(picker._date)) {
-                            picker.fireEvent("onConfirm", picker, { date: new Date(picker._date.getTime()) });
-                        }
+						if (picker.isDateSelectable(picker._date)) {
+							picker.fireEvent("onConfirm", picker, { date: new Date(picker._date.getTime()) });
+						}
 						return false;
 					case 27://esc
 						if (ymPicker && ymPicker._opened) {
@@ -1137,6 +1137,52 @@
 					this._showTimeSpinner = showTimeSpinner;
 					if (this._picker) this._picker.set("showTimeSpinner", showTimeSpinner);
 				}
+			},
+
+			/**
+			 * 是否显示今天按钮，仅在渲染前设置有效。
+			 * @attribute writeBeforeReady
+			 * @default true
+			 * @type boolean
+			 */
+			showTodayButton: {
+				path: "_picker.showTodayButton"
+			},
+
+			/**
+			 * 是否显示确定按钮，仅在渲染前设置有效。
+			 * @attribute writeBeforeReady
+			 * @default true
+			 * @type boolean
+			 */
+			showConfirmButton: {
+				path: "_picker.showConfirmButton"
+			},
+
+			/**
+			 * 选择模式。
+			 * <p>
+			 * 此属性具有如下几种取值：
+			 * <ul>
+			 * <li>singleDate - 单个日期选择。</li>
+			 * <li>multiDate - 多个日期选择。</li>
+			 * </ul>
+			 * </p>
+			 * @attribute
+			 * @type String
+			 * @default "singleDate"
+			 */
+			selectionMode: {
+				path: "_picker.selectionMode"
+			},
+
+			/**
+			 * DatePicker中的选中项，单选模式下请使用date属性。
+			 * @type Date|Date[]
+			 * @attribute
+			 */
+			selection: {
+				path: "_picker.selection"
 			}
 		},
 
@@ -1158,6 +1204,9 @@
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.DatePicker({
 				showClearButton: false,
 				showCancelButton: true,
+				showTodayButton: this._showTodayButton,
+				showConfirmButton: this._showConfirmButton,
+				selectionMode: this._selectionMode,
 				showTimeSpinner: this._showTimeSpinner,
 				listener: {
 					onPick: function(self, arg) {
@@ -1211,9 +1260,9 @@
 			if (datePicker) {
 				var date = editor.get("value");
 				if (date && date instanceof Date)
-                    datePicker.set("date", new Date(date.getTime()));
-                else
-                    datePicker.set("date", new Date());
+					datePicker.set("date", new Date(date.getTime()));
+				else
+					datePicker.set("date", new Date());
 
 				if (datePicker._yearMonthPicker && datePicker._yearMonthPicker._opened) {
 					datePicker.hideYMPicker(false);
