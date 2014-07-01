@@ -235,52 +235,54 @@
 		});
 	}
 
-	var useShimDiv;
-
-	$.ui.plugin.add("draggable", "useShim", {
-		start: function(event, ui) {
-			var options = $(this).data("ui-draggable").options;
-			if (options.useShim !== false) {
-				if (!useShimDiv) {
-					useShimDiv = document.createElement("div");
-					useShimDiv.className = "ui-draggable-useShim";
-					useShimDiv.style.background = "#fff";
-					document.body.appendChild(useShimDiv);
-				}
-				$(useShimDiv).css({
-					display: "",
-					position: "absolute",
-					opacity: "0.001",
-					zIndex: 999,
-					left: 0,
-					top: 0
-				});
-
-				var doc = useShimDiv.ownerDocument, bodyHeight = $fly(doc).height(), bodyWidth;
-				if (dorado.Browser.msie) {
-					if (dorado.Browser.version == 6) {
-						bodyWidth = $fly(doc).width() - (parseInt($fly(doc.body).css("margin-left"), 10) || 0)-
-									(parseInt($fly(doc.body).css("margin-right"), 10) || 0);
-						$fly(useShimDiv).width(bodyWidth - 2).height(bodyHeight - 4);
-					} else if (dorado.Browser.version == 7) {
-						$fly(useShimDiv).width("100%").height(bodyHeight);
-					} else if (dorado.Browser.version == 8) {
-						$fly(useShimDiv).width("100%").height(bodyHeight - 4);
-					}
-				} else {
-					$fly(useShimDiv).width("100%").height(bodyHeight - 4);
-				}
-			}
-		},
-		stop: function(event, ui) {
-			$(useShimDiv).css("display", "none");
-		}
-	});
-
-	$.ui.draggable.prototype.options.useShim = true;
+//	var useShimDiv;
+//
+//	jQuery.ui.plugin.add("draggable", "useShim", {
+//		start: function(event, ui) {
+//			var options = $(this).data("ui-draggable").options;
+//			if (options.useShim !== false) {
+//				if (!useShimDiv) {
+//					useShimDiv = document.createElement("div");
+//					useShimDiv.className = "ui-draggable-useShim";
+//					useShimDiv.style.background = "#fff";
+//					document.body.appendChild(useShimDiv);
+//				}
+//				$(useShimDiv).css({
+//					display: "",
+//					position: "absolute",
+//					opacity: "0.001",
+//					zIndex: 999,
+//					left: 0,
+//					top: 0
+//				});
+//
+//				var doc = useShimDiv.ownerDocument, bodyHeight = $fly(doc).height(), bodyWidth;
+//				if (dorado.Browser.msie) {
+//					if (dorado.Browser.version == 6) {
+//						bodyWidth = $fly(doc).width() - (parseInt($fly(doc.body).css("margin-left"), 10) || 0)-
+//									(parseInt($fly(doc.body).css("margin-right"), 10) || 0);
+//						$fly(useShimDiv).width(bodyWidth - 2).height(bodyHeight - 4);
+//					} else if (dorado.Browser.version == 7) {
+//						$fly(useShimDiv).width("100%").height(bodyHeight);
+//					} else if (dorado.Browser.version == 8) {
+//						$fly(useShimDiv).width("100%").height(bodyHeight - 4);
+//					}
+//				} else {
+//					$fly(useShimDiv).width("100%").height(bodyHeight - 4);
+//				}
+//			}
+//		},
+//		stop: function(event, ui) {
+//			jQuery(useShimDiv).css("display", "none");
+//		}
+//	});
+//
+//	jQuery.ui.draggable.prototype.options.useShim = false;
 	
-    //修复this.options.axis不能设置为空的问题。
-	//    $.ui.draggable.prototype._mouseDrag = function(event, noPropagation) {
+	jQuery.ui.draggable.prototype.options.iframeFix = true;
+	
+	//修复this.options.axis不能设置为空的问题。
+	//	$.ui.draggable.prototype._mouseDrag = function(event, noPropagation) {
 	//
 	//		//Compute the helpers position
 	//		this.position = this._generatePosition(event);
