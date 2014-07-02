@@ -1035,7 +1035,7 @@ dorado.util.AjaxEngine.getInstance = function(options) {
 	if (ajax === undefined) {
 		ajax = new dorado.util.AjaxEngine({
 			defaultOptions: options,
-			autoBatchEnabled: options.autoBatchEnabled
+			autoBatchEnabled: options.autoBatchEnabled || options.batchable
 		});
 		dorado.util.AjaxEngine.SHARED_INSTANCES[key] = ajax;
 	}

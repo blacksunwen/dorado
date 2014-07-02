@@ -304,11 +304,14 @@
 						this._insertChildNodes(node, row, this._getExpandingAnimated(), callback);
 						this.refreshItemDomData(row, node);
 					}
+					else {
+						if (callback) $callback(callback, true, node);
+					}
 				}
 			} else {
 				this._refreshAndScroll(node, "expand", node._parent);
+				if (callback) $callback(callback, true, node);
 			}
-			if (callback) $callback(callback, true, node);
 		},
 		
 		_nodeCollapsed: function(node, callback) {
@@ -323,8 +326,8 @@
 				if (row) this.refreshItemDomData(row, node);
 			} else {
 				this._refreshAndScroll(node, "collapse", node._parent);
+				if (callback) $callback(callback, true, node);
 			}
-			if (callback) $callback(callback, true, node);
 		},
 		
 		_nodeInserted: function(node) {
