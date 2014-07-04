@@ -201,18 +201,12 @@
 				 */
 				visible: {
 					defaultValue: true,
+					skipRefresh: true,
 					setter: function(visible) {
 						if (visible == null) visible = true;
 
 						if (this._visible != visible) {
 							this._visible = visible;
-
-							if (visible && this._hideMode == "display") {
-								if (this._parent && this._parent._layout) {
-									this._parent._layout.refreshControl(this);
-								}
-							}
-
 							this.onActualVisibleChange();
 						}
 					}
@@ -681,7 +675,13 @@
 					this.refresh();
 				}
 				notifyChildren(this, actualVisible);
-				this.notifySizeChange(false, true);
+
+				if (this._parentLayout) {
+					this._parentLayout.refreshControl(this);
+				}
+				else {
+					this.refresh();
+				}
 			},
 
 			refresh: function(delay) {
@@ -873,7 +873,7 @@
 			 * @protected
 			 */
 			notifySizeChange: function(delay, force) {
-				if (this._parentLayout && this._parentLayout.onControlSizeChange) {
+				if (this._parentLayout) {
 					this._parentLayout.onControlSizeChange(this, delay, force);
 				}
 			},
