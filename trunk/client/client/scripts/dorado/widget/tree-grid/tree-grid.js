@@ -777,8 +777,8 @@
 			return row;
 		},
 		
-		_getExpandingAnimated: function() {
-			return this.grid._expandingAnimated;
+		_getExpandingAnimated: function(node) {
+			return this.grid._expandingAnimated && node._expandingAnimationEnabled;
 		},
 		
 		refreshItemDoms: TreePrototype.refreshItemDoms,

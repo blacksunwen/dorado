@@ -409,7 +409,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 						for (var i = nodes.size - 1; i >= startIndex; i--) {
 							nodes.removeAt(i);
 						}
-						if (startIndex == 0) self._hasChild = false;
+						//if (startIndex == 0) self._hasChild = false;
 					}
 					finally {
 						if (tree) {

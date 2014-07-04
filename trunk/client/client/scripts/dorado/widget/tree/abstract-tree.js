@@ -702,9 +702,11 @@ dorado.widget.AbstractTree = $extend(dorado.widget.RowList, /** @scope dorado.wi
 			});
 			var node = $fly(row).data("item");
 			if (node.get("hasChild")) {
+				node._expandingAnimationEnabled = true;
 				if (node._expanded) node.collapse();
 				else if (self._expandingMode == "sync") node.expand();
 				else node.expandAsync();
+				node._expandingAnimationEnabled = false;
 				$buttonDom.removeClass("expand-button-hover collapse-button-hover");
 			}
 			return false;
