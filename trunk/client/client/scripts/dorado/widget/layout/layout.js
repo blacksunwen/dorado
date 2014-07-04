@@ -388,14 +388,19 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			}
 		}
 
-		if (delay) {
-			dorado.Toolkits.setDelayedAction(this, "$onControlSizeChangeTimerId", fn, 200);
-		}
-		else {
-			fn.call(this);
+		var region = this.getRegion(control);
+		if (region) {
+			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
+			if (delay) {
+				dorado.Toolkits.setDelayedAction(this, "$onControlSizeChangeTimerId", fn, 200);
+			}
+			else {
+				fn.call(this);
+			}
 		}
 	}
-});
+})
+;
 
 /**
  * 用于表示某控件不参与布局管理的特殊布局条件，即布局管理器将在渲染时忽略对该控件的处理。

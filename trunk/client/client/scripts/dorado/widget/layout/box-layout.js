@@ -80,7 +80,7 @@
 		this._regions.removeKey(control._uniqueId);
 		if (!this._attached || this._disableRendering) return;
 		this.refresh();
-	},
+	};
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -88,131 +88,178 @@
 	 * @shortTypeName HBox
 	 * @extends dorado.widget.layout.AbstractBoxLayout
 	 */
-		dorado.widget.layout.HBoxLayout = $extend(dorado.widget.layout.AbstractBoxLayout, /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
-			$className: "dorado.widget.layout.HBoxLayout",
-			_className: " d-hbox-layout",
+	dorado.widget.layout.HBoxLayout = $extend(dorado.widget.layout.AbstractBoxLayout, /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
+		$className: "dorado.widget.layout.HBoxLayout",
+		_className: " d-hbox-layout",
 
-			ATTRIBUTES: /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
+		ATTRIBUTES: /** @scope dorado.widget.layout.HBoxLayout.prototype */ {
 
-				/**
-				 * top、center、bottom
-				 */
-				align: {
-					defaultValue: "center"
-				}
-			},
+			/**
+			 * top、center、bottom
+			 */
+			align: {
+				defaultValue: "center"
+			}
+		},
 
-			createDom: function() {
-				var context = {}, dom = $DomUtils.xCreate({
-					tagName: "TABLE",
-					className: this._className,
-					cellSpacing: 0,
-					cellPadding: 0,
+		createDom: function() {
+			var context = {}, dom = $DomUtils.xCreate({
+				tagName: "TABLE",
+				className: this._className,
+				cellSpacing: 0,
+				cellPadding: 0,
+				content: {
+					tagName: "TBODY",
 					content: {
-						tagName: "TBODY",
-						content: {
-							tagName: "TR",
-							contextKey: "row"
-						}
+						tagName: "TR",
+						contextKey: "row"
 					}
-				}, null, context);
-				this._row = context.row;
-				return dom;
-			},
+				}
+			}, null, context);
+			this._row = context.row;
+			return dom;
+		},
 
-			refreshDom: function(dom) {
-				var table = dom, row = this._row, parentDom = table.parentNode;
-				var domCache = this.domCache || {}, newDomCache = this.domCache = {};
+		refreshDom: function(dom) {
+			var table = dom, row = this._row, parentDom = table.parentNode;
+			var domCache = this.domCache || {}, newDomCache = this.domCache = {};
 
-				var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
-				if (dorado.Browser.msie && dorado.Browser.version < 8) {
-					table.style.margin = padding + "px";
+			var padding = parseInt(this._padding) || 0, regionPadding = this._regionPadding || 0;
+			if (dorado.Browser.msie && dorado.Browser.version < 8) {
+				table.style.margin = padding + "px";
+			}
+			else {
+				table.style.padding = padding + "px";
+			}
+
+			var clientSize = this._container.getContentContainerSize();
+			var clientWidth = clientSize[0], clientHeight = clientSize[1];
+			if (clientWidth > 10000) clientWidth = 0;
+			if (clientHeight > 10000) clientHeight = 0;
+
+			var realContainerWidth = clientWidth - padding * 2;
+			var realContainerHeight = clientHeight - padding * 2;
+			if (realContainerWidth < 0) realContainerWidth = 0;
+			if (realContainerHeight < 0) realContainerHeight = 0;
+
+			// 较新版的Chrome下似乎不用这么干了，见form-layout.js
+			if (dorado.Browser.webkit) {
+				realContainerHeight -= padding * 2; // 搞不懂为什么Webkit中一定要重复的减去一次padding后才刚好 2012/3/14
+			}
+
+			$fly(parentDom).css("text-align", HBOX_PACKS[this._pack]);
+			row.style.verticalAlign = HBOX_ALIGNS[this._align];
+
+			if (!dorado.Browser.webkit) {
+				table.style.height = realContainerHeight + "px";
+			}
+			else {
+				row.style.height = realContainerHeight + "px";
+			}
+
+			for(var it = this._regions.iterator(); it.hasNext();) {
+				var region = it.next(), cell = domCache[region.id];
+				if (cell) cell.style.display = "none";
+			}
+
+			var i = 0;
+			for(var it = this._regions.iterator(); it.hasNext();) {
+				var region = it.next();
+				var constraint = region.constraint;
+				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
+
+				var w, cell = domCache[region.id], cell, div, isNewCell = false;
+				if (!cell) {
+					cell = document.createElement("TD");
+					isNewCell = true;
 				}
 				else {
-					table.style.padding = padding + "px";
+					delete domCache[region.id];
 				}
+				newDomCache[region.id] = cell;
 
-				var clientSize = this._container.getContentContainerSize();
-				var clientWidth = clientSize[0], clientHeight = clientSize[1];
-				if (clientWidth > 10000) clientWidth = 0;
-				if (clientHeight > 10000) clientHeight = 0;
-
-				var realContainerWidth = clientWidth - padding * 2;
-				var realContainerHeight = clientHeight - padding * 2;
-				if (realContainerWidth < 0) realContainerWidth = 0;
-				if (realContainerHeight < 0) realContainerHeight = 0;
-
-				// 较新版的Chrome下似乎不用这么干了，见form-layout.js
-				if (dorado.Browser.webkit) {
-					realContainerHeight -= padding * 2; // 搞不懂为什么Webkit中一定要重复的减去一次padding后才刚好 2012/3/14
-				}
-
-				$fly(parentDom).css("text-align", HBOX_PACKS[this._pack]);
-				row.style.verticalAlign = HBOX_ALIGNS[this._align];
-
-				if (!dorado.Browser.webkit) {
-					table.style.height = realContainerHeight + "px";
-				}
-				else {
-					row.style.height = realContainerHeight + "px";
-				}
-
-				for(var it = this._regions.iterator(); it.hasNext();) {
-					var region = it.next(), cell = domCache[region.id];
-					if (cell) cell.style.display = "none";
-				}
-
-				var i = 0;
-				for(var it = this._regions.iterator(); it.hasNext();) {
-					var region = it.next();
-					var constraint = region.constraint;
-					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
-
-					var w, cell = domCache[region.id], cell, div, isNewCell = false;
-					if (!cell) {
-						cell = document.createElement("TD");
-						isNewCell = true;
+				var refCell = row.childNodes[i];
+				if (refCell != cell) {
+					if (cell.parentNode == row) {
+						while(refCell && refCell != cell) {
+							row.removeChild(refCell);
+							refCell = refCell.nextSibling;
+						}
 					}
 					else {
-						delete domCache[region.id];
+						(refCell) ? row.insertBefore(cell, refCell) : row.appendChild(cell);
 					}
-					newDomCache[region.id] = cell;
+				}
+				cell.style.display = "";
+				if (constraint.align) cell.style.verticalAlign = constraint.align;
 
-					var refCell = row.childNodes[i];
-					if (refCell != cell) {
-						if (cell.parentNode == row) {
-							while(refCell && refCell != cell) {
-								row.removeChild(refCell);
-								refCell = refCell.nextSibling;
-							}
-						}
-						else {
-							(refCell) ? row.insertBefore(cell, refCell) : row.appendChild(cell);
+				var w = region.control._width;
+				if (w) {
+					if (w.constructor == String && w.match('%')) {
+						var rate = parseInt(w);
+						if (!isNaN(rate)) {
+							w = rate * realContainerWidth / 100;
 						}
 					}
-					cell.style.display = "";
-					if (constraint.align) cell.style.verticalAlign = constraint.align;
+					else {
+						w = parseInt(w);
+					}
+				}
+				else {
+					w = undefined;
+				}
+				region.width = w;
 
-					var w = region.control._width;
-					if (w) {
-						if (w.constructor == String && w.match('%')) {
-							var rate = parseInt(w);
+				var h;
+				if (!this._stretch || region.control.getAttributeWatcher().getWritingTimes("height")) {
+					h = region.control._height;
+					if (h) {
+						if (h.constructor == String && h.match('%')) {
+							var rate = parseInt(h);
 							if (!isNaN(rate)) {
-								w = rate * realContainerWidth / 100;
+								h = rate * realContainerHeight / 100;
 							}
 						}
 						else {
-							w = parseInt(w);
+							h = parseInt(h);
 						}
 					}
 					else {
-						w = undefined;
+						h = undefined;
 					}
-					region.width = w;
+				}
+				else {
+					h = realContainerHeight;
+				}
+				region.height = h;
 
-					var h;
-					if (!this._stretch || region.control.getAttributeWatcher().getWritingTimes("height")) {
-						h = region.control._height;
+				if (i > 0) cell.style.paddingLeft = (region.constraint.padding || regionPadding) + "px";
+				if (isNewCell) {
+					this.renderControl(region, cell, true, this._stretch);
+				}
+				else {
+					this.resetControlDimension(region, cell, true, this._stretch);
+				}
+				i++;
+			}
+
+			for(var regionId in domCache) {
+				var cell = domCache[regionId];
+				if (cell && cell.parentNode == row) row.removeChild(cell);
+				delete domCache[regionId];
+			}
+
+			if (this._stretch) {
+				var rowHeight = row.offsetHeight;
+				if (rowHeight > realContainerHeight) {
+					table.style.height = "";
+					realContainerHeight += (rowHeight - realContainerHeight);
+					for(var it = this._regions.iterator(); it.hasNext();) {
+						var region = it.next();
+						var constraint = region.constraint;
+						if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
+
+						var h = region.control._height;
 						if (h) {
 							if (h.constructor == String && h.match('%')) {
 								var rate = parseInt(h);
@@ -220,65 +267,18 @@
 									h = rate * realContainerHeight / 100;
 								}
 							}
-							else {
-								h = parseInt(h);
-							}
 						}
-						else {
-							h = undefined;
-						}
-					}
-					else {
-						h = realContainerHeight;
-					}
-					region.height = h;
-
-					if (i > 0) cell.style.paddingLeft = (region.constraint.padding || regionPadding) + "px";
-					if (isNewCell) {
-						this.renderControl(region, cell, true, this._stretch);
-					}
-					else {
-						this.resetControlDimension(region, cell, true, this._stretch);
-					}
-					i++;
-				}
-
-				for(var regionId in domCache) {
-					var cell = domCache[regionId];
-					if (cell && cell.parentNode == row) row.removeChild(cell);
-					delete domCache[regionId];
-				}
-
-				if (this._stretch) {
-					var rowHeight = row.offsetHeight;
-					if (rowHeight > realContainerHeight) {
-						table.style.height = "";
-						realContainerHeight += (rowHeight - realContainerHeight);
-						for(var it = this._regions.iterator(); it.hasNext();) {
-							var region = it.next();
-							var constraint = region.constraint;
-							if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
-
-							var h = region.control._height;
-							if (h) {
-								if (h.constructor == String && h.match('%')) {
-									var rate = parseInt(h);
-									if (!isNaN(rate)) {
-										h = rate * realContainerHeight / 100;
-									}
-								}
-							}
-							if (h) {
-								region.height = h;
-								var cell = newDomCache[region.id];
-								this.resetControlDimension(region, cell, true, true);
-							}
+						if (h) {
+							region.height = h;
+							var cell = newDomCache[region.id];
+							this.resetControlDimension(region, cell, true, true);
 						}
 					}
 				}
 			}
+		}
 
-		});
+	});
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
