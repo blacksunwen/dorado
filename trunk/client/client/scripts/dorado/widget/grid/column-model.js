@@ -884,7 +884,7 @@
 			var text = this.getText(arg.data, arg.column);
 			dom.innerText = text;
 			dom.title = text.length > 5 ? text : "";
-			$fly(dom.parentNode).toggleClass("wrappable", !!arg.column._wrappable);
+			$fly(dom).toggleClass("wrappable", !!arg.column._wrappable);
 			this.renderFlag(dom, arg);
 		}
 	});
