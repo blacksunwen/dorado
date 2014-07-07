@@ -233,31 +233,31 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * // 发起一个Ajax异步请求，使用Function作为回调对象。
 		 * var ajax = new AjaxEngine();
 		 * ajax.request({
-	 * 	url: "/delete-employee.do",
-	 * 	method: "POST",
-	 * 	jsonData: ["0001", "0002", "0005"]
-	 * 	// 定义要提交给服务器的信息。
-	 * }, function(result) {
-	 * 	alert(result.responseText);
-	 * });
+		 * 	url: "/delete-employee.do",
+		 * 	method: "POST",
+		 * 	jsonData: ["0001", "0002", "0005"]
+		 * 	// 定义要提交给服务器的信息。
+		 * }, function(result) {
+		 * 	alert(result.responseText);
+		 * });
 		 *
 		 * @example
 		 * <pre>
 		 * // 发起一个Ajax异步请求，并声明一个回调对象。
 		 * var ajax = new AjaxEngine();
 		 * ajax.request({
-	 * 	timeout: parseInt("30000"), // 设置Ajax操作的超时时间为30秒
-	 * 	url: "/delete-employee.do",
-	 * 	method: "POST",
-	 * 	xmlData: "&lt;xml&gt;&lt;id&gt;0001&lt;/id&gt;&lt;id&gt;0002&lt;/id&gt;&lt;id&gt;0005&lt;/id&gt;&lt;/xml&gt;"
-	 * }, {
-	 * 	success: function(result) {
-	 * 		alert("操作成功：" + result.responseText);
-	 * 	},
-	 * 	failure: function(e) {
-	 * 		alert("操作失败：" + e);
-	 * 	}
-	 * });
+		 * 	timeout: parseInt("30000"), // 设置Ajax操作的超时时间为30秒
+		 * 	url: "/delete-employee.do",
+		 * 	method: "POST",
+		 * 	xmlData: "&lt;xml&gt;&lt;id&gt;0001&lt;/id&gt;&lt;id&gt;0002&lt;/id&gt;&lt;id&gt;0005&lt;/id&gt;&lt;/xml&gt;"
+		 * }, {
+		 * 	success: function(result) {
+		 * 		alert("操作成功：" + result.responseText);
+		 * 	},
+		 * 	failure: function(e) {
+		 * 		alert("操作失败：" + e);
+		 * 	}
+		 * });
 		 * </pre>
 		 *
 		 * @example
@@ -265,33 +265,33 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * // 以上的三个请求最终将被AjaxEngine打包成一个批量请求，并发往服务器。
 		 * var ajax = new AjaxEngine();
 		 * ajax.set("options", {
-	 * 	// 每一个支持批量操作的请求的url都必须是一致的。
-	 * 	url: "/delete-employee.do",
-	 *
-	 * 	// 每一个支持批量操作的请求的method都必须是一致的。
-	 * 	method: "POST"
-	 * });
+		 * 	// 每一个支持批量操作的请求的url都必须是一致的。
+		 * 	url: "/delete-employee.do",
+		 *
+		 * 	// 每一个支持批量操作的请求的method都必须是一致的。
+		 * 	method: "POST"
+		 * });
 		 *
 		 * // 启用自动批量请求功能。
 		 * ajax.setAutoBatchEnabled(true);
 		 *
 		 * ajax.request({
-	 * 	jsonData: "0001"
-	 * }, function(result) {
-	 * 	alert(result.responseText);
-	 * });
+		 * 	jsonData: "0001"
+		 * }, function(result) {
+		 * 	alert(result.responseText);
+		 * });
 		 *
 		 * ajax.request({
-	 * 	jsonData: "0002"
-	 * }, function(result) {
-	 * 	alert(result.responseText);
-	 * });
+		 * 	jsonData: "0002"
+		 * }, function(result) {
+		 * 	alert(result.responseText);
+		 * });
 		 *
 		 * ajax.request({
-	 * 	jsonData: "0005"
-	 * }, function(result) {
-	 * 	alert(result.responseText);
-	 * });
+		 * 	jsonData: "0005"
+		 * }, function(result) {
+		 * 	alert(result.responseText);
+		 * });
 		 */
 		request: function(options, callback) {
 			if (typeof options == "string") {
@@ -300,6 +300,20 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				};
 			}
 
+			var id = dorado.Core.newId();
+			dorado.util.AjaxEngine.ASYNC_REQUESTS[id] = true;
+			
+			var callbackWrapper = {
+					callback: function(success, result) {
+						var timerId = dorado.util.AjaxEngine.ASYNC_REQUESTS[id];
+						if (timerId) {
+							if (typeof timerId == "number") clearTimeout(timerId);
+							delete dorado.util.AjaxEngine.ASYNC_REQUESTS[id];
+							$callback(callback, success, result);
+						}
+					}
+				};
+			
 			var useBatch = this._autoBatchEnabled && (options.batchable === true);
 			if (useBatch) {
 				if (options) {
@@ -332,10 +346,20 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				if (message && message != "none") {
 					taskId = dorado.util.TaskIndicator.showTaskIndicator(message, options.modal ? "main" : "daemon");
 				}
+				
+				if (callback && options && options.timeout) {
+					dorado.util.AjaxEngine.ASYNC_REQUESTS[id] = $setTimeout(this, function() {
+						var result = new dorado.util.AjaxResult(options);
+						result._setException(new dorado.util.AjaxTimeoutException($resource("dorado.core.AsyncRequestTimeout", options.timeout)));
+						$callback(callbackWrapper, false, result, {
+							scope: this
+						});
+					}, options.timeout);
+				}
 
 				requests.push({
 					options: options,
-					callback: callback,
+					callback: callbackWrapper,
 					taskId: taskId
 				});
 
@@ -344,7 +368,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				}
 			}
 			else {
-				this.requestAsync(options, callback);
+				this.requestAsync(options, callbackWrapper);
 			}
 		},
 
@@ -454,6 +478,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			};
 			this.requestAsync(batchOptions, batchCallback);
 		},
+		
 		/**
 		 * 发起一个异步的请求。
 		 * <p>
@@ -487,7 +512,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			if (message && message != "none") {
 				taskId = dorado.util.TaskIndicator.showTaskIndicator(message, options.modal ? "main" : "daemon");
 			}
-
+			
 			if (callback && options && options.timeout) {
 				connObj.timeoutTimerId = $setTimeout(this, function() {
 					try {
@@ -663,11 +688,11 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 		 * @example
 		 * var ajax = new AjaxEngine();
 		 * var result = ajax.requestSync({
-	 * 	url: "/delete-employee.do",
-	 * 	method: "POST",
-	 * 	jsonData: ["0001", "0002", "0005"]
-	 * 	// 定义要提交给服务器的信息
-	 * });
+		 * 	url: "/delete-employee.do",
+		 * 	method: "POST",
+		 * 	jsonData: ["0001", "0002", "0005"]
+		 * 	// 定义要提交给服务器的信息
+		 * });
 		 * alert(result.responseText);
 		 */
 		requestSync: function(options, alwaysReturn) {
@@ -771,40 +796,38 @@ dorado.util.AjaxException = $extend(dorado.Exception, /** @scope dorado.util.Aja
 		 */
 		this.description = description;
 
-		if (connObj == null) {
-			return;
-		}
-
-		/**
-		 * 请求的URL。
-		 * @type String
-		 */
-		this.url = connObj.url;
-
-		/**
-		 * 发起请求时使用的HttpMethod。
-		 * @type String
-		 * @default "GET"
-		 */
-		this.method = connObj.method;
-
-		/**
-		 * 服务器返回的Http状态码。<br>
-		 * 如：200表示正常返回、404表示请求的资源不存在等，详情请参考Http协议说明。
-		 * @type int
-		 */
-		this.status = connObj.conn.status;
-
-		/**
-		 * 服务器返回的Http状态描述。<br>
-		 * 如：OK表示正常返回、NOT_MODIFIED表示资源未发生任何改变等，详情请参考Http协议说明。
-		 * @type String
-		 */
-		this.statusText = connObj.conn.statusText;
-
-		// IE - #1450: sometimes returns 1223 when it should be 204
-		if (this.status === 1223) {
-			this.status = 204;
+		if (connObj != null) {
+			/**
+			 * 请求的URL。
+			 * @type String
+			 */
+			this.url = connObj.url;
+	
+			/**
+			 * 发起请求时使用的HttpMethod。
+			 * @type String
+			 * @default "GET"
+			 */
+			this.method = connObj.method;
+	
+			/**
+			 * 服务器返回的Http状态码。<br>
+			 * 如：200表示正常返回、404表示请求的资源不存在等，详情请参考Http协议说明。
+			 * @type int
+			 */
+			this.status = connObj.conn.status;
+	
+			/**
+			 * 服务器返回的Http状态描述。<br>
+			 * 如：OK表示正常返回、NOT_MODIFIED表示资源未发生任何改变等，详情请参考Http协议说明。
+			 * @type String
+			 */
+			this.statusText = connObj.conn.statusText;
+	
+			// IE - #1450: sometimes returns 1223 when it should be 204
+			if (this.status === 1223) {
+				this.status = 204;
+			}
 		}
 
 		$invokeSuper.call(this, arguments);
@@ -1023,6 +1046,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 	});
 
 dorado.util.AjaxEngine.SHARED_INSTANCES = {};
+dorado.util.AjaxEngine.ASYNC_REQUESTS = {};
 
 dorado.util.AjaxEngine.getInstance = function(options) {
 	var defaultOptions = $setting["ajax.defaultOptions"];
