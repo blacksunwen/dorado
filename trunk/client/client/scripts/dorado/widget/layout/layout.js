@@ -316,16 +316,25 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @see dorado.widget.layout.Layout#doRefreshRegion
 	 */
 	refreshControl: function(control) {
+		var container = this._container, dom = this._dom;
+		if (!container || !dom) return;
+		
 		var region = this.getRegion(control);
 		if (region) {
 			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
-			if (this._container.isActualVisible()) {
+			if (container.isActualVisible()) {
 				// this._ignoreControlSizeChange = true;
-				if (this.doRefreshRegion) this.doRefreshRegion(region);
+				if (this.doRefreshRegion) {
+					var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
+					this.doRefreshRegion(region);
+					if (currentWidth != dom.offsetWidth || currentHeight != dom.offsetHeight) {
+						container.onContentSizeChange();
+					}
+				}
 				// this._ignoreControlSizeChange = false;
 			}
 			else {
-				this._container.refresh(); // 由于container目前不可见，因此本次刷新动作实际会被搁置到可见时再执行。
+				container.refresh(); // 由于container目前不可见，因此本次刷新动作实际会被搁置到可见时再执行。
 			}
 		}
 	},
@@ -377,7 +386,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			if (!container || !dom) return;
 
 			var currentWidth, currentHeight;
-			if (!force) {
+			if (!force && this.doOnControlSizeChange) {
 				currentWidth = dom.offsetWidth;
 				currentHeight = dom.offsetHeight;
 			}
