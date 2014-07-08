@@ -958,7 +958,6 @@
 			if (labelEl) {
 				var label = this.getLabel();
 				labelEl.innerText = label + ((this._labelSeparator && label) ? this._labelSeparator : '');
-				$fly(labelEl).toggleClass("form-label-required", !!this.isRequired());
 
 				if (this._labelPosition == "top") {
 					if (heightDefined) {
@@ -1030,6 +1029,14 @@
 				else {
 					editor.refresh();
 				}
+			}
+			
+			if (labelEl) {
+				var required = !!this.isRequired();
+				if (required && editor) {
+					required = !editor._readOnly && !editor._readOnly2;
+				}
+				$fly(labelEl).toggleClass("form-label-required", required);
 			}
 		},
 

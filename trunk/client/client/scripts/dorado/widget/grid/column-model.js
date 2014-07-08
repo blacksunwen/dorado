@@ -345,7 +345,7 @@
 		 * @param {dorado.widget.grid.Column} arg.column 对应的表格列。
 		 */
 		render: function(dom, arg) {
-			var column = arg.column, cell = dom.parentNode, label;
+			var grid = arg.grid, column = arg.column, cell = dom.parentNode, label;
 			if (dom.childNodes.length == 1) {
 				label = dom.firstChild;
 			}
@@ -360,7 +360,7 @@
 			label.innerText = column.get("caption") || "";
 
 			if (column instanceof dorado.widget.grid.DataColumn) {
-				$fly(label).toggleClass("caption-required", !!column.get("required"));
+				$fly(label).toggleClass("caption-required", !!column.get("required") && grid.shouldEditing(column));
 
 				var sortState = column.get("sortState"), sortIndicator;
 				if (sortState) {
