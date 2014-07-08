@@ -107,6 +107,9 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 			this.pushHtmlElement(doms, this._content);
 			$fly(dom).empty().append(doms);
 		}
+		else {
+			$fly(dom).empty();
+		}
 
 		var container = dom;
 		if (this._containerExpression) {
