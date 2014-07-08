@@ -876,18 +876,19 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 				
 				if (!hasRequiredValidator) {
-					if (typeof value == "string") value = jQuery.trim(value);
+					var v = value;
+					if (typeof value == "string") v = jQuery.trim(v);
 					var blank = false;				
-					if (value === undefined || value === null || value === "") {
+					if (v === undefined || v === null || v === "") {
 						if (propertyDataType && propertyDataType._code == dorado.DataType.STRING) {
-							blank = !value;
+							blank = !v;
 						}
 						else {
 							blank = true;
 						}
 					}
-					else if (value instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
-						blank = !value.entityCount;
+					else if (v instanceof dorado.EntityList && propertyDataType instanceof dorado.AggregationDataType) {
+						blank = !v.entityCount;
 					}
 					
 					if (blank) {
