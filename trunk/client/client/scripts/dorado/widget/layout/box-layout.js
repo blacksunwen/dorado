@@ -191,7 +191,7 @@
 					}
 				}
 				cell.style.display = "";
-				if (constraint.align) cell.style.verticalAlign = constraint.align;
+				if (constraint.align) cell.style.verticalAlign = (constraint.align == "center") ? "middle" : constraint.align;
 
 				var w = region.control._width;
 				if (w) {
