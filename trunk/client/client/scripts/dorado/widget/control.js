@@ -671,17 +671,16 @@
 				}
 
 				var actualVisible = this.isActualVisible();
-				if (actualVisible && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
-					this.refresh();
-				}
-				notifyChildren(this, actualVisible);
-
 				if (this._parentLayout) {
 					this._parentLayout.refreshControl(this);
+					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
+						this.refresh();
+					}
 				}
 				else {
 					this.refresh();
 				}
+				notifyChildren(this, actualVisible);
 			},
 
 			refresh: function(delay) {
