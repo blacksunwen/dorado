@@ -24,7 +24,7 @@ import com.bstek.dorado.view.annotation.Widget;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-28
  */
-@Widget(name = "ListBox", category = "Collection", dependsPackage = "base-widget")
+@Widget(name = "ListBox", category = "Collection", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.ListBox", shortTypeName = "ListBox")
 public class ListBox extends AbstractListBox {
 	private List<?> items;

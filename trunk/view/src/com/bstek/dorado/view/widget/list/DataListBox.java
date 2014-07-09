@@ -22,7 +22,7 @@ import com.bstek.dorado.view.widget.datacontrol.DataControl;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-9-28
  */
-@Widget(name = "DataListBox", category = "Collection", dependsPackage = "base-widget")
+@Widget(name = "DataListBox", category = "Collection", dependsPackage = "base-widget-desktop")
 @ClientObject(prototype = "dorado.widget.DataListBox",
 		shortTypeName = "DataListBox")
 public class DataListBox extends AbstractListBox implements DataControl {
