@@ -672,9 +672,16 @@
 
 				var actualVisible = this.isActualVisible();
 				if (this._parentLayout) {
-					this._parentLayout.refreshControl(this);
-					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
-						this.refresh();
+					if (this._hideMode == "display") {
+						this._parentLayout.refreshControl(this);
+						if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
+							this.refresh();
+						}
+					}
+					else {
+						if (!actualVisible || this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
+							this.refresh();
+						}
 					}
 				}
 				else {
