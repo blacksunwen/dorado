@@ -16,7 +16,9 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
+import com.bstek.dorado.view.widget.Align;
 import com.bstek.dorado.view.widget.InnerElementList;
 
 /**
@@ -27,6 +29,12 @@ import com.bstek.dorado.view.widget.InnerElementList;
 public class ColumnGroup extends Column implements ColumnHolder {
 	private List<Column> columns = new InnerElementList<Column>(this);
 
+	@IdeProperty(visible = false)
+	@ClientProperty(ignored = true)
+	public Align getAlign() {
+		return null;
+	}
+	
 	public void addColumn(Column column) {
 		columns.add(column);
 	}
