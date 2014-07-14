@@ -126,6 +126,10 @@ public abstract class View extends Container {
 		return renderMode;
 	}
 
+	public void setRenderMode(ViewRenderMode renderMode) {
+		this.renderMode = renderMode;
+	}
+
 	public void setCache(ViewRenderMode renderMode) {
 		this.renderMode = renderMode;
 	}
