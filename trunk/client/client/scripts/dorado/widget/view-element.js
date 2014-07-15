@@ -132,8 +132,17 @@
 					throw new dorado.ResourceException("dorado.widget.InvalidComponentId", id);
 				}
 				this._id = id;
+
+				if (this instanceof dorado.widget.View) {
+					this._identifiedViewElements[this._id] = this;
+				}
+				else {
+					var view = this._view || window._DEFAULT_VIEW || $topView;
+					if (view && view._prependingChildren) {
+						view._prependingChildren[id] = this;
+					}
+				}
 			}
-			this._prependingView = config && config.$prependingView;
 
 			$invokeSuper.call(this);
 			if (config) this.set(config, { skipUnknownAttribute: true });
@@ -148,6 +157,7 @@
 		 */
 		destroy: function() {
 			if (this._destroyed) return;
+
 			this._destroyed = true;
 			this.fireEvent("onDestroy", this);
 
@@ -224,7 +234,6 @@
 
 			var component = null;
 			if (typeof config == "object") {
-				config.$prependingView = (this instanceof dorado.widget.View) ? this : this._prependingView;
 				component = dorado.Toolkits.createInstance("widget", config, typeTranslator);
 			}
 			return component;
@@ -275,6 +284,13 @@
 			if (this._rendered && this.refresh && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 				this.refresh(true);
 			}
+		},
+
+		destroy: function() {
+			if (this._destroyed) return;
+
+			dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
+			$invokeSuper.call(this);
 		}
 	});
 
@@ -284,13 +300,15 @@
 			return value;
 		}
 		else {
-			var component, view;
+			var component, view = window._DEFAULT_VIEW;
 			if (typeof value == "string") {
-				if (object.getListenerScope) {
-					view = object._prependingView || object.getListenerScope();
-				}
-				else {
-					view = $topView;
+				if (!view) {
+					if (object.getListenerScope) {
+						view = object.getListenerScope();
+					}
+					else {
+						view = $topView;
+					}
 				}
 				component = view.id(value);
 				if (component) return component;
@@ -300,19 +318,19 @@
 				};
 			}
 			else if (typeof value == "object" && value.$type) {
-				if (object.getListenerScope) {
-					view = object._prependingView || object.getListenerScope();
+				if (!view) {
+					if (object.getListenerScope) {
+						view = object.getListenerScope();
+					}
+					else {
+						view = $topView;
+					}
 				}
-				else {
-					view = $topView;
-				}
-				value.$prependingView = view;
 				return dorado.Toolkits.createInstance("widget", value);
-
 			}
 
 			view = value.view, componentId = value.component;
-			component = (view._prependingChild && view._prependingChild[componentId]) || view.id(componentId);
+			component = (view._prependingChildren && view._prependingChildren[componentId]) || view.id(componentId);
 			if (component) return component;
 
 			var wantedComponents = view._wantedComponents;

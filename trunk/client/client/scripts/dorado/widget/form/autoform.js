@@ -327,7 +327,7 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 		autoform.bind("onAttributeChange", function(self, arg) {
 			var attr = arg.attribute;
 			if (attr == "readOnly") {
-				var readOnly = self._readOnly, objects = self._bindingElements.objects;
+				var readOnly = autoform._readOnly, objects = autoform._bindingElements.objects;
 				for(var i = 0; i < objects.length; i++) {
 					var object = objects[i];
 					if (object instanceof dorado.widget.FormElement) {
@@ -338,9 +338,9 @@ dorado.widget.AutoForm = $extend([dorado.widget.Control, dorado.widget.FormProfi
 			}
 			else if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
 				dorado.widget.FormConfig.prototype.ATTRIBUTES[attr]) {
-				if (self._config) delete self._config;
-				dorado.Toolkits.setDelayedAction(self, "$profileChangeTimerId", function() {
-					self._bindingElements.invoke("onProfileChange");
+				if (autoform._config) delete autoform._config;
+				dorado.Toolkits.setDelayedAction(autoform, "$profileChangeTimerId", function() {
+					autoform._bindingElements.invoke("onProfileChange");
 				}, 20);
 			}
 		});

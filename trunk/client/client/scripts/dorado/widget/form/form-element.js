@@ -359,6 +359,9 @@
 				if (!attrs.hasOwnProperty(attr)) {
 					continue;
 				}
+				if (attr == "entity" && (formProfile._dataSet || this._dataSet)) {
+					continue;
+				}
 
 				var def = attrs[attr];
 				if (def.readOnly || def.writeOnly || (!attrWatcher.getWritingTimes(attr) && typeof def.defaultValue != "function")) {
@@ -376,8 +379,6 @@
 
 				if (value !== undefined) config[attr] = value;
 			}
-
-			if (config.dataSet) delete config.entity;
 			return config;
 		}
 	});
@@ -1027,7 +1028,8 @@
 					editor.render(editorEl);
 				}
 				else {
-					editor.refresh();
+					// 测试不做此刷新是否会带来额外的问题。 14/07/14
+					// editor.refresh();
 				}
 			}
 			
