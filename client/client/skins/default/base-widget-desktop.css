@@ -1059,6 +1059,18 @@
 .d-panel .expand-icon-bottom {
   background-position: 0 0;
 }
+.d-panel .d-close-button {
+	cursor: pointer;
+	background: url(base/dialog-buttons.png) no-repeat -180px 0;
+	width: 20px;
+	height: 20px;
+}
+.d-panel .d-close-button-hover {
+	background-position: -200px 0;
+}
+.d-panel .d-close-button-click {
+	background-position: -220px 0;
+}
 .d-panel-collapsed {
   border-bottom: 0;
 }

@@ -181,7 +181,10 @@
 					$type: "Control",
 					caption: "测试FieldSet",
 					control: new dorado.widget.Container({
-						layout: "Anchor",
+						layout: {
+							$type: "Form",
+							cols: "*"
+						},
 						children: [{
 							"$type":"FieldSet",
 							caption: "test",
