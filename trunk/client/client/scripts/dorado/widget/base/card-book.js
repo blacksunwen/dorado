@@ -188,7 +188,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		card.set("height", realHeight);
 		card.resetDimension(true);
 
-		if (card._parent instanceof dorado.widget.TabControl) {
+		if (dorado.widget.TabControl && card._parent instanceof dorado.widget.TabControl) {
 			card._parent.doOnCardHeightChange();
 		} else {
 			card.notifySizeChange(true, true);
