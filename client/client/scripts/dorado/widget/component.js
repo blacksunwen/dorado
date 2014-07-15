@@ -53,8 +53,7 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 		dataTypeRepository: {
 			readOnly: true,
 			getter: function() {
-				var view = this.get("view") || $topView;
-				return view.get("dataTypeRepository");
+				return this.getDataTypeRepository();
 			}
 		}
 	},
@@ -76,6 +75,10 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 		if (AUTO_APPEND_TO_TOPVIEW && window.$topView) {
 			$topView.addChild(this);
 		}
+
+		if (!(this instanceof dorado.widget.Control) && !this._ready) {
+			this.onReady();
+		}
 	},
 
 	/**
@@ -85,16 +88,11 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 	onReady: function() {
 		if (this._ready) return;
 		this._ready = true;
-
-		if (this._prependingView) {
-			delete this._prependingView;
-		}
-
 		this.fireEvent("onReady", this);
 	},
 
 	getDataTypeRepository: function() {
-		var view = this.get("view") || this._prependingView;
+		var view = this.get("view") || window._DEFAULT_VIEW || $topView;
 		return view ? view._dataTypeRepository : null;
 	},
 

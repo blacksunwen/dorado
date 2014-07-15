@@ -33,6 +33,7 @@ dorado.widget.DataControl = $extend(dorado.widget.DataSetObserver, /** @scope do
 		dataSet: {
 			componentReference: true,
 			setter: function(dataSet) {
+				if (this._dataSet === dataSet) return;
 				if (this._dataSet) this._dataSet.removeObserver(this);
 				this._dataSet = dataSet;
 				if (dataSet) dataSet.addObserver(this);

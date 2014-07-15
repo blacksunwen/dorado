@@ -104,9 +104,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 			children: {
 				setter: function(children, attr) {
-					this._prependingChild = {};
+					var oldDefaultView = window._DEFAULT_VIEW;
+					window._DEFAULT_VIEW = this;
+					this._prependingChildren = {};
 					$invokeSuper.call(this, [children, attr]);
-					delete this._prependingChild;
+					delete this._prependingChildren;
+					window._DEFAULT_VIEW = oldDefaultView;
 				}
 			}
 		},
@@ -167,7 +170,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			ALL_VIEWS.push(this);
 
 			this._identifiedViewElements = {};
-			this._loadingDataSet = [];
+			this._loadingDataSets = [];
 
 			if (configs == "$TOP_VIEW") {
 				this._dataTypeRepository = dorado.DataTypeRepository.ROOT;
@@ -180,8 +183,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$invokeSuper.call(this, [configs]);
 
 			if (this._id) {
-				this._identifiedViewElements[this._id] = this;
-				
 				var oldValue = window[this._id];
 				if (oldValue !== undefined) {
 					var errorMesssage;
@@ -205,16 +206,28 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			this._children.each(function (child) {
 				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
 			});
-			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
-			this._loadingDataSet = [];
+			$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
+			this._loadingDataSets = [];
 		},
 
 		onReady: function() {
 			$invokeSuper.call(this);
 			if (this._renderMode !== "onDataLoaded") {
-				$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
-				this._loadingDataSet = [];
+				$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
+				this._loadingDataSets = [];
 			}
+		},
+
+		/**
+		 * 当那些loadMode属性为onReady的数据集全部完成数据装载时触发的方法。
+		 * @protected
+		 * @see dorado.widget.DataSet#loadMode
+		 */
+		onDataLoaded: function() {
+			if (this._renderMode == "onDataLoaded") {
+				this.render();
+			}
+			this.fireEvent("onDataLoaded", this);
 		},
 
 		destroy: function() {
@@ -388,29 +401,17 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			return this._dataTypeRepository.getAsync(name, callback);
 		},
 
-		onReady: function() {
-			$invokeSuper.call(this);
-			$waitFor(this._loadingDataSet, $scopify(this, this.onDataLoaded));
-			this._loadingDataSet = [];
-		},
-
-		/**
-		 * 当那些loadMode属性为onReady的数据集全部完成数据装载时触发的方法。
-		 * @protected
-		 * @see dorado.widget.DataSet#loadMode
-		 */
-		onDataLoaded: function() {
-			if (this._renderMode == "onDataLoaded") {
-				this.render();
-			}
-			this.fireEvent("onDataLoaded", this);
-		},
-
 		render: function(containerElement) {
+			$fly(document.body).addClass("d-rendering");
+
 			var bodyWidth;
 			if (containerElement == document.body) bodyWidth = document.body.clientWidth;
 			$invokeSuper.call(this, [containerElement]);
 			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
+
+			dorado.Toolkits.setDelayedAction(document.body, "$removeRenderingCls", function() {
+				$fly(document.body).removeClass("d-rendering");
+			}, 500);
 		},
 
 		doRenderToOrReplace: function(replace, element, nextChildElement) {
@@ -611,7 +612,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 		dorado.fireBeforeInit();
 
-		var lastFocusedControl;
 		$fly(document).mousedown(function(evt) {
 			var element = evt.target;
 			if (!element || !element.style || element.style.tabIndex < 0) return;
@@ -755,7 +755,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			cls += " d-android-40";
 		}
 
-		$fly(document.body).addClass(cls + " d-rendering");
+		$fly(document.body).addClass(cls);
 		if (!dorado.Browser.isTouch) {
 			$fly(document.body).focusin(function(evt) {
 				if (dorado.widget.Control.IGNORE_FOCUSIN_EVENT) return;
@@ -835,9 +835,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 
 			dorado.fireAfterInit();
-			setTimeout(function() {
-				$fly(document.body).removeClass("d-rendering");
-			}, 500);
 		};
 
 		var rootViewport = {

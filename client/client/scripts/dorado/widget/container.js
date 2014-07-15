@@ -249,10 +249,6 @@
 		},
 
 		onReady: function() {
-			this._children.each(function(child) {
-				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
-			});
-
 			$invokeSuper.call(this);
 
 			this._children.each(function(child) {
