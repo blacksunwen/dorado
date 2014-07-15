@@ -26,6 +26,18 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 			defaultValue: 200,
 			independent: false,
 			readOnly: false
+		},
+
+		/**
+		 * 该属性默认值为false，必须在组件渲染之前设定。在默认情况下，currentTab中的组件的高度由TabControl的高度决定。
+		 * 如果设置该属性为true，TabControl的高度则由currentTab中的组件的高度决定。
+		 *
+		 * @type Boolean
+		 * @attribute
+		 */
+		dynaHeight: {
+			defaultValue: false,
+			writeBeforeReady: true
 		}
 	},
 
@@ -117,6 +129,8 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		var tabcontrol = this, card = tabcontrol._cardBook, dom = document.createElement("div"),
 			tabbarDom = $invokeSuper.call(this, arguments), tabPlacement = tabcontrol._tabPlacement;
 
+		this._cardBook.set("dynaHeight", this._dynaHeight);
+
 		if (tabPlacement == "top") {
 			dom.appendChild(tabbarDom);
 		}
@@ -142,15 +156,28 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		return dom;
 	},
 
+	doOnCardHeightChange: function() {
+		this.notifySizeChange(false, true);
+	},
+
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
+
+		$fly(dom).prop("class", "");
 
 		var tabcontrol = this, card = tabcontrol._cardBook, tabbarDom = tabcontrol._tabbarDom, cardDom = tabcontrol._cardBook._dom;
 		tabcontrol.refreshTabBar();
 		$fly(tabbarDom).css("height", "auto");
 
+		var dynaHeight = tabcontrol._dynaHeight;
+
+		if (dynaHeight) {
+			$fly(dom).css("height", "");
+		}
+
 		if (tabcontrol._height != null) {
-			card._realHeight = tabcontrol.getRealHeight() - $fly(tabbarDom).height();
+			if (!dynaHeight)
+				card._realHeight = tabcontrol.getRealHeight() - $fly(tabbarDom).height();
 			card._realWidth = tabcontrol.getRealWidth();
 		}
 

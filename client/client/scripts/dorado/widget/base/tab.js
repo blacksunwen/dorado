@@ -472,6 +472,16 @@
 			 */
 			path: {
 				path: "_control.path"
+			},
+
+			/**
+			 * IFrame的高度，此属性仅在TabControl的dynaHeight为true的情况下才起作用，该属性必须在Tab渲染之前设定。
+			 *
+			 * @attribute writeBeforeReady
+			 * @type Number
+			 */
+			iframeHeight: {
+				writeBeforeReady: true
 			}
 		},
 
@@ -479,7 +489,8 @@
 			var tab = this, iframe = this._control;
 			if (!iframe) {
 				iframe = this._control = new dorado.widget.IFrame({
-					path: tab._path
+					path: tab._path,
+					height: tab._iframeHeight
 				});
 			}
 			return iframe;

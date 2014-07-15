@@ -203,7 +203,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			if (dorado.Browser.msie && !collapsed) {
 				$fly(panel.getContentContainer()).css("zoom", 1);
 			}
-			panel.notifySizeChange();
+			panel.notifySizeChange(false, true);
 			panel.fireEvent("onCollapsedChange", panel);
 		}
 
