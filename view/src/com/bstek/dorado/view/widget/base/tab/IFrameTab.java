@@ -23,7 +23,8 @@ import com.bstek.dorado.annotation.IdeProperty;
 		shortTypeName = "IFrame")
 public class IFrameTab extends Tab {
 	private String path;
-
+	private Integer iframeHeight;
+	
 	@IdeProperty(highlight = 1)
 	public String getPath() {
 		return path;
@@ -31,5 +32,13 @@ public class IFrameTab extends Tab {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public Integer getIframeHeight() {
+		return iframeHeight;
+	}
+
+	public void setIframeHeight(Integer iframeHeight) {
+		this.iframeHeight = iframeHeight;
 	}
 }

@@ -39,7 +39,8 @@ import com.bstek.dorado.view.widget.InnerElementList;
 public class CardBook extends Control {
 	private List<Control> controls = new InnerElementList<Control>(this);
 	private int currentIndex;
-
+	private boolean dynaHeight = false; 
+	
 	public int getCurrentIndex() {
 		return currentIndex;
 	}
@@ -61,6 +62,15 @@ public class CardBook extends Control {
 	@Deprecated
 	public void setCurrentControl(int currentControl) {
 		this.currentControl = currentControl;
+	}
+
+	@ClientProperty(escapeValue="false")
+	public boolean isDynaHeight() {
+		return dynaHeight;
+	}
+
+	public void setDynaHeight(boolean dynaHeight) {
+		this.dynaHeight = dynaHeight;
 	}
 
 	public void setCurrentControl(String activeControlId) {
