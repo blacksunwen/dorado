@@ -29,6 +29,17 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.TabControl",
 		shortTypeName = "TabControl")
 public class TabControl extends TabBar {
+	private boolean dynaHeight;
+	
+	@ClientProperty(escapeValue="false")
+	public boolean isDynaHeight() {
+		return dynaHeight;
+	}
+
+	public void setDynaHeight(boolean dynaHeight) {
+		this.dynaHeight = dynaHeight;
+	}
+	
 	@XmlSubNode(implTypes = "com.bstek.dorado.view.widget.base.tab.*")
 	@ClientProperty
 	public List<Tab> getTabs() {
