@@ -29,7 +29,7 @@ import com.bstek.dorado.view.annotation.Widget;
 @ClientObject(prototype = "dorado.widget.TabControl",
 		shortTypeName = "TabControl")
 public class TabControl extends TabBar {
-	private boolean dynaHeight;
+	private boolean dynaHeight = false;
 	
 	@ClientProperty(escapeValue="false")
 	public boolean isDynaHeight() {
