@@ -21,40 +21,40 @@
 dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.widget.FieldSet.prototype */{
 	$className: "dorado.widget.FieldSet",
 
-    ATTRIBUTES: /** @scope dorado.widget.FieldSet.prototype */ {
+	ATTRIBUTES: /** @scope dorado.widget.FieldSet.prototype */ {
 
-        caption: {
-            skipRefresh: false
-        },
+		caption: {
+			skipRefresh: false
+		},
 
 		className: {
 			defaultValue: "d-field-set"
 		},
 
-        /**
+		/**
 		 * 是否可折叠
 		 * @type boolean
 		 * @default true
 		 * @attribute
 		 */
-        collapseable: {
-	        defaultValue: true,
-	        skipRefresh: true,
-	        setter: function(value) {
-		        this._collapseable = value;
-		        if (value) {
-			        if (this._rendered) {
-				        if (!this._doms.icon) {
-					        this._createCollapseButton();
-				        } else {
-					        $fly(this._doms.icon).css("display", "");
-				        }
-			        }
-		        } else if (this._doms && this._doms.icon) {
-			        $fly(this._doms.icon).css("display", "none");
-		        }
-	        }
-        }
+		collapseable: {
+			defaultValue: true,
+			skipRefresh: true,
+			setter: function(value) {
+				this._collapseable = value;
+				if (value) {
+					if (this._rendered) {
+						if (!this._doms.icon) {
+							this._createCollapseButton();
+						} else {
+							$fly(this._doms.icon).css("display", "");
+						}
+					}
+				} else if (this._doms && this._doms.icon) {
+					$fly(this._doms.icon).css("display", "none");
+				}
+			}
+		}
 	},
 
 	createDom: function() {
@@ -67,7 +67,7 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 					content: [
 						{
 							tagName: "span",
-                            className: "caption",
+							className: "caption",
 							contextKey: "caption",
 							content: fieldset._caption
 						}
@@ -98,35 +98,20 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			fieldset._createCollapseButton();
 		}
 		 
-		// if (fieldset._collapsed) {
-		// fieldset._children.each(function(child) {
-		// if (child instanceof dorado.widget.Control) {
-		// child.setActualVisible(false);
-		// }
-		// });
-		// var buttons = fieldset._buttons;
-		// if (buttons) {
-		// for (var i = 0, j = buttons.length; i < j; i++) {
-		// var button = buttons[i];
-		// button.setActualVisible(false);
-		// }
-		// }
-		// $fly(doms.body).css("display", "none");
-		// }
 		return dom;
 	},
 
-    _createCollapseButton: function() {
-        var fieldset = this, doms = fieldset._doms, button = document.createElement("span");
-        button.className = "collapse-button";
-        doms.icon = button;
+	_createCollapseButton: function() {
+		var fieldset = this, doms = fieldset._doms, button = document.createElement("span");
+		button.className = "collapse-button";
+		doms.icon = button;
 
-        jQuery(doms.icon).click(function() {
+		jQuery(doms.icon).click(function() {
 			fieldset.toggleCollapsed(true);
-	    }).addClassOnHover("collapse-button-hover").addClassOnClick("collapse-button-click");
+		}).addClassOnHover("collapse-button-hover").addClassOnClick("collapse-button-click");
 
-        doms.captionContainer.insertBefore(button, doms.caption);
-    },
+		doms.captionContainer.insertBefore(button, doms.caption);
+	},
 
 	refreshDom: function(dom) {
 		var fieldset = this;
@@ -144,10 +129,10 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			if (collapsed) {
 				$fly(dom).height("auto");
 			} else {
-                if (collapsed === false && fieldset._heightBeforeCollapse) {
-                    height = fieldset._heightBeforeCollapse;
-                    fieldset._heightBeforeCollapse = null;
-                }
+				if (collapsed === false && fieldset._heightBeforeCollapse) {
+					height = fieldset._heightBeforeCollapse;
+					fieldset._heightBeforeCollapse = null;
+				}
 				var buttonPanelHeight = 0, captionCtHeight = 0;
 				if (doms.buttonPanel) {
 					buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);
@@ -176,41 +161,41 @@ dorado.widget.FieldSet = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
  * @extends dorado.widget.AbstractPanel
  */
 dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.widget.GroupBox.prototype */{
-    $className: "dorado.widget.GroupBox",
+	$className: "dorado.widget.GroupBox",
 
 	ATTRIBUTES: /** @scope dorado.widget.GroupBox.prototype */{
 		className: {
 			defaultValue: "d-group-box"
 		},
 
-        caption: {
-            skipRefresh: false
-        },
+		caption: {
+			skipRefresh: false
+		},
 
-        /**
+		/**
 		 * 是否可折叠
 		 * @type boolean
 		 * @default true
 		 * @attribute
 		 */
-        collapseable: {
-            defaultValue: true,
-	        skipRefresh: true,
-	        setter: function(value) {
-		        this._collapseable = value;
-		        if (value) {
-			        if (this._rendered) {
-				        if (!this._doms.icon) {
-					        this._createCollapseButton();
-				        } else {
-					        $fly(this._doms.icon).css("display", "");
-				        }
-			        }
-		        } else if (this._doms && this._doms.icon) {
-			        $fly(this._doms.icon).css("display", "none");
-		        }
-	        }
-        }
+		collapseable: {
+			defaultValue: true,
+			skipRefresh: true,
+			setter: function(value) {
+				this._collapseable = value;
+				if (value) {
+					if (this._rendered) {
+						if (!this._doms.icon) {
+							this._createCollapseButton();
+						} else {
+							$fly(this._doms.icon).css("display", "");
+						}
+					}
+				} else if (this._doms && this._doms.icon) {
+					$fly(this._doms.icon).css("display", "none");
+				}
+			}
+		}
 	},
 
 	createDom: function() {
@@ -229,10 +214,10 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 							content: groupBox._caption,
 							contextKey: "caption"
 						},
-                        {
-                            tagName: "div",
-                            className: "bar-right"
-                        }
+						{
+							tagName: "div",
+							className: "bar-right"
+						}
 					]
 				},
 				{
@@ -260,43 +245,27 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			groupBox._createCollapseButton();
 		}
 
-		// if (groupBox._collapsed) {
-		// groupBox._children.each(function(child) {
-		// if (child instanceof dorado.widget.Control) {
-		// child.setActualVisible(false);
-		// }
-		// });
-		// var buttons = groupBox._buttons;
-		// if (buttons) {
-		// for (var i = 0, j = buttons.length; i < j; i++) {
-		// var button = buttons[i];
-		// button.setActualVisible(false);
-		// }
-		// }
-		// $fly(doms.body).css("display", "none");
-		// }
-
 		return dom;
 	},
 
-    _createCollapseButton: function() {
-        var groupbox = this, doms = groupbox._doms;
-        var button = document.createElement("div");
-        button.className = "collapse-button";
-        doms.icon = button;
+	_createCollapseButton: function() {
+		var groupbox = this, doms = groupbox._doms;
+		var button = document.createElement("div");
+		button.className = "collapse-button";
+		doms.icon = button;
 
-        jQuery(doms.icon).click(function() {
+		jQuery(doms.icon).click(function() {
 			groupbox.toggleCollapsed(true);
 		}).addClassOnHover("collapse-button-hover").addClassOnClick("collapse-button-click");
 
-        doms.captionContainer.insertBefore(button, doms.caption);
-    },
+		doms.captionContainer.insertBefore(button, doms.caption);
+	},
 
 	refreshDom: function(dom){
 		var groupBox = this;
-	    $fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
+		$fly(dom)[groupBox._collapsed ? "addClass" : "removeClass"](groupBox._className + "-collapsed");
 		$fly(groupBox._doms.caption).text(groupBox._caption);
-        $invokeSuper.call(this, arguments);
+		$invokeSuper.call(this, arguments);
 		groupBox._doOnResize();
 	},
 
@@ -309,10 +278,10 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 			if (collapsed) {
 				$fly(dom).height("auto");
 			} else {
-                if (collapsed === false && groupbox._heightBeforeCollapse) {
-                    height = groupbox._heightBeforeCollapse;
-                    groupbox._heightBeforeCollapse = null;
-                }
+				if (collapsed === false && groupbox._heightBeforeCollapse) {
+					height = groupbox._heightBeforeCollapse;
+					groupbox._heightBeforeCollapse = null;
+				}
 				var buttonPanelHeight = 0, captionCtHeight = 0;
 				if (doms.buttonPanel) {
 					buttonPanelHeight = $fly(doms.buttonPanel).outerHeight(true);
@@ -321,7 +290,7 @@ dorado.widget.GroupBox = $extend(dorado.widget.AbstractPanel, /** @scope dorado.
 					captionCtHeight = $fly(doms.captionContainer).outerHeight(true);
 				}
 				$fly(doms.contentPanel).outerHeight(height - captionCtHeight - buttonPanelHeight);
-                $fly(dom).height("auto");
+				$fly(dom).height("auto");
 			}
 		}
 	},

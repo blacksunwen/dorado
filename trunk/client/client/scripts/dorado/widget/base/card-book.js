@@ -95,6 +95,18 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 					}
 				}
 			}
+		},
+
+		/**
+		 * 该属性默认值为false，必须在组件渲染之前设定。在默认情况下，currentControl的高度由CardBook的高度决定。
+		 * 如果设置该属性为true，CardBook的高度则由currentControl决定。
+		 *
+		 * @type Boolean
+		 * @attribute writeBeforeReady
+		 */
+		dynaHeight: {
+			defaultValue: false,
+			writeBeforeReady: true
 		}
 	},
 	
@@ -127,6 +139,14 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			return value._id;
 		});
 		$invokeSuper.call(this, arguments);
+
+		var card = this;
+
+		card._onControlSizeChange = function() {
+			if (card._dynaHeight) {
+				card.syncCurrentControlHeight();
+			}
+		};
 	},
 
 	destroy: function() {
@@ -153,6 +173,28 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		}
 	},
 
+	/**
+	 * @private
+	 * @param [control]
+	 */
+	syncCurrentControlHeight: function (control) {
+		if (!control) control = this._currentControl;
+		if (!control) return;
+		var card = this, realHeight = control.getRealHeight();
+		if (!realHeight) {
+			realHeight = $fly(control._dom).outerHeight(true);
+		}
+
+		card.set("height", realHeight);
+		card.resetDimension(true);
+
+		if (card._parent instanceof dorado.widget.TabControl) {
+			card._parent.doOnCardHeightChange();
+		} else {
+			card.notifySizeChange(true, true);
+		}
+	},
+
 	doSetCurrentControl: function(control) {
 		var cardbook = this, oldControl = cardbook._currentControl;
 		var eventArg = {
@@ -174,13 +216,18 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			oldControl.setActualVisible(false);
 		}
 		cardbook._currentControl = control;
-		var dom = cardbook._dom;
+		var dom = cardbook._dom, dynaHeight = cardbook._dynaHeight;
 		if (dom && control) {
 			if (!control._rendered) {
 				this._resetInnerControlDemension(control);
 				var controlDom = control.getDom();
 				if (controlDom) $fly(controlDom).addClass("d-rendering");
 				control.render(dom);
+				if (dynaHeight) {
+					control._parentLayout = {
+						onControlSizeChange: cardbook._onControlSizeChange
+					}
+				}
 				if (controlDom) {
 					setTimeout(function() {
 						$fly(controlDom).removeClass("d-rendering");
@@ -196,6 +243,9 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				if (control instanceof dorado.widget.IFrame && !control._loaded) {
 					control.reloadIfNotLoaded();
 				}
+			}
+			if (dynaHeight) {
+				cardbook.syncCurrentControlHeight(control);
 			}
 		}
 		cardbook.fireEvent("onCurrentChange", this, eventArg);
@@ -280,20 +330,20 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		return null;
 	},
 
-    /**
-     * 取得当前组件的索引。
-     * @return {int} 当前组件的索引，如果没有当前组件，返回-1.
-     */
-    getCurrentControlIndex: function() {
-        var card = this, controls = card._controls, currentControl = card._currentControl;
-        if (controls && currentControl) {
-            return controls.indexOf(currentControl);
-        }
-        return -1;
-    },
+	/**
+	 * 取得当前组件的索引。
+	 * @return {int} 当前组件的索引，如果没有当前组件，返回-1.
+	 */
+	getCurrentControlIndex: function() {
+		var card = this, controls = card._controls, currentControl = card._currentControl;
+		if (controls && currentControl) {
+			return controls.indexOf(currentControl);
+		}
+		return -1;
+	},
 	
 	_resetInnerControlDemension: function(control) {
-		var dom = this.getDom(), width, height;
+		var dom = this.getDom(), width, height, dynaHeight = this._dynaHeight;
 		if (this.getRealWidth()) {
 			width = $fly(dom).innerWidth();
 			if (width) {
@@ -302,7 +352,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				});
 			}
 		}
-		if (this.getRealHeight()) {
+		if (!dynaHeight && this.getRealHeight()) {
 			height = $fly(dom).innerHeight();
 			if (height) {
 				control.set("height", height, {
@@ -316,22 +366,23 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
 		
-		var card = this, currentControl = card["_currentControl"];
-		/*
-		 * Commented by benny 此处应当允许currentControl为Null。
-		 * 否则当TabControl中的某个Tab的getControl()不能返回一个有效的控件，CardBook会指向错误的Control。
-		 if (!currentControl && controls) {
-		 currentControl = card["_currentControl"] = controls.get(0);
-		 }
-		 */
+		var card = this, currentControl = card._currentControl, dynaHeight = card._dynaHeight;
+
 		if (currentControl) {
 			this._resetInnerControlDemension(currentControl);
 			
 			if (!currentControl._rendered) {
 				currentControl.render(dom);
+				if (dynaHeight) {
+					currentControl._parentLayout = {
+						onControlSizeChange: card._onControlSizeChange
+					}
+					card.syncCurrentControlHeight(currentControl);
+				}
 			} else {
 				$fly(currentControl._dom).css("display", "block");
 				currentControl.setActualVisible(true);
+				card.syncCurrentControlHeight(currentControl);
 			}
 		}
 	},
