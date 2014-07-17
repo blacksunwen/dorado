@@ -288,9 +288,9 @@
 
 		destroy: function() {
 			if (this._destroyed) return;
-
 			dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
 			$invokeSuper.call(this);
+			dorado.RenderableElement.prototype.destroy.call(this);
 		}
 	});
 
