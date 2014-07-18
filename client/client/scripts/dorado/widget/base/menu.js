@@ -220,6 +220,8 @@
 		}
 	});
 
+	dorado.widget.AbstractMenu.prototype.removeChild = dorado.widget.AbstractMenu.prototype.removeItem;
+
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
 	 * @class 菜单项组。
