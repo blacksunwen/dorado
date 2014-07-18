@@ -601,6 +601,8 @@
 		}
 	});
 
+	dorado.widget.menu.MenuItem.prototype.removeChild = dorado.widget.menu.MenuItem.prototype.removeItem;
+
 	dorado.widget.menu.CheckGroupManager = {
 		groups: {},
 
