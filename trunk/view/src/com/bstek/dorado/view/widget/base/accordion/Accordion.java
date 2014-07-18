@@ -39,7 +39,8 @@ public class Accordion extends Control {
 	private List<Section> sections = new InnerElementList<Section>(this);
 	private int currentSection;
 	private boolean animate;
-
+	private boolean dynaHeight = false;
+	
 	public void addSection(Section section) {
 		sections.add(section);
 	}
@@ -96,5 +97,14 @@ public class Accordion extends Control {
 
 	public void setAnimate(boolean animate) {
 		this.animate = animate;
+	}
+
+	@ClientProperty(escapeValue="false")
+	public boolean isDynaHeight() {
+		return dynaHeight;
+	}
+
+	public void setDynaHeight(boolean dynaHeight) {
+		this.dynaHeight = dynaHeight;
 	}
 }
