@@ -152,7 +152,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 */
 	refresh: function() {
 		if (this._duringRefreshDom) return;
-		debugger;
 		this._duringRefreshDom = true;
 		if (this._attached) {
 			this._shouldRefresh = false;
