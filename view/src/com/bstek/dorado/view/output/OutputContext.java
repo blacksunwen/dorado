@@ -164,6 +164,10 @@ public class OutputContext {
 				.contains(dataTypeName) : false;
 	}
 
+	public void setIncludeDataTypes(Map<String, DataType> includeDataTypes) {
+		this.includeDataTypes = includeDataTypes;
+	}
+
 	/**
 	 * 返回客户端需要的DataType的集合。
 	 */

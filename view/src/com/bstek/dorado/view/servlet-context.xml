@@ -84,6 +84,7 @@
 				<entry key="resolve-data" value-ref="dorado.resolveDataServiceProcessor" />
 				<entry key="remote-service" value-ref="dorado.remoteServiceProcessor" />
 				<entry key="long-polling" value-ref="dorado.longPollingServiceProcessor" />
+				<entry key="load-view" value-ref="dorado.loadViewServiceProcessor" />
 			</map>
 		</property>
 	</bean>
@@ -134,6 +135,10 @@
 		class="com.bstek.dorado.view.service.LongPollingServiceProcessor">
 		<property name="longPollingManager" ref="dorado.longPollingManager" />
 	</bean>
+	<bean id="dorado.loadViewServiceProcessor" class="com.bstek.dorado.view.service.LoadViewServiceProcessor">
+		<property name="viewConfigManager" ref="dorado.viewConfigManager" />
+		<property name="viewOutputter" ref="dorado.objectOutputterDispatcher" />
+	</bean>
 
 	<bean id="dorado.htmlViewResolver" class="com.bstek.dorado.view.resolver.HtmlViewResolver">
 		<property name="touchUserAgents"
@@ -171,7 +176,8 @@
 	</bean>
 	<bean parent="dorado.resolverRegister">
 		<property name="order" value="30" />
-		<property name="url" value="/dorado/client/resources/icons/font-awesome/*.png" />
+		<property name="url"
+			value="/dorado/client/resources/icons/font-awesome/*.png" />
 		<property name="resolver">
 			<bean class="com.bstek.dorado.view.resolver.FontAwesomePngFileResolver">
 				<property name="baseUri" value="/dorado/client" />

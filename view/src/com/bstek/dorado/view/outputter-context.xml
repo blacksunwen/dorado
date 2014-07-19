@@ -87,6 +87,8 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		class="com.bstek.dorado.view.widget.data.DataSetDataPropertyOutputter" />
 	<bean id="dorado.htmlContainerOutputter" parent="dorado.containerOutputter"
 		class="com.bstek.dorado.view.widget.HtmlContainerOutputter" />
+	<bean id="dorado.subViewNamePropertyOutputter"
+		class="com.bstek.dorado.view.widget.SubViewNamePropertyOutputter" />
 	<bean id="dorado.subViewPropertyOutputter" parent="dorado.objectOutputterDispatcher"
 		class="com.bstek.dorado.view.widget.SubViewPropertyOutputter">
 		<property name="viewConfigManager" ref="dorado.viewConfigManager" />

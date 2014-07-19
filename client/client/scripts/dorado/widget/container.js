@@ -140,7 +140,7 @@
 					var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
 					if (!optimized) AUTO_APPEND_TO_TOPVIEW = false;
 					var layout = container._layout;
-					if (layout) layout.disableRendering();
+					if (layout && layout._rendered) layout.disableRendering();
 					
 					if (container._children.length) {
 						container._children.each(function(child) {
@@ -159,7 +159,7 @@
 					}
 
 					if (!optimized) AUTO_APPEND_TO_TOPVIEW = true;
-					if (layout) {
+					if (layout && layout._rendered) {
 						layout.enableRendering();
 						layout.refresh();
 					}
@@ -219,6 +219,10 @@
 				defaultValue: "default"
 			}
 		},
+		
+		EVENTS: {
+			onScroll: {}
+		},
 
 		constructor: function(config) {
 			this._contentContainerVisible = true;
@@ -249,6 +253,12 @@
 		},
 
 		onReady: function() {
+			this._children.each(function(child) {
+				if (!child._ready && !(child instanceof dorado.widget.Control)) {
+					child.onReady();
+				}
+			});
+			
 			$invokeSuper.call(this);
 
 			this._children.each(function(child) {
@@ -333,7 +343,7 @@
 					component._parentActualVisible = parentActualVisible;
 					component.onActualVisibleChange();
 				}
-
+				
 				var layout = this.get("layout");
 				if (layout) {
 					if (!(dorado.Object.isInstanceOf(component, dorado.widget.FloatControl) && component._floating)) {
@@ -474,19 +484,25 @@
 		},
 
 		doOnAttachToDocument: function () {
-			var overflowX = (!this._contentOverflowX) ? this._contentOverflow : this._contentOverflowX;
-			var overflowY = (!this._contentOverflowY) ? this._contentOverflow : this._contentOverflowY;
+			var container = this;
+			var overflowX = (!container._contentOverflowX) ? container._contentOverflow : container._contentOverflowX;
+			var overflowY = (!container._contentOverflowY) ? container._contentOverflow : container._contentOverflowY;
 			overflowX = overflowX || "auto";
 			overflowY = overflowY || "auto";
 
-			var contentCt = this.getContentContainer();
+			var contentCt = container.getContentContainer();
 			if (contentCt) {
 				if (contentCt.nodeType && contentCt.nodeType == 1 &&
 					(overflowX == "auto" || overflowY == "auto" || overflowX == "scroll" || overflowY == "scroll")) {
 					contentCt.style.overflowX = overflowX;
 					contentCt.style.overflowY = overflowY;
-					this._modernScroller = $DomUtils.modernScroll(contentCt, {
+					container._modernScroller = $DomUtils.modernScroll(contentCt, {
 						autoDisable: true
+					});
+					$fly(contentCt).bind("modernScrolling", function() {
+						dorado.Toolkits.setDelayedAction(container, "$onScrollTimerId", function() {
+							container.fireEvent("onScroll", container);
+						}, 50);
 					});
 				}
 
@@ -494,13 +510,13 @@
 					$fly(contentCt).addClass("d-relative");
 				}
 
-				if (this._containerUi) {
-					$fly(contentCt).addClass("d-container-ui-" + this._containerUi);
+				if (container._containerUi) {
+					$fly(contentCt).addClass("d-container-ui-" + container._containerUi);
 				}
 			}
 
-			var layout = this._layout;
-			if (this._contentContainerVisible && layout && !(layout._regions.size == 0 && !layout._rendered)) {
+			var layout = container._layout;
+			if (container._contentContainerVisible && layout && !(layout._regions.size == 0 && !layout._rendered)) {
 				layout.onAttachToDocument(contentCt);
 			}
 		},

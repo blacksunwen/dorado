@@ -75,10 +75,6 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 		if (AUTO_APPEND_TO_TOPVIEW && window.$topView) {
 			$topView.addChild(this);
 		}
-
-		if (!(this instanceof dorado.widget.Control) && !this._ready) {
-			this.onReady();
-		}
 	},
 
 	/**

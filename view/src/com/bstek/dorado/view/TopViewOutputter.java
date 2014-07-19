@@ -69,7 +69,7 @@ public class TopViewOutputter extends ViewOutputter {
 		if (renderMode == ViewRenderMode.onCreate) {
 			writer.append("view.render();\n");
 		} 
-		else if (renderMode == ViewRenderMode.onDataLoaded) {
+		else {
 			writer.append("view.onReady();\n");
 			writer.append("view.loadData();\n");
 		}

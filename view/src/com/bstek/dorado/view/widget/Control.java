@@ -43,6 +43,7 @@ import com.bstek.dorado.common.ClientType;
 		@ClientEvent(name = "onKeyDown"),
 		@ClientEvent(name = "onKeyPress"),
 		@ClientEvent(name = "onContextMenu"),
+		@ClientEvent(name = "onResize"),
 		@ClientEvent(name = "onGetDraggingIndicator"),
 		@ClientEvent(name = "onDragStart"),
 		@ClientEvent(name = "onDragStop"),

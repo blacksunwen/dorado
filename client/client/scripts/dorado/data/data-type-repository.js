@@ -82,22 +82,24 @@
 	dorado.LazyLoadDataType.create = function(dataTypeRepository, id) {
 		var name = dorado.DataUtil.extractNameFromId(id);
 		var origin = dataTypeRepository._get(name);
-		if (origin instanceof dorado.DataType) {
-			return origin;
-		} else {
-			if (origin && origin != DataTypeRepository.UNLOAD_DATATYPE) {
-				return dataTypeRepository.get(name);
-			} else {
-				var subId = dorado.DataType.getSubName(id);
-				if (subId) {
-					var aggDataType = newAggDataType.call(dataTypeRepository, name, subId);
-					aggDataType.set("id", id);
-					return aggDataType;
-				} else {
-					dataTypeRepository.register(name);
-					return new dorado.LazyLoadDataType(dataTypeRepository, id);
-				}
+		if (origin) {
+			if (origin instanceof dorado.DataType) {
+				return origin;
 			}
+			else if (origin instanceof dorado.LazyLoadDataType) {
+				return origin;
+			}
+		}
+		
+		var subId = dorado.DataType.getSubName(id);
+		if (subId) {
+			var aggDataType = newAggDataType.call(dataTypeRepository, name, subId);
+			aggDataType.set("id", id);
+			return aggDataType;
+		} else {
+			var lazyDataType = new dorado.LazyLoadDataType(dataTypeRepository, id);
+			dataTypeRepository.register(name, lazyDataType);
+			return lazyDataType;
 		}
 	};
 	
@@ -182,7 +184,7 @@
 								dataTypeJson = json;
 							}
 							
-							if (dataTypeRepository.parseJsonData(dataTypeJson) > 0) {
+							if (dataTypeRepository.parseJsonData(dataTypeJson, true) > 0) {
 								var dataType = dataTypeRepository._dataTypeMap[this.name];
 								$callback(callback, true, dataType, {
 									scope: this
@@ -203,7 +205,7 @@
 				dataTypeRepository.unregister(this.name);
 				var result = ajax.requestSync(this.getAjaxOptions());
 				var jsonData = result.getJsonData(), dataType;
-				if (jsonData && dataTypeRepository.parseJsonData(jsonData) > 0) {
+				if (jsonData && dataTypeRepository.parseJsonData(jsonData, true) > 0) {
 					dataType = dataTypeRepository._dataTypeMap[this.name];
 				}
 				if (!dataType) {
@@ -290,7 +292,7 @@
 			return $invokeSuper.call(this, arguments);
 		},
 		
-		parseSingleDataType: function(jsonData) {
+		parseSingleDataType: function(jsonData, positive) {
 			var dataType, name = jsonData.name, type = jsonData.$type;
 			delete jsonData.name;
 			delete jsonData.$type;
@@ -302,20 +304,35 @@
 			if (dataType) {
 				dataType.loadFromServer = true;
 				dataType._dataTypeRepository = this;
-				dataType.set(jsonData);
+				if (positive) {
+					dataType.set(jsonData);
+				}
+				else {
+					dataType._config = jsonData;
+				}
 			}
 			return dataType;
 		},
 		
-		parseJsonData: function(jsonData) {
-			var n = 0, dataTypeMap = this._dataTypeMap, dataType;
+		parseJsonData: function(jsonData, positive) {
+			
+			function doParseJsonData(config, positive) {
+				if (config.unload) {
+					this.register(config.name, new dorado.LazyLoadDataType(this, config.id));
+				}
+				else {
+					this.register(this.parseSingleDataType(config, positive));
+				}
+			}
+			
+			var n = 0, dataTypeMap = this._dataTypeMap, dataType, config;
 			if (jsonData instanceof Array) {
 				n = jsonData.length;
 				for (var i = 0; i < n; i++) {
-					this.register(this.parseSingleDataType(jsonData[i]));
+					doParseJsonData.call(this, jsonData[i], positive);
 				}
 			} else {
-				this.register(this.parseSingleDataType(jsonData));
+				doParseJsonData.call(this, jsonData, positive);
 				n++;
 			}
 			return n;
@@ -331,9 +348,7 @@
 		 * @param {dorado.DataType} [dataType] 要注册的数据类型。
 		 */
 		register: function(name, dataType) {
-			if (name.constructor == String) {
-				dataType = dataType || DataTypeRepository.UNLOAD_DATATYPE;
-			} else {
+			if (name instanceof dorado.DataType) {
 				dataType = name;
 				name = name._name;
 			}
@@ -364,7 +379,13 @@
 		
 		_get: function(name) {
 			var dataType = this._dataTypeMap[name];
-			if (!dataType && this.parent) {
+			if (dataType) {
+				if (dataType._config) {
+					dataType.set(dataType._config);
+					delete dataType._config;
+				}
+			}
+			else if (!dataType && this.parent) {
 				dataType = this.parent._get(name);
 			}
 			return dataType;
@@ -386,30 +407,31 @@
 		get: function(name, loadMode) {
 			var id = name, name = dorado.DataUtil.extractNameFromId(id);
 			var dataType = this._get(name);
-			if (dataType == DataTypeRepository.UNLOAD_DATATYPE) { // 已认识但尚未下载的
-				var subId = dorado.DataType.getSubName(id);
-				if (subId) {
-					dataType = newAggDataType.call(this, name, subId);
-					dataType.set("id", id);
-				} else {
+			if (dataType) {
+				if (id != name && id != dataType.id) {
+					dataType = null;
+				}
+				else if (dataType instanceof dorado.LazyLoadDataType) {
 					loadMode = loadMode || "always";
 					if (loadMode == "always") {
-						var pipe = new dorado.DataTypePipe(this, id);
+						var pipe = new dorado.DataTypePipe(this, dataType.id);
 						dataType = pipe.get();
 					} else {
-						if (loadMode == "auto") this.getAsync(id);
+						if (loadMode == "auto") this.getAsync(dataType.id);
 						dataType = null;
 					}
 				}
-			} else if (dataType instanceof dorado.DataTypePipe) { // 正在下载的
-				var pipe = dataType;
-				if (loadMode == "always") dataType = pipe.get(callback);
-				else dataType = null;
-			} else if (!dataType) { // 不认识的
-				var subId = dorado.DataType.getSubName(id);
-				if (subId) {
-					dataType = newAggDataType.call(this, name, subId);
-					dataType.set("id", id);
+				else if (dataType instanceof dorado.DataTypePipe) { // 正在下载的
+					var pipe = dataType;
+					if (loadMode == "always") dataType = pipe.get(callback);
+					else dataType = null;
+				}
+				else if (!dataType) { // 不认识的
+					var subId = dorado.DataType.getSubName(id);
+					if (subId) {
+						dataType = newAggDataType.call(this, name, subId);
+						dataType.set("id", id);
+					}
 				}
 			}
 			return dataType;
@@ -431,30 +453,31 @@
 		getAsync: function(name, callback, loadMode) {
 			var id = name, name = dorado.DataUtil.extractNameFromId(id);
 			var dataType = this._get(name);
-			if (dataType == DataTypeRepository.UNLOAD_DATATYPE) {
-				var subId = dorado.DataType.getSubName(id);
-				if (subId) {
-					dataType = newAggDataType.call(this, name, subId);
-					dataType.set("id", id);
-				} else {
+			if (dataType) {
+				if (id != name && id != dataType.id) {
+					dataType = null;
+				}
+				else if (dataType instanceof dorado.LazyLoadDataType) {
 					loadMode = loadMode || "always";
 					if (loadMode != "never") {
-						var pipe = new dorado.DataTypePipe(this, id);
+						var pipe = new dorado.DataTypePipe(this, dataType.id);
 						pipe.getAsync(callback);
 						return;
 					}
 				}
-			} else if (dataType instanceof dorado.DataTypePipe) {
-				var pipe = dataType;
-				if (loadMode != "never") {
-					pipe.getAsync(callback);
-					return;
+				else if (dataType instanceof dorado.DataTypePipe) {
+					var pipe = dataType;
+					if (loadMode != "never") {
+						pipe.getAsync(callback);
+						return;
+					}
 				}
-			} else if (!dataType) {
-				var subId = dorado.DataType.getSubName(id);
-				if (subId) {
-					dataType = newAggDataType.call(this, name, subId);
-					dataType.set("id", id);
+				else if (!dataType) {
+					var subId = dorado.DataType.getSubName(id);
+					if (subId) {
+						dataType = newAggDataType.call(this, name, subId);
+						dataType.set("id", id);
+					}
 				}
 			}
 			$callback(callback, true, dataType);
@@ -489,7 +512,6 @@
 	 * @constant
 	 */
 	DataTypeRepository.ROOT = root;
-	DataTypeRepository.UNLOAD_DATATYPE = {};
 	
 	/**
 	 * dorado.DataTypeRepository.ROOT的快捷方式。

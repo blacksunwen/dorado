@@ -519,7 +519,7 @@
 				this.recordMaxRange(region);
 			},
 
-			resetControlDimension: function(region, layoutDom, autoWidth, autoHeight) {
+			resetControlDimension: function(region, regionDom, autoWidth, autoHeight) {
 				var control = region.control, controlDom = control.getDom();
 				var style = controlDom.style;
 				if (region.left >= 0 || region.top >= 0 || region.right >= 0 || region.bottom >= 0) {
@@ -530,7 +530,7 @@
 				style.top = (region.top >= 0) ? (region.top + "px") : '';
 				style.bottom = (region.bottom >= 0) ? (region.bottom + "px") : '';
 
-				$invokeSuper.call(this, [region, layoutDom, autoWidth, autoHeight]);
+				$invokeSuper.call(this, [region, regionDom, autoWidth, autoHeight]);
 			}
 
 		});
