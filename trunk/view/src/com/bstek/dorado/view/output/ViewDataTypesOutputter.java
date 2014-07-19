@@ -12,7 +12,7 @@
 
 package com.bstek.dorado.view.output;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,9 +33,9 @@ public class ViewDataTypesOutputter extends AbstractDataTypeOutputter {
 		ViewConfig viewConfig = ((View) object).getViewConfig();
 		Map<String, DataType> includeDataTypes = context.getIncludeDataTypes();
 
-		int includeDataTypeNum = 0;
-		Set<DataType> dataTypes = new HashSet<DataType>();
+		Set<DataType> outputDataTypes = new LinkedHashSet<DataType>();
 
+		int includeDataTypeNum = 0;
 		if (includeDataTypes != null) {
 			includeDataTypeNum = includeDataTypes.size();
 
@@ -44,34 +44,23 @@ public class ViewDataTypesOutputter extends AbstractDataTypeOutputter {
 				DataType dataType = entry.getValue();
 				DataType outputDataType = getOutputDataType(dataType, context);
 
-				if (outputDataType != null
-						&& outputDataType.getId().equals(
-								outputDataType.getName())) {
-					dataTypes.add(outputDataType);
+				if (outputDataType != null) {
+					outputDataTypes.add(outputDataType);
 				}
-			}
-		}
-
-		for (String dataTypeName : viewConfig.getPrivateDataTypeNames()) {
-			DataType dataType = viewConfig.getDataType(dataTypeName);
-			DataType outputDataType = getOutputDataType(dataType, context);
-			if (outputDataType != null) {
-				dataTypes.add(outputDataType);
 			}
 		}
 
 		JsonBuilder json = context.getJsonBuilder();
 		json.array();
-		for (DataType dataType : dataTypes) {
+		for (DataType dataType : outputDataTypes) {
 			json.beginValue();
 			outputObject(dataType, context);
 			json.endValue();
 		}
+		int outputDataTypeNum = outputDataTypes.size();
 
 		if (includeDataTypes != null) {
 			while (includeDataTypeNum < includeDataTypes.size()) {
-				dataTypes.clear();
-
 				int i = 0;
 				for (Map.Entry<String, DataType> entry : includeDataTypes
 						.entrySet()) {
@@ -81,27 +70,46 @@ public class ViewDataTypesOutputter extends AbstractDataTypeOutputter {
 					}
 
 					DataType dataType = entry.getValue();
-					if (!dataTypes.contains(dataType)) {
-						DataType outputDataType = getOutputDataType(dataType,
-								context);
-						if (outputDataType != null
-								&& outputDataType.getId().equals(
-										outputDataType.getName())) {
-							dataTypes.add(outputDataType);
-						}
+					DataType outputDataType = getOutputDataType(dataType,
+							context);
+					if (outputDataType != null
+							&& !outputDataTypes.contains(outputDataType)) {
+						outputDataTypes.add(outputDataType);
 					}
 				}
-				includeDataTypeNum = includeDataTypes.size();
 
-				for (DataType dataType : dataTypes) {
+				i = 0;
+				for (DataType dataType : outputDataTypes) {
+					i++;
+					if (i <= outputDataTypeNum) {
+						continue;
+					}
+
 					json.beginValue();
 					outputObject(dataType, context);
 					json.endValue();
 				}
+
+				includeDataTypeNum = includeDataTypes.size();
+				outputDataTypeNum = outputDataTypes.size();
 			}
 
 			includeDataTypes.clear();
 		}
+
+		for (String dataTypeName : viewConfig.getPrivateDataTypeNames()) {
+			DataType dataType = viewConfig.getDataType(dataTypeName);
+			DataType outputDataType = getOutputDataType(dataType, context);
+			if (outputDataType != null
+					&& !outputDataTypes.contains(outputDataType)) {
+				json.object();
+				json.key("id").value(outputDataType.getId());
+				json.key("name").value(outputDataType.getName());
+				json.key("unload").value(true);
+				json.endObject();
+			}
+		}
+
 		json.endArray();
 	}
 

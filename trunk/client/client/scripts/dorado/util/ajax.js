@@ -136,7 +136,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			 * @default 50
 			 */
 			minConnectInterval: {
-				defaultValue: 50
+				defaultValue: 10
 			},
 
 			/**

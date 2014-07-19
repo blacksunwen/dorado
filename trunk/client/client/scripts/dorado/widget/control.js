@@ -495,6 +495,8 @@
 				 * @event
 				 */
 				onKeyPress: {},
+				
+				onResize: {},
 
 				onTap: {},
 				onDoubleTap: {},
@@ -684,7 +686,7 @@
 						}
 					}
 				}
-				else {
+				else if (this._rendered) {
 					this.refresh();
 				}
 				notifyChildren(this, actualVisible);
@@ -1269,6 +1271,8 @@
 				}
 
 				if (this.doOnResize) this.doOnResize.apply(this, arguments);
+				
+				this.fireEvent("onResize", this);
 			},
 
 			/**

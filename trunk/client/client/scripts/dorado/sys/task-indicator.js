@@ -371,7 +371,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 						}
 					}
 					$fly(panel._doms.countInfo).text(taskGroupConfig.caption.replace("${taskNum}", panel.tasks.size));
-				}, 500);
+				}, 50);
 			}
 		}
 	},

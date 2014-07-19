@@ -291,6 +291,15 @@
 		_className: "d-vbox-layout",
 
 		ATTRIBUTES: /** @scope dorado.widget.layout.VBoxLayout.prototype */ {
+			
+			lazyRenderChild: {
+				setter: function(lazyRenderChild) {
+					if (this._rendered) {
+						throw new dorado.AttributeException("dorado.widget.AttributeWriteBeforeReady", "lazyRenderChild");
+					}
+					this._lazyRenderChild = lazyRenderChild;
+				}
+			},
 
 			/**
 			 * left、center、right
@@ -481,7 +490,7 @@
 				cell.align = constraint.align || VBOX_ALIGNS[this._align];
 				if (i > 0) cell.style.paddingTop = (region.constraint.padding || regionPadding) + "px";
 
-				if (isNewRow) {
+				if (isNewRow || region.fakeDom) {
 					this.renderControl(region, div, true, true);
 					if (dorado.Browser.msie && dorado.Browser.version < 9 && region.control && region.control._rendered) {
 						if (dorado.Browser.version < 8) {
@@ -526,6 +535,11 @@
 					}
 				}
 			}
+		},
+		
+		getFakeDomOffsetTop: function(fakeDom) {
+			var cell = (dorado.Browser.msie && dorado.Browser.version < 8) ? fakeDom.parentNode : fakeDom.parentNode.parentNode;
+			return cell.offsetTop;
 		}
 
 	});

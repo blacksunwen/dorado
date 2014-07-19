@@ -79,6 +79,11 @@
 			method: "POST",
 			batchable: true
 		},
+		"ajax.loadViewOptions": {
+			url: doradoServierURI,
+			method: "POST",
+			batchable: true
+		},
 		"dom.useCssShadow": true,
 		"widget.skin": "~current",
 		"widget.panel.useCssCurveBorder": true,

@@ -212,6 +212,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 		onReady: function() {
 			$invokeSuper.call(this);
+			
 			if (this._renderMode !== "onDataLoaded") {
 				$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
 				this._loadingDataSets = [];

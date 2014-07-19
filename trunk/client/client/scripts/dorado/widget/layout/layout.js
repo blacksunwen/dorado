@@ -152,10 +152,24 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 */
 	refresh: function() {
 		if (this._duringRefreshDom) return;
+		debugger;
 		this._duringRefreshDom = true;
 		if (this._attached) {
 			this._shouldRefresh = false;
+			delete this.fakeDoms;
 			this.refreshDom(this.getDom());
+			
+			if (this._container) {
+				if (this.fakeDoms) {
+					var layout = this;
+					this._container.bind("onScroll.layout", function() {
+						layout.onScroll();
+					});
+				}
+				else {
+					this._container.unbind("onScroll.layout");
+				}
+			}
 		}
 		this._duringRefreshDom = false;
 	},
@@ -279,7 +293,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		this._disableRendering = false;
 	},
 
-	resetControlDimension: function(region, containerDom, autoWidth, autoHeight) {
+	resetControlDimension: function(region, regionDom, autoWidth, autoHeight) {
 		var control = region.control, attrWatcher = control.getAttributeWatcher();
 		var oldWidth = control._currentWidth, oldHeight = control._currentHeight;
 		if (autoWidth && region.width !== undefined && (!control.ATTRIBUTES.width.independent || control._fixedWidth)) {
@@ -293,13 +307,57 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		}
 	},
 
-	renderControl: function(region, containerDom, autoWidth, autoHeight) {
-		this.resetControlDimension.apply(this, [region, containerDom, autoWidth, autoHeight]);
+	renderControl: function(region, regionDom, autoWidth, autoHeight) {
+		this.resetControlDimension.apply(this, [region, regionDom, autoWidth, autoHeight]);
 
-		var control = region.control;
-		if (!control._rendered || control.getDom().parentNode != containerDom) {
+		var shouldRender = false, control = region.control;
+		if (!control._rendered) {
+			var containerDom = this._dom.parentNode, fakeDom = region.fakeDom;
+			if (!fakeDom) {
+				if (this._lazyRenderChild && containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight)) {
+					fakeDom = document.createElement("DIV");
+					region.fakeDom = fakeDom;
+
+					var properHeight = control.getRealHeight();
+					if (!properHeight) properHeight = FAKE_PROPER_HEIGHT;
+					$fly(fakeDom).css({
+						width: control.getRealWidth(),
+						height: properHeight
+					});
+					
+					regionDom.appendChild(fakeDom);
+					
+					if (!this.fakeDoms) this.fakeDoms = [];
+					this.fakeDoms.push(fakeDom);
+				}
+				else {
+					this._ignoreControlSizeChange = true;
+					control.render(regionDom);
+					this._ignoreControlSizeChange = false;
+				}
+			}
+			else if (this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight)) {
+				this._ignoreControlSizeChange = true;
+				control.replace(region.fakeDom);
+				this._ignoreControlSizeChange = false;
+
+				delete region.fakeDom;
+			}
+			else {
+				var properHeight = control.getRealHeight();
+				if (!properHeight) properHeight = FAKE_PROPER_HEIGHT;
+				$fly(fakeDom).css({
+					width: control.getRealWidth(),
+					height: properHeight
+				});
+				
+				if (!this.fakeDoms) this.fakeDoms = [];
+				this.fakeDoms.push(fakeDom);
+			}
+		}
+		else if (control._dom.parentNode != regionDom) {
 			this._ignoreControlSizeChange = true;
-			control.render(containerDom);
+			control.render(regionDom);
 			this._ignoreControlSizeChange = false;
 		}
 	},
@@ -316,12 +374,13 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @see dorado.widget.layout.Layout#doRefreshRegion
 	 */
 	refreshControl: function(control) {
-		var container = this._container, dom = this._dom;
-		if (!container || !dom) return;
-		
 		var region = this.getRegion(control);
 		if (region) {
 			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
+
+			var container = this._container, dom = this._dom;
+			if (!container || !dom) return;
+			
 			if (container.isActualVisible()) {
 				// this._ignoreControlSizeChange = true;
 				if (this.doRefreshRegion) {
@@ -407,9 +466,27 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 				fn.call(this);
 			}
 		}
+	},
+	
+	getFakeDomOffsetTop: function(fakeDom) {
+		return fakeDom.offsetTop;
+	},
+	
+	onScroll: function() {
+		if (!this._lazyRenderChild || !this.fakeDoms) return;
+		
+		dorado.Toolkits.setDelayedAction(this, "$onScrollTimerId", function() {
+			var containerDom = this._dom.parentNode, fakeDoms = this.fakeDoms;
+			for(var i = 0; i < fakeDoms.length; i++) {
+				var fakeDom = fakeDoms[i];
+				if (fakeDom && this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight)) {
+					this.refresh();
+					break;
+				}
+			}
+		}, 200);
 	}
-})
-;
+});
 
 /**
  * 用于表示某控件不参与布局管理的特殊布局条件，即布局管理器将在渲染时忽略对该控件的处理。
@@ -430,6 +507,23 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 	_className: "d-native-layout",
 
 	ATTRIBUTES: /** @scope dorado.widget.layout.NativeLayout.prototype */ {
+		
+		lazyRenderChild: {
+			setter: function(lazyRenderChild) {
+				if (this._rendered) {
+					throw new dorado.AttributeException("dorado.widget.AttributeWriteBeforeReady", "lazyRenderChild");
+				}
+				this._lazyRenderChild = lazyRenderChild;
+			}
+		},
+		
+		container: {
+			setter: function(container) {
+				if (this._container == container) return;
+				this._domCache = {};
+				this._container = container;
+			}
+		},
 
 		/**
 		 * 用于简化DOM元素style属性设置过程的虚拟属性。
@@ -520,3 +614,5 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 		}
 	}
 });
+
+var FAKE_PROPER_HEIGHT = 120;

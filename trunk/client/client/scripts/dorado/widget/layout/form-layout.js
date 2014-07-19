@@ -116,21 +116,32 @@
 		},
 
 		constructor: function(config) {
+			this._useTable = false;
+			this._currentUseTable = false;
 			this._useBlankRow = true; // !dorado.Browser.webkit;
 			$invokeSuper.call(this, [config]);
 		},
 
 		createDom: function() {
-			return $DomUtils.xCreate({
-				tagName: "TABLE",
-				className: this._className,
-				cellSpacing: 0,
-				cellPadding: 0,
-				content: "^TBODY"
-			});
+			this._currentUseTable = this._useTable;
+			if (this._useTable) {
+				return $DomUtils.xCreate({
+					tagName: "TABLE",
+					className: this._className,
+					cellSpacing: 0,
+					cellPadding: 0,
+					content: "^TBODY"
+				});
+			}
+			else {
+				return $DomUtils.xCreate({
+					tagName: "DIV",
+					className: this._className
+				});
+			}
 		},
 
-		refreshDom: function(dom) {
+		refreshTableLayout: function(dom) {
 
 			function isSameGrid(oldGrid, newGrid) {
 				if (!oldGrid) {
@@ -192,7 +203,7 @@
 
 			this.resizeTableAndCols();
 
-			var index, realColWidths = this._realColWidths;
+			var realColWidths = this._realColWidths;
 			if (this._useBlankRow) {
 				if (structureChanged) {
 					var tr = document.createElement("TR");
@@ -213,7 +224,7 @@
 				}
 			}
 
-			var realignRegions = [], rowIndexOffset = ((this._useBlankRow) ? 1 : 0), index = -1;
+			var rowIndexOffset = ((this._useBlankRow) ? 1 : 0), index = -1;
 			for(var row = 0; row < grid.length; row++) {
 				var tr;
 				if (structureChanged) {
@@ -234,7 +245,7 @@
 					tr.style.height = this._rowHeight + "px";
 				}
 
-				var cols = grid[row], cellForRenders = [], colIndex = 0;
+				var cols = grid[row], colIndex = 0;
 				for(var col = 0; col < cols.length; col++) {
 					var region = grid[row][col];
 					if (region && region.regionIndex <= index) {
@@ -243,7 +254,7 @@
 
 					var td;
 					if (structureChanged) {
-						td = this.createRegionContainer(region);
+						td = this.createTableRegionContainer(region);
 						if (dorado.Browser.webkit) {
 							td.style.height = this._rowHeight + "px";
 						}
@@ -289,40 +300,14 @@
 						if (dorado.Browser.msie && dorado.Browser.version < 8) td.style.paddingTop = "0px";
 						td.style.paddingBottom = (-region.autoHeightAdjust || 0) + "px";
 
-						cellForRenders.push({
-							cell: td,
-							region: region
-						});
-					}
-				}
-
-				for(var i = 0; i < cellForRenders.length; i++) {
-					var cellInfo = cellForRenders[i], td = cellInfo.cell, region = cellInfo.region;
-					if (region.control._fixedHeight === false) {
-						var controlDom = region.control.getDom();
-						region.display = controlDom.style.display;
-						controlDom.style.display = "none";
-						realignRegions.push(region);
-					}
-					else {
 						var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";
 						this.renderControl(region, td, !useControlWidth, false);
 					}
 				}
 			}
-
-			for(var i = 0; i < realignRegions.length; i++) {
-				var region = realignRegions[i], td = this.getRegionDom(region);
-				var controlDom = region.control.getDom();
-				region.height = td.clientHeight;
-				controlDom.style.display = region.display;
-
-				var useControlWidth = region.control.getAttributeWatcher().getWritingTimes("width") && region.control._width != "auto";
-				this.renderControl(region, td, !useControlWidth, true);
-			}
 		},
 
-		createRegionContainer: function(region) {
+		createTableRegionContainer: function(region) {
 			var dom = this.getRegionDom(region);
 			if (!dom) {
 				dom = document.createElement("TD");
@@ -352,7 +337,7 @@
 			var colWidths = this._colWidths = [];
 			var colClss = this._colClss = [];
 			var dynaColCount = 0, fixedWidth = 0;
-			jQuery.each(this._cols.split(','), function(i, col) {
+			this._cols.split(',').each(function(col, i) {
 				var w, cls, ind = col.indexOf('[');
 				if (ind > 0) {
 					w = col.substring(0, ind);
@@ -468,24 +453,138 @@
 			}
 
 			containerWidth -= colPadding * (this._colWidths.length - 1);
-			var self = this, changedCols = [];
 			for(var i = 0; i < this._colWidths.length; i++) {
 				var w = this._colWidths[i];
-				if (self.dynaColCount > 0) {
+				if (this.dynaColCount > 0) {
 					if (w == -1) {
-						w = parseInt((containerWidth - self.fixedWidth) / self.dynaColCount);
+						w = parseInt((containerWidth - this.fixedWidth) / this.dynaColCount);
 					}
 					w = (w < 0) ? 0 : w;
 				}
-				else if (self._stretchWidth) {
-					w = parseInt(w * containerWidth / self.fixedWidth);
+				else if (this._stretchWidth) {
+					w = parseInt(w * containerWidth / this.fixedWidth);
 				}
 				if (i < this._colWidths.length - 1) w += colPadding;
-
-				if (realColWidths[i] != w) changedCols.push(i);
 				realColWidths[i] = w;
 			}
-			return changedCols;
+		},
+
+		refreshDivLayout: function(dom) {
+			var grid = this.precalculateRegions();
+
+			var realColWidths = this._realColWidths;
+			if (!realColWidths) {
+				this._realColWidths = realColWidths = [];
+			}
+
+			var padding = parseInt(this._padding) || 0, colPadding = this._colPadding || 0;
+			var containerWidth = (dom.parentNode) ? (jQuery(dom.parentNode).width() - padding * 2) : 0;
+			if (!(containerWidth >= 0) || containerWidth > 10000) containerWidth = 0;
+
+			if (this._stretchWidth || this.dynaColCount > 0) {
+				dom.style.width = containerWidth + "px";
+			}
+			dom.style.padding = padding + "px";
+
+			containerWidth -= colPadding * (this._colWidths.length - 1);
+			for(var i = 0; i < this._colWidths.length; i++) {
+				var w = this._colWidths[i];
+				if (this.dynaColCount > 0) {
+					if (w == -1) {
+						w = parseInt((containerWidth - this.fixedWidth) / this.dynaColCount);
+					}
+					w = (w < 0) ? 0 : w;
+				}
+				else if (this._stretchWidth) {
+					w = parseInt(w * containerWidth / this.fixedWidth);
+				}
+				realColWidths[i] = w;
+			}
+
+			var index = -1;
+			for(var row = 0; row < grid.length; row++) {
+				var cols = grid[row];
+				for(var col = 0; col < cols.length; col++) {
+					var region = cols[col];
+					if (!region || region.regionIndex <= index) {
+						continue;
+					}
+					index = region.regionIndex;
+
+					var constraint = region.constraint;
+					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+						continue;
+					}
+
+					constraint.padding = parseInt(constraint.padding) || 0;
+					constraint.colSpan = parseInt(constraint.colSpan) || 0;
+
+					var div = $DomUtils.getOrCreateChild(dom, index, "DIV"), control = region.control;
+					// div.style.float = "left";
+					div.style.display = "inline-block";
+					div.style.position = "relative";
+					var width = 0;
+					if (constraint.colSpan > 1) {
+						for(var _col = col; _col < (col + constraint.colSpan) && _col < realColWidths.length; _col++) {
+							width += realColWidths[_col];
+							if (_col > col) width += this._colPadding;
+						}
+					}
+					else {
+						width = realColWidths[col];
+					}
+					div.style.padding = constraint.padding + "px";
+					if (col > 0) {
+						div.style.marginLeft = this._colPadding + "px";
+					}
+
+					if (row > 0) {
+						var rowPaddingAdj = 4; // 尚未弄清为什么inline-block元素的垂直方向上总有4px的间隙
+						div.style.marginTop = (this._rowPadding - rowPaddingAdj) + "px";
+					}
+
+					region.width = width - constraint.padding * 2;
+					// region.height = this._rowHeight - constraint.padding * 2;
+					div.style.width = region.width + "px";
+					// div.style.height =region.height + "px";
+
+					var useControlWidth = control.getAttributeWatcher().getWritingTimes("width") && control._width != "auto";
+					if (div.firstChild !== control.getDom()) {
+						this.renderControl(region, div, !useControlWidth, false);
+					}
+					else {
+						this.resetControlDimension(region, div, !useControlWidth, false);
+					}
+				}
+			}
+
+			$DomUtils.removeChildrenFrom(dom, index + 1);
+		},
+
+		preprocessLayoutConstraint: function(layoutConstraint, control) {
+			var layoutConstraint = $invokeSuper.call(this, arguments);
+			if (layoutConstraint.rowSpan > 1) this._useTable = true;
+			// this._useTable = true;
+			return layoutConstraint;
+		},
+
+		refreshDom: function(dom) {
+			var oldDom;
+			if (this._useTable != this._currentUseTable) {
+				oldDom = dom;
+				if (!this._dom) this._dom = dom = this.createDom();
+			}
+
+			if (this._currentUseTable) {
+				this.refreshTableLayout(dom);
+			}
+			else {
+				this.refreshDivLayout(dom);
+			}
+
+			if (oldDom) {
+				$fly(oldDom).remove();
+			}
 		}
 	});
 

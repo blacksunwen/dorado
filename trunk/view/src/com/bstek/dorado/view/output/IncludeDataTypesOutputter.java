@@ -36,9 +36,7 @@ public class IncludeDataTypesOutputter extends AbstractDataTypeOutputter {
 		for (Map.Entry<String, DataType> entry : includeDataTypes.entrySet()) {
 			DataType dataType = entry.getValue();
 			DataType outputDataType = getOutputDataType(dataType, context);
-
-			if (outputDataType != null
-					&& outputDataType.getId().equals(outputDataType.getName())) {
+			if (outputDataType != null) {
 				dataTypes.add(outputDataType);
 			}
 		}
@@ -66,9 +64,7 @@ public class IncludeDataTypesOutputter extends AbstractDataTypeOutputter {
 				if (!dataTypes.contains(dataType)) {
 					DataType outputDataType = getOutputDataType(dataType,
 							context);
-					if (outputDataType != null
-							&& outputDataType.getId().equals(
-									outputDataType.getName())) {
+					if (outputDataType != null) {
 						dataTypes.add(outputDataType);
 					}
 				}

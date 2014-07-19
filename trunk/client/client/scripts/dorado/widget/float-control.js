@@ -677,7 +677,7 @@ dorado.dequeue = function(namespace) {
 		getShowPosition: function(options) {
 			var control = this, anchorTarget = options.anchorTarget, position = options.position, dom = control.getDom(), event = options.event, fixedElement, result;
 
-			if (anchorTarget) {
+			if (anchorTarget || options.align || options.vAlign) {
 				if (anchorTarget instanceof dorado.widget.Control) {
 					fixedElement = anchorTarget._dom;
 				} else if (dorado.Object.isInstanceOf(anchorTarget, dorado.RenderableElement)) {
@@ -687,7 +687,6 @@ dorado.dequeue = function(namespace) {
 				} else {
 					fixedElement = anchorTarget;
 				}
-				
 				result = $DomUtils.dockAround(dom, fixedElement, options);
 			} else if (position) {
 				result = $DomUtils.locateIn(dom, options);

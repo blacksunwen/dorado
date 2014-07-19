@@ -194,7 +194,7 @@
 			if (this.onAddControl) this.onAddControl(control);
 		},
 		
-		renderControl: function(region, containerDom, autoWidth, autoHeight) {
+		renderControl: function(region, regionDom, autoWidth, autoHeight) {
 			switch (region.constraint.type) {
 				case "top":
 				case "bottom":{
@@ -211,7 +211,7 @@
 						autoWidth = autoHeight = true;
 					}
 			}
-			return $invokeSuper.call(this, [region, containerDom, autoWidth, autoHeight]);
+			return $invokeSuper.call(this, [region, regionDom, autoWidth, autoHeight]);
 		}
 	});
 	

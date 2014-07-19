@@ -259,9 +259,7 @@
 					var dataset = this;
 					var view = dataset._view || window._DEFAULT_VIEW;
 					if (view && view._loadingDataSets) view._loadingDataSets.push(dataset);
-					setTimeout(function() {
-						dataset.getDataAsync();
-					}, 0);
+					dataset.getDataAsync();
 				}
 			},
 
@@ -902,12 +900,6 @@
 					}
 				}
 			},
-
-			/*
-			 onReady: function() {
-			 this.sendMessage(0);
-			 },
-			 */
 
 			/**
 			 * 向数据集中添加一个消息的监听器。

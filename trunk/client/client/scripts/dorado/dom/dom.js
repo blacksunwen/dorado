@@ -516,7 +516,9 @@
 			offsetParentRight = offsetParentWidth + offsetParentOffset.left;
 			offsetParentBottom = offsetParentHeight + offsetParentOffset.top;
 
-			var position = jQuery(fixedElement == window ? document.body : fixedElement).offset(),
+			if (fixedElement == window || !fixedElement) fixedElement = document.body;
+			
+			var position = jQuery(fixedElement).offset(),
 				left = position.left, top = position.top, rect, newAlign, vAlignPrefix, overflowRect;
 
 			if (fixedElement) {
