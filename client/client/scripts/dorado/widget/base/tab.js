@@ -255,12 +255,7 @@
 		 */
 		close: function() {
 			var tab = this, tabbar = tab._parent, eventArg = {};
-			if (tabbar) {
-				tab.fireEvent("beforeClose", tab, eventArg);
-				if (eventArg.processDefault === false) return;
-				tabbar.removeTab(tab);
-				tab.fireEvent("onClose", tab);
-			}
+			if (tabbar) tabbar.removeTab(tab);
 		},
 
 		/**

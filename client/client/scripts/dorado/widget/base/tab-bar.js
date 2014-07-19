@@ -379,6 +379,10 @@
 			var tabgroup = this, tabs = tabgroup._tabs, navmenu = tabgroup._navmenu, index;
 			if (tabs) {
 				tab = tabgroup.getTab(tab);
+
+				tab.fireEvent("beforeClose", tab, eventArg);
+				if (eventArg.processDefault === false) return;
+				
 				if (navmenu) {
 					index = tabs.indexOf(tab);
 					navmenu.removeItem(index);
@@ -386,7 +390,11 @@
 				tabgroup.unregisterInnerViewElement(tab);
 
 				tabgroup.doRemoveTab(tab);
+				
+				tab.fireEvent("onClose", tab);
 				tabgroup.fireEvent("onTabRemove", self, { tab: tab });
+
+				tab.destroy();
 			}
 		},
 
@@ -399,17 +407,13 @@
 			var tabgroup = this, tabs = tabgroup._tabs;
 			if (tab != tabgroup._currentTab) {
 				tabs.remove(tab);
-				tab.destroy();
 			}
 			else {
 				var avialableTab = tabgroup.getAvialableTab(tab);
 				tabs.removeAt(tabs.indexOf(tab));
-				tab.destroy();
 
 				tabgroup.doChangeCurrentTab(avialableTab);
 			}
-			tab.destroy();
-
 			tabgroup.refreshNavButtons();
 		},
 
