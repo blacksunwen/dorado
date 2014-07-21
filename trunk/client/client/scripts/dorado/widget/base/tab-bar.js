@@ -379,7 +379,8 @@
 			var tabgroup = this, tabs = tabgroup._tabs, navmenu = tabgroup._navmenu, index;
 			if (tabs) {
 				tab = tabgroup.getTab(tab);
-
+				
+				var eventArg = {};
 				tab.fireEvent("beforeClose", tab, eventArg);
 				if (eventArg.processDefault === false) return;
 				
