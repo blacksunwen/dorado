@@ -206,12 +206,20 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		$invokeSuper.call(this, arguments);
 		$fly(dom).toggleClass(this._className + "-disabled", !!(this._disabled));
 	},
-	
+
+	onControlSizeChange: function() {
+		var accordion = this._parent;
+		if (accordion && accordion._dynaHeight) {
+			accordion.notifySizeChange(false, true);
+		}
+	},
+
 	doRenderControl: function() {
 		var section = this, doms = section._doms, control = section._control;
 		if (control) {
 			control.set("visible", true);
 			control.render(doms.container);
+			control._parentLayout = section;
 		}
 	}
 });

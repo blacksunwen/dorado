@@ -112,10 +112,68 @@
 			dynaHeight: true,
 			sections: [{
 				caption: "test",
-				control: {
-					$type: "Control",
-					height: 100
-				}
+				control: new dorado.widget.Container({
+					layout: {
+						$type: "Form",
+						cols: "*"
+					},
+					children: [{
+						"$type":"FieldSet",
+						caption: "test",
+						collapsed: true,
+						layout: new dorado.widget.layout.VBoxLayout(),
+						"children":[
+							{
+								"$type":"AutoForm",
+								"elements":[
+									{
+										"property":"propertyDef1",
+										"name":"propertyDef1"
+									},
+									{
+										"property":"propertyDef2",
+										"name":"propertyDef2"
+									},
+									{
+										"property":"propertyDef3",
+										"name":"propertyDef3"
+									},
+									{
+										"property":"propertyDef4",
+										"name":"propertyDef4"
+									}
+								]
+							}
+						]
+					}, {
+						"$type":"FieldSet",
+						caption: "test",
+						layout: new dorado.widget.layout.VBoxLayout(),
+						"children":[
+							{
+								"$type":"AutoForm",
+								"elements":[
+									{
+										"property":"propertyDef1",
+										"name":"propertyDef1"
+									},
+									{
+										"property":"propertyDef2",
+										"name":"propertyDef2"
+									},
+									{
+										"property":"propertyDef3",
+										"name":"propertyDef3"
+									},
+									{
+										"property":"propertyDef4",
+										"name":"propertyDef4"
+									}
+								]
+							}
+						]
+					}]
+				})
 			}, {
 				name: "file",
 				caption: "文件",
