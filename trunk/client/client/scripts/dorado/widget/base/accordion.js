@@ -198,7 +198,6 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		section.registerInnerControl(captionBar);
 		
 		doms.captionBar = captionBar._dom;
-		
 		return dom;
 	},
 
@@ -219,6 +218,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		if (control) {
 			control.set("visible", true);
 			control.render(doms.container);
+			section.registerInnerControl(control);
 			control._parentLayout = section;
 		}
 	}
