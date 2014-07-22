@@ -16,7 +16,7 @@
 	var elementMouseEnter = function(event) {
 		var element = this, tip = dorado.TipManager.getTip(element);
 		
-		// $log("tip._text:" + tip._text + "\ttip._visible:" + tip._visible);
+		//console.log("tip._text:" + tip._text + "\ttip._visible:" + tip._visible);
 		if ((tip._text || tip._content) && !tip._visible) {
 			dorado.TipManager.showTip(element, tip._showDelay || 0, event);
 		}
@@ -173,8 +173,8 @@
 			}
 			
 			return {
-				left: $fly(dom).left(),
-				top: $fly(dom).top()
+				left: parseInt($fly(dom).css("left"), 10),
+				top: parseInt($fly(dom).css("top"), 10)
 			};
 		},
 		
@@ -244,10 +244,9 @@
 		bindTarget: function() {
 			var element = this._anchorTarget;
 			if (element && !this._anchorTargetBinded) {
-				$fly(element).hover(elementMouseEnter, elementMouseLeave).mousemove(elementMouseMove);
+				jQuery(element).hover(elementMouseEnter, elementMouseLeave).mousemove(elementMouseMove);
 				this._anchorTargetBinded = true;
 			}
-			
 		},
 		
 		/**
@@ -257,7 +256,7 @@
 		unbindTarget: function() {
 			var element = this._anchorTarget;
 			if (element && this._anchorTargetBinded) {
-				$fly(element).unbind("mousemove", elementMouseMove).unbind("mouseenter", elementMouseEnter).unbind("mouseleave", elementMouseLeave);
+				jQuery(element).unbind("mousemove", elementMouseMove).unbind("mouseenter", elementMouseEnter).unbind("mouseleave", elementMouseLeave);
 				this._anchorTargetBinded = false;
 			}
 		},
@@ -302,6 +301,7 @@
 			jQuery.data(tip._dom, TOOLTIP_KEY, null);
 			
 			tip._rendered = false;
+			tip._attached = false;
 			tip._dom = null;
 			tip._doms = null;
 		}
