@@ -166,7 +166,9 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 			}
 		}
 		try {
-			return super.doCreate(context, constructorArgs);
+			Component component = (Component) super.doCreate(context,
+					constructorArgs);
+			return component;
 		} finally {
 			if (assembledComponentDefinition != null) {
 				jexlContext.set("acomp", originAcomp);
@@ -186,9 +188,9 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 			}
 		}
 
+		super.doInitObject(object, creationInfo, context);
 		Component component = (Component) object;
 		component.setId(id);
-		super.doInitObject(object, creationInfo, context);
 	}
 
 	@Override

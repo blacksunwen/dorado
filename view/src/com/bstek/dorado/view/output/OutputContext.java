@@ -13,12 +13,13 @@
 package com.bstek.dorado.view.output;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -28,7 +29,6 @@ import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.View;
-import com.bstek.dorado.view.widget.Control;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
@@ -51,7 +51,7 @@ public class OutputContext {
 	private Set<Object> javaScriptContents;
 	private Set<Object> styleSheetContents;
 	private Stack<Object> dataObjectStack;
-	private Map<Control, String> calloutHtmlMap;
+	private List<Callout> callouts;
 	private int calloutSN;
 
 	public OutputContext(Writer writer) {
@@ -254,18 +254,18 @@ public class OutputContext {
 		return dataObjectStack;
 	}
 
-	public Map<Control, String> getCalloutHtmlMap() {
-		return calloutHtmlMap;
+	public List<Callout> getCallouts() {
+		return callouts;
 	}
 
-	public void addCalloutHtml(Control control, String htmlId) {
-		if (calloutHtmlMap == null) {
-			calloutHtmlMap = new HashMap<Control, String>();
+	public void addCallout(Callout callout) {
+		if (callouts == null) {
+			callouts = new ArrayList<Callout>();
 		}
-		calloutHtmlMap.put(control, htmlId);
+		callouts.add(callout);
 	}
 
-	public String getCalloutId() {
+	public String newCalloutId() {
 		return String.valueOf(++calloutSN);
 	}
 }

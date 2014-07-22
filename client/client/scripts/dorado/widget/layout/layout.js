@@ -154,7 +154,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (this._duringRefreshDom) return;
 		this._duringRefreshDom = true;
 		if (this._attached) {
-			this._shouldRefresh = false;
 			delete this.fakeDoms;
 			this.refreshDom(this.getDom());
 			
@@ -171,6 +170,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			}
 		}
 		this._duringRefreshDom = false;
+		this._rendered = true;
 	},
 
 	/**
@@ -184,12 +184,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this._attached = true;
 			var dom = this.getDom();
 			if (dom.parentNode != containerElement) containerElement.appendChild(dom);
-
-			this._duringRefreshDom = true;
-			this.refreshDom(dom);
-			this._duringRefreshDom = false;
-
-			this._rendered = true;
 		}
 	},
 
@@ -379,7 +373,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 
 			var container = this._container, dom = this._dom;
 			if (!container || !dom) return;
-			
+
 			if (container.isActualVisible()) {
 				// this._ignoreControlSizeChange = true;
 				if (this.doRefreshRegion) {
@@ -406,12 +400,11 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	onResize: function() {
 		if (!this._attached || this._ignoreControlSizeChange || !this.doOnResize) return;
 
-		var clientSize = this._container.getContentContainerSize();
-		var clientWidth = clientSize[0], clientHeight = clientSize[1];
-		if (clientWidth > 10000) clientWidth = 0;
-		if (clientHeight > 10000) clientHeight = 0;
-		if (clientWidth == 0 && clientHeight == 0) return;
-
+		//var clientSize = this._container.getContentContainerSize();
+		//var clientWidth = clientSize[0], clientHeight = clientSize[1];
+		//if (clientWidth > 10000) clientWidth = 0;
+		//if (clientHeight > 10000) clientHeight = 0;
+		//if (clientWidth == 0 && clientHeight == 0) return;
 		this.doOnResize();
 	},
 

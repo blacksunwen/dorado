@@ -560,3 +560,29 @@
   line-height: 18px;
   color: #ffffff;
 }
+.d-sub-view {
+  background-color: #ffffff;
+}
+.d-sub-view .loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -18px;
+  margin-top: -18px;
+}
+.d-sub-view .loading-indicator > .spinner {
+  width: 36px;
+  height: 36px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: #15a4fa;
+  border-left-color: #15a4fa;
+  border-radius: 50%;
+  -webkit-animation: loading-icon 400ms linear infinite;
+  -moz-animation: loading-icon 400ms linear infinite;
+  -ms-animation: loading-icon 400ms linear infinite;
+  -o-animation: loading-icon 400ms linear infinite;
+}
+.d-sub-view .error-message{
+	margin: 4px;
+}
