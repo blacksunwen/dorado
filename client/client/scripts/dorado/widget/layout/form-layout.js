@@ -522,6 +522,7 @@
 					var div = $DomUtils.getOrCreateChild(dom, index, "DIV"), control = region.control;
 					// div.style.float = "left";
 					div.style.display = "inline-block";
+					div.style.verticalAlign = "middle";
 					div.style.position = "relative";
 					var width = 0;
 					if (constraint.colSpan > 1) {
