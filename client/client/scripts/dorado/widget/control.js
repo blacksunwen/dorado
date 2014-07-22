@@ -1055,8 +1055,11 @@
 				if (attached) {
 					this.onAttachToDocument();
 				}
-				else if (this._attached) {
-					this.onDetachFromDocument();
+				else {
+					this._waitingAttach = true;
+					if (this._attached) {
+						this.onDetachFromDocument();
+					}
 				}
 			},
 
@@ -1128,6 +1131,8 @@
 			 */
 			onAttachToDocument: function() {
 				if (!this._rendered && !this._attached) {
+					this._waitingAttach = false;
+					
 					var view = this._view;
 					if (view && view != $topView && !view._ready && !view._rendering) {
 						view.onReady();
@@ -1161,8 +1166,9 @@
 						var innerControls = this._innerControls;
 						for (var i = 0, len = innerControls.length; i < len; i++) {
 							var control = innerControls[i];
-							if (control._rendered || control._attached) continue;
-							control.onAttachToDocument();
+							if (control._waitingAttach && !control._rendered && !control._attached) {
+								control.onAttachToDocument();
+							}
 						}
 					}
 
