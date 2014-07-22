@@ -12,20 +12,15 @@
 
 package com.bstek.dorado.view.resolver;
 
-import java.io.Writer;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.velocity.Template;
-
 import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.output.Callout;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.view.output.Outputter;
-import com.bstek.dorado.view.widget.Control;
-import com.bstek.dorado.view.widget.HtmlContainer;
-import com.bstek.dorado.web.DoradoContext;
 
 /**
  * 
@@ -68,53 +63,17 @@ public class PageFooterOutputter implements Outputter {
 	protected void output(View view, HttpServletRequest request,
 			HttpServletResponse response, OutputContext outputContext)
 			throws Exception {
-		Writer writer = outputContext.getWriter();
-
-		Map<Control, String> calloutHtmlMap = outputContext.getCalloutHtmlMap();
-		if (calloutHtmlMap != null && !calloutHtmlMap.isEmpty()) {
-			for (Map.Entry<Control, String> entry : calloutHtmlMap.entrySet()) {
-				Control control = entry.getKey();
-				String id = entry.getValue();
-				if (control instanceof HtmlContainer) {
-					outputHtmlContainerContent(request, response, writer,
-							(HtmlContainer) control, id);
-				} else if (control instanceof View) {
-					outputSubViewHolderContent(request, response, writer,
-							(View) control, id);
-				}
+		List<Callout> callouts = outputContext.getCallouts();
+		if (callouts != null) {
+			for (Callout callout : callouts) {
+				outputCallout(request, response, callout, outputContext);
 			}
 		}
 	}
 
-	protected void outputHtmlContainerContent(HttpServletRequest request,
-			HttpServletResponse response, Writer writer,
-			HtmlContainer htmlContainer, String id) throws Exception {
-		String templateFile = htmlContainer.getContentFile();
-		outputSubTemplate(request, response, writer, templateFile,
-				htmlContainer.getView(), id);
-	}
-
-	protected void outputSubViewHolderContent(HttpServletRequest request,
-			HttpServletResponse response, Writer writer, View subView, String id)
-			throws Exception {
-		String templateFile = subView.getPageTemplate();
-		outputSubTemplate(request, response, writer, templateFile,
-				subView.getView(), id);
-	}
-
-	protected void outputSubTemplate(HttpServletRequest request,
-			HttpServletResponse response, Writer writer, String templateFile,
-			View view, String id) throws Exception {
-		writer.append("<div id=\"").append(id)
-				.append("\" style=\"display:none\"/>");
-		DoradoContext doradoContext = DoradoContext.getCurrent();
-		VelocityHelper velocityHelper = (VelocityHelper) doradoContext
-				.getServiceBean("velocityHelper");
-		org.apache.velocity.context.Context subContext = velocityHelper
-				.getContext(view, request, response);
-		Template template = velocityHelper.getVelocityEngine().getTemplate(
-				templateFile);
-		template.merge(subContext, writer);
-		writer.append("</div>\n");
+	protected void outputCallout(HttpServletRequest request,
+			HttpServletResponse response, Callout callout,
+			OutputContext outputContext) throws Exception {
+		callout.getOutputter().output(callout, outputContext);
 	}
 }

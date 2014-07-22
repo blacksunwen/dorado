@@ -44,6 +44,10 @@ public class ViewOutputter extends ContainerOutputter {
 	private AttachedResourceManager javaScriptResourceManager;
 	private AttachedResourceManager styleSheetResourceManager;
 
+	public ViewOutputter() {
+		setUsePrototype(true);
+	}
+
 	public void setChildrenComponentOutputter(
 			Outputter childrenComponentOutputter) {
 		this.childrenComponentOutputter = childrenComponentOutputter;
@@ -61,10 +65,6 @@ public class ViewOutputter extends ContainerOutputter {
 	public void setStyleSheetResourceManager(
 			AttachedResourceManager styleSheetResourceManager) {
 		this.styleSheetResourceManager = styleSheetResourceManager;
-	}
-
-	public ViewOutputter() {
-		setUsePrototype(true);
 	}
 
 	public void outputView(View view, OutputContext context) throws Exception {

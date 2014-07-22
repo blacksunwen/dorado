@@ -24,6 +24,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		class="com.bstek.dorado.view.widget.ComponentOutputterDispatcher">
 		<property name="componentTypeRegistry" ref="dorado.componentTypeRegistry" />
 	</bean>
+	<bean id="dorado.resourceCalloutOutputter" class="com.bstek.dorado.view.output.ResourceCalloutOutputter" />
 
 	<bean id="dorado.stringAliasPropertyOutputter"
 		class="com.bstek.dorado.view.output.StringAliasPropertyOutputter" />
@@ -72,7 +73,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 		<property name="viewDataTypesOutputter">
 			<bean parent="dorado.objectOutputterDispatcher"
-				class="com.bstek.dorado.view.output.ViewDataTypesOutputter" />
+				class="com.bstek.dorado.view.output.PositiveViewDataTypesOutputter" />
 		</property>
 		<property name="javaScriptResourceManager" ref="dorado.viewJavaScriptResourceManager" />
 		<property name="styleSheetResourceManager" ref="dorado.viewStyleSheetResourceManager" />
@@ -86,7 +87,9 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<bean id="dorado.dataSetDataPropertyOutputter" parent="dorado.dataOutputter"
 		class="com.bstek.dorado.view.widget.data.DataSetDataPropertyOutputter" />
 	<bean id="dorado.htmlContainerOutputter" parent="dorado.containerOutputter"
-		class="com.bstek.dorado.view.widget.HtmlContainerOutputter" />
+		class="com.bstek.dorado.view.widget.HtmlContainerOutputter">
+		<property name="contentFileOutputter" ref="dorado.resourceCalloutOutputter" />
+	</bean>
 	<bean id="dorado.subViewNamePropertyOutputter"
 		class="com.bstek.dorado.view.widget.SubViewNamePropertyOutputter" />
 	<bean id="dorado.subViewPropertyOutputter" parent="dorado.objectOutputterDispatcher"

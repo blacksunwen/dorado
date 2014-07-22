@@ -539,17 +539,17 @@
 			var layout = container._layout;
 			if (container._contentContainerVisible && layout && layout._attached) {
 				layout.onResize();
+				this.processContentSizeChange();
 			}
-			this.processContentSize();
 		},
 
 		onContentSizeChange: function() {
 			if (!this._rendered || !this._layout || !this._layout._attached) return;
-			this.processContentSize();
+			this.processContentSizeChange();
 			this.updateModernScroller();
 		},
 
-		processContentSize: function() {
+		processContentSizeChange: function() {
 			if (!this._layout) return;
 
 			var dom = this._dom, containerDom = this.getContentContainer(), layoutDom = this._layout.getDom();

@@ -1009,9 +1009,6 @@
 							if (this._showHint && this._hintPosition != "bottom") {
 								editorWidth -= (this._hintWidth + this._hintSpacing);
 							}
-							else {
-								editorWidth = 0;
-							}
 						}
 						else {
 							editorWidth = 0;
@@ -1022,9 +1019,9 @@
 				if (this._editorWidth > 0 && editor._realWidth > 0 && this._editorWidth < editor._realWidth) {
 					editor._realWidth = this._editorWidth;
 				}
-				if (autoHeight) editor._realHeight = editorEl.offsetHeigh; // 可能导致IE9下自定义Editor的高度异常
+				if (autoHeight) editor._realHeight = editorEl.offsetHeight; // 可能导致IE9下自定义Editor的高度异常
 
-				if (!editor.get("rendered")) {
+				if (!editor._rendered) {
 					editor.render(editorEl);
 				}
 				else {

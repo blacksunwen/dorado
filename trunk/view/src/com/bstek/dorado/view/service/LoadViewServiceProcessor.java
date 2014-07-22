@@ -17,18 +17,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewOutputter;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.manager.ViewConfigManager;
+import com.bstek.dorado.view.output.ClientOutputHelper;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
-import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
@@ -37,14 +40,14 @@ import com.bstek.dorado.web.DoradoContext;
  */
 public class LoadViewServiceProcessor implements ServiceProcessor {
 	private ViewConfigManager viewConfigManager;
-	private Outputter viewOutputter;
+	private ClientOutputHelper clientOutputHelper;
 
 	public void setViewConfigManager(ViewConfigManager viewConfigManager) {
 		this.viewConfigManager = viewConfigManager;
 	}
 
-	public void setViewOutputter(Outputter viewOutputter) {
-		this.viewOutputter = viewOutputter;
+	public void setClientOutputHelper(ClientOutputHelper clientOutputHelper) {
+		this.clientOutputHelper = clientOutputHelper;
 	}
 
 	protected ViewConfig getViewConfig(DoradoContext context, String viewName,
@@ -101,13 +104,26 @@ public class LoadViewServiceProcessor implements ServiceProcessor {
 		JsonBuilder jsonBuilder = outputContext.getJsonBuilder();
 
 		jsonBuilder.object();
-		jsonBuilder.key("view");
+		jsonBuilder.key("createView");
 		jsonBuilder.beginValue();
 		View view = viewConfig.getView();
 		if (view != null) {
-			viewOutputter.output(view, outputContext);
+			writer.append("(function(){\n");
+
+			ViewOutputter outputter = (ViewOutputter) clientOutputHelper
+					.getOutputter(view.getClass());
+			outputter.outputView(view, outputContext);
+
+			writer.append("return view;\n").append("})");
 		}
 		jsonBuilder.endValue();
+
+		Set<String> dependsPackages = outputContext.getDependsPackages();
+		if (dependsPackages.size() > 0) {
+			jsonBuilder.key("packages").value(
+					StringUtils.join(dependsPackages, ','));
+		}
+
 		jsonBuilder.endObject();
 	}
 

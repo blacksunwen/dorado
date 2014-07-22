@@ -87,16 +87,21 @@
 			},
 
 			doRefreshDom: function(dom) {
-				this._maxRagionRight = this._maxRagionBottom = 0;
+				var clientSize = this._container.getContentContainerSize();
+				var clientWidth = clientSize[0], clientHeight = clientSize[1];
+				if (clientWidth > 10000) clientWidth = 0;
+				if (clientHeight > 10000) clientHeight = 0;
+				
+				this._maxRegionRight = this._maxRegionBottom = 0;
 				for(var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
 					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 
-					var realignArg = this.adjustRegion(region);
+					var realignArg = this.doAdjustRegion(region, clientWidth, clientHeight);
 					if (realignArg) this.realignRegion(region, realignArg);
 				}
-				if (this.processOverflow(dom)) this.calculateRegions();
+				if (this.processOverflow(dom, clientWidth, clientHeight)) this.calculateRegions();
 			},
 
 			recordMaxRange: function(region) {
@@ -104,30 +109,34 @@
 				if (controlDom.style.position == "absolute") {
 					if (region.right === undefined) {
 						var right = (region.left || 0) + region.realWidth + region.regionPadding;
-						if (right > this._maxRagionRight) this._maxRagionRight = right;
+						if (right > this._maxRegionRight) this._maxRegionRight = right;
 					}
 
 					if (region.bottom === undefined) {
 						var bottom = (region.top || 0) + region.realHeight + region.regionPadding;
-						if (bottom > this._maxRagionBottom) this._maxRagionBottom = bottom;
+						if (bottom > this._maxRegionBottom) this._maxRegionBottom = bottom;
 					}
 				}
 			},
 
-			processOverflow: function(dom) {
+			processOverflow: function(dom, clientWidth, clientHeight) {
+				if (clientWidth === undefined || clientHeight === undefined) {
+					var containerSize = this._container.getContentContainerSize();
+					clientWidth = containerSize[0];
+					clientHeight = containerSize[0];
+				}
 				var overflowed = false, padding = parseInt(this._padding) || 0;
-				var containerSize = this._container.getContentContainerSize();
 				
-				var width = this._maxRagionRight;
+				var width = this._maxRegionRight;
 				if (width < dom.scrollWidth) width = dom.scrollWidth;
-				if (width > 0 && (width > containerSize[0] || (width == dom.offsetWidth && dom.style.width == ""))) {
+				if (width > 0 && (width > clientWidth || (width == dom.offsetWidth && dom.style.width == ""))) {
 					dom.style.width = (width + padding) + "px";
 					overflowed = true;
 				}
 
-				var height = this._maxRagionBottom;
+				var height = this._maxRegionBottom;
 				if (height < dom.scrollHeight) height = dom.scrollHeight;
-				if (height > 0 && (height > containerSize[1] || (height == dom.offsetHeight && dom.style.height == ""))) {
+				if (height > 0 && (height > clientHeight || (height == dom.offsetHeight && dom.style.height == ""))) {
 					dom.style.height = (height + padding) + "px";
 					overflowed = true;
 				}
@@ -138,7 +147,7 @@
 				if (!this._attached) return;
 				var region = this._regions.get(control._uniqueId);
 				if (region) {
-					var realignArg = this.adjustRegion(region, true);
+					var realignArg = this.adjustRegion(region);
 					if (this._disableRendering) return;
 					if (realignArg) this.realignRegion(region, realignArg);
 					if (this.processOverflow(this.getDom())) this.calculateRegions();
@@ -181,6 +190,12 @@
 			calculateRegions: function(fromRegion) {
 				var regions = this._regions;
 				if (regions.size == 0) return;
+				
+				var clientSize = this._container.getContentContainerSize();
+				var clientWidth = clientSize[0], clientHeight = clientSize[1];
+				if (clientWidth > 10000) clientWidth = 0;
+				if (clientHeight > 10000) clientHeight = 0;
+				
 				var found = !fromRegion;
 				regions.each(function(region) {
 					if (!found) {
@@ -188,12 +203,20 @@
 						if (!found) return;
 					}
 					if (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return;
-					var realignArg = this.adjustRegion(region);
+					var realignArg = this.doAdjustRegion(region, clientWidth, clientHeight);
 					if (realignArg) this.realignRegion(region, realignArg);
 				}, this);
 			},
-
+			
 			adjustRegion: function(region) {
+				var clientSize = this._container.getContentContainerSize();
+				var clientWidth = clientSize[0], clientHeight = clientSize[1];
+				if (clientWidth > 10000) clientWidth = 0;
+				if (clientHeight > 10000) clientHeight = 0;
+				this.doAdjustRegion(region, clientWidth, clientHeight);
+			},
+
+			doAdjustRegion: function(region, clientWidth, clientHeight) {
 
 				function getAnchorRegion(region, p) {
 					var anchor = constraint[p];
@@ -223,12 +246,6 @@
 
 				var padding = (parseInt(this._padding) || 0);
 				var regionPadding = (parseInt(this._regionPadding) || 0) + (parseInt(constraint.padding) || 0);
-
-				var clientSize = this._container.getContentContainerSize();
-				var clientWidth = clientSize[0], clientHeight = clientSize[1];
-				if (clientWidth > 10000) clientWidth = 0;
-				if (clientHeight > 10000) clientHeight = 0;
-
 				var realContainerWidth = clientWidth - padding * 2, realContainerHeight = clientHeight - padding * 2;
 
 				if (constraint.anchorLeft == "previous" && constraint.left == null) constraint.left = 0;

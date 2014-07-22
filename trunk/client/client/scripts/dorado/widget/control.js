@@ -1036,11 +1036,8 @@
 					}
 				}
 
-				if (this._attached) this.refreshDom(dom);
-				this._rendered = true;
-
 				var attached = false, renderTarget = this._renderTo || this._renderOn;
-				if (!renderTarget && this._parent && this._parent._rendered && this._parent != dorado.widget.View.TOP) {
+				if (!renderTarget && this._parent && this._parent != dorado.widget.View.TOP) {
 					attached = this._parent._attached;
 				}
 				else {
@@ -1095,7 +1092,7 @@
 
 			/**
 			 * 本对象并替换指定的DOM对象。
-			 * @param {HTMLElement} [containerElement] 要替换的DOM元素。如果此参数为空，将以替换renderOn属性所指向的对象。
+			 * @param {HTMLElement} [containerElement] 要替换的DOM元素。如果此参数为空，将替换renderOn属性所指向的对象。
 			 * 如果renderTo属性也是空，将以document.body作为容器。
 			 */
 			replace: function(elmenent) {
@@ -1130,7 +1127,7 @@
 			 * @see dorado.widget.Control#doOnDetachFromDocument
 			 */
 			onAttachToDocument: function() {
-				if (this._rendered && !this._attached) {
+				if (!this._rendered && !this._attached) {
 					var view = this._view;
 					if (view && view != $topView && !view._ready && !view._rendering) {
 						view.onReady();
@@ -1152,20 +1149,24 @@
 					}
 					if (arg.processDefault) {
 						this.refreshDom(dom);
+						this._rendered = true;
 						this.fireEvent("onRefreshDom", this, arg);
 					}
 					this._duringRefreshDom = false;
 					this._skipResize = false;
 
 					if (this.doOnAttachToDocument) this.doOnAttachToDocument();
-
+					
 					if (this._innerControls) {
-						jQuery.each(this._innerControls, function(i, control) {
+						var innerControls = this._innerControls;
+						for (var i = 0, len = innerControls.length; i < len; i++) {
+							var control = innerControls[i];
+							if (control._rendered || control._attached) continue;
 							control.onAttachToDocument();
-						});
+						}
 					}
 
-					// TODO: 导致contrainer中的layout重新布局，交价太高
+					// TODO: 导致container中的layout重新布局，代价太高
 					this.onResize();
 
 					this.updateModernScroller();
@@ -1216,7 +1217,7 @@
 			registerInnerControl: function(control) {
 				if (!this._innerControls) this._innerControls = [];
 				this._innerControls.push(control);
-				if (this._attached) control.onAttachToDocument();
+				//if (this._attached) control.onAttachToDocument();
 				control._isInnerControl = true;
 
 				if (control._parent == window.$topView) {
