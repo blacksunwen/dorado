@@ -47,6 +47,7 @@ public class SplitPanel extends Control {
 	private boolean collapsed;
 	private boolean collapseable = true;
 	private boolean previewable;
+	private boolean collapseBothDirection = false;
 
 	@ClientProperty(escapeValue = "left")
 	@IdeProperty(highlight = 1)
@@ -138,5 +139,14 @@ public class SplitPanel extends Control {
 
 	public void setPreviewable(boolean previewable) {
 		this.previewable = previewable;
+	}
+
+	@ClientProperty(escapeValue = "false")
+	public boolean isCollapseBothDirection() {
+		return collapseBothDirection;
+	}
+
+	public void setCollapseBothDirection(boolean collapseBothDirection) {
+		this.collapseBothDirection = collapseBothDirection;
 	}
 }
