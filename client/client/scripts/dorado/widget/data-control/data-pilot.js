@@ -610,6 +610,8 @@
 				width: 40,
 				style: "float: left"
 			});
+			this.registerInnerControl(this._spinner);
+			this._spinner.render(dom);
 			
 			this._labelSuffix = $DomUtils.xCreate({
 				tagName: "SPAN",
@@ -619,12 +621,6 @@
 			dom.appendChild(this._labelSuffix);
 			
 			return dom;
-		},
-		
-		doOnAttachToDocument: function() {
-			var dom = this.getDom();
-			this.registerInnerControl(this._spinner);
-			this._spinner.render(dom);
 		},
 		
 		refreshDom: function(dom) {

@@ -166,81 +166,86 @@
 			for(var it = this._regions.iterator(); it.hasNext();) {
 				var region = it.next();
 				var constraint = region.constraint;
-				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 
-				var w, cell = domCache[region.id], cell, div, isNewCell = false;
-				if (!cell) {
-					cell = document.createElement("TD");
-					isNewCell = true;
+				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+					var control = region.control;
+					if (control._dom) $DomUtils.getUndisplayContainer().appendChild(control._dom);
 				}
 				else {
-					delete domCache[region.id];
-				}
-				newDomCache[region.id] = cell;
-
-				var refCell = row.childNodes[i];
-				if (refCell != cell) {
-					if (cell.parentNode == row) {
-						while(refCell && refCell != cell) {
-							row.removeChild(refCell);
-							refCell = refCell.nextSibling;
-						}
+					var w, cell = domCache[region.id], cell, div, isNewCell = false;
+					if (!cell) {
+						cell = document.createElement("TD");
+						isNewCell = true;
 					}
 					else {
-						(refCell) ? row.insertBefore(cell, refCell) : row.appendChild(cell);
+						delete domCache[region.id];
 					}
-				}
-				cell.style.display = "";
-				if (constraint.align) cell.style.verticalAlign = (constraint.align == "center") ? "middle" : constraint.align;
-
-				var w = region.control._width;
-				if (w) {
-					if (w.constructor == String && w.match('%')) {
-						var rate = parseInt(w);
-						if (!isNaN(rate)) {
-							w = rate * realContainerWidth / 100;
-						}
-					}
-					else {
-						w = parseInt(w);
-					}
-				}
-				else {
-					w = undefined;
-				}
-				region.width = w;
-
-				var h;
-				if (!this._stretch || region.control.getAttributeWatcher().getWritingTimes("height")) {
-					h = region.control._height;
-					if (h) {
-						if (h.constructor == String && h.match('%')) {
-							var rate = parseInt(h);
-							if (!isNaN(rate)) {
-								h = rate * realContainerHeight / 100;
+					newDomCache[region.id] = cell;
+	
+					var refCell = row.childNodes[i];
+					if (refCell != cell) {
+						if (cell.parentNode == row) {
+							while(refCell && refCell != cell) {
+								row.removeChild(refCell);
+								refCell = refCell.nextSibling;
 							}
 						}
 						else {
-							h = parseInt(h);
+							(refCell) ? row.insertBefore(cell, refCell) : row.appendChild(cell);
+						}
+					}
+					cell.style.display = "";
+					if (constraint.align) cell.style.verticalAlign = (constraint.align == "center") ? "middle" : constraint.align;
+	
+					var w = region.control._width;
+					if (w) {
+						if (w.constructor == String && w.match('%')) {
+							var rate = parseInt(w);
+							if (!isNaN(rate)) {
+								w = rate * realContainerWidth / 100;
+							}
+						}
+						else {
+							w = parseInt(w);
 						}
 					}
 					else {
-						h = undefined;
+						w = undefined;
 					}
+					region.width = w;
+	
+					var h;
+					if (!this._stretch || region.control.getAttributeWatcher().getWritingTimes("height")) {
+						h = region.control._height;
+						if (h) {
+							if (h.constructor == String && h.match('%')) {
+								var rate = parseInt(h);
+								if (!isNaN(rate)) {
+									h = rate * realContainerHeight / 100;
+								}
+							}
+							else {
+								h = parseInt(h);
+							}
+						}
+						else {
+							h = undefined;
+						}
+					}
+					else {
+						h = realContainerHeight;
+					}
+					region.height = h;
+	
+					if (i > 0) cell.style.paddingLeft = (region.constraint.padding || regionPadding) + "px";
+					if (isNewCell) {
+						this.renderControl(region, cell, true, this._stretch);
+					}
+					else {
+						this.resetControlDimension(region, cell, true, this._stretch);
+					}
+					i++;
 				}
-				else {
-					h = realContainerHeight;
-				}
-				region.height = h;
-
-				if (i > 0) cell.style.paddingLeft = (region.constraint.padding || regionPadding) + "px";
-				if (isNewCell) {
-					this.renderControl(region, cell, true, this._stretch);
-				}
-				else {
-					this.resetControlDimension(region, cell, true, this._stretch);
-				}
-				i++;
 			}
 
 			for(var regionId in domCache) {

@@ -100,7 +100,7 @@ dorado.widget.SubViewHolder = $extend(dorado.widget.Control, /** @scope dorado.w
 		
 		onLoad: {},
 		
-		onLoadFailure: {},
+		onLoadFailure: {}
 	},
 
 	constructor: function(config) {

@@ -470,6 +470,19 @@
 		},
 
 		refreshDivLayout: function(dom) {
+			
+			function getOrCreateChild(parentNode, index, tagName) {
+				var child, refChild;
+				if (index < parentNode.childNodes.length) {
+					child = refChild = parentNode.childNodes[index];
+				}
+				if (!child || child.tagName != tagName) {
+					child = (typeof tagName == "function") ? tagName(index) : ((tagName.constructor == String) ? document.createElement(tagName) : this.xCreate(tagName));
+					(refChild) ? parentNode.insertBefore(child, refChild) : parentNode.appendChild(child);
+				}
+				return child;
+			}
+			
 			var grid = this.precalculateRegions();
 
 			var realColWidths = this._realColWidths;
@@ -501,25 +514,26 @@
 				realColWidths[i] = w;
 			}
 
-			var index = -1;
+			var index = -1, domIndex = 0;
 			for(var row = 0; row < grid.length; row++) {
 				var cols = grid[row];
 				for(var col = 0; col < cols.length; col++) {
 					var region = cols[col];
-					if (!region || region.regionIndex <= index) {
+					if (!region) continue;
+					if (region.regionIndex <= index) {
+						if (region.regionIndex == -1) {
+							var control = region.control;
+							if (control._dom) $DomUtils.getUndisplayContainer().appendChild(control._dom);
+						}
 						continue;
 					}
 					index = region.regionIndex;
 
 					var constraint = region.constraint;
-					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
-						continue;
-					}
-
 					constraint.padding = parseInt(constraint.padding) || 0;
 					constraint.colSpan = parseInt(constraint.colSpan) || 0;
 
-					var div = $DomUtils.getOrCreateChild(dom, index, "DIV"), control = region.control;
+					var div = getOrCreateChild(dom, domIndex++, "DIV"), control = region.control;
 					// div.style.float = "left";
 					div.style.display = "inline-block";
 					div.style.verticalAlign = "middle";
@@ -557,9 +571,10 @@
 						this.resetControlDimension(region, div, !useControlWidth, false);
 					}
 				}
+				getOrCreateChild(dom, domIndex++, "BR");
 			}
 
-			$DomUtils.removeChildrenFrom(dom, index + 1);
+			$DomUtils.removeChildrenFrom(dom, domIndex);
 		},
 
 		preprocessLayoutConstraint: function(layoutConstraint, control) {
