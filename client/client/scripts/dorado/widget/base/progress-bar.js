@@ -14,8 +14,9 @@
  * @component Base
  * @class 进度条
  * @extends dorado.widget.Control
+ * @extends dorado.widget.PropertyDataControl
  */
-dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.widget.ProgressBar.prototype */ {
+dorado.widget.ProgressBar = $extend([dorado.widget.Control, dorado.widget.PropertyDataControl], /** @scope dorado.widget.ProgressBar.prototype */ {
 	$className: "dorado.widget.ProgressBar",
 	selectable: false,
 	
@@ -23,48 +24,54 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 		className: {
 			defaultValue: "d-progress-bar"
 		},
+		
 		height: {
 			independent: true
 		},
-        /**
-         * 该进度条显示范围的最小值，默认为0。
-         * @attribute
-         * @default 0
-         * @type int|float
-         */
+		
+		/**
+		 * 该进度条显示范围的最小值，默认为0。
+		 * @attribute
+		 * @default 0
+		 * @type int|float
+		 */
 		minValue: {
 			defaultValue: 0
 		},
-        /**
-         * 该进度条显示范围的最大值，默认为100。
-         * @attribute
-         * @default 100
-         * @type int|float
-         */
+		
+		/**
+		 * 该进度条显示范围的最大值，默认为100。
+		 * @attribute
+		 * @default 100
+		 * @type int|float
+		 */
 		maxValue: {
 			defaultValue: 100
 		},
-        /**
-         * 该进度条是否显示文字，默认为true。
-         * @attribute
-         * @default true
-         * @type boolean
-         */
+		
+		/**
+		 * 该进度条是否显示文字，默认为true。
+		 * @attribute
+		 * @default true
+		 * @type boolean
+		 */
 		showText: {
 			defaultValue: true
 		},
-        /**
-         * 进度条当前值
-         * @attribute
-         * @type int|float
-         */
+		
+		/**
+		 * 进度条当前值
+		 * @attribute
+		 * @type int|float
+		 */
 		value: {},
-        /**
-         * 该进度条限制文本的格式，进度使用{percent}来替换，默认值为{percent}%。
-         * @attribute
-         * @default "{percent}%"
-         * @type String
-         */
+		
+		/**
+		 * 该进度条限制文本的格式，进度使用{percent}来替换，默认值为{percent}%。
+		 * @attribute
+		 * @default "{percent}%"
+		 * @type String
+		 */
 		textPattern: {
 			defaultValue: "{percent}%"
 		}
@@ -97,10 +104,32 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 
 		return dom;
 	},
-    
+
+	processDataSetMessage: function(messageCode, arg, data) {
+		switch (messageCode) {
+			case dorado.widget.DataSet.MESSAGE_REFRESH:
+			case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
+			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
+			case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:
+				this.refresh(true);
+				break;
+		}
+	},
+	
 	refreshDom: function(dom) {
 		$invokeSuper.call(this, arguments);
-		var bar = this, min = bar._minValue, max = bar._maxValue, value = bar._value || 0, doms = bar._doms,
+
+		var bar = this, entity = this.getBindingData(true), value;
+		if (entity) {
+			var timestamp = entity.timestamp;
+			if (timestamp == this._timestamp) return;
+			value = ((this._property && entity != null) ? entity.get(this._property) : "") || 0;
+			this._timestamp = timestamp;
+		} else {
+			value = bar._value || 0;
+		}
+
+		var min = bar._minValue, max = bar._maxValue, doms = bar._doms,
 			percent = value / (max - min), showText = bar._showText, pattern = bar._textPattern || "";
 
 		if (percent == 0) {
@@ -109,6 +138,10 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 		
 		if (percent >= 0 && percent <= 1) {
 			$fly(doms.bar).css("width", percent * 100 + "%");
+		} else if (percent > 1) {
+			$fly(doms.bar).css("width",  "100%");
+		} else if (percent < 0) {
+			$fly(doms.bar).css("width",  "0%");
 		}
 
 		var $msg = $fly([doms.msg, doms.barMsg]).css("width", dom.offsetWidth);
@@ -116,7 +149,7 @@ dorado.widget.ProgressBar = $extend(dorado.widget.Control, /** @scope dorado.wid
 			$msg.text(pattern.replace("{percent}", parseInt(percent * 100, 10)));
 		} else {
 			$msg.empty();
-        }
+		}
 		
 		if (percent == 0) {
 			$fly(dom).removeClass("d-rendering");
