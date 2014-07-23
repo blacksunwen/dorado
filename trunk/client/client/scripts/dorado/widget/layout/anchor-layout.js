@@ -96,10 +96,14 @@
 				for(var it = this._regions.iterator(); it.hasNext();) {
 					var region = it.next();
 					var constraint = region.constraint;
-					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
-
-					var realignArg = this.doAdjustRegion(region, clientWidth, clientHeight);
-					if (realignArg) this.realignRegion(region, realignArg);
+					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+						var control = region.control;
+						if (control._dom) $DomUtils.getUndisplayContainer().appendChild(control._dom);
+					}
+					else {
+						var realignArg = this.doAdjustRegion(region, clientWidth, clientHeight);
+						if (realignArg) this.realignRegion(region, realignArg);
+					}
 				}
 				if (this.processOverflow(dom, clientWidth, clientHeight)) this.calculateRegions();
 			},

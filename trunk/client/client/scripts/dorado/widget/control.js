@@ -582,7 +582,6 @@
 					}
 				}
 
-				dorado.RenderableElement.prototype.destroy.call(this);
 				$invokeSuper.call(this);
 			},
 
@@ -673,21 +672,19 @@
 				}
 
 				var actualVisible = this.isActualVisible();
-				if (this._parentLayout) {
-					if (this._hideMode == "display") {
-						this._parentLayout.refreshControl(this);
-						if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
-							this.refresh();
-						}
-					}
-					else {
-						if (!actualVisible || this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
-							this.refresh();
-						}
+				if (this._parentLayout && this._hideMode == "display") {
+					this._parentLayout.refreshControl(this);
+					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
+						this.refresh();
 					}
 				}
-				else if (this._rendered) {
-					this.refresh();
+				else {
+					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
+						this.refresh();
+					}
+					else {
+						this.resetAppearance(this._dom);
+					}
 				}
 				notifyChildren(this, actualVisible);
 			},
@@ -762,9 +759,9 @@
 					}
 				}
 			},
-
-			_refreshDom: function(dom) {
-				dom.doradoUniqueId = this._uniqueId;
+			
+			resetAppearance: function(dom) {
+				if (!dom) return;
 				if (this._currentVisible !== undefined) {
 					if (this._currentVisible != this._visible) {
 						if (this._hideMode == "display") {
@@ -792,6 +789,11 @@
 						}
 					}
 				}
+			},
+
+			_refreshDom: function(dom) {
+				dom.doradoUniqueId = this._uniqueId;
+				this.resetAppearance(dom);
 
 				var tip = this.get("tip");
 				if (tip) {

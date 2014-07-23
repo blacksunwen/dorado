@@ -572,7 +572,6 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 		for(var it = this._regions.iterator(); it.hasNext();) {
 			var region = it.next();
 			var constraint = region.constraint;
-			if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 			this.renderControl(region, dom, false, false);
 		}
 	},
@@ -589,21 +588,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 	},
 
 	doRefreshRegion: function(region) {
-		var control = region.control, controlDom = control.getDom(), dom = this.getDom();
-		var hidden = (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT), visibilityChanged = false;
-		if (hidden) {
-			if (controlDom.parentNode == dom) {
-				dom.removeChild(controlDom);
-				this.refresh();
-			}
-		}
-		else {
-			var oldWidth = region.realWidth, oldHeight = region.realHeight;
-			var $controlDom = $fly(controlDom);
-			if (controlDom.parentNode != dom || $controlDom.outerWidth() != oldWidth || $controlDom.outerHeight() != oldHeight) {
-				this.refresh();
-			}
-		}
+		region.control.refresh();
 	}
 });
 
