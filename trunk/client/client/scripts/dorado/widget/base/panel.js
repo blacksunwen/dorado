@@ -213,7 +213,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 			var direction = panel._parent._direction;
 			if (collapseButton) {
-				collapseButton.set("iconClass", collapsed ? ("expand-icon-" + direction) : ("collapse-icon-" + direction));
+				collapseButton.set("iconClass", collapsed ? ("expand-icon expand-icon-" + direction) : ("collapse-icon collapse-icon-" + direction));
 			}
 			if (!panel._splitPanelCascade) {
 				panel._parent.doSetCollapsed(collapsed, function() {
@@ -705,7 +705,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 
 		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 			var direction = panel._parent._direction;
-			collapseButton.set("iconClass", panel._collapsed ? "expand-icon-" + direction : "collapse-icon-" + direction);
+			collapseButton.set("iconClass", panel._collapsed ? "expand-icon expand-icon-" + direction : "collapse-icon collapse-icon-" + direction);
 		}
 
 		panel._captionBar.addButton(collapseButton, 101);

@@ -1355,7 +1355,7 @@
   cursor: pointer;
   width: 17px;
   height: 17px;
-  margin: 3px;
+  margin: 2px 1px;
 }
 .d-split-panel .collapse-bar-left,
 .d-split-panel .collapse-bar-right {
@@ -1367,51 +1367,6 @@
   float: right;
   margin-top: 1px;
   height: 19px;
-}
-.d-split-panel-collapsed .splitter-h-resizeable,
-.d-split-panel-collapsed .splitter-v-resizeable {
-  cursor: default;
-}
-.d-split-panel-collapsed-left .button {
-  background-position: 0 0;
-}
-.d-split-panel-collapsed-left .button-hover {
-  background-position: -17px 0;
-}
-.d-split-panel-collapsed-left .button-click {
-  background-position: -34px 0;
-}
-.d-split-panel-collapsed-right .button {
-  background-position: 0 -17px;
-}
-.d-split-panel-collapsed-right .button-hover {
-  background-position: -17px -17px;
-}
-.d-split-panel-collapsed-right .button-click {
-  background-position: -34px -17px;
-}
-.d-split-panel-collapsed-top .button {
-  background-position: 0 -34px;
-}
-.d-split-panel-collapsed-top .button-hover {
-  background-position: -17px -34px;
-}
-.d-split-panel-collapsed-top .button-click {
-  background-position: -34px -34px;
-}
-.d-split-panel-collapsed-bottom .button {
-  background-position: 0 -51px;
-}
-.d-split-panel-collapsed-bottom .button-hover {
-  background-position: -17px -51px;
-}
-.d-split-panel-collapsed-bottom .button-click {
-  background-position: -34px -51px;
-}
-.d-splitter-dragging {
-  background: #000000 !important;
-  opacity: 0.3;
-  filter: alpha(opacity=30);
 }
 .d-split-panel .splitter-left,
 .d-split-panel .splitter-right {
@@ -1447,6 +1402,51 @@
 }
 .d-split-panel .collapse-bar-hover {
   background-color: #ededed;
+}
+.d-split-panel .collapse-bar-left .button {
+  background-position: 0 0;
+}
+.d-split-panel .collapse-bar-left .button-hover {
+  background-position: -17px 0;
+}
+.d-split-panel .collapse-bar-left .button-click {
+  background-position: -34px 0;
+}
+.d-split-panel .collapse-bar-right .button {
+  background-position: 0 -17px;
+}
+.d-split-panel .collapse-bar-right .button-hover {
+  background-position: -17px -17px;
+}
+.d-split-panel .collapse-bar-right .button-click {
+  background-position: -34px -17px;
+}
+.d-split-panel .collapse-bar-top .button {
+  background-position: 0 -34px;
+}
+.d-split-panel .collapse-bar-top .button-hover {
+  background-position: -17px -34px;
+}
+.d-split-panel .collapse-bar-top .button-click {
+  background-position: -34px -34px;
+}
+.d-split-panel .collapse-bar-bottom .button {
+  background-position: 0 -51px;
+}
+.d-split-panel .collapse-bar-bottom .button-hover {
+  background-position: -17px -51px;
+}
+.d-split-panel .collapse-bar-bottom .button-click {
+  background-position: -34px -51px;
+}
+.d-split-panel-collapsed .splitter-h-resizeable,
+.d-split-panel-collapsed .splitter-v-resizeable {
+  cursor: default;
+}
+.d-splitter-dragging {
+  background: #000000 !important;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
 }
 /* field-set */
 .d-field-set {
