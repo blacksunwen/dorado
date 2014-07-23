@@ -1628,12 +1628,6 @@
 .d-split-panel .collapse-bar {
   position: absolute;
 }
-.d-split-panel .collapse-bar .button {
-  cursor: pointer;
-  width: 17px;
-  height: 17px;
-  margin: 3px;
-}
 .d-split-panel .collapse-bar-left,
 .d-split-panel .collapse-bar-right {
   margin-left: 1px;
@@ -1644,6 +1638,45 @@
   float: right;
   margin-top: 1px;
   height: 19px;
+}
+.d-split-panel .collapse-bar .button {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;  
+  margin: 1px;
+  border-radius: 15px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0);
+  line-height: 17px;
+  text-align: center;
+  font-size: 14px;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-split-panel .collapse-bar .button-hover {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0);
+}
+.d-split-panel .collapse-bar .button-click {
+  border-color: #000000;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.d-split-panel .collapse-bar-top .button:before {
+  content: "\e601";
+}
+.d-split-panel .collapse-bar-bottom .button:before {
+  content: "\e602";
+}
+.d-split-panel .collapse-bar-left .button:before {
+  content: "\e603";
+}
+.d-split-panel .collapse-bar-right .button:before {
+  content: "\e600";
 }
 .d-split-panel-collapsed .splitter-h-resizeable,
 .d-split-panel-collapsed .splitter-v-resizeable {
