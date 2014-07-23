@@ -1215,55 +1215,67 @@
   -o-transform: rotate(-180deg);
   transform: rotate(-180deg);
 }
-.d-panel .d-close-button {
-	cursor: pointer;
-	width: 22px;
-	height: 22px;
-	margin-top: 3px;
-	margin-right: 2px;
-	line-height: 20px;
-	color: rgba(0, 0, 0, 0.7);
-	text-align: center;
-	font-size: 14px;
-	font-family: entypo;
-	font-style: normal;
-	font-weight: normal;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	box-sizing: border-box;
-	border-radius: 16px;
-	border-width: 1px;
-	border-style: solid;
-	border-color: rgba(0, 0, 0, 0);
-	background-color: rgba(0, 0, 0, 0);
-	-webkit-transition-duration: 0.3s;
-	-moz-transition-duration: 0.3s;
-	-ms-transition-duration: 0.3s;
-	-o-transition-duration: 0.3s;
-	transition-duration: 0.3s;
-	-webkit-transition-property: background-color, border-color, color, -webkit-box-shadow, -webkit-transform;
-	-moz-transition-property: background-color, border-color, color, -moz-box-shadow, -moz-transform;
-	-ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
-	-o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
-	transition-property: background-color, border-color, color, box-shadow, transform;
+.d-panel .d-close-button,
+.d-panel .d-maximize-button,
+.d-panel .d-restore-button {
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  margin-right: 2px;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  font-size: 14px;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  border-radius: 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -ms-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: background-color, border-color, color, -webkit-box-shadow, -webkit-transform;
+  -moz-transition-property: background-color, border-color, color, -moz-box-shadow, -moz-transform;
+  -ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
+  -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
+  transition-property: background-color, border-color, color, box-shadow, transform;
+}
+.d-panel .d-close-button-hover,
+.d-panel .d-maximize-button-hover,
+.d-panel .d-restore-button-hover {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 16px;
+}
+.d-panel .d-close-button-click,
+.d-panel .d-maximize-button-click,
+.d-panel .d-restore-button-click {
+  -webkit-transition-duration: 0;
+  -moz-transition-duration: 0;
+  -ms-transition-duration: 0;
+  -o-transition-duration: 0;
+  transition-duration: 0;
+  border-color: #000000;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .d-panel .d-close-button:before {
-	content: "\e605";
+  content: "\e605";
 }
-.d-panel .d-close-button-hover {
-	color: #000000;
-	border-color: rgba(0, 0, 0, 0.5);
-	background-color: rgba(0, 0, 0, 0);
-	border-radius: 16px;
+.d-panel .d-maximize-button:before {
+  content: "\e60e";
 }
-.d-panel .d-close-button-click {
-	-webkit-transition-duration: 0;
-	-moz-transition-duration: 0;
-	-ms-transition-duration: 0;
-	-o-transition-duration: 0;
-	transition-duration: 0;
-	border-color: #000000;
-	background-color: rgba(0, 0, 0, 0.1);
+.d-panel .d-restore-button:before {
+  content: "\e60d";
 }
 .d-panel-collapsed {
   border-bottom: 0;
