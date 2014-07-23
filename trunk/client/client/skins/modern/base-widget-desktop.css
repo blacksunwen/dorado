@@ -1678,9 +1678,146 @@
 .d-split-panel .collapse-bar-right .button:before {
   content: "\e600";
 }
+.d-split-panel-collapse-both .splitter-left .button,
+.d-split-panel-collapse-both .splitter-right .button {
+  margin: -55px 0 0 0;
+}
+.d-split-panel-collapse-both .splitter-top .button,
+.d-split-panel-collapse-both .splitter-bottom .button {
+  margin: 0 0 0 -55px;
+}
+.d-split-panel-collapse-both .splitter .button {
+  line-height: 5px;
+  font-size: 8px;
+  text-align: center;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-split-panel-collapse-both .splitter:hover .button {
+  background: #d9d9d9 !important;
+}
+.d-split-panel-collapse-both .splitter .button:hover {
+  color: #fbfbfb;
+  background: #15a4fa !important;
+}
+.d-split-panel-collapse-both .splitter-left .button, .d-split-panel-collapse-both .splitter-right .button {
+  line-height: 55px;
+}
+.d-split-panel-collapse-both .splitter-left .button:before, .d-split-panel-collapse-both .splitter-right .button:before {
+  position: absolute;
+  left: -3px;
+}
+.d-split-panel-collapse-both .splitter-top .button:before, .d-split-panel-collapse-both .splitter-bottom .button:before {
+  position: absolute;
+  top: 1px;
+  left: 22px;
+}
+.d-split-panel-collapse-both .splitter-left .button:before {
+  content: "\e600";
+}
+.d-split-panel-collapse-both .splitter-right .button:before {
+  content: "\e603";
+}
+.d-split-panel-collapse-both .splitter-top .button:before {
+  content: "\e602";
+}
+.d-split-panel-collapse-both .splitter-bottom .button:before {
+  content: "\e601";
+}
+.d-split-panel-collapse-both .splitter .opposite-button {
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  -ms-transition-duration: 0.3s;
+  -o-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-property: background-color, border-color, color, -webkit-box-shadow, -webkit-transform;
+  -moz-transition-property: background-color, border-color, color, -moz-box-shadow, -moz-transform;
+  -ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
+  -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
+  transition-property: background-color, border-color, color, box-shadow, transform;
+  position: absolute;
+  background: #D9D9D9;
+  cursor: pointer;
+  text-align: center;
+  font-size: 8px;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-split-panel-collapse-both .splitter .opposite-button:hover {
+  background: #15a4fa;
+  color: #FBFBFB;
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button,
+.d-split-panel-collapse-both .splitter-right .opposite-button {  
+  width: 5px;
+  height: 55px;
+  line-height: 55px;
+  left: 0;
+  top: 50%;
+  margin: 0;
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button,
+.d-split-panel-collapse-both .splitter-bottom .opposite-button {
+  width: 55px;
+  height: 5px;
+  left: 50%;
+  top: 0;
+  margin: 0;
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button:before,
+.d-split-panel-collapse-both .splitter-right .opposite-button:before {
+  position: absolute;
+  left: -3px;
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button:before,
+.d-split-panel-collapse-both .splitter-bottom .opposite-button:before {
+  position: absolute;
+  top: 1px;
+  left: 22px;
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button:before {
+  content: "\e603";
+}
+.d-split-panel-collapse-both .splitter-right .opposite-button:before {
+  content: "\e600";
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button:before {
+  content: "\e601";
+}
+.d-split-panel-collapse-both .splitter-bottom .opposite-button:before {
+  content: "\e602";
+}
 .d-split-panel-collapsed .splitter-h-resizeable,
 .d-split-panel-collapsed .splitter-v-resizeable {
   cursor: default;
+}
+.d-split-panel-collapsed .splitter-left .button,
+.d-split-panel-collapsed .splitter-right .button {
+  margin: -27px 0 0 0;
+}
+.d-split-panel-collapsed .splitter-top .button,
+.d-split-panel-collapsed .splitter-bottom .button {
+  margin: 0 0 0 -27px;
+}
+.d-split-panel-collapsed .splitter .opposite-button {
+  display: none;
+}
+.d-split-panel-main-collapsed .splitter-left .button,
+.d-split-panel-main-collapsed .splitter-right .button {
+  margin: -27px 0 0 0;
+}
+.d-split-panel-main-collapsed .splitter-top .button,
+.d-split-panel-main-collapsed .splitter-bottom .button {
+  margin: 0 0 0 -27px;
+}
+.d-split-panel-main-collapsed .splitter .opposite-button {
+  display: none;
 }
 .d-splitter-dragging {
   background: #000000 !important;

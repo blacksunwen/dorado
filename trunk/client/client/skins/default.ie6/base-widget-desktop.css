@@ -1310,7 +1310,7 @@
   position: relative;
   left: 0;
   top: 50%;
-  margin: -24px 0px;
+  margin: -27px 0 0 0;
   background-repeat: no-repeat;
 }
 .d-split-panel .splitter-top,
@@ -1327,7 +1327,7 @@
   position: relative;
   left: 50%;
   top: 0;
-  margin: 0px -24px;
+  margin: 0 0 0 -27px;
   background-repeat: no-repeat;
 }
 .d-split-panel .splitter-left .button {
@@ -1340,7 +1340,7 @@
   background-position: left top;
 }
 .d-split-panel .splitter-bottom .button {
-  background-position: right top;
+  background-position: left bottom;
 }
 .d-split-panel .splitter-h-resizeable {
   cursor: w-resize;
@@ -1359,13 +1359,11 @@
 }
 .d-split-panel .collapse-bar-left,
 .d-split-panel .collapse-bar-right {
-  margin-left: 1px;
   width: 19px;
 }
 .d-split-panel .collapse-bar-top,
 .d-split-panel .collapse-bar-bottom {
   float: right;
-  margin-top: 1px;
   height: 19px;
 }
 .d-split-panel .splitter-left,
@@ -1439,9 +1437,77 @@
 .d-split-panel .collapse-bar-bottom .button-click {
   background-position: -34px -51px;
 }
+.d-split-panel-collapse-both .splitter-left .button,
+.d-split-panel-collapse-both .splitter-right .button {
+  margin: -55px 0 0 0;
+}
+.d-split-panel-collapse-both .splitter-top .button,
+.d-split-panel-collapse-both .splitter-bottom .button {
+  margin: 0 0 0 -55px;
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button,
+.d-split-panel-collapse-both .splitter-right .opposite-button {
+  cursor: pointer;
+  width: 5px;
+  height: 55px;
+  font-size: 1%;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-image: url(base/split-panel-vert-buttons.png);
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button,
+.d-split-panel-collapse-both .splitter-bottom .opposite-button {
+  cursor: pointer;
+  width: 55px;
+  height: 5px;
+  font-size: 1%;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-image: url(base/split-panel-hori-buttons.png);
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button {
+  background-position: right top;
+}
+.d-split-panel-collapse-both .splitter-right .opposite-button {
+  background-position: left top;
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button {
+  background-position: left bottom;
+}
+.d-split-panel-collapse-both .splitter-bottom .opposite-button {
+  background-position: left top;
+}
 .d-split-panel-collapsed .splitter-h-resizeable,
 .d-split-panel-collapsed .splitter-v-resizeable {
   cursor: default;
+}
+.d-split-panel-collapsed .splitter-left .button,
+.d-split-panel-collapsed .splitter-right .button {
+  margin: -27px 0 0 0;
+}
+.d-split-panel-collapsed .splitter-top .button,
+.d-split-panel-collapsed .splitter-bottom .button {
+  margin: 0 0 0 -27px;
+}
+.d-split-panel-collapsed .splitter .opposite-button {
+  display: none;
+}
+.d-split-panel-main-collapsed .splitter-left .button,
+.d-split-panel-main-collapsed .splitter-right .button {
+  margin: -27px 0 0 0;
+}
+.d-split-panel-main-collapsed .splitter-top .button,
+.d-split-panel-main-collapsed .splitter-bottom .button {
+  margin: 0 0 0 -27px;
+}
+.d-split-panel-main-collapsed .splitter .opposite-button {
+  display: none;
 }
 .d-splitter-dragging {
   background: #000000 !important;
