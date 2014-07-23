@@ -37,8 +37,8 @@
 	};
 	
 	/**
-     * @author Frank Zhang (mailto:frank.zhang@bstek.com)
-     * @component Base
+	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+	 * @component Base
 	 * @class 分割面板
 	 * <p>
 	 * 用来布局的一个组件。使用该组件需要指定一个边组件，一个主组件，边组件可以被收缩起来，并且可以指定边组件的宽度或者高度的最大值和最小值。
@@ -56,7 +56,7 @@
 			className: {
 				defaultValue: "d-split-panel"
 			},
-            
+			
 			/**
 			 * 边组件的显示的位置。
 			 * 可选值：left、right、top、bottom，默认值left。
@@ -76,7 +76,7 @@
 					this._direction = value;
 				}
 			},
-            
+			
 			/**
 			 * 边组件的最大的尺寸，如果不指定，则表示不限制。
 			 * 如果direction是left、right，则尺寸指的是宽，如果direction是top、bottom，则尺寸指的是高。
@@ -104,9 +104,9 @@
 			 */
 			position: {
 				defaultValue: 100,
-                setter: function(value) {
-                    this._position = value;
-                }
+				setter: function(value) {
+					this._position = value;
+				}
 			},
 
 			/**
@@ -153,22 +153,33 @@
 				}
 			},
 
-            /**
-             * 是否可以折叠，这个属性会决定折叠按钮是否显示。
-             * @attribute
-             * @default true
-             * @type boolean
-             */
-            collapseable: {
-                defaultValue: true
-            },
+			/**
+			 * 是否折叠MainControl，默认值为false。
+			 *
+			 * 注意：该属性必须在组件渲染之前设定。
+			 * @attribute
+			 * @type Boolean
+			 */
+			collapseBothDirection: {
+				writeBeforeReady: true
+			},
 
-            /**
-             * 是否可以预览，这个属性会决定是否在sideControl折叠以后显示一个竖向或者横向的工具条。
-             * @attribute
-             * @default false
-             * @type boolean
-             */
+			/**
+			 * 是否可以折叠，这个属性会决定折叠按钮是否显示。
+			 * @attribute
+			 * @default true
+			 * @type boolean
+			 */
+			collapseable: {
+				defaultValue: true
+			},
+
+			/**
+			 * 是否可以预览，这个属性会决定是否在sideControl折叠以后显示一个竖向或者横向的工具条。
+			 * @attribute
+			 * @default false
+			 * @type boolean
+			 */
 			previewable: {
 				defaultValue: false
 			}
@@ -196,7 +207,7 @@
 		},
 
 		_openPreview: function() {
-			var panel = this, dom = panel._dom, doms = panel._doms, direction = panel._direction, sidePanelCss = {},
+			var panel = this, dom = panel._dom, doms = panel._doms, direction = panel._direction, animPanelCss = {},
 				animConfig, width = $fly(dom).innerWidth(), height = $fly(dom).innerHeight(),
 				collapseBarWidth = $fly(doms.collapseBar).outerWidth(),
 				collapseBarHeight = $fly(doms.collapseBar).outerHeight();
@@ -207,48 +218,85 @@
 
 			panel._previewOpened = true;
 
-            var position = panel.getPixelPosition();
+			var position = panel.getPixelPosition(), collapsed = panel._collapsed, animPanel = doms.sidePanel;
 
-			switch (direction) {
-				case "left":
-					animConfig = {
-						left: collapseBarWidth
-					};
-					sidePanelCss.left = position * -1;
-					break;
+			if (collapsed === "main") {
+				animPanel = doms.mainPanel;
+				switch (direction) {
+					case "left":
+						animConfig = {
+							left: position - collapseBarWidth
+						};
+						animPanelCss.left = width;
+						break;
 
-				case "top":
-					animConfig = {
-						top: collapseBarHeight
-					};
-					sidePanelCss.top = position * -1;
-					break;
+					case "top":
+						animConfig = {
+							top: position - collapseBarHeight
+						};
+						animPanelCss.top = height;
+						break;
 
-				case "right":
-					animConfig = {
-						left: width - position - collapseBarWidth
-					};
-					sidePanelCss.left = width;
-					break;
+					case "right":
+						animConfig = {
+							left: collapseBarWidth
+						};
+						animPanelCss.left = (width - position - collapseBarWidth) * -1;
+						break;
 
-				case "bottom":
-					animConfig = {
-						top: height - position - collapseBarHeight
-					};
-					sidePanelCss.top = height;
-					break;
+					case "bottom":
+						animConfig = {
+							top: collapseBarHeight
+						};
+						animPanelCss.top = (height - position - collapseBarHeight) * -1;
+						break;
+				}
+			} else {
+				switch (direction) {
+					case "left":
+						animConfig = {
+							left: collapseBarWidth
+						};
+						animPanelCss.left = position * -1;
+						break;
+
+					case "top":
+						animConfig = {
+							top: collapseBarHeight
+						};
+						animPanelCss.top = position * -1;
+						break;
+
+					case "right":
+						animConfig = {
+							left: width - position - collapseBarWidth
+						};
+						animPanelCss.left = width;
+						break;
+
+					case "bottom":
+						animConfig = {
+							top: height - position - collapseBarHeight
+						};
+						animPanelCss.top = height;
+						break;
+				}
 			}
 
-			$fly(doms.sidePanel).css(sidePanelCss).bringToFront().animate(animConfig, {
+			$fly(animPanel).css(animPanelCss).bringToFront().animate(animConfig, {
 				complete: function() {
-                    if (panel._sideControl) {
-                        panel._sideControl.setActualVisible(true);
-                    }
+					if (collapsed === "main") {
+						if (panel._mainControl)
+							panel._mainControl.setActualVisible(true);
+					} else {
+						if (panel._sideControl)
+							panel._sideControl.setActualVisible(true);
+					}
 				}
 			});
 			$fly(document).bind("click", {panel: panel}, documentMouseDown);
 
-			$fly([doms.sidePanel, doms.collapseBar]).bind("mouseenter", {panel: panel}, mouseEnterfunc).bind("mouseleave", {panel: panel}, mouseLeavefunc);
+			$fly([animPanel, doms.collapseBar]).bind("mouseenter", {panel: panel}, mouseEnterfunc).bind("mouseleave", { panel: panel }, mouseLeavefunc);
 		},
 
 		_closePreview: function() {
@@ -263,40 +311,76 @@
 
 			panel._previewOpened = false;
 
-            var position = panel.getPixelPosition();
+			var position = panel.getPixelPosition(), collapsed = panel._collapsed, animPanel = doms.sidePanel;
 
-			switch (direction) {
-				case "left":
-					animConfig = {
-						left: position * -1 + collapseBarWidth
-					};
-					break;
+			if (collapsed === "main") {
+				animPanel = doms.mainPanel;
+				switch (direction) {
+					case "left":
+						animConfig = {
+							left: width
+						};
+						break;
 
-				case "top":
-					animConfig = {
-						top: position * -1 + collapseBarHeight
-					};
-					break;
+					case "top":
+						animConfig = {
+							top: height
+						};
+						break;
 
-				case "right":
-					animConfig = {
-						left: width - collapseBarWidth
-					};
-					break;
+					case "right":
+						animConfig = {
+							left: (width - position - collapseBarWidth) * -1
+						};
+						break;
 
-				case "bottom":
-					animConfig = {
-						top: height - collapseBarHeight
-					};
-					break;
+					case "bottom":
+						animConfig = {
+							top: (height - collapseBarHeight - position) * -1
+						};
+						break;
+				}
+			} else {
+				switch (direction) {
+					case "left":
+						animConfig = {
+							left: position * -1 + collapseBarWidth
+						};
+						break;
+
+					case "top":
+						animConfig = {
+							top: position * -1 + collapseBarHeight
+						};
+						break;
+
+					case "right":
+						animConfig = {
+							left: width - collapseBarWidth
+						};
+						break;
+
+					case "bottom":
+						animConfig = {
+							top: height - collapseBarHeight
+						};
+						break;
+				}
 			}
-			$fly(doms.sidePanel).animate(animConfig, {
+
+			$fly(animPanel).animate(animConfig, {
 				complete: function() {
-					$fly(doms.sidePanel).css("z-index", "");
-                    panel._sideControl.setActualVisible(false);
+					$fly(animPanel).css("z-index", "");
+					if (collapsed === "main") {
+						if (panel._mainControl)
+							panel._mainControl.setActualVisible(true);
+					} else {
+						if (panel._sideControl)
+							panel._sideControl.setActualVisible(false);
+					}
 				}
 			});
-			$fly([doms.sidePanel, doms.collapseBar]).unbind("mouseenter", mouseEnterfunc).unbind("mouseleave", mouseLeavefunc);
+			$fly([animPanel, doms.collapseBar]).unbind("mouseenter", mouseEnterfunc).unbind("mouseleave", mouseLeavefunc);
 		},
 
 		_togglePreview: function() {
@@ -376,83 +460,95 @@
 				]
 			}, null, doms), direction = panel._direction, axis = (direction == "left" || direction == "right") ? "x" : "y";
 
+			if (panel._collapseBothDirection === true) {
+				$fly(dom).addClass(panel._className + "-collapse-both");
+
+				var oppositeButton = document.createElement("div");
+				oppositeButton.className = "opposite-button";
+				doms.splitter.appendChild(oppositeButton);
+
+				$fly(oppositeButton).click(function() {
+					panel.doSetCollapsed("main");
+				});
+			}
+
 			panel._doms = doms;
 
 			$DomUtils.disableUserSelection(doms.splitter);
-            var splitterPosition, containment;
+			var splitterPosition, containment;
 			$fly(doms.splitter).addClass("splitter-" + panel._direction).draggable({
 				addClasses: false,
 				//containment: "parent",
 				axis: axis,
 				helper: "clone",
-                iframeFix: true,
+				iframeFix: true,
 				start: function(event, ui){
 					var helper = ui.helper;
 					if(helper){
 						helper.addClass("d-splitter-dragging").bringToFront().find("> .button").css("display", "none");
 					}
-                    splitterPosition = $fly(doms.splitter).position();
-                    var vertical = direction == "top" || direction == "bottom";
-                    if (panel._maxPosition != null || panel._minPosition != null) {
-                        var width = $fly(dom).width(), height = $fly(dom).height(),
-                            min = panel._minPosition || 50, max, sideMin, sideMax, range;
-                        if (vertical) {
-                            max = panel._maxPosition || height - 50;
-                        } else {
-                            max = panel._maxPosition || width - 50;
-                        }
+					splitterPosition = $fly(doms.splitter).position();
+					var vertical = direction == "top" || direction == "bottom";
+					if (panel._maxPosition != null || panel._minPosition != null) {
+						var width = $fly(dom).width(), height = $fly(dom).height(),
+							min = panel._minPosition || 50, max, sideMin, sideMax, range;
+						if (vertical) {
+							max = panel._maxPosition || height - 50;
+						} else {
+							max = panel._maxPosition || width - 50;
+						}
 
-                        if (panel._direction == "left") {
-                            sideMin = min;
-                            sideMax = max;
-                        } else if (panel._direction == "right") {
-                            sideMin = width - max;
-                            sideMax = width - min;
-                        } else if (panel._direction == "top") {
-                            sideMin = min;
-                            sideMax = max;
-                        } else if (panel._direction == "bottom") {
-                            sideMin = height - max;
-                            sideMax = height - min;
-                        }
+						if (panel._direction == "left") {
+							sideMin = min;
+							sideMax = max;
+						} else if (panel._direction == "right") {
+							sideMin = width - max;
+							sideMax = width - min;
+						} else if (panel._direction == "top") {
+							sideMin = min;
+							sideMax = max;
+						} else if (panel._direction == "bottom") {
+							sideMin = height - max;
+							sideMax = height - min;
+						}
 
-                        if (vertical) {
-                            containment = [0, sideMin, 0, sideMax];
-                        } else {
-                            containment = [sideMin, 0, sideMax, 0];
-                        }
-                    }
+						if (vertical) {
+							containment = [0, sideMin, 0, sideMax];
+						} else {
+							containment = [sideMin, 0, sideMax, 0];
+						}
+					}
 				},
-                drag: function(event, ui) {
-                    var inst = jQuery.data(this, "ui-draggable"), horiChange = event.pageX - inst.originalPageX, vertChange = event.pageY - inst.originalPageY;
+				drag: function(event, ui) {
+					var inst = jQuery.data(this, "ui-draggable"), horiChange = event.pageX - inst.originalPageX, vertChange = event.pageY - inst.originalPageY;
 
-                    ui.position = {
-                        left: splitterPosition.left,
-                        top: splitterPosition.top
-                    };
+					ui.position = {
+						left: splitterPosition.left,
+						top: splitterPosition.top
+					};
 
-                    var left, top;
+					var left, top;
 
-                    if (panel._direction == "left" || panel._direction == "right") {
-                        left = splitterPosition.left + horiChange;
-                        if (left < containment[0]) {
-                            left = containment[0];
-                        } else if (left > containment[2]) {
-                            left = containment[2];
-                        }
-                        ui.position.left = left;
-                    } else {
-                        top = splitterPosition.top + vertChange;
-                        if (top < containment[1]) {
-                            top = containment[1];
-                        } else if (top > containment[3]) {
-                            top = containment[3];
-                        }
-                        ui.position.top = top;
-                    }
+					if (panel._direction == "left" || panel._direction == "right") {
+						left = splitterPosition.left + horiChange;
+						if (left < containment[0]) {
+							left = containment[0];
+						} else if (left > containment[2]) {
+							left = containment[2];
+						}
+						ui.position.left = left;
+					} else {
+						top = splitterPosition.top + vertChange;
+						if (top < containment[1]) {
+							top = containment[1];
+						} else if (top > containment[3]) {
+							top = containment[3];
+						}
+						ui.position.top = top;
+					}
 
-                    ui.helper.css(ui.position);
-                },
+					ui.helper.css(ui.position);
+				},
 				stop: function(event, ui) {
 					var position = ui.position;
 					switch (panel._direction) {
@@ -473,11 +569,21 @@
 			});
 
 			$fly(doms.button).click(function() {
-				panel.doSetCollapsed(!panel._collapsed);
+				if (panel._collapsed === "main") {
+					panel.doSetCollapsed(false);
+				} else {
+					panel.doSetCollapsed(!panel._collapsed);
+				}
 			});
 
 			$fly(doms.sidePanel).click(function(event) {
-				event.stopImmediatePropagation();
+				if (panel._collapsed === true)
+					event.stopImmediatePropagation();
+			});
+
+			$fly(doms.mainPanel).click(function(event) {
+				if (panel._collapsed === "main")
+					event.stopImmediatePropagation();
 			});
 
 			return dom;
@@ -504,55 +610,101 @@
 		},
 
 		doSetCollapsed: function(collapsed, callback, slience) {
-			var panel = this, dom = panel._dom, doms = panel._doms, eventArg = {};
+			var panel = this, dom = panel._dom, doms = panel._doms, oldValue = panel._collapsed, eventArg = {};
 			panel.fireEvent("beforeCollapsedChange", panel, eventArg);
 			if (eventArg.processDefault === false) return;
 
 			if (dom) {
 				var width = $fly(dom).width(), height = $fly(dom).height(), direction = panel._direction, left;
 
+				var animConfig, position = panel.getPixelPosition(), animPanel = doms.sidePanel;
+
+				if (collapsed === "main") {
+					animPanel = doms.mainPanel;
+				}
+
 				var onCollapsedChange = function() {
-					if (panel._sideControl) {
-						panel._sideControl.setActualVisible(!collapsed);
+					if (collapsed === "main") {
+						if (panel._mainControl) {
+							panel._mainControl.setActualVisible(false);
+						}
+						if (panel._sideControl) {
+							panel._sideControl.setActualVisible(true);
+						}
+					} else {
+						if (panel._mainControl) {
+							panel._mainControl.setActualVisible(true);
+						}
+						if (panel._sideControl) {
+							panel._sideControl.setActualVisible(!collapsed);
+						}
 					}
+
 					panel._collapsed = collapsed;
 					panel.refresh();
 					panel.fireEvent("onCollapsedChange", panel);
-					$fly(doms.sidePanel).css("z-index", "");
+					$fly(animPanel).css("z-index", "");
 					if (typeof callback == "function") {
 						callback.apply(null, []);
 					}
 				};
 
-				var animConfig, position = panel.getPixelPosition();
-
 				if (collapsed) {
-					switch (direction) {
-						case "left":
-							animConfig = {
-								left: position * -1
-							};
-							break;
+					if (collapsed === "main") {
+						switch (direction) {
+							case "left":
+								animConfig = {
+									left: width
+								};
+								break;
 
-						case "top":
-							animConfig = {
-								top: position * -1
-							};
-							break;
+							case "top":
+								animConfig = {
+									top: height
+								};
+								break;
 
-						case "right":
-							animConfig = {
-								left: width
-							};
-							break;
+							case "right":
+								animConfig = {
+									left: position - width
+								};
+								break;
 
-						case "bottom":
-							animConfig = {
-								top: height
-							};
-							break;
+							case "bottom":
+								animConfig = {
+									top: position - height
+								};
+								break;
+						}
+					} else {
+						switch (direction) {
+							case "left":
+								animConfig = {
+									left: position * -1
+								};
+								break;
+
+							case "top":
+								animConfig = {
+									top: position * -1
+								};
+								break;
+
+							case "right":
+								animConfig = {
+									left: width
+								};
+								break;
+
+							case "bottom":
+								animConfig = {
+									top: height
+								};
+								break;
+						}
 					}
-					$fly(doms.sidePanel).animate(animConfig, {
+
+					$fly(animPanel).animate(animConfig, {
 						complete: function() {
 							onCollapsedChange();
 						}
@@ -565,37 +717,72 @@
 
 						onCollapsedChange();
 					} else {
-						var sidePanelCss = {};
-						switch (direction) {
-							case "left":
-								animConfig = {
-									left: 0
-								};
-								sidePanelCss.left = position * -1;
-								break;
+						var animPanelCss = {};
+						if (oldValue === "main") {
+							animPanel = doms.mainPanel;
 
-							case "top":
-								animConfig = {
-									top: 0
-								};
-								sidePanelCss.top = position * -1;
-								break;
+							switch (direction) {
+								case "left":
+									animConfig = {
+										left: position
+									};
+									animPanelCss.left = width;
+									break;
 
-							case "right":
-								animConfig = {
-									left: width - position
-								};
-								sidePanelCss.left = width;
-								break;
+								case "top":
+									animConfig = {
+										top: position
+									};
+									animPanelCss.top = height;
+									break;
 
-							case "bottom":
-								animConfig = {
-									top: height - position
-								};
-								sidePanelCss.top = height;
-								break;
+								case "right":
+									animConfig = {
+										left: 0
+									};
+									animPanelCss.left = position - width;
+									break;
+
+								case "bottom":
+									animConfig = {
+										top: 0
+									};
+									animPanelCss.top = position - height;
+									break;
+							}
+						} else {
+							switch (direction) {
+								case "left":
+									animConfig = {
+										left: 0
+									};
+									animPanelCss.left = position * -1;
+									break;
+
+								case "top":
+									animConfig = {
+										top: 0
+									};
+									animPanelCss.top = position * -1;
+									break;
+
+								case "right":
+									animConfig = {
+										left: width - position
+									};
+									animPanelCss.left = width;
+									break;
+
+								case "bottom":
+									animConfig = {
+										top: height - position
+									};
+									animPanelCss.top = height;
+									break;
+							}
 						}
-						$fly(doms.sidePanel).css(sidePanelCss).bringToFront().animate(animConfig, {
+
+						$fly(animPanel).css(animPanelCss).bringToFront().animate(animConfig, {
 							complete: function() {
 								onCollapsedChange();
 							}
@@ -616,23 +803,23 @@
 			}
 		},
 
-        getPixelPosition: function() {
-            var panel = this, position = panel._position, dir = panel._direction;
-            if (typeof position == "string") {
-                if (position.indexOf("%") == -1) {
-                    position = parseInt(position, 10);
-                } else {
-                    position = (dir == "left" || dir == "right" ? panel.getRealWidth() : panel.getRealHeight()) * parseInt(position.replace("%", ""), 10) / 100;
-                }
-            }
-            return position;
-        },
+		getPixelPosition: function() {
+			var panel = this, position = panel._position, dir = panel._direction;
+			if (typeof position == "string") {
+				if (position.indexOf("%") == -1) {
+					position = parseInt(position, 10);
+				} else {
+					position = (dir == "left" || dir == "right" ? panel.getRealWidth() : panel.getRealHeight()) * parseInt(position.replace("%", ""), 10) / 100;
+				}
+			}
+			return position;
+		},
 
 		doOnAttachToDocument: function() {
 			var panel = this, sideControl = panel._sideControl, mainControl = panel._mainControl, doms = panel._doms;
 			if (sideControl) {
 				sideControl.render(doms.sidePanel);
-                sideControl.setActualVisible(!panel._collapsed);
+				sideControl.setActualVisible(!panel._collapsed);
 			}
 
 			if (mainControl) {
@@ -649,21 +836,21 @@
 				direction = panel._direction, previewable = panel._previewable && panel._collapseable,
 				vertical = direction == "top" || direction == "bottom";
 
-            if(panel._collapseable){
-                if (panel._collapsed) {
-                    $fly(dom).addClass(panel._className + "-collapsed");
-                    $fly(doms.splitter).draggable("disable");
-                } else {
-                    $fly(dom).removeClass(panel._className + "-collapsed");
-                    $fly(doms.splitter).draggable("enable");
-                }
-            }
+			if (panel._collapseable) {
+				if (panel._collapsed) {
+					$fly(dom).addClass(panel._className + "-collapsed").addClass(panel._collapsed === "main" ? panel._className + "-main-collapsed" : "");
+					$fly(doms.splitter).draggable("disable");
+				} else {
+					$fly(dom).removeClass(panel._className + "-collapsed").removeClass(panel._className + "-main-collapsed");
+					$fly(doms.splitter).draggable("enable");
+				}
+			}
 
-            if(panel._collapseable){
-                $fly(doms.button).css("display", "");
-            } else {
-                $fly(doms.button).css("display", "none");
-            }
+			if (panel._collapseable) {
+				$fly(doms.button).css("display", "");
+			} else {
+				$fly(doms.button).css("display", "none");
+			}
 
 			$fly(doms.splitter).removeClass("splitter-h-resizeable splitter-v-resizeable");
 			if (panel._resizeable) {
@@ -673,7 +860,7 @@
 			var sidePanelStyle, splitterStyle, mainPanelStyle, mainControlStyle, sideControlStyle, collapseBarStyle,
 				collapseBarWidth = 0, collapseBarHeight = 0;
 
-            var position = panel.getPixelPosition();
+			var position = panel.getPixelPosition();
 
 			if (panel._collapseable && panel._collapsed) {
 				if (previewable) {
@@ -697,7 +884,13 @@
 					collapseBarWidth = $fly(doms.collapseBar).outerWidth();
 					collapseBarHeight = $fly(doms.collapseBar).outerHeight();
 
-					switch(direction) {
+					var dir = direction;
+
+					if (panel._collapsed == "main") {
+						dir = directionReverse[dir];
+					}
+
+					switch(dir) {
 						case "left":
 							collapseBarStyle = {
 								left: 0,
@@ -727,123 +920,235 @@
 					$fly(doms.collapseBar).css(collapseBarStyle);
 				}
 
-				$fly(doms.splitter).removeClass("splitter-left splitter-right splitter-top splitter-bottom").addClass("splitter-" + directionReverse[direction]);
 				splitterWidth = $fly(doms.splitter).width();
 				splitterHeight = $fly(doms.splitter).height();
-				switch(panel._direction) {
-					case "left":
-						splitterStyle = {
-							left: collapseBarWidth,
-							top: 0
-						};
-						break;
-					case "right":
-						splitterStyle = {
-							left: width - splitterWidth - collapseBarWidth,
-							top: 0
-						};
-						break;
-					case "top":
-						splitterStyle = {
-							top: collapseBarHeight,
-							left: 0
-						};
-						break;
-					case "bottom":
-						splitterStyle = {
-							top: height - splitterHeight - collapseBarHeight,
-							left: 0
-						};
-						break;
-				}
-				$fly(doms.splitter).css(splitterStyle);
 
-				switch (direction) {
-					case "left":
-						sidePanelStyle = {
-							left: position * -1,
-							top: 0,
-							height: height
-						};
-						mainPanelStyle = {
-							left: splitterWidth + collapseBarWidth,
-							top: 0,
-							width: width - splitterWidth - collapseBarWidth,
-							height: height
-						};
-						mainControlStyle = {
-							width: width - splitterWidth - collapseBarWidth,
-							height: height
-						};
-						sideControlStyle = {
-							width: position,
-							height: height
-						};
-						break;
-					case "right":
-						sidePanelStyle = {
-							left: width,
-							top: 0,
-							height: height
-						};
-						mainPanelStyle = {
-							left: 0,
-							top: 0,
-							width: width - splitterWidth - collapseBarWidth,
-							height: height
-						};
-						mainControlStyle = {
-							width: width - splitterWidth - collapseBarWidth,
-							height: height
-						};
-						sideControlStyle = {
-							width: position,
-							height: height
-						};
-						break;
-					case "top":
-						sidePanelStyle = {
-							top: position * -1,
-							left: 0,
-							width: width
-						};
-						mainPanelStyle = {
-							top: splitterHeight + collapseBarHeight,
-							left: 0,
-							width: width,
-							height: height - splitterHeight - collapseBarHeight
-						};
-						mainControlStyle = {
-							width: width,
-							height: height - splitterHeight - collapseBarHeight
-						};
-						sideControlStyle = {
-							width: width,
-							height: position
-						};
-						break;
-					case "bottom":
-						sidePanelStyle = {
-							top: height,
-							left: 0,
-							width: width
-						};
-						mainPanelStyle = {
-							top: 0,
-							left: 0,
-							width: width,
-							height: height - splitterHeight - collapseBarHeight
-						};
-						mainControlStyle = {
-							width: width,
-							height: height - splitterHeight - collapseBarHeight
-						};
-						sideControlStyle = {
-							width: width,
-							height: position
-						};
-						break;
+				if (panel._collapsed === "main") {
+					switch(direction) {
+						case "left":
+							splitterStyle = {
+								left: width - splitterWidth - collapseBarWidth,
+								top: 0
+							};
+							break;
+						case "right":
+							splitterStyle = {
+								left: collapseBarWidth,
+								top: 0
+							};
+							break;
+						case "top":
+							splitterStyle = {
+								top: height - splitterHeight - collapseBarHeight,
+								left: 0
+							};
+							break;
+						case "bottom":
+							splitterStyle = {
+								top: collapseBarHeight,
+								left: 0
+							};
+							break;
+					}
+					switch (direction) {
+						case "left":
+							sidePanelStyle = {
+								left: 0,
+								top: 0,
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							mainPanelStyle = {
+								left: width,
+								top: 0,
+								height: height
+							};
+							mainControlStyle = {
+								height: height
+							};
+							sideControlStyle = {
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							break;
+						case "right":
+							sidePanelStyle = {
+								left: splitterWidth + collapseBarWidth,
+								top: 0,
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							mainPanelStyle = {
+								left: -1 * width,
+								top: 0,
+								height: height
+							};
+							mainControlStyle = {
+								height: height
+							};
+							sideControlStyle = {
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							break;
+						case "top":
+							sidePanelStyle = {
+								top: 0,
+								left: 0,
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							mainPanelStyle = {
+								top: height,
+								left: 0,
+								width: width
+							};
+							mainControlStyle = {
+								width: width
+							};
+							sideControlStyle = {
+								height: height - splitterHeight - collapseBarHeight,
+								width: width
+							};
+							break;
+						case "bottom":
+							sidePanelStyle = {
+								top: splitterHeight + collapseBarHeight,
+								left: 0,
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							mainPanelStyle = {
+								top: -1 * height,
+								left: 0,
+								width: width
+							};
+							mainControlStyle = {
+								width: width
+							};
+							sideControlStyle = {
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							break;
+					}
+				} else {
+					$fly(doms.splitter).removeClass("splitter-left splitter-right splitter-top splitter-bottom").addClass("splitter-" + directionReverse[direction]);
+					switch(direction) {
+						case "left":
+							splitterStyle = {
+								left: collapseBarWidth,
+								top: 0
+							};
+							break;
+						case "right":
+							splitterStyle = {
+								left: width - splitterWidth - collapseBarWidth,
+								top: 0
+							};
+							break;
+						case "top":
+							splitterStyle = {
+								top: collapseBarHeight,
+								left: 0
+							};
+							break;
+						case "bottom":
+							splitterStyle = {
+								top: height - splitterHeight - collapseBarHeight,
+								left: 0
+							};
+							break;
+					}
+					switch (direction) {
+						case "left":
+							sidePanelStyle = {
+								left: position * -1,
+								top: 0,
+								height: height
+							};
+							mainPanelStyle = {
+								left: splitterWidth + collapseBarWidth,
+								top: 0,
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							mainControlStyle = {
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							sideControlStyle = {
+								width: position,
+								height: height
+							};
+							break;
+						case "right":
+							sidePanelStyle = {
+								left: width,
+								top: 0,
+								height: height
+							};
+							mainPanelStyle = {
+								left: 0,
+								top: 0,
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							mainControlStyle = {
+								width: width - splitterWidth - collapseBarWidth,
+								height: height
+							};
+							sideControlStyle = {
+								width: position,
+								height: height
+							};
+							break;
+						case "top":
+							sidePanelStyle = {
+								top: position * -1,
+								left: 0,
+								width: width
+							};
+							mainPanelStyle = {
+								top: splitterHeight + collapseBarHeight,
+								left: 0,
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							mainControlStyle = {
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							sideControlStyle = {
+								width: width,
+								height: position
+							};
+							break;
+						case "bottom":
+							sidePanelStyle = {
+								top: height,
+								left: 0,
+								width: width
+							};
+							mainPanelStyle = {
+								top: 0,
+								left: 0,
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							mainControlStyle = {
+								width: width,
+								height: height - splitterHeight - collapseBarHeight
+							};
+							sideControlStyle = {
+								width: width,
+								height: position
+							};
+							break;
+					}
 				}
+
+				$fly(doms.splitter).css(splitterStyle);
 				$fly(doms.sidePanel).css(sidePanelStyle);
 				$fly(doms.mainPanel).css(mainPanelStyle);
 				if (panel._sideControl) {
@@ -995,15 +1300,14 @@
 
 			//set draggable range
 
-            $fly(doms.splitter).draggable(panel._resizeable ? "enable" : "disable");
+			$fly(doms.splitter).draggable(panel._resizeable ? "enable" : "disable");
 		},
 	
 		getFocusableSubControls: function() {
 			var direction = this._direction;
 			if (direction == "left" || direction == "top") {
 				return [this._sideControl, this._mainControl];
-			}
-			else {
+			} else {
 				return [this._mainControl, this._sideControl];
 			}
 		}
