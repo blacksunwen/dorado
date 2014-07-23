@@ -17,7 +17,7 @@ import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.XmlNode;
 import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.view.annotation.Widget;
-import com.bstek.dorado.view.widget.Control;
+import com.bstek.dorado.view.widget.datacontrol.AbstractPropertyDataControl;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -28,7 +28,7 @@ import com.bstek.dorado.view.widget.Control;
 @ClientObject(prototype = "dorado.widget.ProgressBar",
 		shortTypeName = "ProgressBar")
 @XmlNode(clientTypes = { ClientType.DESKTOP, ClientType.TOUCH })
-public class ProgressBar extends Control {
+public class ProgressBar extends AbstractPropertyDataControl {
 	private float minValue;
 	private float maxValue = 100;
 	private String value;
