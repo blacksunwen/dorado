@@ -33,6 +33,11 @@ public class Button extends AbstractButton {
 	private boolean showTrigger;
 	private boolean splitButton;
 
+	@IdeProperty(visible = false)
+	public String getHeight() {
+		return super.getHeight();
+	}
+
 	@IdeProperty(highlight = 1)
 	public String getCaption() {
 		return caption;

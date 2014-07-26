@@ -16,6 +16,7 @@ import java.util.List;
 
 import com.bstek.dorado.annotation.ClientObject;
 import com.bstek.dorado.annotation.ClientProperty;
+import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlSubNode;
 import com.bstek.dorado.view.annotation.Widget;
 import com.bstek.dorado.view.widget.Control;
@@ -31,6 +32,11 @@ public class ToolBar extends Control {
 	private List<Control> items = new InnerElementList<Control>(this);
 	private boolean fixRight;
 	private boolean showMenuOnHover;
+
+	@IdeProperty(visible = false)
+	public String getHeight() {
+		return super.getHeight();
+	}
 
 	public void addItem(Control item) {
 		items.add(item);

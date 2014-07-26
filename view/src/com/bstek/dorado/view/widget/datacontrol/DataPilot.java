@@ -31,6 +31,11 @@ import com.bstek.dorado.view.annotation.Widget;
 public class DataPilot extends AbstractDataControl {
 	private String itemCodes;
 
+	@IdeProperty(visible = false)
+	public String getHeight() {
+		return super.getHeight();
+	}
+
 	@IdeProperty(enumValues = "pages,|<,<,>,>|,goto,pageSize,info,+,-,x,|",
 			highlight = 1)
 	public String getItemCodes() {
