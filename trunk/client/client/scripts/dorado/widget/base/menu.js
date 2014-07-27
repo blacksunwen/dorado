@@ -71,7 +71,9 @@
 			});
 			if (item.constructor == Object.prototype.constructor || typeof item == "string") {
 				item = menu.createMenuItem(item);
-			}
+			} else {
+                item._parent = menu;
+            }
 			menu.registerInnerViewElement(item);
 
 			if (typeof index == "number") {
