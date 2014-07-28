@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import com.bstek.dorado.core.io.LocationTransformer;
 import com.bstek.dorado.util.PathUtils;
@@ -42,10 +42,9 @@ public class FontAwesomeLocationTransformer implements LocationTransformer {
 			if (ua.indexOf(CHROME_FRAME) < 0) {
 				boolean isMSIE = (ua != null && ua.indexOf(MSIE) != -1);
 				if (isMSIE) {
-					String version = MSIE_VERSION_PATTERN.matcher(ua)
-							.replaceAll("$1");
-					if (StringUtils.isNotEmpty(version)
-							&& "8".compareTo(version) > 0) {
+					float version = NumberUtils.toFloat(MSIE_VERSION_PATTERN
+							.matcher(ua).replaceAll("$1"), Float.MAX_VALUE);
+					if (version < 8) {
 						return PathUtils.concatPath(FAILSAFE_DIR,
 								location.substring(protocal.length()));
 					}
