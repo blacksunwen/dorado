@@ -628,7 +628,6 @@
   overflow: hidden;
 }
 .d-form-element .form-label {
-  float: left;
   height: 26px;
   line-height: 26px;
   padding-right: 12px;
@@ -636,9 +635,6 @@
 .d-form-element .form-label-left {
   float: left;
   height: 100%;
-}
-.d-form-element .form-label-top {
-  float: none;
 }
 .d-form-element .form-label-align-left {
   text-align: left;
