@@ -160,7 +160,7 @@
 			 * @attribute
 			 * @type Boolean
 			 */
-			collapseBothDirection: {
+			collapseBothSide: {
 				writeBeforeReady: true
 			},
 
@@ -176,11 +176,25 @@
 
 			/**
 			 * 是否可以预览，这个属性会决定是否在sideControl折叠以后显示一个竖向或者横向的工具条。
+			 *
 			 * @attribute
 			 * @default false
 			 * @type boolean
 			 */
 			previewable: {
+				defaultValue: false
+			},
+
+			/**
+			 * 在preivewable属性为true的情况下，折叠以后显示一个竖向或者横向的工具条。此属性仅在preivewable为true，并且collapsed属性为true的情况下起作用。
+			 *
+			 * 该属性默认值为false，在默认情况下，此工具条只有在点击后才能进行preview。如果该属性为true，则在鼠标进入该工具条后会自动打开preivew。
+			 *
+			 * @attribute
+			 * @default false
+			 * @type boolean
+			 */
+			openPreviewOnHover: {
 				defaultValue: false
 			}
 		},
@@ -210,7 +224,9 @@
 			var panel = this, dom = panel._dom, doms = panel._doms, direction = panel._direction, animPanelCss = {},
 				animConfig, width = $fly(dom).innerWidth(), height = $fly(dom).innerHeight(),
 				collapseBarWidth = $fly(doms.collapseBar).outerWidth(),
-				collapseBarHeight = $fly(doms.collapseBar).outerHeight();
+				collapseBarHeight = $fly(doms.collapseBar).outerHeight(),
+				splitterWidth = $fly(doms.splitter).outerWidth(),
+				splitterHeight = $fly(doms.splitter).outerHeight();
 
 			if (panel._previewOpened) {
 				return;
@@ -225,28 +241,28 @@
 				switch (direction) {
 					case "left":
 						animConfig = {
-							left: position - collapseBarWidth
+							left: position - collapseBarWidth - splitterWidth
 						};
 						animPanelCss.left = width;
 						break;
 
 					case "top":
 						animConfig = {
-							top: position - collapseBarHeight
+							top: position - collapseBarHeight - splitterHeight
 						};
 						animPanelCss.top = height;
 						break;
 
 					case "right":
 						animConfig = {
-							left: collapseBarWidth
+							left: collapseBarWidth + splitterWidth
 						};
 						animPanelCss.left = (width - position - collapseBarWidth) * -1;
 						break;
 
 					case "bottom":
 						animConfig = {
-							top: collapseBarHeight
+							top: collapseBarHeight + splitterHeight
 						};
 						animPanelCss.top = (height - position - collapseBarHeight) * -1;
 						break;
@@ -255,28 +271,28 @@
 				switch (direction) {
 					case "left":
 						animConfig = {
-							left: collapseBarWidth
+							left: collapseBarWidth + splitterWidth
 						};
 						animPanelCss.left = position * -1;
 						break;
 
 					case "top":
 						animConfig = {
-							top: collapseBarHeight
+							top: collapseBarHeight  + splitterHeight
 						};
 						animPanelCss.top = position * -1;
 						break;
 
 					case "right":
 						animConfig = {
-							left: width - position - collapseBarWidth
+							left: width - position - collapseBarWidth - splitterWidth
 						};
 						animPanelCss.left = width;
 						break;
 
 					case "bottom":
 						animConfig = {
-							top: height - position - collapseBarHeight
+							top: height - position - collapseBarHeight - splitterHeight
 						};
 						animPanelCss.top = height;
 						break;
@@ -296,7 +312,8 @@
 			});
 			$fly(document).bind("click", {panel: panel}, documentMouseDown);
 
-			$fly([animPanel, doms.collapseBar]).bind("mouseenter", {panel: panel}, mouseEnterfunc).bind("mouseleave", { panel: panel }, mouseLeavefunc);
+			$fly([animPanel, doms.collapseBar, doms.splitter]).bind("mouseenter", { panel: panel }, mouseEnterfunc)
+			$fly([animPanel, doms.collapseBar]).bind("mouseleave", { panel: panel }, mouseLeavefunc);
 		},
 
 		_closePreview: function() {
@@ -402,7 +419,7 @@
 				panel._hidePreviewTimer = null;
 				panel._closePreview();
 				$fly(document).unbind("click", documentMouseDown);
-			}, 500);
+			}, 700);
 		},
 
 		_createCollapseBar: function() {
@@ -417,11 +434,27 @@
 				}
 			}, null, doms);
 
+			var hoverPreviewTimer;
+
 			jQuery(doms.collapseBar).addClass("collapse-bar-" + panel._direction)
 				.addClassOnHover("collapse-bar-hover").click(function(event) {
-				panel._togglePreview();
-				event.stopImmediatePropagation();
-			});
+					panel._openPreview();
+					event.stopImmediatePropagation();
+				}).mouseenter(function(event) {
+					if (panel._openPreviewOnHover && !panel._previewOpened) {
+						hoverPreviewTimer = setTimeout(function() {
+							panel._openPreview();
+							hoverPreviewTimer = null;
+						}, 400);
+					}
+				}).mouseleave(function(event) {
+					if (panel._openPreviewOnHover && !panel._previewOpened) {
+						if (hoverPreviewTimer) {
+							clearTimeout(hoverPreviewTimer);
+							hoverPreviewTimer = null;
+						}
+					}
+				});
 
 			jQuery(doms.collapseBarButton).click(function(event) {
 				panel.doSetCollapsed(false);
@@ -460,7 +493,7 @@
 				]
 			}, null, doms), direction = panel._direction, axis = (direction == "left" || direction == "right") ? "x" : "y";
 
-			if (panel._collapseBothDirection === true) {
+			if (panel._collapseBothSide === true) {
 				$fly(dom).addClass(panel._className + "-collapse-both");
 
 				var oppositeButton = document.createElement("div");
