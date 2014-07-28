@@ -383,6 +383,9 @@
   float: left;
   height: 100%;
 }
+.d-form-element .form-label-top {
+  float: none;
+}
 .d-form-element .form-label-align-left {
   text-align: left;
 }
