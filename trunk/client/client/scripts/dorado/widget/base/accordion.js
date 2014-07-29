@@ -255,13 +255,13 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 
 			/**
 			 * 在切换Section的是否要使用动画。<br />
-			 * 在IE下，该属性默认值为false，其他浏览器为true。
+			 * 在老版本IE下(版本小于9)，该属性默认值为false，其他浏览器为true。
 			 *
 			 * @attribute
 			 * @type boolean
 			 */
 			animate: {
-				defaultValue: dorado.Browser.msie ? false : true
+				defaultValue: (dorado.Browser.msie && dorado.Browser.version < 9) ? false : true
 			},
 
 			/**
