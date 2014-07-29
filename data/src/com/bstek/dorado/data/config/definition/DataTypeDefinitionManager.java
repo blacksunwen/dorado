@@ -26,6 +26,7 @@ import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.xml.DataXmlConstants;
+import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.util.Assert;
 
 /**
@@ -167,21 +168,12 @@ public class DataTypeDefinitionManager extends
 
 		String[] subDataTypeNames = dataTypeName.getSubDataTypes();
 		if (subDataTypeNames.length == 1) {
+			definition.setImplType(AggregationDataType.class);
 			DefinitionReference<?> elementDataType = new DataTypeDefinitionReference(
 					subDataTypeNames[0]);
 			definition.setProperty(
 					DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
 					elementDataType);
-		} else if (subDataTypeNames.length == 2) {
-			DefinitionReference<?> keyDataType = new DataTypeDefinitionReference(
-					subDataTypeNames[0]);
-			DefinitionReference<?> valueDataType = new DataTypeDefinitionReference(
-					subDataTypeNames[1]);
-
-			definition.setProperty(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
-					keyDataType);
-			definition.setProperty(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
-					valueDataType);
 		} else {
 			throw new IllegalArgumentException("Illegal DataType name [" + name
 					+ "].");

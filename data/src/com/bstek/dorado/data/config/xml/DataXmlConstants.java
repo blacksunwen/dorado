@@ -48,8 +48,6 @@ public abstract class DataXmlConstants {
 	public static final String ATTRIBUTE_CREATION_TYPE = "creationType";
 	public static final String ATTRIBUTE_RESULT_DATA_TYPE = "resultDataType";
 	public static final String ATTRIBUTE_RESULT = "result";
-	public static final String ATTRIBUTE_VALUE_DATA_TYPE = "valueDataType";
-	public static final String ATTRIBUTE_KEY_DATA_TYPE = "keyDataType";
 	public static final String ATTRIBUTE_ELEMENT_DATA_TYPE = "elementDataType";
 	public static final String ATTRIBUTE_PROVIDER_TYPE = "type";
 	public static final String ATTRIBUTE_RESOLVER_TYPE = "type";
