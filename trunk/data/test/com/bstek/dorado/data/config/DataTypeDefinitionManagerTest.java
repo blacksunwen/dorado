@@ -65,32 +65,6 @@ public class DataTypeDefinitionManagerTest extends ConfigManagerTestSupport {
 		assertSame(dataType1, dataType2);
 	}
 
-	public void testGetDefinitionByComplexName2() throws Exception {
-		DataTypeDefinitionManager definitionManager = getDataTypeDefinitionManager();
-
-		final String NAME = "Map[String,test.User]";
-		DataTypeDefinition dataType1 = definitionManager.getDefinition(NAME);
-		assertNotNull(dataType1);
-		assertEquals(NAME, dataType1.getName());
-		assertEquals(null, dataType1.getScope());
-
-		DefinitionReference<?> ref = (DefinitionReference<?>) dataType1
-				.getProperties().get(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE);
-		assertNotNull(ref);
-		assertEquals("String",
-				((DataTypeDefinition) ref.getDefinition()).getName());
-
-		ref = (DefinitionReference<?>) dataType1.getProperties().get(
-				DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE);
-		assertNotNull(ref);
-		assertEquals("test.User",
-				((DataTypeDefinition) ref.getDefinition()).getName());
-
-		DataTypeDefinition dataType2 = definitionManager.getDefinition(NAME);
-		assertNotNull(dataType2);
-		assertSame(dataType1, dataType2);
-	}
-
 	@SuppressWarnings("unchecked")
 	public void testDataTypeInPropertyDef() throws Exception {
 		DataTypeDefinitionManager definitionManager = getDataTypeDefinitionManager();
