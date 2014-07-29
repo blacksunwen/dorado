@@ -56,7 +56,18 @@
 			className: {
 				defaultValue: "d-split-panel"
 			},
-			
+
+			/**
+			 * 打开、关闭和预览SideControl的时候要不要使用动画。<br />
+			 * 在老版本IE下(版本小于9)，该属性默认值为false，其他浏览器为true。
+			 *
+			 * @attribute
+			 * @type boolean
+			 */
+			animate: {
+				defaultValue: (dorado.Browser.msie && dorado.Browser.version < 9) ? false : true
+			},
+
 			/**
 			 * 边组件的显示的位置。
 			 * 可选值：left、right、top、bottom，默认值left。
@@ -299,17 +310,29 @@
 				}
 			}
 
-			$fly(animPanel).css(animPanelCss).bringToFront().animate(animConfig, {
-				complete: function() {
-					if (collapsed === "main") {
-						if (panel._mainControl)
-							panel._mainControl.setActualVisible(true);
-					} else {
-						if (panel._sideControl)
-							panel._sideControl.setActualVisible(true);
+			if (panel._animate) {
+				$fly(animPanel).css(animPanelCss).bringToFront().animate(animConfig, {
+					complete: function() {
+						if (collapsed === "main") {
+							if (panel._mainControl)
+								panel._mainControl.setActualVisible(true);
+						} else {
+							if (panel._sideControl)
+								panel._sideControl.setActualVisible(true);
+						}
 					}
+				});
+			} else {
+				$fly(animPanel).css(animPanelCss).bringToFront().css(animConfig);
+				if (collapsed === "main") {
+					if (panel._mainControl)
+						panel._mainControl.setActualVisible(true);
+				} else {
+					if (panel._sideControl)
+						panel._sideControl.setActualVisible(true);
 				}
-			});
+			}
+
 			$fly(document).bind("click", {panel: panel}, documentMouseDown);
 
 			$fly([animPanel, doms.collapseBar, doms.splitter]).bind("mouseenter", { panel: panel }, mouseEnterfunc)
@@ -385,18 +408,31 @@
 				}
 			}
 
-			$fly(animPanel).animate(animConfig, {
-				complete: function() {
-					$fly(animPanel).css("z-index", "");
-					if (collapsed === "main") {
-						if (panel._mainControl)
-							panel._mainControl.setActualVisible(true);
-					} else {
-						if (panel._sideControl)
-							panel._sideControl.setActualVisible(false);
+			if (panel._animate) {
+				$fly(animPanel).animate(animConfig, {
+					complete: function() {
+						$fly(animPanel).css("z-index", "");
+						if (collapsed === "main") {
+							if (panel._mainControl)
+								panel._mainControl.setActualVisible(true);
+						} else {
+							if (panel._sideControl)
+								panel._sideControl.setActualVisible(false);
+						}
 					}
+				});
+			} else {
+				$fly(animPanel).css(animConfig);
+				$fly(animPanel).css("z-index", "");
+				if (collapsed === "main") {
+					if (panel._mainControl)
+						panel._mainControl.setActualVisible(true);
+				} else {
+					if (panel._sideControl)
+						panel._sideControl.setActualVisible(false);
 				}
-			});
+			}
+
 			$fly([animPanel, doms.collapseBar]).unbind("mouseenter", mouseEnterfunc).unbind("mouseleave", mouseLeavefunc);
 		},
 
@@ -438,7 +474,7 @@
 
 			jQuery(doms.collapseBar).addClass("collapse-bar-" + panel._direction)
 				.addClassOnHover("collapse-bar-hover").click(function(event) {
-					panel._openPreview();
+					panel._togglePreview();
 					event.stopImmediatePropagation();
 				}).mouseenter(function(event) {
 					if (panel._openPreviewOnHover && !panel._previewOpened) {
@@ -737,11 +773,16 @@
 						}
 					}
 
-					$fly(animPanel).animate(animConfig, {
-						complete: function() {
-							onCollapsedChange();
-						}
-					});
+					if (panel._animate) {
+						$fly(animPanel).animate(animConfig, {
+							complete: function() {
+								onCollapsedChange();
+							}
+						});
+					} else {
+						$fly(animPanel).css(animConfig);
+						onCollapsedChange();
+					}
 				} else {
 					if (panel._previewOpened) {
 						$fly([doms.sidePanel, doms.collapseBar]).unbind("mouseenter", mouseEnterfunc).unbind("mouseleave", mouseLeavefunc);
@@ -815,11 +856,16 @@
 							}
 						}
 
-						$fly(animPanel).css(animPanelCss).bringToFront().animate(animConfig, {
-							complete: function() {
-								onCollapsedChange();
-							}
-						});
+						if (panel._animate) {
+							$fly(animPanel).css(animPanelCss).bringToFront().animate(animConfig, {
+								complete: function() {
+									onCollapsedChange();
+								}
+							});
+						} else {
+							$fly(animPanel).css(animPanelCss).css(animConfig);
+							onCollapsedChange();
+						}
 					}
 				}
 			} else {
