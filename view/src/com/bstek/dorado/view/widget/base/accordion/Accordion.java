@@ -38,7 +38,7 @@ import com.bstek.dorado.view.widget.InnerElementList;
 public class Accordion extends Control {
 	private List<Section> sections = new InnerElementList<Section>(this);
 	private int currentSection;
-	private boolean animate;
+	private Boolean animate;
 	private boolean dynaHeight = false;
 	
 	public void addSection(Section section) {
@@ -91,11 +91,11 @@ public class Accordion extends Control {
 				+ currentSectionName + "] in SectionControl.");
 	}
 
-	public boolean isAnimate() {
+	public Boolean isAnimate() {
 		return animate;
 	}
 
-	public void setAnimate(boolean animate) {
+	public void setAnimate(Boolean animate) {
 		this.animate = animate;
 	}
 

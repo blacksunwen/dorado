@@ -49,6 +49,7 @@ public class SplitPanel extends Control {
 	private boolean previewable;
 	private boolean collapseBothSide = false;
 	private boolean openPreviewOnHover = false;
+	private Boolean animate;
 
 	@ClientProperty(escapeValue = "left")
 	@IdeProperty(highlight = 1)
@@ -159,4 +160,12 @@ public class SplitPanel extends Control {
 	public void setOpenPreviewOnHover(boolean openPreviewOnHover) {
 		this.openPreviewOnHover = openPreviewOnHover;
 	}
+
+	public Boolean getAnimate() {
+		return animate;
+	}
+
+	public void setAnimate(Boolean animate) {
+		this.animate = animate;
+	}	
 }
