@@ -22,8 +22,6 @@ import org.w3c.dom.Node;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
-import com.bstek.dorado.config.xml.ObjectParser;
-import com.bstek.dorado.config.xml.ObjectParserInitializationAware;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.core.Configure;
@@ -37,8 +35,7 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-11-17
  */
-public class DataTypeParser extends GenericObjectParser implements
-		ObjectParserInitializationAware {
+public class DataTypeParser extends GenericObjectParser {
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -68,8 +65,7 @@ public class DataTypeParser extends GenericObjectParser implements
 	@Override
 	protected void initDefinition(ObjectDefinition definition, Element element,
 			ParseContext context) throws Exception {
-		DataTypeDefinition dataType = (DataTypeDefinition) definition;
-		super.initDefinition(dataType, element, context);
+		super.initDefinition(definition, element, context);
 
 		DataParseContext dataContext = (DataParseContext) context;
 		DefinitionReference<DataTypeDefinition> dataTypeRef;
@@ -77,23 +73,8 @@ public class DataTypeParser extends GenericObjectParser implements
 				DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE, element,
 				dataContext);
 		if (dataTypeRef != null) {
-			dataType.setProperty(DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE,
-					dataTypeRef);
-		}
-
-		dataTypeRef = dataObjectParseHelper.getReferencedDataType(
-				DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE, element, dataContext);
-		if (dataTypeRef != null) {
-			dataType.setProperty(DataXmlConstants.ATTRIBUTE_KEY_DATA_TYPE,
-					dataTypeRef);
-		}
-
-		dataTypeRef = dataObjectParseHelper.getReferencedDataType(
-				DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE, element,
-				dataContext);
-		if (dataTypeRef != null) {
-			dataType.setProperty(DataXmlConstants.ATTRIBUTE_VALUE_DATA_TYPE,
-					dataTypeRef);
+			definition.setProperty(
+					DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE, dataTypeRef);
 		}
 	}
 
@@ -167,10 +148,5 @@ public class DataTypeParser extends GenericObjectParser implements
 
 		parsedDataTypes.put(name, dataType);
 		return dataType;
-	}
-
-	public void postObjectParserInitialized(ObjectParser objectParser)
-			throws Exception {
-		setImpl(null);
 	}
 }

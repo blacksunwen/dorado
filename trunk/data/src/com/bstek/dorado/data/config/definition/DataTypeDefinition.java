@@ -485,19 +485,4 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 		}
 	}
 
-	@Override
-	protected void setObjectProperty(Object object, String property,
-			Object value, CreationContext context) throws Exception {
-		try {
-			super.setObjectProperty(object, property, value, context);
-		} catch (NoSuchMethodException e) {
-			if (DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE.equals(property)
-					&& !(object instanceof EntityDataType)) {
-				// do nothing
-			} else {
-				throw e;
-			}
-		}
-	}
-
 }

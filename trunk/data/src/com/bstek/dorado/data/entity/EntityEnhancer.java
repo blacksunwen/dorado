@@ -281,8 +281,10 @@ public abstract class EntityEnhancer {
 	protected void markPropertyHasRead(String property) {
 		if (propertiesHasRead == null) {
 			propertiesHasRead = new HashSet<String>();
+			propertiesHasRead.add(property);
+		} else if (!propertiesHasRead.contains(property)) {
+			propertiesHasRead.add(property);
 		}
-		propertiesHasRead.add(property);
 	}
 
 	protected boolean isPropertyHasRead(String property) {
