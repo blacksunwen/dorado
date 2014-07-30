@@ -314,8 +314,9 @@
 					
 					doms.close = closeEl;
 					
-					jQuery(closeEl).click(function() {
+					jQuery(closeEl).click(function(event) {
 						tip.doClose(this);
+						event.stopImmediatePropagation();
 					}).addClassOnHover("close-hover").addClassOnClick("close-click");
 				} else {
 					$fly(doms.close).css("display", "");
@@ -454,6 +455,7 @@
 	};
 	
 	var intersect = function(element1, element2) {
+		if (element1 == null) return false;
 		var region1 = $fly(element1).region(), region2;
 		if (element2.nodeType) {
 			region2 = $fly(element2).region();
