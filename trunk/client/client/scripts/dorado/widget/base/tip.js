@@ -495,7 +495,9 @@
 			} else if (typeof msg == "object") {
 				options = dorado.Object.apply({}, msg);
 			}
-			options.caption = options.caption || $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "Dorado7"
+			if (options.caption === undefined) {
+				options.caption = $resource("dorado.baseWidget.NotifyTipDefaultCaption") || "Dorado7";
+			}
 			if (options.autoHide === false) options.showDuration = 0;
 			delete options.autoHide;
 			
