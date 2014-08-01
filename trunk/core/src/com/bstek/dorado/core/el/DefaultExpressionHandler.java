@@ -175,45 +175,50 @@ public class DefaultExpressionHandler implements ExpressionHandler {
 			if (ctClass == null) {
 				ctClass = pool.makeClass(DORADO_EXPRESSION_UTILS_TYPE);
 			}
-			for (Map.Entry<String, Method> entry : utilMethods.entrySet()) {
-				String name = entry.getKey();
-				Method method = entry.getValue();
-				int methodIndex = ArrayUtils.indexOf(method.getDeclaringClass()
-						.getMethods(), method);
+			if (ctClass.isFrozen()) {
+				ctClass.defrost();
+			}
+			else {
+				for (Map.Entry<String, Method> entry : utilMethods.entrySet()) {
+					String name = entry.getKey();
+					Method method = entry.getValue();
+					int methodIndex = ArrayUtils.indexOf(method.getDeclaringClass()
+							.getMethods(), method);
 
-				StringBuffer buf = new StringBuffer();
-				StringBuffer args = new StringBuffer();
-				buf.append("public ").append("Object").append(' ').append(name)
-						.append('(');
-				Class<?>[] parameterTypes = method.getParameterTypes();
-				for (int i = 0; i < parameterTypes.length; i++) {
-					if (i > 0) {
-						buf.append(',');
-						args.append(',');
-					}
-					buf.append("Object").append(' ').append("p" + i);
-					args.append("p" + i);
-				}
-				buf.append(")");
-				if (method.getExceptionTypes().length > 0) {
-					buf.append(" throws ");
-					int i = 0;
-					for (Class<?> exceptionType : method.getExceptionTypes()) {
-						if (i > 0)
+					StringBuffer buf = new StringBuffer();
+					StringBuffer args = new StringBuffer();
+					buf.append("public ").append("Object").append(' ').append(name)
+							.append('(');
+					Class<?>[] parameterTypes = method.getParameterTypes();
+					for (int i = 0; i < parameterTypes.length; i++) {
+						if (i > 0) {
 							buf.append(',');
-						buf.append(exceptionType.getName());
-						i++;
+							args.append(',');
+						}
+						buf.append("Object").append(' ').append("p" + i);
+						args.append("p" + i);
 					}
+					buf.append(")");
+					if (method.getExceptionTypes().length > 0) {
+						buf.append(" throws ");
+						int i = 0;
+						for (Class<?> exceptionType : method.getExceptionTypes()) {
+							if (i > 0)
+								buf.append(',');
+							buf.append(exceptionType.getName());
+							i++;
+						}
+					}
+					buf.append("{\n")
+							.append("return Class.forName(\""
+									+ method.getDeclaringClass().getName())
+							.append("\").getMethods()[").append(methodIndex)
+							.append("].invoke(null, new Object[]{").append(args)
+							.append("});").append("\n}");
+					CtMethod delegator = CtNewMethod.make(buf.toString(), ctClass);
+					delegator.setName(name);
+					ctClass.addMethod(delegator);
 				}
-				buf.append("{\n")
-						.append("return Class.forName(\""
-								+ method.getDeclaringClass().getName())
-						.append("\").getMethods()[").append(methodIndex)
-						.append("].invoke(null, new Object[]{").append(args)
-						.append("});").append("\n}");
-				CtMethod delegator = CtNewMethod.make(buf.toString(), ctClass);
-				delegator.setName(name);
-				ctClass.addMethod(delegator);
 			}
 			Class<?> cl = ctClass.toClass();
 			doradoExpressionUtilsBean = cl.newInstance();
