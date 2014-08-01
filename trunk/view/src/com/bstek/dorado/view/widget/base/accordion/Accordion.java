@@ -91,7 +91,7 @@ public class Accordion extends Control {
 				+ currentSectionName + "] in SectionControl.");
 	}
 
-	public Boolean isAnimate() {
+	public Boolean getAnimate() {
 		return animate;
 	}
 
