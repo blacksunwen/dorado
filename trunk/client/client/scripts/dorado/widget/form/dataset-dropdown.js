@@ -166,10 +166,12 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 		};
 
 		if (this._useDataBinding && this._filterOnOpen) {
-			var filterValue = (this._lastFilterValue) ? this._lastFilterValue : editor.get("text");
-			this.onFilterItems(filterValue, function() {
-				doOpen(false);
-			});
+			var filterValue = editor.get("text");
+            if ((this._lastFilterValue || "") != filterValue){
+                this.onFilterItems(filterValue, function() {
+                    doOpen(false);
+                });
+            }
 		} else {
 			var lastFilterValue;
 			if (this._filterOnOpen) {
