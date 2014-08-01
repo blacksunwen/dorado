@@ -127,3 +127,14 @@
   border: 1px #a1a1a1 solid;
   background: #f8f8f8;
 }
+
+.d-tag-editor .d-trigger {
+	position: absolute;
+	top: 0;
+	right: 0;
+	cursor: pointer;
+	overflow: hidden;
+	width: 18px;
+	height: 20px;
+	background-repeat: no-repeat;
+}
