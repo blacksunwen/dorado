@@ -247,7 +247,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		if (!this._srcLoaded) return;
 		var image = this, dom = image._dom, imageDom = dom.firstChild,
 			stretchMode = image._stretchMode, packMode = image._packMode || "center",
-			controlWidth = dom.clientWidth, controlHeight = dom.clientHeight, left = 0, top = 0,
+			controlWidth = dom.clientWidth || image._width, controlHeight = dom.clientHeight || image._height, left = 0, top = 0,
 			imageWidth = image._originalWidth, imageHeight = image._originalHeight;
 
 		if (stretchMode == "keepRatio" || stretchMode == "fitWidth") {
