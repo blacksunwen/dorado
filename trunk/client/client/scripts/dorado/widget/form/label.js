@@ -249,9 +249,10 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		var image = this, dom = image._dom, imageDom = dom.firstChild,
 			stretchMode = image._stretchMode, packMode = image._packMode || "center",
 			controlWidth = dom.clientWidth || image._width, controlHeight = dom.clientHeight || image._height, left = 0, top = 0,
-			imageWidth = image._originalWidth, imageHeight = image._originalHeight;
+			imageWidth = image._originalWidth, imageHeight = image._originalHeight, forceFit = false;
 
 		if (stretchMode == "fill") {
+			forceFit = true;
 			if (controlWidth / controlHeight > imageWidth / imageHeight) {
 				stretchMode = "fitWidth";
 			} else {
@@ -260,14 +261,14 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		}
 
 		if (stretchMode == "keepRatio" || stretchMode == "fitWidth") {
-			if (imageWidth > controlWidth) {
+			if (imageWidth > controlWidth || forceFit) {
 				imageHeight = Math.round(controlWidth * imageHeight / imageWidth);
 				imageWidth = controlWidth;
 			}
 		}
 
 		if (stretchMode == "keepRatio" || stretchMode == "fitHeight") {
-			if (imageHeight > controlHeight) {
+			if (imageHeight > controlHeight || forceFit) {
 				imageWidth = Math.round(controlHeight * imageWidth / imageHeight);
 				imageHeight = controlHeight;
 			}
