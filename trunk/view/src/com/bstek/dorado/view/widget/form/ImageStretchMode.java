@@ -17,5 +17,5 @@ package com.bstek.dorado.view.widget.form;
  * @since 2013-6-19
  */
 public enum ImageStretchMode {
-	fitWidth, fitHeight, keepRatio, stretch, none
+	fitWidth, fitHeight, keepRatio, fill, stretch, none
 }
