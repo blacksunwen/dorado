@@ -202,6 +202,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		 *   keepRatio - 图片会完全在组件的可见区域中，根据组件的大小、图片的大小不同，有可能图片的宽度与组件相同，也有可能图片的高度与组件相同。
 		 *   也就是说有可能是fitWidth模式，也有可能是fitHeight模式。
 		 *  </li>
+		 *  <li> fill - 此模式与keepRatio模式相反，图片会完全覆盖组件的可见区域，有可能是fitWidth模式，也有可能是fitHeight模式。</li>
 		 *  <li> stretch - 图片的大小和组件的大小完全相同，不会保持图片原本的宽高比。</li>
 		 *  <li> none - 不对图片进行拉伸，保持图片的原大小。</li>
 		 * <ul>
@@ -250,6 +251,14 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 			controlWidth = dom.clientWidth || image._width, controlHeight = dom.clientHeight || image._height, left = 0, top = 0,
 			imageWidth = image._originalWidth, imageHeight = image._originalHeight;
 
+		if (stretchMode == "fill") {
+			if (controlWidth / controlHeight > imageWidth / imageHeight) {
+				stretchMode = "fitWidth";
+			} else {
+				stretchMode = "fitHeight";
+			}
+		}
+
 		if (stretchMode == "keepRatio" || stretchMode == "fitWidth") {
 			if (imageWidth > controlWidth) {
 				imageHeight = Math.round(controlWidth * imageHeight / imageWidth);
@@ -259,7 +268,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 
 		if (stretchMode == "keepRatio" || stretchMode == "fitHeight") {
 			if (imageHeight > controlHeight) {
-				imageWidth = parseInt(controlHeight * imageWidth / imageHeight);
+				imageWidth = Math.round(controlHeight * imageWidth / imageHeight);
 				imageHeight = controlHeight;
 			}
 		}
@@ -279,6 +288,10 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 			height: imageHeight,
 			visibility: ""
 		});
+
+		if (this._modernScroller) {
+			this._modernScroller.update();
+		}
 	},
 
 	createDom: function() {
@@ -294,7 +307,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 
 		var imageDom = image._imageDom = dom.firstChild, $imageDom = $fly(imageDom), stretchMode = image._stretchMode;
 
-		if (stretchMode == "keepRatio" || stretchMode == "fitWidth" || stretchMode == "fitHeight") {
+		if (stretchMode == "keepRatio" || stretchMode == "fitWidth" || stretchMode == "fitHeight" || stretchMode == "fill") {
 			$imageDom.css({
 				position: "absolute",
 				width: "",
