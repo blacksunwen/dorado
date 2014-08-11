@@ -297,7 +297,6 @@
 				 * </p>
 				 * @type Object
 				 * @attribute
-				 * @see dorado.widget.Control#attribute:lc
 				 * @see dorado.widget.Container#addChild
 				 */
 				layoutConstraint: {
@@ -520,6 +519,27 @@
 					}, 0);
 				}
 			},
+			
+			isLazyInit: function(config) {
+				var lazyInit = config && config.$lazyInit, isFloatControl, floating;
+				if (lazyInit == undefined) {
+					isFloatControl = dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
+					if (isFloatControl && $setting["widget.lazyInitFloatControl"]) {
+						lazyInit = true;
+						floating = config && config.floating;
+					}
+				}
+				else if (lazyInit) {
+					isFloatControl = dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
+					if (isFloatControl) {
+						floating = config && config.floating;
+					}
+				}
+				if (floating != undefined) {
+					this.set("floating", floating);
+				}
+				return lazyInit;
+			},
 
 			onReady: function() {
 				$invokeSuper.call(this);
@@ -567,12 +587,7 @@
 				var dom = this._dom;
 				if (dom) {
 					delete this._dom;
-					try {
-						dom.doradoUniqueId = null;
-					}
-					catch(e) {
-						// do nothing
-					}
+					dom.doradoUniqueId = null;
 
 					if (dorado.windowClosed) {
 						$fly(dom).unbind();
@@ -604,14 +619,14 @@
 					}
 				}
 
-				$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+				dorado.widget.Component.prototype.doSet.call(this, attr, value, skipUnknownAttribute, lockWritingTimes);
 
 				if (def) {
 					if (def.innerComponent != null && def.autoRegisterInnerControl !== false) {
 						var component = this.doGet(attr);
 						if (component) {
 							if (component instanceof Array) {
-								for(var i = 0; i < component.length; i++) {
+								for(var i = 0, len = component.length; i < len; i++) {
 									var c = component[i];
 									if (c instanceof dorado.widget.Control) {
 										this.registerInnerControl(c);
@@ -632,8 +647,7 @@
 						}
 					}
 
-					if (!this._rendered) return;
-					if (!this._duringRefreshDom && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
+					if (this._rendered && !this._duringRefreshDom && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 						this.refresh(true);
 					}
 				}
@@ -701,42 +715,17 @@
 
 				if (delay) {
 					dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", function() {
-						this._duringRefreshDom = true;
-						try {
-							dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
-
-							if (!this.isActualVisible() && !this._forceRefresh
-								&& !(this._currentVisible !== undefined && this._currentVisible != this._visible)) {
-								this._shouldRefreshOnVisible = true;
-								return;
-							}
-							this._shouldRefreshOnVisible = false;
-
-							var dom = this.getDom(), arg = {
-								dom: dom,
-								processDefault: true
-							};
-							if (this.getListenerCount("beforeRefreshDom")) {
-								arg.processDefault = false;
-								this.fireEvent("beforeRefreshDom", this, arg);
-							}
-							if (arg.processDefault) {
-								this.refreshDom(dom);
-								this.onResize();
-								this.fireEvent("onRefreshDom", this, arg);
-							}
-
-							this.updateModernScroller();
-						}
-						finally {
-							this._duringRefreshDom = false;
-						}
-					}, 50);
-				}
-				else {
-					this._duringRefreshDom = true;
-					try {
+						
 						dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
+
+						if (!this.isActualVisible() && !this._forceRefresh
+							&& !(this._currentVisible !== undefined && this._currentVisible != this._visible)) {
+							this._shouldRefreshOnVisible = true;
+							return;
+						}
+
+						this._duringRefreshDom = true;
+						this._shouldRefreshOnVisible = false;
 
 						var dom = this.getDom(), arg = {
 							dom: dom,
@@ -753,10 +742,29 @@
 						}
 
 						this.updateModernScroller();
-					}
-					finally {
 						this._duringRefreshDom = false;
+					}, 50);
+				}
+				else {
+					dorado.Toolkits.cancelDelayedAction(this, "$refreshDelayTimerId");
+					this._duringRefreshDom = true;
+					
+					var dom = this.getDom(), arg = {
+						dom: dom,
+						processDefault: true
+					};
+					if (this.getListenerCount("beforeRefreshDom")) {
+						arg.processDefault = false;
+						this.fireEvent("beforeRefreshDom", this, arg);
 					}
+					if (arg.processDefault) {
+						this.refreshDom(dom);
+						this.onResize();
+						this.fireEvent("onRefreshDom", this, arg);
+					}
+
+					this.updateModernScroller();
+					this._duringRefreshDom = false;
 				}
 			},
 			
@@ -817,12 +825,7 @@
 			refreshDom: function(dom) {
 				if (!this.selectable) $DomUtils.disableUserSelection(dom);
 
-				try {
-					this._refreshDom(dom);
-				}
-				catch(e) {
-					// do nothing
-				}
+				this._refreshDom(dom);
 
 				var floatClassName = "d-floating";
 				if (this._floatingClassName) floatClassName += (" " + this._floatingClassName);
@@ -894,6 +897,9 @@
 			 */
 			getDom: function() {
 				if (this._destroyed) return null;
+
+				if (this._lazyInit) this._lazyInit();
+				
 				if (!this._dom) {
 					var dom = this._dom = this.createDom(), $dom = $fly(this._dom);
 
@@ -1018,7 +1024,7 @@
 				return !this._disabled;
 			},
 
-			doRenderToOrReplace: function(replace, element, nextChildElement) {
+			doRenderToOrReplace: function(replace, element, nextChildElement) {				
 				var dom = this.getDom();
 				if (!dom) return;
 
@@ -1074,7 +1080,7 @@
 			 * <li>如果renderTo和renderOn均为空，将以document.body作为容器。</li>
 			 * @param {HTMLElement} [nextChildElement] 指定新的DOM元素要在那个子元素之前插入，即通过此参数可以指定新的DOM元素的插入位置。
 			 */
-			render: function(containerElement, nextChildElement) {
+			render: function(containerElement, nextChildElement) {				
 				if (containerElement) {
 					this.doRenderToOrReplace(false, containerElement, nextChildElement);
 				}
@@ -1235,6 +1241,10 @@
 				control.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 
 				if (control.parentChanged) control.parentChanged();
+				
+				if (!control._ready && this._ready) {
+					control.onReady.call(control);
+				}
 			},
 
 			/**
@@ -1560,7 +1570,7 @@
 
 	dorado.widget.setFocusedControl = function(control, ignorePhyscialFocus, skipGlobalBoardcast) {
 		if (dorado.widget.focusedControl.peek() === control) return;
-		if (!skipGlobalBoardcast) {
+		if (!skipGlobalBoardcast && control) {
 			var topDomainWindow = window;
 			do {
 				try {

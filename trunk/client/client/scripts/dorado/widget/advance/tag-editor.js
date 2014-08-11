@@ -433,7 +433,7 @@
 
         doSetValue: function (value, refresh) {
             this._value = value;
-            if (refresh) this.refreshTagDoms();
+            if (refresh && this._rendered) this.refreshTagDoms();
         },
 
         doSetFocus: function () {
@@ -474,8 +474,6 @@
         },
 
         refreshTagDoms: function () {
-            if (!this._rendered) return;
-
             var inputDom = this._inputDom, tags = this._value || [];
             inputDom.value = "";
             inputDom.style.width = "";
@@ -487,7 +485,7 @@
                 var tag = tags[i];
                 tagDom = this.getTagDom(i);
                 if (!tagDom) tagDom = this.addTagDom(i);
-                $fly(tagDom).toggleClass("tag-readonly", this._realReadOnly).toggleClass("tag-error", (unknowns.indexOf(tag) >= 0));
+                $fly(tagDom).toggleClass("tag-readonly", !!this._realReadOnly).toggleClass("tag-error", (unknowns.indexOf(tag) >= 0));
                 if (requiredTags.indexOf(tag) >= 0) {
                     $fly(tagDom).toggleClass("tag-readonly", true).toggleClass("tag-required", this._highlightRequiredTags);
                 }

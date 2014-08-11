@@ -388,9 +388,9 @@ var _NULL_FUNCTION = function(){};
 		var typeAndCharset = "type=\"" + request.contentType + "\" " + (request.charset ? "charset=\"" + request.charset + "\" " : '');
 		var attrs = request.id ? ("id=\"" + request.id + "\" ") : ""; 
 		if (isStyleSheet(request.contentType)) {
-			document.writeln("<link " + attrs + "rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
+			document.write("<link " + attrs + "rel=\"stylesheet\" " + typeAndCharset + "href=\"" + request.url + "\" />");
 		} else if (isJavaScript(request.contentType)) {
-			document.writeln("<script " + attrs + typeAndCharset + "src=\"" + request.url + "\"><\/script>");
+			document.write("<script " + attrs + typeAndCharset + "src=\"" + request.url + "\"><\/script>");
 		}
 		else {
 			findHead();

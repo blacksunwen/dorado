@@ -275,6 +275,8 @@
 	 */
 	dorado.widget.FormProfileSupport = $class(/** @scope dorado.widget.FormProfileSupport.prototype */{
 		onProfileChange: function() {
+			var s = new Date();
+			
 			var formProfile = this._formProfile;
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 				var readOnly = formProfile.get("readOnly");
@@ -289,6 +291,8 @@
 					lockWritingTimes: (this instanceof dorado.widget.FormElement)
 				});
 			}
+			
+			window._t = (window._t || 0) + (new Date() - s);
 		}
 	});
 
@@ -327,9 +331,9 @@
 			}
 		},
 
-		constructor: function() {
+		constructor: function(config) {
 			this._bindingElements = new dorado.ObjectGroup();
-			$invokeSuper.call(this, arguments);
+			dorado.widget.Component.prototype.constructor.call(this, config);
 			this.bind("onAttributeChange", function(self, arg) {
 				var attr = arg.attribute;
 				if (!dorado.widget.Control.prototype.ATTRIBUTES[attr] &&
@@ -482,10 +486,10 @@
 			entity: {}
 		},
 
-		constructor: function(config) {
+		_constructor: function(config) {
 			var formProfile = config && config.formProfile;
 			if (formProfile) delete config.formProfile;
-			$invokeSuper.call(this, arguments);
+			dorado.widget.Control.prototype._constructor.call(this, config);
 			if (formProfile) this.set("formProfile", formProfile);
 		},
 
@@ -532,6 +536,7 @@
 			 * @attribute writeBeforeReady
 			 */
 			height: {
+				independent: true,
 				writeBeforeReady: true
 			},
 

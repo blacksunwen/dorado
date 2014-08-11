@@ -44,7 +44,6 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 	constructor: function() {
 		this._cardBook = new dorado.widget.CardBook();
 		this.registerInnerControl(this._cardBook);
-
 		$invokeSuper.call(this, arguments);
 	},
 
@@ -223,10 +222,9 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		}
 	},
 
-	constructor: function() {
+	_constructor: function() {
 		this._cardBook = new dorado.widget.CardBook();
 		this.registerInnerControl(this._cardBook);
-
 		$invokeSuper.call(this, arguments);
 	},
 

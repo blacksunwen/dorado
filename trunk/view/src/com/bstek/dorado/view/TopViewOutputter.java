@@ -62,6 +62,7 @@ public class TopViewOutputter extends ViewOutputter {
 		ViewOutputter outputter = (ViewOutputter) clientOutputHelper
 				.getOutputter(view.getClass());
 		outputter.outputView(view, context);
+		writer.append("view.fireEvent(\"onCreate\");\n");
 
 		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");
 

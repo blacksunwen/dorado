@@ -85,9 +85,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			});
 		}
 	}
+	
+	var STATE_NONE = 0;
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @name dorado.Entity
 	 * @class 实体对象。
 	 *        <p>
 	 *        在创建一个实体对象时，我们既可以为其指定实体数据类型，也可以不指定。<br>
@@ -144,145 +147,102 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 	 *  // 创建一个空的、类型为Employee的实体对象。 var entity = new dorado.Entity(null, null,
 	 * Employee); entity.set("name", "Mike"); // 只能访问Employee类型中存在属性。
 	 */
-	dorado.Entity = function(data, dataTypeRepository, dataType) {
+	dorado.Entity = $class(/** @scope dorado.Entity.prototype */ {
+		$className : "dorado.Entity",
 
 		/**
-		 * 实体对象的id。
-		 * 
-		 * @type long
+		 * @name dorado.Entity#dataProvider
+		 * @property
+		 * @type dorado.DataProvider
+		 * @description 获取为实体对象提供数据的数据提供者。
 		 */
-		this.entityId = dorado.Core.getTimestamp() + '';
-
 		/**
-		 * 实体对象的时间戳。
-		 * <p>
-		 * 每当实体对象中的数据或状态发生了改变，实体对象都会更新自己的时间戳，
-		 * 因此，时间戳可以可以用来判断实体对象中的数据或状态在一段时间内有没有被修改过。
-		 * </p>
-		 * 
-		 * @type int
+		 * @name dorado.Entity#parameter
+		 * @property
+		 * @type Object
+		 * @description 装载数据使用的附加参数。
 		 */
-		this.timestamp = dorado.Core.getTimestamp();
+		// =====
 
-		/**
-		 * 该实体对象中的数据类型所属的数据类型管理器。
-		 * 
-		 * @type dorad.DataRepository
-		 */
-		this.dataTypeRepository = dataTypeRepository;
-		
-		this._propertyInfoMap = {};
-		if (data) {
-			this._data = data;
-			if (dataType == null) {
-				if (dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
-			} else {
-				data.$dataType = dataType._id;
-			}
-			if (data.$state) this.state = data.$state;
-		} else {
-			this._data = data = {};
-			if (dataType) this._data.$dataType = dataType._id;
-		}
+		constructor : function(data, dataTypeRepository, dataType) {
 
-		/**
-		 * 该实体对象对应的实体数据类型。
-		 * 
-		 * @type dorado.EntityDataType
-		 */
-		this.dataType = dataType;
+			/**
+			 * 实体对象的id。
+			 * 
+			 * @type long
+			 */
+			this.entityId = dorado.Core.getTimestamp() + '';
 
-		if (dataType) {
-			this._propertyDefs = dataType._propertyDefs;
-			this._propertyDefs.each(function(pd) {
-				if (SHOULD_PROCESS_DEFAULT_VALUE && pd._defaultValue != undefined && data[pd._name] == undefined) {
-					data[pd._name] = (typeof pd._defaultValue == "function") ? pd._defaultValue.call(this) : pd._defaultValue;
+			/**
+			 * 实体对象的时间戳。
+			 * <p>
+			 * 每当实体对象中的数据或状态发生了改变，实体对象都会更新自己的时间戳，
+			 * 因此，时间戳可以可以用来判断实体对象中的数据或状态在一段时间内有没有被修改过。
+			 * </p>
+			 * 
+			 * @type int
+			 */
+			this.timestamp = dorado.Core.getTimestamp();
+
+			/**
+			 * 该实体对象中的数据类型所属的数据类型管理器。
+			 * 
+			 * @type dorad.DataRepository
+			 */
+			this.dataTypeRepository = dataTypeRepository;
+			
+			this._propertyInfoMap = {};
+			if (data) {
+				this._data = data;
+				if (dataType == null) {
+					if (dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
+				} else {
+					data.$dataType = dataType._id;
 				}
+				if (data.$state) this.state = data.$state;
+			} else {
+				this._data = data = {};
+				if (dataType) this._data.$dataType = dataType._id;
+			}
 
-				if (data[pd._name] == null) {
-					var dataType = pd.get("dataType");
-					if (dataType) {
-						switch (dataType._code) {
-							case dorado.DataType.PRIMITIVE_INT:
-							case dorado.DataType.PRIMITIVE_FLOAT:
-								data[pd._name] = 0;
-								break;
-							case dorado.DataType.PRIMITIVE_BOOLEAN:
-								data[pd._name] = false;
-								break;
+			/**
+			 * 该实体对象对应的实体数据类型。
+			 * 
+			 * @type dorado.EntityDataType
+			 */
+			this.dataType = dataType;
+
+			if (dataType) {
+				this._propertyDefs = dataType._propertyDefs;
+				var pdItems = this._propertyDefs.items;
+				for (var i = 0, len = pdItems.length; i < len; i++) {
+					var pd = pdItems[i];
+					if (SHOULD_PROCESS_DEFAULT_VALUE && pd._defaultValue != undefined && data[pd._name] == undefined) {
+						data[pd._name] = (typeof pd._defaultValue == "function") ? pd._defaultValue.call(this) : pd._defaultValue;
+					}
+
+					if (data[pd._name] == null) {
+						var dataType = pd.get("dataType");
+						if (dataType) {
+							switch (dataType._code) {
+								case dorado.DataType.PRIMITIVE_INT:
+								case dorado.DataType.PRIMITIVE_FLOAT:
+									data[pd._name] = 0;
+									break;
+								case dorado.DataType.PRIMITIVE_BOOLEAN:
+									data[pd._name] = false;
+									break;
+							}
 						}
 					}
 				}
-			});
-		} else {
-			this._propertyDefs = null;
-		}
-		if (this.acceptUnknownProperty == null) {
-			this.acceptUnknownProperty = (dataType) ? dataType._acceptUnknownProperty : true;
-		}
-	};
-	
-	/**
-	 * 实体对象的状态常量 - 无状态。
-	 * 
-	 * @type int
-	 */
-	dorado.Entity.STATE_NONE = 0;
-
-	/**
-	 * 实体对象的状态常量 - 新增状态。
-	 * 
-	 * @type int
-	 */
-	dorado.Entity.STATE_NEW = 1;
-
-	/**
-	 * 实体对象的状态常量 - 已修改状态。
-	 * 
-	 * @type int
-	 */
-	dorado.Entity.STATE_MODIFIED = 2;
-
-	/**
-	 * 实体对象的状态常量 - 已删除状态。
-	 * 
-	 * @type int
-	 */
-	dorado.Entity.STATE_DELETED = 3;
-
-	/**
-	 * 实体对象的状态常量 - 被移动状态。 通产指该对象被从一个位置移动到了另一个位置，这包括其父对象的改变或仅仅是顺序被改变。
-	 * 
-	 * @type int
-	 */
-	dorado.Entity.STATE_MOVED = 4;
-
-	dorado.Entity._MESSAGE_DATA_CHANGED = 3;
-	dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED = 4;
-	dorado.Entity._MESSAGE_REFRESH_ENTITY = 5;
-	
-	dorado.Entity._MESSAGE_LOADING_START = 10;
-	dorado.Entity._MESSAGE_LOADING_END = 11;
-
-	/**
-	 * @name dorado.Entity#dataProvider
-	 * @property
-	 * @type dorado.DataProvider
-	 * @description 获取为实体对象提供数据的数据提供者。
-	 */
-	/**
-	 * @name dorado.Entity#parameter
-	 * @property
-	 * @type Object
-	 * @description 装载数据使用的附加参数。
-	 */
-	// =====
-
-	$class(/** @scope dorado.Entity.prototype */
-	{
-		$className : "dorado.Entity",
-
-		constructor : dorado.Entity,
+			} else {
+				this._propertyDefs = null;
+			}
+			if (this.acceptUnknownProperty == null) {
+				this.acceptUnknownProperty = (dataType) ? dataType._acceptUnknownProperty : true;
+			}
+		},
 
 		/**
 		 * 实体对象的状态。
@@ -290,7 +250,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @type int
 		 * @default dorado.Entity.STATE_NONE
 		 */
-		state : dorado.Entity.STATE_NONE,
+		state : STATE_NONE,
 
 		_observer : null,
 		_disableObserversCounter : 0,
@@ -385,7 +345,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		},
 		
 		_get: function(property, propertyDef, callback, loadMode) {
-
+			
 			function transferAndReplaceIf(entity, propertyDef, value, replaceValue) {
 				if (value && typeof (value instanceof dorado.Entity || value instanceof dorado.EntityList) && value.parent == entity) return value;
 				
@@ -2187,6 +2147,48 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			return new dorado.Entity(newData, this.dataTypeRepository, this.dataType);
 		}
 	});
+	
+	/**
+	 * 实体对象的状态常量 - 无状态。
+	 * 
+	 * @type int
+	 */
+	dorado.Entity.STATE_NONE = STATE_NONE;
+
+	/**
+	 * 实体对象的状态常量 - 新增状态。
+	 * 
+	 * @type int
+	 */
+	dorado.Entity.STATE_NEW = 1;
+
+	/**
+	 * 实体对象的状态常量 - 已修改状态。
+	 * 
+	 * @type int
+	 */
+	dorado.Entity.STATE_MODIFIED = 2;
+
+	/**
+	 * 实体对象的状态常量 - 已删除状态。
+	 * 
+	 * @type int
+	 */
+	dorado.Entity.STATE_DELETED = 3;
+
+	/**
+	 * 实体对象的状态常量 - 被移动状态。 通产指该对象被从一个位置移动到了另一个位置，这包括其父对象的改变或仅仅是顺序被改变。
+	 * 
+	 * @type int
+	 */
+	dorado.Entity.STATE_MOVED = 4;
+
+	dorado.Entity._MESSAGE_DATA_CHANGED = 3;
+	dorado.Entity._MESSAGE_ENTITY_STATE_CHANGED = 4;
+	dorado.Entity._MESSAGE_REFRESH_ENTITY = 5;
+	
+	dorado.Entity._MESSAGE_LOADING_START = 10;
+	dorado.Entity._MESSAGE_LOADING_END = 11;
 
 	dorado.Entity.ALWAYS_RETURN_VALID_ENTITY_LIST = true;
 

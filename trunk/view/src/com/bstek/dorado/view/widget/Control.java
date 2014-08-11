@@ -30,23 +30,17 @@ import com.bstek.dorado.common.ClientType;
  */
 @XmlNode(definitionType = "com.bstek.dorado.view.config.definition.ControlDefinition", parser = "spring:dorado.controlParser")
 @ClientObject(prototype = "dorado.widget.Control", shortTypeName = "Control", outputter = "spring:dorado.controlOutputter")
-@ClientEvents({
-		@ClientEvent(name = "onCreateDom"),
+@ClientEvents({ @ClientEvent(name = "onCreateDom"),
 		@ClientEvent(name = "beforeRefreshDom"),
 		@ClientEvent(name = "onRefreshDom"),
 		@ClientEvent(name = "onClick", clientTypes = ClientType.DESKTOP),
 		@ClientEvent(name = "onDoubleClick", clientTypes = ClientType.DESKTOP),
-		@ClientEvent(name = "onMouseDown"),
-		@ClientEvent(name = "onMouseUp"),
-		@ClientEvent(name = "onFocus"),
-		@ClientEvent(name = "onBlur"),
-		@ClientEvent(name = "onKeyDown"),
-		@ClientEvent(name = "onKeyPress"),
-		@ClientEvent(name = "onContextMenu"),
-		@ClientEvent(name = "onResize"),
+		@ClientEvent(name = "onMouseDown"), @ClientEvent(name = "onMouseUp"),
+		@ClientEvent(name = "onFocus"), @ClientEvent(name = "onBlur"),
+		@ClientEvent(name = "onKeyDown"), @ClientEvent(name = "onKeyPress"),
+		@ClientEvent(name = "onContextMenu"), @ClientEvent(name = "onResize"),
 		@ClientEvent(name = "onGetDraggingIndicator"),
-		@ClientEvent(name = "onDragStart"),
-		@ClientEvent(name = "onDragStop"),
+		@ClientEvent(name = "onDragStart"), @ClientEvent(name = "onDragStop"),
 		@ClientEvent(name = "onDragMove"),
 		@ClientEvent(name = "onDraggingSourceOver"),
 		@ClientEvent(name = "onDraggingSourceOut"),
@@ -76,6 +70,7 @@ public abstract class Control extends Component implements HtmlElement,
 	private String dragTags;
 	private boolean droppable;
 	private String droppableTags;
+	private Boolean lazyInit;
 
 	@XmlProperty(parser = "spring:dorado.layoutConstraintParser")
 	@ClientProperty(outputter = "spring:dorado.layoutConstraintPropertyOutputter")
@@ -209,5 +204,14 @@ public abstract class Control extends Component implements HtmlElement,
 
 	public void setDroppableTags(String droppableTags) {
 		this.droppableTags = droppableTags;
+	}
+
+	@ClientProperty(ignored = true)
+	public Boolean getLazyInit() {
+		return lazyInit;
+	}
+
+	public void setLazyInit(Boolean lazyInit) {
+		this.lazyInit = lazyInit;
 	}
 }

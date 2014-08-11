@@ -14,119 +14,115 @@
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
+	 * @name dorado.EntityList
 	 * @class 实体对象集合。
 	 * @param {Object[]|Object} [data] 用作初始化集合元素的JSON数据。<br>
 	 * 如果此处传入的是一个数组，那么数组中的对象会被逐一意添加到集合中; 如果传入的单个的对象，那么该对象会被作为一个元素添加到集合中。
 	 * @param {dorado.DataRepository} [dataTypeRepository] 数据类型的管理器。
 	 * @param {dorado.AggregationDataType} [dataType] 集合数据类型。
 	 */
-	dorado.EntityList = function(data, dataTypeRepository, dataType) {
-	
+	dorado.EntityList = $class(/** @scope dorado.EntityList.prototype */{
+		$className: "dorado.EntityList",
+		
 		/**
-		 * 集合中当前数据实体。
 		 * @name dorado.EntityList#current
 		 * @property
 		 * @type dorado.Entity
+		 * @description 当前的数据实体。
 		 */
-		// ======
-		
-		this.objId = dorado.Core.getTimestamp() + '';
-		
 		/**
-		 * 集合的时间戳。<br>
-		 * 集合的元素有增减、或者有新的页被装载时，集合都会更新自己的时间戳， 因此，时间戳可以可以用来判断集合在一段时间内有没有被修改过。
-		 * @type int
+		 * @name dorado.EntityList#dataProvider
+		 * @property
+		 * @type dorado.DataProvider
+		 * @description 获取为实体对象集合提供数据的数据提供者。
 		 */
-		this.timestamp = dorado.Core.getTimestamp();
-		
 		/**
-		 * 该集合中的数据类型所属的数据类型管理器。
-		 * @type dorad.DataRepository
+		 * @name dorado.EntityList#parameter
+		 * @property
+		 * @type Object
+		 * @description 装载数据使用的附加参数。
+		 * <p>
+		 * 当集合需要通过DataProvider装载数据时，系统会将此处定义的参数合并到DataProvider原有的参数之上。 这里的合并可包含两种情况：
+		 * 当parameter是一个JSON对象时，系统会将该JSON对象中的个属性复制到DataProvider原有的参数之上；
+		 * 当parameter不是一个JSON对象时（如String、int等），系统会直接用此参数替换DataProvider原有的参数。
+		 * </p>
 		 */
-		this.dataTypeRepository = dataTypeRepository;
+		// =====
 		
-		if (data) {
-			if (dataType == null) {
-				if (dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
-			} else {
-				data.$dataType = dataType._id;
+		constructor: function(data, dataTypeRepository, dataType) {
+			
+			/**
+			 * 集合中当前数据实体。
+			 * @name dorado.EntityList#current
+			 * @property
+			 * @type dorado.Entity
+			 */
+			// ======
+			
+			this.objId = dorado.Core.getTimestamp() + '';
+			
+			/**
+			 * 集合的时间戳。<br>
+			 * 集合的元素有增减、或者有新的页被装载时，集合都会更新自己的时间戳， 因此，时间戳可以可以用来判断集合在一段时间内有没有被修改过。
+			 * @type int
+			 */
+			this.timestamp = dorado.Core.getTimestamp();
+			
+			/**
+			 * 该集合中的数据类型所属的数据类型管理器。
+			 * @type dorad.DataRepository
+			 */
+			this.dataTypeRepository = dataTypeRepository;
+			
+			if (data) {
+				if (dataType == null) {
+					if (dataTypeRepository && data.$dataType) dataType = dataTypeRepository.get(data.$dataType);
+				} else {
+					data.$dataType = dataType._id;
+				}
 			}
-		}
-		
-		/**
-		 * 集合数据类型。
-		 * @type dorado.AggregationDataType
-		 */
-		this.dataType = dataType;
-		
-		/**
-		 * 集合中元素的数据类型。
-		 * @type dorado.EntityDataType
-		 */
-		this.elementDataType = (dataType) ? dataType.getElementDataType() : null;
-		
-		/**
-		 * 进行分页浏览时每页的记录数。默认值为0。
-		 * @type int
-		 */
-		this.pageSize = (dataType) ? dataType._pageSize : 0;
-		
-		/**
-		 * 当前位置所处的页号。默认值为1。
-		 * @type int
-		 * @default 1
-		 */
-		this.pageNo = 1;
-		
-		/**
-		 * 总的页数（包含尚未装载的页）。
-		 * @type int
-		 */
-		this.pageCount = 0;
-		
-		/**
-		 * 总的记录数（包含尚未装载的页中的记录数）。
-		 * @type int
-		 */
-		this.entityCount = 0;
-		
-		this._pages = [];
-		this._keyMap = {};
-		if (data != null) this.fromJSON(data);
-	};
-	
-	dorado.EntityList._MESSAGE_CURRENT_CHANGED = 20;
-	dorado.EntityList._MESSAGE_DELETED = 21;
-	dorado.EntityList._MESSAGE_INSERTED = 22;
-	
-	/**
-	 * @name dorado.EntityList#current
-	 * @property
-	 * @type dorado.Entity
-	 * @description 当前的数据实体。
-	 */
-	/**
-	 * @name dorado.EntityList#dataProvider
-	 * @property
-	 * @type dorado.DataProvider
-	 * @description 获取为实体对象集合提供数据的数据提供者。
-	 */
-	/**
-	 * @name dorado.EntityList#parameter
-	 * @property
-	 * @type Object
-	 * @description 装载数据使用的附加参数。
-	 * <p>
-	 * 当集合需要通过DataProvider装载数据时，系统会将此处定义的参数合并到DataProvider原有的参数之上。 这里的合并可包含两种情况：
-	 * 当parameter是一个JSON对象时，系统会将该JSON对象中的个属性复制到DataProvider原有的参数之上；
-	 * 当parameter不是一个JSON对象时（如String、int等），系统会直接用此参数替换DataProvider原有的参数。
-	 * </p>
-	 */
-	// =====
-	$class(/** @scope dorado.EntityList.prototype */{
-		$className: "dorado.EntityList",
-		
-		constructor: dorado.EntityList,
+			
+			/**
+			 * 集合数据类型。
+			 * @type dorado.AggregationDataType
+			 */
+			this.dataType = dataType;
+			
+			/**
+			 * 集合中元素的数据类型。
+			 * @type dorado.EntityDataType
+			 */
+			this.elementDataType = (dataType) ? dataType.getElementDataType() : null;
+			
+			/**
+			 * 进行分页浏览时每页的记录数。默认值为0。
+			 * @type int
+			 */
+			this.pageSize = (dataType) ? dataType._pageSize : 0;
+			
+			/**
+			 * 当前位置所处的页号。默认值为1。
+			 * @type int
+			 * @default 1
+			 */
+			this.pageNo = 1;
+			
+			/**
+			 * 总的页数（包含尚未装载的页）。
+			 * @type int
+			 */
+			this.pageCount = 0;
+			
+			/**
+			 * 总的记录数（包含尚未装载的页中的记录数）。
+			 * @type int
+			 */
+			this.entityCount = 0;
+			
+			this._pages = [];
+			this._keyMap = {};
+			if (data != null) this.fromJSON(data);
+		},
 		
 		_disableObserversCounter: 0,
 		
@@ -1097,7 +1093,7 @@
 		},
 		
 		insert: function(data, insertMode, refData) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [data, insertMode, refData]);
 			data.page = this;
 			data.parent = this.entityList;
 			data._setObserver(this.entityList._observer);
@@ -1106,7 +1102,7 @@
 		},
 		
 		remove: function(data) {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this, [data]);
 			data.parent = null;
 			data.page = null;
 			data._setObserver(null);
@@ -1400,5 +1396,9 @@
 			}
 		}
 	});
+	
+	dorado.EntityList._MESSAGE_CURRENT_CHANGED = 20;
+	dorado.EntityList._MESSAGE_DELETED = 21;
+	dorado.EntityList._MESSAGE_INSERTED = 22;
 	
 }());

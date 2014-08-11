@@ -103,7 +103,7 @@ dorado.widget.SubViewHolder = $extend(dorado.widget.Control, /** @scope dorado.w
 		onLoadFailure: {}
 	},
 
-	constructor: function(config) {
+	_constructor: function(config) {
 		if (config && typeof config == "object") {
 			this._subViewName = config.subViewName;
 			this._loadMode = config.loadMode;

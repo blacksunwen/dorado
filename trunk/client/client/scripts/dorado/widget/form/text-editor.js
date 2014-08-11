@@ -578,7 +578,7 @@
 				}
 			}
 			else {
-				$invokeSuper.call(this, arguments);
+				$invokeSuper.call(this, [dirty]);
 			}
 		},
 
@@ -1155,7 +1155,7 @@
 
 				var dataType = this.get("dataType");
 				if (dataType) dataType.parse(text, this._typeFormat);
-				validationResults = $invokeSuper.call(this, arguments);
+				validationResults = $invokeSuper.call(this, [text]);
 			}
 			catch(e) {
 				dorado.Exception.removeException(e);

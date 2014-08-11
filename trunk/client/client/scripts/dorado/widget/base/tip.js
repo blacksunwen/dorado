@@ -420,6 +420,10 @@
 			}
 		},
 		
+		isLazyInit: function() {
+			return false;
+		},
+		
 		getShowPosition: function() {
 			return dorado.widget.NotifyTipManager.getAvialablePosition(this);
 		},

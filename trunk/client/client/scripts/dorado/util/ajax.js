@@ -314,7 +314,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 					}
 				};
 			
-			var useBatch = this._autoBatchEnabled && (options.batchable === true);
+			var useBatch = this._autoBatchEnabled && (options.batchable === true) && !dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE;
 			if (useBatch) {
 				if (options) {
 					if (options.url && options.url != this._defaultOptions.url || options.method && options.method != "POST" || options.timeout) {
@@ -1045,6 +1045,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		}
 	});
 
+dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE = false;
 dorado.util.AjaxEngine.SHARED_INSTANCES = {};
 dorado.util.AjaxEngine.ASYNC_REQUESTS = {};
 

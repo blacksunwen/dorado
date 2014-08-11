@@ -150,7 +150,7 @@
 			 */
 			getAttributeWatcher: function() {
 				if (!this.attributeWatcher) {
-					this.attributeWatcher = new dorado.AttributeWatcher();
+					this.attributeWatcher = new dorado.AttributeWatcher(this._watcherData);
 				}
 				return this.attributeWatcher;
 			},
@@ -317,18 +317,12 @@
 					lockWritingTimes = options.lockWritingTimes;
 				}
 
-				if (attr.constructor != String) {
-					var attrInfos = [];
+				var watcherData = this._watcherData;
+				if (attr.constructor !== String) {
 					for(var p in attr) {
 						if (attr.hasOwnProperty(p)) {
-							var v = attr[p], attrInfo = {
-								attr: p,
-								value: v
-							};
-							if (p == "listener" || typeof v == "function") {
-								attrInfos.insert(attrInfo);
-							}
-							else if (p == "DEFINITION") {
+							var v = attr[p];							
+							if (p === "DEFINITION") {
 								if (v) {
 									if (v.ATTRIBUTES) {
 										if (!this.PRIVATE_ATTRIBUTES) this.PRIVATE_ATTRIBUTES = {};
@@ -354,34 +348,24 @@
 								}
 							}
 							else {
-								attrInfos.push(attrInfo);
-							}
-						}
-					}
-
-					if (preventOverwriting) watcher = this.getAttributeWatcher();
-					for(var i = 0; i < attrInfos.length; i++) {
-						var attrInfo = attrInfos[i];
-						if (preventOverwriting && watcher.getWritingTimes(attrInfo.attr)) continue;
-
-						try {
-							this.doSet(attrInfo.attr, attrInfo.value, skipUnknownAttribute, lockWritingTimes);
-						}
-						catch(e) {
-							if (!tryNextOnError) {
-								throw e;
-							}
-							else if (e instanceof dorado.Exception) {
-								dorado.Exception.removeException(e);
+								if (preventOverwriting && watcherData && watcherData[p]) continue;
+								try {
+									this.doSet(p, v, skipUnknownAttribute, lockWritingTimes);
+								}
+								catch(e) {
+									if (!tryNextOnError) {
+										throw e;
+									}
+									else if (e instanceof dorado.Exception) {
+										dorado.Exception.removeException(e);
+									}
+								}
 							}
 						}
 					}
 				}
 				else {
-					if (preventOverwriting) {
-						if (this.getAttributeWatcher().getWritingTimes(attr)) return;
-					}
-
+					if (preventOverwriting && watcherData && watcherData[attr]) return;
 					try {
 						this.doSet(attr, value, skipUnknownAttribute, lockWritingTimes);
 					}
@@ -422,7 +406,7 @@
 
 				if (path) {
 					var sections = path.split('.'), owner = this;
-					for(var i = 0; i < sections.length - 1 && owner != null; i++) {
+					for(var i = 0, len = sections.length - 1; i < len && owner != null; i++) {
 						var section = sections[i];
 						if (section.charAt(0) !== '_' && typeof owner.get === "function") {
 							owner = owner.get(section);
@@ -446,13 +430,16 @@
 							throw new dorado.AttributeException("dorado.core.AttributeReadOnly", attr);
 						}
 
-						var attributeWatcher = this.getAttributeWatcher();
-						if (def.writeOnce && attributeWatcher.getWritingTimes(attr) > 0) {
+						var watcherData = this._watcherData;
+						if (!watcherData) {
+							this._watcherData = watcherData = {};
+						}
+						if (def.writeOnce && watcherData[attr]) {
 							throw new dorado.AttributeException(
 								"dorado.core.AttributeWriteOnce", attr);
 						}
 						if (!lockWritingTimes) {
-							attributeWatcher.incWritingTimes(attr);
+							watcherData[attr] = (watcherData[attr] || 0) + 1;
 						}
 
 						if (def.setter) {
@@ -472,9 +459,9 @@
 					else {
 						if (value instanceof Object && this.EVENTS && (this.EVENTS[attr] || (this.PRIVATE_EVENTS && this.PRIVATE_EVENTS[attr]))) {
 							if (typeof value === "function") {
-								this.addListener(attr, value);
+								this.bind(attr, value);
 							}
-							else if (value.listener) this.addListener(attr, value.listener, value.options);
+							else if (value.listener) this.bind(attr, value.listener, value.options);
 						}
 						else if (!skipUnknownAttribute) {
 							throw new dorado.AttributeException("dorado.core.UnknownAttribute", attr);
@@ -482,7 +469,7 @@
 					}
 				}
 			},
-
+			
 			/**
 			 * 判断对象中是否定义了某个标签值。
 			 *
@@ -506,6 +493,10 @@
 	 */
 	dorado.AttributeWatcher = $class(/** @scope dorado.AttributeWatcher.prototype */ {
 		$className: "dorado.AttributeWatcher",
+		
+		constructor: function(watcherData) {
+			this._watcherData = watcherData;
+		},
 
 		/**
 		 * 返回某属性的被写入次数。
@@ -515,13 +506,7 @@
 		 * @return {int} 属性的被写入次数。
 		 */
 		getWritingTimes: function(attr) {
-			return this[attr] || 0;
-		},
-		incWritingTimes: function(attr) {
-			this[attr] = (this[attr] || 0) + 1;
-		},
-		setWritingTimes: function(attr, n) {
-			this[attr] = n;
+			return this._watcherData[attr] || 0;
 		}
 	});
 

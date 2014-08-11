@@ -305,7 +305,7 @@
 		},
 		
 		constructor: function(name, dataType) {
-			$invokeSuper.call(this, arguments);
+			dorado.AttributeSupport.prototype.constructor.call(this, name, dataType);
 			if (name) {
 				if (name.constructor == String) {
 					this._name = name;
@@ -324,7 +324,7 @@
 				var validatorName = attr.substring(1);
 				return this.getValidator(validatorName);
 			} else {
-				return $invokeSuper.call(this, [attr]);
+				return dorado.AttributeSupport.prototype.doGet.call(this, attr);
 			}
 		},
 		

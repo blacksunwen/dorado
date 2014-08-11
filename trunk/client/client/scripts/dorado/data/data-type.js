@@ -88,7 +88,7 @@
 			},
 
 			constructor: function (config) {
-				$invokeSuper.call(this, arguments);
+				dorado.AttributeSupport.prototype.constructor.call(this, config);
 
 				var name;
 				if (config && config.constructor == String) {
@@ -197,7 +197,7 @@
 			},
 
 			constructor: function (config, elementDataType) {
-				$invokeSuper.call(this, arguments);
+				dorado.DataType.prototype.constructor.call(this, config, elementDataType);
 				if (elementDataType)
 					this._elementDataType = elementDataType;
 			},
@@ -512,16 +512,15 @@
 				this._propertyDefs = new dorado.util.KeyedArray(function (propertyDef) {
 					return propertyDef._name;
 				});
-				$invokeSuper.call(this, arguments);
+				dorado.DataType.prototype.constructor.call(this, config);
 			},
 
 			doGet: function (attr) {
 				var c = attr.charAt(0);
 				if (c == '#' || c == '&') {
-					var propertyName = attr.substring(1);
-					return this.getPropertyDef(propertyName);
+					return this.getPropertyDef(attr.substring(1));
 				} else {
-					return $invokeSuper.call(this, [attr]);
+					return dorado.DataType.prototype.doGet.call(this, attr);
 				}
 			},
 
@@ -615,12 +614,8 @@
 					} else {
 						var oldProcessDefaultValue = SHOULD_PROCESS_DEFAULT_VALUE;
 						SHOULD_PROCESS_DEFAULT_VALUE = false;
-						try {
-							return new dorado.Entity(data, this._dataTypeRepository, this);
-						}
-						finally {
-							SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
-						}
+						return new dorado.Entity(data, this._dataTypeRepository, this);
+						SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
 					}
 				} else {
 					return null;

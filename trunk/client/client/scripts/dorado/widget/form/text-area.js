@@ -92,7 +92,7 @@
 		},
 
 		doOnAttachToDocument: function() {
-			$invokeSuper.call(this, arguments);
+			$invokeSuper.call(this);
 			var textarea = this;
 			if (dorado.Browser.isTouch) {
 				if (dorado.Browser.android && dorado.Browser.chrome) {

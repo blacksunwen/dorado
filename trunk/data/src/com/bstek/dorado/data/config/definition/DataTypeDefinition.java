@@ -56,11 +56,13 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	private static final String SELF_AGGREGATION_DATA_TYPE_SCTION = '[' + PropertyDef.SELF_DATA_TYPE_NAME + ']';
 	private static final String RESOURCE_RELATIVE_DEFINITION = "resourceRelativeDefinition";
 
+	@Deprecated
+	private boolean global;
+
 	private String name;
 	private String id;
 	private Class<?> matchType;
 	private Class<?> creationType;
-	private boolean global;
 	private Map<String, PropertyDefDefinition> propertyDefs;
 	private boolean isAggregationType;
 
@@ -141,6 +143,7 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 		this.creationType = creationType;
 	}
 
+	@Deprecated
 	public boolean isGlobal() {
 		return global;
 	}
@@ -202,20 +205,24 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 	@Override
 	protected Object doCreate(CreationContext context, Object[] constructorArgs)
 			throws Exception {
-		if (global) {
-			DataType dataType = cachedInstance;
-			if (dataType != null) {
-				return dataType;
-			}
-
-			dataType = (DataType) super.doCreate(context, constructorArgs);
-			if (!(dataType instanceof EntityDataType || dataType instanceof AggregationDataType)) {
-				cachedInstance = dataType;
-			}
+		DataType dataType = cachedInstance;
+		if (dataType != null) {
 			return dataType;
-		} else {
-			return super.doCreate(context, constructorArgs);
 		}
+
+		String cachableConfig = (String) removeProperty("cachable");
+		Boolean cachable = null;
+		if (cachableConfig != null) {
+			cachable = Boolean.parseBoolean(cachableConfig);
+		}
+
+		dataType = (DataType) super.doCreate(context, constructorArgs);
+
+		if (cachable == Boolean.TRUE
+				|| (cachable != Boolean.FALSE && !(dataType instanceof EntityDataType || dataType instanceof AggregationDataType))) {
+			cachedInstance = dataType;
+		}
+		return dataType;
 	}
 
 	protected ExpressionHandler getExpressionHandler(Context doradoContext)
@@ -483,6 +490,16 @@ public class DataTypeDefinition extends ListenableObjectDefinition implements
 				allPropertyDefs.put(name, propertyDef);
 			}
 		}
+	}
+
+	@Override
+	protected void setObjectProperty(Object object, String property,
+			Object value, CreationContext context) throws Exception {
+		if (DataXmlConstants.ATTRIBUTE_ELEMENT_DATA_TYPE.equals(property)
+				&& object instanceof EntityDataType) {
+			return;
+		}
+		super.setObjectProperty(object, property, value, context);
 	}
 
 }

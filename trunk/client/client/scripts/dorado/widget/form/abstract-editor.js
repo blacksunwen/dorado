@@ -285,7 +285,7 @@
 					b = false;
 					break;
 				default:
-					b = $invokeSuper.call(this, arguments);
+					b = $invokeSuper.call(this, [messageCode, arg, data]);
 			}
 			return b;
 		},

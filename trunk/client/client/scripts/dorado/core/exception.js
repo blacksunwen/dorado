@@ -290,7 +290,10 @@ dorado.Exception.processException = function (e) {
 				}
 			}
 
-			if (window.console) console.log(msg);
+			if (window.console) {
+				if (console.error) console.error(msg);
+				else console.log(msg);
+			}
 
 			if (!dorado.Exception.alertException || !document.body) {
 				dorado.Exception.removeException(e);

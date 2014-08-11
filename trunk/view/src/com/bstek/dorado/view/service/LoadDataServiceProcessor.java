@@ -236,12 +236,14 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 					+ dataProviderName + "].");
 		}
 
+
 		DataType resultDataType = null;
 		if (StringUtils.isNotEmpty(resultDataTypeName)) {
 			resultDataType = getDataType(resultDataTypeName);
 		}
 
 		Object result;
+
 		if (pageSize > 0) {
 			Page page = new Page(pageSize, pageNo);
 			dataProvider.getPagingResult(parameter, page, resultDataType);

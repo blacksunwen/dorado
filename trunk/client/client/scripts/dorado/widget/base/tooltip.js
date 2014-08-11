@@ -156,6 +156,10 @@
 			trackMouse: {}
 		},
 		
+		isLazyInit: function() {
+			return false;
+		},
+		
 		getShowPosition: function(options) {
 			var tip = this, dom = tip.getDom(), event = tip._latestEvent || options.event;
 			

@@ -72,6 +72,7 @@
 						if (controls && controls.length) {
 							layout.disableRendering();
 							controls.each(function(control) {
+								if (control._lazyInit) control._lazyInit();
 								layout.addControl(control);
 							});
 							layout.enableRendering();
@@ -84,12 +85,8 @@
 				getter: function() {
 					if (this._layout === undefined) {
 						this._ignoreRefresh++;
-						try {
-							this.createDefaultLayout();
-						}
-						finally {
-							this._ignoreRefresh--;
-						}
+						this.createDefaultLayout();
+						this._ignoreRefresh--;
 					}
 					return this._layout;
 				}
@@ -106,7 +103,7 @@
 			 * 当以JSON配置对象描述的子控件时，可以使用子控件类型名称中"dorado.widget."后面的部分作为$type的简写。
 			 * 例如以Button作为dorado.widget.Button的简写。请参考后面的示例。
 			 * </p>
-			 * @type dorado.util.KeyedList|Array
+			 * @type Array
 			 * @attribute
 			 * @see dorado.Toolkits.createInstance
 			 *
@@ -139,16 +136,17 @@
 					var container = this;
 					var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
 					if (!optimized) AUTO_APPEND_TO_TOPVIEW = false;
+					
 					var layout = container._layout;
 					if (layout && layout._rendered) layout.disableRendering();
 					
 					if (container._children.length) {
-						container._children.each(function(child) {
-							container.removeChild(child);
-						});
+						for(var i = 0, len = container._children.length; i < len; i++) {
+							container.removeChild(container._children[i]);
+						}
 					}
 
-					for(var i = 0; i < children.length; i++) {
+					for(var i = 0, len = children.length; i < len; i++) {
 						var child = children[i];
 						if (child instanceof dorado.widget.Component) {
 							container.addChild(child);
@@ -200,10 +198,11 @@
 
 					var container = this;
 					$invokeSuper.call(container, [view]);
-					container._children.each(function(child) {
-						if (container._view) child.set("view", null);
-						child.set("view", view);
-					});
+					
+					var children = container._children, child;
+					for (var i = 0, len = children.length; i < len; i++) {
+						children[i].set("view", view);
+					}
 				}
 			},
 
@@ -223,28 +222,22 @@
 		EVENTS: {
 			onScroll: {}
 		},
-
+		
 		constructor: function(config) {
 			this._contentContainerVisible = true;
-			this._children = new dorado.util.KeyedList(dorado._GET_ID);
+			this._children = [];
+			dorado.widget.Control.prototype.constructor.call(this, config);
+		},
 
-			var childrenConfig;
-			if (config && config.children) {
-				childrenConfig = config.children;
-				delete config.children;
-			}
+		_constructor: function(config) {
+			var children = config && config.children;
+			if (children) delete config.children;
 
-			this._skipOnCreateListeners = (this._skipOnCreateListeners || 0) + 1;
-			$invokeSuper.call(this, [config]);
-			this._skipOnCreateListeners--;
+			dorado.widget.Control.prototype._constructor.call(this, config);
 
-			if (childrenConfig) {
-				config.children = childrenConfig;
-				this.set("children", childrenConfig);
-			}
-
-			if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
-				this.fireEvent("onCreate", this);
+			if (children) {
+				config.children = children;
+				this.set("children", children);
 			}
 		},
 
@@ -253,39 +246,45 @@
 		},
 
 		onReady: function() {
-			this._children.each(function(child) {
+			var children = this._children, child;
+			for (var i = 0, len = children.length; i < len; i++) {
+				child = children[i];
 				if (!child._ready && !(child instanceof dorado.widget.Control)) {
 					child.onReady();
 				}
-			});
+			}
 			
 			$invokeSuper.call(this);
 
-			this._children.each(function(child) {
+			for (var i = 0, len = children.length; i < len; i++) {
+				child = children[i];
 				if (child._floating && dorado.Object.isInstanceOf(child, dorado.widget.FloatControl) && !child._ready && child._visible) {
 					child.show();
 				}
-			});
+			}
 		},
 
 		destroy: function() {
-			var children = this._children.toArray();
-			for(var i = 0; i < children.length; i++) {
+			var children = this._children;
+			for (var i = children.length - 1; i >= 0; i--) {
 				children[i].destroy();
 			}
+			
 			$invokeSuper.call(this);
 		},
 
 		onActualVisibleChange: function() {
 
 			function notifyChildren(control, parentActualVisible) {
-				control._children.each(function(child) {
+				var children = control._children, child;
+				for (var i = 0, len = children.length; i < len; i++) {
+					child = children[i];
 					if (child._parentActualVisible == parentActualVisible || !(child instanceof dorado.widget.Control)) {
 						return;
 					}
 					child._parentActualVisible = parentActualVisible;
 					child.onActualVisibleChange();
-				});
+				}
 			}
 
 			$invokeSuper.call(this);
@@ -293,7 +292,7 @@
 		},
 
 		doRenderToOrReplace: function(replace, element, nextChildElement) {
-			if (replace && this._children.size == 0 && element.childNodes.length > 0) {
+			if (replace && this._children.length == 0 && element.childNodes.length > 0) {
 				var children = [];
 				for(var i = 0; i < element.childNodes.length; i++) {
 					children.push(element.childNodes[i]);
@@ -311,9 +310,11 @@
 			}
 
 			if (!this._ready) {
-				this._children.each(function(child) {
+				var children = this._children, child;
+				for (var i = 0, len = children.length; i < len; i++) {
+					child = children[i];
 					if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
-				});
+				}
 			}
 
 			$invokeSuper.call(this, [replace, element, nextChildElement]);
@@ -323,7 +324,7 @@
 		 * 向容器中添加一个组件。
 		 * @param {dorado.widget.Component} component 要添加的组件。
 		 */
-		addChild: function(component) {
+		addChild: function(component) {			
 			if (component._parent) {
 				fireParentChanged = false;
 				if (component._parent.removeChild) {
@@ -332,7 +333,7 @@
 				fireParentChanged = true;
 			}
 
-			this._children.insert(component);
+			this._children.push(component);
 			component._parent = this;
 			component.set("view", (this instanceof dorado.widget.View) ? this : this.get("view"));
 			if (fireParentChanged && component.parentChanged) component.parentChanged();
@@ -388,10 +389,11 @@
 		removeAllChildren: function() {
 			var layout = this._layout;
 			if (layout) layout._disableRendering = true;
-
-			this._children.each(function(child) {
-				this.removeChild(child);
-			}, this);
+			
+			var children = this._children;
+			for (var i = children.length - 1; i >= 0; i--) {
+				this.removeChild(children[i]);
+			}
 
 			if (layout) {
 				layout._disableRendering = false;
@@ -470,11 +472,13 @@
 		},
 
 		setContentContainerVisible: function(visible) {
-			this._children.each(function(child) {
+			var children = this._children, child;
+			for (var i = 0, len = children.length; i < len; i++) {
+				child = children[i];
 				if (child instanceof dorado.widget.Control) {
 					child.setActualVisible(visible);
 				}
-			});
+			}
 			this._contentContainerVisible = visible;
 
 			var layout = this._layout;
@@ -636,7 +640,7 @@
 		},
 
 		getFocusableSubControls: function() {
-			return this._children.toArray();
+			return this._children;
 		}
 
 	});

@@ -13,6 +13,8 @@
 /**
  * @namespace dorado的根命名空间。
  */
+window._beforeDoradoInit = new Date();
+
 var dorado = {
 	id: '_' + parseInt(Math.random() * Math.pow(10, 8)),
 

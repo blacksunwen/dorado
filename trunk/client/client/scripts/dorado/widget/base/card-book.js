@@ -141,7 +141,6 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 		$invokeSuper.call(this, arguments);
 
 		var card = this;
-
 		card._onControlSizeChange = function() {
 			if (card._dynaHeight) {
 				card.syncCurrentControlHeight();

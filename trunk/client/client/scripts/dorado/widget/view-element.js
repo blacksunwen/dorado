@@ -63,16 +63,25 @@
 			 */
 			view: {
 				skipRefresh: true,
+				getter: function() {
+					return this._view || window._DEFAULT_VIEW;
+				},
 				setter: function(view) {
 					if (this._view == view) return;
 					if (this._view && this._id) this._view.unregisterViewElement(this._id);
 					this._view = view;
-					if (view && this._id) view.registerViewElement(this._id, this);
+					if (view && this._id) {
+						view.registerViewElement(this._id, this);
+					}
 
 					if (this._innerViewElements) {
 						this._innerViewElements.each(function(viewElement) {
 							viewElement.set("view", view);
 						});
+					}
+					
+					if (view && view !== $topView && !this._liveBindingProcessed) {
+						this._processLiveBinding(view);
 					}
 				}
 			},
@@ -115,14 +124,18 @@
 		},
 
 		constructor: function(config) {
-			var id;
+			var lazyInit = this.isLazyInit && this.isLazyInit(config);
+			
+			var id, DEFINITION;
 			if (config && config.constructor == String) {
 				id = config;
 				config = null;
 			}
 			else if (config) {
 				id = config.id;
+				DEFINITION = config.DEFINITION;
 				delete config.id;
+				delete config.DEFINITION;
 			}
 			this._uniqueId = dorado.Core.newId();
 			dorado.widget.ViewElement.ALL[this._uniqueId] = this;
@@ -132,23 +145,67 @@
 					throw new dorado.ResourceException("dorado.widget.InvalidComponentId", id);
 				}
 				this._id = id;
-
 				if (this instanceof dorado.widget.View) {
-					this._identifiedViewElements[this._id] = this;
+					this.registerViewElement(id, this);
 				}
 				else {
-					var view = this._view || window._DEFAULT_VIEW || $topView;
-					if (view && view._prependingChildren) {
-						view._prependingChildren[id] = this;
-					}
+					var view = this._view || window._DEFAULT_VIEW;
+					if (view) view.registerViewElement(id, this);
 				}
 			}
+			if (DEFINITION) {
+				this.set({
+					DEFINITION: DEFINITION
+				});
+			}
 
-			$invokeSuper.call(this);
+			dorado.AttributeSupport.prototype.constructor.call(this, config);
+			
+			if (id && !(this instanceof dorado.widget.View)) {
+				var view = this._view || window._DEFAULT_VIEW;
+				if (view && view._liveIdBindingMap) {
+					var liveBindings = view._liveIdBindingMap[id];
+					if (liveBindings) {
+						var liveBinding, del = true;
+						for (var i = 0, len = liveBindings.length; i < len; i++) {
+							liveBinding = liveBindings[i];
+							if (!liveBinding.subObject) {
+								this.bind(liveBinding.event, liveBinding.listener);
+							}
+							else {
+								del = false;
+							}
+						}
+						if (del) delete view._liveIdBindingMap[id];
+					}
+				}	
+			}
+			
+			if (lazyInit) {
+				this._lazyInit = function() {
+					delete this._lazyInit;
+					
+					this._constructor(config);
+
+					if (!this._liveBindingProcessed) {
+						this._processLiveBinding(this._view || window._DEFAULT_VIEW);
+					}
+				};
+			}
+			else {
+				this._constructor(config);
+			}
+		},
+		
+		_constructor: function(config) {
 			if (config) this.set(config, { skipUnknownAttribute: true });
 
-			if (!(this._skipOnCreateListeners > 0) && this.getListenerCount("onCreate")) {
-				this.fireEvent("onCreate", this);
+			if (!this._ignoreOnCreateListeners) {
+				if (this.getListenerCount("onCreate")) {
+					this.fireEvent("onCreate", this);
+					delete this._events[name];
+				}
+				this._onCreateFired = true;
 			}
 		},
 
@@ -182,6 +239,9 @@
 					throw new dorado.AttributeException("dorado.widget.AttributeWriteBeforeReady", attr);
 				}
 				if (def.componentReference) {
+					if (value instanceof dorado.widget.Component) {
+						return dorado.AttributeSupport.prototype.doSet.call(this, attr, value, skipUnknownAttribute, lockWritingTimes);
+					}
 					var component = null, allPrepared = false;
 					if (value) {
 						if (value instanceof Array) {
@@ -198,7 +258,7 @@
 							allPrepared = (component instanceof dorado.widget.Component);
 						}
 					}
-					return $invokeSuper.call(this, [attr, (allPrepared ? component : null), skipUnknownAttribute, lockWritingTimes]);
+					return dorado.AttributeSupport.prototype.doSet.call(this, attr, (allPrepared ? component : null), skipUnknownAttribute, lockWritingTimes);
 				}
 				else if (def.innerComponent != null) {
 					if (value) {
@@ -216,14 +276,90 @@
 					}
 				}
 			}
-			return $invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
+			return dorado.AttributeSupport.prototype.doSet.call(this, attr, value, skipUnknownAttribute, lockWritingTimes);
 		},
 
 		getListenerScope: function() {
 			return this.get("view") || $topView;
 		},
+		
+		bind: function(name, listener, options) {
+			var retVal = $invokeSuper.call(this, [name, listener, options]);
+			if (name === "onCreate" && !this._ignoreOnCreateListeners && this._onCreateFired) {
+				this.fireEvent("onCreate", this);
+			}
+			return retVal;
+		},
+		
+		_processLiveBinding: function(view) {
+			if (view) {
+				if (this._id) {
+					if (view._liveIdBindingMap) {
+						var liveBindings = view._liveIdBindingMap[this._id];
+						if (liveBindings) {
+							var liveBinding;
+							for (var i = 0, len = liveBindings.length; i < len; i++) {
+								liveBinding = liveBindings[i];
+								if (liveBinding.subObject) {
+									var subObject = this.get(liveBinding.subObject);
+									if (subObject) subObject.bind(liveBinding.event, liveBinding.listener);
+								}
+								else {
+									this.bind(liveBinding.event, liveBinding.listener);
+								}
+							}
+							delete view._liveIdBindingMap[this._id];
+						}
+					}
+					if (view._liveIdSettingMap) {
+						var liveSettings = view._liveIdSettingMap[this._id];
+						if (liveSettings) {
+							var liveSetting;
+							for (var i = 0, len = liveSettings.length; i < len; i++) {
+								liveSetting = liveSettings[i];
+								this.set(liveSetting.attr, liveSetting.value, liveSetting.options);
+							}
+							delete view._liveIdSettingMap[this._id];
+						}
+					}
+				}
+				if (this._tags) {
+					var tag;
+					for (var i = 0, len = this._tags.length; i < len; i++) {
+						tag = this._tags[i];
+						if (view._liveTagBindingMap) {
+							var liveBindings = view._liveTagBindingMap[tag];
+							if (liveBindings) {
+								var liveBinding;
+								for (var j = 0, len = liveBindings.length; j < len; j++) {
+									liveBinding = liveBindings[j];
+									if (liveBinding.subObject) {
+										var subObject = this.get(liveBinding.subObject);
+										if (subObject) subObject.bind(liveBinding.event, liveBinding.listener);
+									}
+									else {
+										this.bind(liveBinding.event, liveBinding.listener);
+									}
+								}
+							}
+						}
+						if (view._liveTagSettingMap) {
+							var liveSettings = view._liveTagSettingMap[tag];
+							if (liveSettings) {
+								var liveSetting;
+								for (var j = 0, len = liveSettings.length; j < len; j++) {
+									liveSetting = liveSettings[j];
+									this.set(liveSetting.attr, liveSetting.value, liveSetting.options);
+								}
+							}
+						}
+					}
+				}
+			}
+			this._liveBindingProcessed = true;
+		},
 
-		fireEvent: function() {
+		fireEvent: function(name) {
 			if (this._destroyed) return false;
 			return $invokeSuper.call(this, arguments);
 		},
@@ -330,7 +466,7 @@
 			}
 
 			view = value.view, componentId = value.component;
-			component = (view._prependingChildren && view._prependingChildren[componentId]) || view.id(componentId);
+			component = view.id(componentId);
 			if (component) return component;
 
 			var wantedComponents = view._wantedComponents;
@@ -374,7 +510,7 @@
 				view.unbind("onComponentRegistered._getComponentReference");
 				delete view._wantedComponents;
 			}
-			for(var i = 0; i < wanters.length; i++) {
+			for(var i = 0, len = wanters.length; i < len; i++) {
 				var wanter = wanters[i], object = wanter.object, attribute = wanter.attribute;
 				var ids = object['_' + attribute + "_id"];
 				if (ids) {

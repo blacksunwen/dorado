@@ -14,8 +14,6 @@ package com.bstek.dorado.view.type;
 
 import java.io.Writer;
 
-import org.springframework.util.StringUtils;
-
 import com.bstek.dorado.data.type.AggregationDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.view.output.JsonBuilder;
@@ -27,8 +25,6 @@ import com.bstek.dorado.view.output.OutputContext;
  * @since Oct 23, 2008
  */
 public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
-	private static final String AUTO = "%AUTO%";
-
 	private boolean useLazyDataType;
 
 	/**
@@ -56,18 +52,7 @@ public class DataTypePropertyOutputter extends ObjectOutputterDispatcher {
 			writer.append("dorado.LazyLoadDataType.create(v.dataTypeRepository,");
 		}
 
-		writer.append('"');
-		String id = dataType.getId();
-		if (dataType instanceof AggregationDataType && id.contains(AUTO)) {
-			String[] idSections = StringUtils.split(id, AUTO);
-			writer.append(idSections[0])
-					.append(((AggregationDataType) dataType)
-							.getElementDataType().getId())
-					.append(idSections[1]);
-		} else {
-			writer.append(id);
-		}
-		writer.append('"');
+		writer.append('"').append(dataType.getId()).append('"');
 
 		if (useLazyDataType) {
 			writer.append(")");
