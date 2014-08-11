@@ -197,7 +197,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		$invokeSuper.call(this);
 		var panel = this;
 		if (!taskGroupConfig) {
-			throw new dorado.Exception("taskGrooupRequired");
+			throw new dorado.Exception("taskGroupRequired");
 		}
 		panel.taskGroupConfig = taskGroupConfig;
 		
@@ -408,8 +408,7 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 			if (!panel._rendered) {
 				panel._rendered = true;
 				NProgress.configure({
-					positionUsing: (dorado.Browser.isTouch && dorado.Browser.version < "535.0") ? "margin" : "",
-					showSpinner: false
+					positionUsing: (dorado.Browser.isTouch && dorado.Browser.version < "535.0") ? "margin" : ""
 				});
 				panel._dom = NProgress.render(true);
 			}
