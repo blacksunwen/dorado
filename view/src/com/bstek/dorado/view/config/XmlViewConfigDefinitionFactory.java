@@ -70,12 +70,12 @@ public class XmlViewConfigDefinitionFactory implements
 	private byte getNameDelimMode() {
 		if (nameDelimMode == 0) {
 			String setting = Configure.getString("view.viewNameDelim",
-					nameDelimDotOrBackLash);
+					nameDelimDot);
 			if (nameDelimDot.equals(setting)) {
 				nameDelimMode = nameDelimDotMode;
 			} else if (nameDelimBackLash.equals(setting)) {
 				nameDelimMode = nameDelimBackLashMode;
-			} else {
+			} else if (nameDelimDotOrBackLash.equals(setting)) {
 				nameDelimMode = nameDelimDotOrBackLashMode;
 			}
 		}
