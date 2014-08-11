@@ -103,13 +103,11 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			},
 
 			children: {
-				setter: function(children, attr) {
+				setter: function(children, attr) {					
 					var oldDefaultView = window._DEFAULT_VIEW;
 					window._DEFAULT_VIEW = this;
-					this._prependingChildren = {};
 					$invokeSuper.call(this, [children, attr]);
-					delete this._prependingChildren;
-					window._DEFAULT_VIEW = oldDefaultView;
+					window._DEFAULT_VIEW = oldDefaultView;		
 				}
 			}
 		},
@@ -167,6 +165,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		},
 
 		constructor: function(configs) {
+			dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE = true;
 			ALL_VIEWS.push(this);
 
 			this._identifiedViewElements = {};
@@ -197,6 +196,16 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				else {
 					window[this._id] = this;
 				}
+			}
+		},
+		
+		_constructor: function(configs) {
+			if (this._id === "viewMain") {
+				this._ignoreOnCreateListeners = true;
+			}
+			$invokeSuper.call(this, [configs]);
+			if (this._id === "viewMain") {
+				delete this._ignoreOnCreateListeners;
 			}
 		},
 
@@ -260,10 +269,17 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		registerViewElement: function(id, comp) {
 			if (!id) return;
 
-			if (this._identifiedViewElements[id]) {
-				throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
+			var old = this._identifiedViewElements[id];
+			if (old) {
+				if (old !== comp) {
+					throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
+				}
+				else {
+					return;
+				}
 			}
 			this._identifiedViewElements[id] = comp;
+			
 			if (this.getListenerCount("onViewElementRegistered")) {
 				this.fireEvent("onViewElementRegistered", this, {
 					viewElement: comp
@@ -323,18 +339,13 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		doGet: function(attr) {
 			var c = attr.charAt(0);
 			if (c == '#') {
-				var id = attr.substring(1);
-				var result = this.id(id);
-				if (!result) result = this.getDataType(id);
-				return result;
+				return this.id(attr.substring(1));
 			}
 			else if (c == '^') {
-				var tag = attr.substring(1);
-				return this.tag(tag);
+				return this.tag(attr.substring(1));
 			}
 			else if (c == '@') {
-				var dataTypeName = attr.substring(1);
-				return this.getDataType(dataTypeName);
+				return this.getDataType(attr.substring(1));
 			}
 			else {
 				return $invokeSuper.call(this, [attr]);
@@ -348,7 +359,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		 */
 		id: function(id) {
 			var viewElement = this._identifiedViewElements[id];
-			if (!viewElement && dorado.widget.View.DEFAULT_COMPONENTS) {
+			if (viewElement) {
+				if (viewElement._lazyInit) viewElement._lazyInit();
+			}
+			else if (dorado.widget.View.DEFAULT_COMPONENTS) {
 				viewElement = dorado.widget.View.getDefaultComponent(this, id);
 				if (viewElement) this.registerViewElement(id, viewElement);
 			}
@@ -362,7 +376,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		 *
 		 * @see $tag
 		 */
-		tag: function(tags) {
+		tag: function(tags, allowNull) {
 			var group = dorado.TagManager.find(tags), allObjects = group.objects, objects = [];
 			for(var i = 0; i < allObjects.length; i++) {
 				var object = allObjects[i];
@@ -372,6 +386,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					objects.push(object);
 				}
 			}
+			if (allowNull && !objects.length) return null;
 			return new dorado.ObjectGroup(objects);
 		},
 
@@ -401,6 +416,101 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		getDataTypeAsync: function(name, callback) {
 			return this._dataTypeRepository.getAsync(name, callback);
 		},
+		
+		/**
+		 * 
+		 */
+		liveSet: function(attr, value, options) {
+			
+			function doLiveSet(attr, value, options) {
+				var i = attr.indexOf('.');
+				if (i > 0) {
+					var fc = attr.charAt(0);
+					if (fc === '#') {
+						var id = attr.substring(1, i);
+						var subAttr = attr.substring(i + 1);
+						var object = this._identifiedViewElements[id];
+						if (object) {
+							object.set(subAttr, value, options);
+						}
+						else {
+							var liveSettingMap = this._liveIdSettingMap;
+							if (!liveSettingMap) {
+								this._liveIdSettingMap = liveSettingMap = {};
+							}
+							
+							var liveSettings = liveSettingMap[id];
+							if (!liveSettings) {
+								liveSettingMap[id] = liveSettings = [];
+							}
+							
+							liveSettings.push({
+								attr: subAttr,
+								value: value,
+								options: options
+							});
+						}
+					}
+					else if (fc === '^') {
+						var tag = attr.substring(1, i);
+						var subAttr = attr.substring(i + 1);
+						var group = this.tag(tag, true);
+						if (group) {
+							group.set(subAttr, value, options);
+						}
+						else {
+							var liveSettingMap = this._liveTagSettingMap;
+							if (!liveSettingMap) {
+								this._liveTagSettingMap = liveSettingMap = {};
+							}
+							
+							var liveSettings = liveSettingMap[tag];
+							if (!liveSettings) {
+								liveSettingMap[tag] = liveSettings = [];
+							}
+							
+							liveSettings.push({
+								attr: subAttr,
+								value: value,
+								options: options
+							});
+						}
+					}
+				}
+				else {
+					this.set(attr, value, options);
+				}
+			}
+			
+			if (attr.constructor !== String) {
+				for(var p in attr) {
+					if (attr.hasOwnProperty(p)) {
+						var v = attr[p];	
+						doLiveSet.call(this, p, v, options);
+					}
+				}
+			}
+			else {
+				doLiveSet.call(this, attr, value, options);
+			}
+			return this;
+		},
+		
+		/**
+		 * 
+		 */
+		liveBind: function(name, listener, options) {
+			if (options) {
+				this.liveSet(name, {
+					listener: listener,
+					options: options
+				});
+			}
+			else {
+				this.liveSet(name, listener);
+			}
+			return this;
+		},
 
 		render: function(containerElement) {
 			$fly(document.body).addClass("d-rendering");
@@ -410,6 +520,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$invokeSuper.call(this, [containerElement]);
 			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
 
+			dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE = false;
 			dorado.Toolkits.setDelayedAction(document.body, "$removeRenderingCls", function() {
 				$fly(document.body).removeClass("d-rendering");
 			}, 500);
@@ -446,26 +557,18 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				objects = this.get(objectsExpression);
 			}
 
+			var count = 0;
 			if (objects) {
 				if (dorado.Object.isInstanceOf(objects, dorado.EventSupport)) {
-					if (eventName == "onCreate") {
-						objects.notifyListener(dorado.Object.apply({
-							listener: listener
-						}, options), [objects]);
-					}
 					objects.bind(eventName, listener, options);
+					count = 1;
 				}
 				else if (objects instanceof dorado.ObjectGroup) {
-					if (eventName == "onCreate") {
-						objects.each(function(object) {
-							object.notifyListener(dorado.Object.apply({
-								listener: listener
-							}, options), [object]);
-						});
-					}
 					objects.bind(eventName, listener, options);
+					count = objects.objects.length;
 				}
 			}
+			return count;
 		}
 
 	});
@@ -611,6 +714,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			return control;
 		}
 
+		window._doradoInit = new Date();
 		dorado.fireBeforeInit();
 
 		$fly(document).mousedown(function(evt) {

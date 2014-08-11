@@ -347,6 +347,11 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 			var oldTree = this._tree;
 			if (oldTree != null && oldTree.onNodeDetached) oldTree.onNodeDetached(this);
 			if (oldTree) oldTree.unregisterInnerViewElement(this);
+			if (this._dom) {
+				$fly(this._dom).remove();
+				delete this._dom;
+				delete oldTree._itemDomMap[this._uniqueId];
+			}
 
 			this._tree = tree;
 			if (tree != null && tree.onNodeAttached) tree.onNodeAttached(this);

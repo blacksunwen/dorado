@@ -139,15 +139,11 @@ dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.S
          */
         onValueChange: {}
     },
-	constructor: function(config) {
-		config = config || {};
-		var value = config.value;
-		delete config.value;
-
-		$invokeSuper.call(this, arguments);
+    _constructor: function(config) {
+    	var value = config && config.value;
+		if (value) delete config.value;
+		$invokeSuper.call(this, arguments);		
 		if (value) this.set({ value: value });
-
-		//this._value = this.getValidValue(this._value);
 	},
 	createDom: function() {
 		var slider = this, dom, doms = {}, orientation = slider._orientation;

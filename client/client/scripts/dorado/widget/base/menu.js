@@ -75,6 +75,7 @@
                 item._parent = menu;
             }
 			menu.registerInnerViewElement(item);
+			item._parent = menu;
 
 			if (typeof index == "number") {
 				items.insert(item, index);
@@ -328,7 +329,6 @@
 			} else {
 				item = dorado.Toolkits.createInstance("menu", config);
 			}
-			item._parent = menu;
 			return item;
 		},
 
@@ -701,12 +701,6 @@
 
 			var groupContent = doms.groupContent;
 
-			if (items) {
-				items.each(function(item) {
-					item.render(groupContent);
-				});
-			}
-
 			$fly(dom).hover(function() {
 				menu.notifyOpenerOnMouseEnter();
 			}, function() {
@@ -778,7 +772,15 @@
 		refreshDom: function(dom) {
 			$invokeSuper.call(this, arguments);
 
-			var menu = this, doms = menu._doms, menuContentHeight = $fly(doms.groupContent).outerHeight();
+			var menu = this, items = menu._items, doms = menu._doms;
+			var menuContentHeight = $fly(doms.groupContent).outerHeight();
+			
+			if (items) {
+				items.each(function(item) {
+					item.render(doms.groupContent);
+				});
+			}
+			
 			if (menuContentHeight > dom.offsetHeight) {
 				menu.handleOverflow();
 			}

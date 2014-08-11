@@ -69,7 +69,7 @@ public class ViewConfig implements Scopable, MetaDataSupport {
 		return name;
 	}
 
-	@ClientProperty(escapeValue = "request", ignored = true)
+	@ClientProperty(escapeValue = "thread", ignored = true)
 	public Scope getScope() {
 		return scope;
 	}

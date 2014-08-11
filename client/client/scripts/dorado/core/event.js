@@ -460,21 +460,12 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			return true;
 		};
 
-		try {
-			var interceptor = (typeof def.interceptor == "function") ? def.interceptor : null;
-			if (interceptor) {
-				arguments[0] = superFire;
-				return interceptor.apply(this, arguments);
-			} else if (handlers && this._disableListenersCounter == 0) {
-				return superFire.apply(this, Array.prototype.slice.call(arguments, 1));
-			}
-		}
-		catch (e) {
-			if (def.processException) {
-				dorado.Exception.processException(e);
-			} else {
-				throw e;
-			}
+		var interceptor = (typeof def.interceptor == "function") ? def.interceptor : null;
+		if (interceptor) {
+			arguments[0] = superFire;
+			return interceptor.apply(this, arguments);
+		} else if (handlers && this._disableListenersCounter == 0) {
+			return superFire.apply(this, Array.prototype.slice.call(arguments, 1));
 		}
 		return true;
 	},

@@ -77,7 +77,7 @@
 		this.refresh();
 	};
 	p.removeControl = function(control) {
-		this._regions.removeKey(control._uniqueId);
+		this._regions.remove(control);
 		if (!this._attached || this._disableRendering) return;
 		this.refresh();
 	};
@@ -156,23 +156,21 @@
 			else {
 				row.style.height = realContainerHeight + "px";
 			}
-
-			for(var it = this._regions.iterator(); it.hasNext();) {
-				var region = it.next(), cell = domCache[region.id];
+			
+			var regions = this._regions.items, region, cell;
+			for (var i = 0, len = regions.length; i < len; i++) {
+				region = regions[i];
+				
+				cell = domCache[region.id];
 				if (cell) cell.style.display = "none";
-			}
-
-			var i = 0;
-			for(var it = this._regions.iterator(); it.hasNext();) {
-				var region = it.next();
+				
 				var constraint = region.constraint;
-
 				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 					var control = region.control;
 					if (control._dom) $DomUtils.getUndisplayContainer().appendChild(control._dom);
 				}
 				else {
-					var w, cell = domCache[region.id], cell, div, isNewCell = false;
+					var w, div, isNewCell = false;
 					if (!cell) {
 						cell = document.createElement("TD");
 						isNewCell = true;
@@ -244,7 +242,6 @@
 					else {
 						this.resetControlDimension(region, cell, true, this._stretch);
 					}
-					i++;
 				}
 			}
 
@@ -259,8 +256,9 @@
 				if (rowHeight > realContainerHeight) {
 					table.style.height = "";
 					realContainerHeight += (rowHeight - realContainerHeight);
-					for(var it = this._regions.iterator(); it.hasNext();) {
-						var region = it.next();
+					
+					for (var i = 0, len = regions.length; i < len; i++) {
+						region = regions[i];
 						var constraint = region.constraint;
 						if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 
@@ -398,18 +396,18 @@
 			if (realContainerHeight < 0) realContainerHeight = 0;
 
 			table.style.width = realContainerWidth + "px";
-			for(var it = this._regions.iterator(); it.hasNext();) {
-				var region = it.next(), row = domCache[region.id];
-				if (row) row.style.display = "none";
-			}
 
-			var i = 0;
-			for(var it = this._regions.iterator(); it.hasNext();) {
-				var region = it.next();
+			var regions = this._regions.items, region, row, cell;
+			for (var i = 0, len = regions.length; i < len; i++) {
+				region = regions[i];
+
+				row = domCache[region.id];
+				if (row) row.style.display = "none";
+				
 				var constraint = region.constraint;
 				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 
-				var w, row = domCache[region.id], cell, div, isNewRow = false;
+				var w, div, isNewRow = false;
 				if (!row) {
 					row = $DomUtils.xCreate({
 						tagName: "TR",
@@ -507,7 +505,6 @@
 				else {
 					this.resetControlDimension(region, div, true, true);
 				}
-				i++;
 			}
 
 			for(var regionId in domCache) {
@@ -519,8 +516,10 @@
 			var tableWidth = realContainerWidth;
 			if (this._stretch && (tableWidth - padding * 2) > realContainerWidth) {
 				realContainerWidth += (tableWidth - padding * 2 - realContainerWidth);
-				for(var it = this._regions.iterator(); it.hasNext();) {
-					var region = it.next();
+
+				for (var i = 0, len = regions.length; i < len; i++) {
+					region = regions[i];
+					
 					var constraint = region.constraint;
 					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) continue;
 

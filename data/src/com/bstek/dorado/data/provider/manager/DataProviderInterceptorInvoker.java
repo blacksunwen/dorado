@@ -105,7 +105,7 @@ public class DataProviderInterceptorInvoker implements MethodInterceptor {
 		return expressionHandler;
 	}
 
-	public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+	public Object invoke(MethodInvocation methodInvocation) throws Throwable {		
 		Method proxyMethod = methodInvocation.getMethod();
 		String currentMethodName = proxyMethod.getName();
 		if (!currentMethodName.equals(INTERCEPTING_METHOD_NAME)

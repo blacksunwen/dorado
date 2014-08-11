@@ -102,9 +102,7 @@ public class ViewOutputter extends ContainerOutputter {
 			super.output(view, context);
 			writer.append(";\n");
 
-			writer.append("function f(view){").append("view.set(\"children\",");
-			childrenComponentOutputter.output(view.getChildren(), context);
-			writer.append(");");
+			writer.append("function f(view){");
 
 			String javaScriptFiles = view.getJavaScriptFile();
 			if (StringUtils.isNotEmpty(javaScriptFiles)) {
@@ -134,6 +132,10 @@ public class ViewOutputter extends ContainerOutputter {
 					}
 				}
 			}
+
+			writer.append("view.set(\"children\",");
+			childrenComponentOutputter.output(view.getChildren(), context);
+			writer.append(");");
 
 			writer.append("}\n");
 

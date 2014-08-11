@@ -190,7 +190,9 @@ public class ComponentDefinition extends ListenableObjectDefinition implements
 
 		super.doInitObject(object, creationInfo, context);
 		Component component = (Component) object;
-		component.setId(id);
+		if (id != null) {
+			component.setId(id);
+		}
 	}
 
 	@Override

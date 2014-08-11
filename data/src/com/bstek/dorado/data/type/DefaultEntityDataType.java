@@ -12,15 +12,11 @@
 
 package com.bstek.dorado.data.type;
 
-import com.bstek.dorado.annotation.XmlNode;
-import com.bstek.dorado.annotation.XmlSubNode;
-
 /**
  * Bean类型的默认实现类。
  * 
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
-@XmlNode(subNodes = { @XmlSubNode(propertyType = "com.bstek.dorado.data.type.property.PropertyDef[]") })
 public class DefaultEntityDataType extends EntityDataTypeSupport {
 }

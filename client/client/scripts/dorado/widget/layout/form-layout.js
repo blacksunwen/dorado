@@ -116,7 +116,7 @@
 		},
 
 		constructor: function(config) {
-			this._useTable = false;
+			this._useTable = dorado.Browser.msie && dorado.Browser.version < 8;
 			this._currentUseTable = false;
 			this._useBlankRow = true; // !dorado.Browser.webkit;
 			$invokeSuper.call(this, [config]);
@@ -418,9 +418,10 @@
 			this.initColInfos();
 
 			var grid = [];
-			var regions = this._regions;
-			for(var it = regions.iterator(); it.hasNext();) {
-				var region = it.next(), constraint = region.constraint;
+			var regions = this._regions.items, region, constraint;
+			for (var i = 0, len = regions.length; i < len; i++) {
+				region = regions[i];
+				constraint = region.constraint;
 				if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 					region.regionIndex = -1;
 					continue;
@@ -580,7 +581,6 @@
 		preprocessLayoutConstraint: function(layoutConstraint, control) {
 			var layoutConstraint = $invokeSuper.call(this, arguments);
 			if (layoutConstraint.rowSpan > 1) this._useTable = true;
-			// this._useTable = true;
 			return layoutConstraint;
 		},
 

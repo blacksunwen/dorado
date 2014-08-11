@@ -137,7 +137,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 	 */
 	set: function(attr, value) {
 		if (!this.objects) return;
-		for (var i = 0; i < this.objects.length; i++) {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
 			var object = this.objects[i];
 			if (object) object.set(attr, value, true);
 		}
@@ -151,7 +151,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 	 */
 	get: function(attr) {
 		var attrs = attr.split('.'), objects = this.objects;
-		for (var i = 0; i < attrs.length; i++) {
+		for (var i = 0, len = attrs.length; i < len; i++) {
 			var a = attrs[i], results = [];
 			for (var j = 0; j < objects.length; j++) {
 				var object = objects[j], result;
@@ -200,7 +200,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 	 */
 	bind: function(name, listener, options) {
 		if (!this.objects) return;
-		for (var i = 0; i < this.objects.length; i++) {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
 			var object = this.objects[i];
 			if (object && typeof object.bind == "function") {
 				object.bind(name, listener, options);
@@ -220,7 +220,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 	 */
 	unbind: function(name, listener) {
 		if (!this.objects) return;
-		for (var i = 0; i < this.objects.length; i++) {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
 			var object = this.objects[i];
 			if (object && object.unbind) {
 				object.unbind(name, listener);
@@ -240,7 +240,7 @@ dorado.ObjectGroup = $class(/** @scope dorado.ObjectGroup.prototype */{
 	 */
 	invoke: function(methodName) {
 		if (!this.objects) return;
-		for (var i = 0; i < this.objects.length; i++) {
+		for (var i = 0, len = this.objects.length; i < len; i++) {
 			var object = this.objects[i];
 			if (object) {
 				var method = object[methodName];

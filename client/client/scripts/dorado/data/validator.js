@@ -83,7 +83,7 @@ dorado.validator.Validator = $extend([dorado.AttributeSupport, dorado.EventSuppo
 	// =====
 
 	constructor : function(config) {
-		$invokeSuper.call(this, arguments);
+		$invokeSuper.call(this, [config]);
 		if(config) this.set(config);
 	},
 	
@@ -202,7 +202,7 @@ dorado.validator.RemoteValidator = $extend(dorado.validator.Validator, /** @scop
 				}
 			});
 		} else {
-			var result = $invokeSuper.call(this, arguments);
+			var result = $invokeSuper.call(this, [data, arg, callback]);
 			if(callback) {
 				$callback(callback, true, result);
 			}

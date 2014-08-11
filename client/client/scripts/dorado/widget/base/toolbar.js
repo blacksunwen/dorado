@@ -53,8 +53,10 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				if (value) {
 					if (value.constructor == Array.prototype.constructor) {
 						for (i = 0, l = value.length; i < l; i++) {
-							item = toolbar.createItem(value[i]);
-							items.insert(item);
+							if (value[i]) {
+								item = toolbar.createItem(value[i]);
+								items.insert(item);
+							}
 						}
 						if (rendered) {
 							toolbar.doRenderItems();
@@ -603,11 +605,9 @@ dorado.widget.toolbar.Separator = $extend(dorado.widget.Control, {
 dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 	$className: "dorado.widget.toolbar.Button",
 
-	constructor: function(config) {
-		var items = config ? config.items : null;
-		if (items) {
-			delete config.items;
-		}
+	_constructor: function(config) {
+		var items = config && config.items;
+		if (items) delete config.items;
 		$invokeSuper.call(this, arguments);
 		if (items) this.set("items", items);
 	},

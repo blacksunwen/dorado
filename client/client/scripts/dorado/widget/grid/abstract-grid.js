@@ -3035,7 +3035,6 @@
 					var cellInfos = structure[i];
 					var row = $DomUtils.getOrCreateChild(headerTBody, i, function() {
 						var row = document.createElement("TR"), offset = 0;
-						;
 						$DomUtils.disableUserSelection(row);
 						if (dorado.Browser.msie && dorado.Browser.version < 8 && cellInfos.length == 0) {
 							offset = structure.length * 2;

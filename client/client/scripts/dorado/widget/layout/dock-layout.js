@@ -17,8 +17,10 @@
 	var getLastRegionFuncs = {};
 	jQuery.each(["left", "right", "top", "bottom"], function(i, type) {
 		getLastRegionFuncs[type] = function(region) {
-			while (region.previousRegion) {
-				region = region.previousRegion;
+			var regions = this._regions.items;
+			var i = regions.indexOf(region);
+			for (i--; i >= 0; i--) {
+				region = regions[i];
 				if (region.constraint.type == type) return region;
 			}
 			return null;
@@ -158,40 +160,31 @@
 			return layoutConstraint;
 		},
 		
-		addControl: function(control) {
-			var layoutConstraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
-			var region = {
-				id: dorado.Core.newId(),
-				control: control,
-				constraint: layoutConstraint
-			};
-			
-			var regions = this._regions;
-			var lastRegion = (regions.size > 0) ? regions.last.data : null;
-			if (lastRegion && lastRegion.constraint.type == "center") {
-				if (layoutConstraint.type == "center") {
-					var lastControl = lastRegion.control;
-					if (!lastControl._layoutConstraint || typeof lastControl._layoutConstraint != "object") {
-						lastControl._layoutConstraint = "top";
+		onAddControl: function(control) {
+			var region = this.getRegion(control);
+			if (region.constraint && region.constraint.type == "center") {
+				var centerRegion = this._centerRegion;
+				if (centerRegion) {
+					var centerControl = centerRegion.control;
+					if (!centerControl._layoutConstraint || typeof centerControl._layoutConstraint != "object") {
+						centerControl._layoutConstraint = "top";
 					} else {
-						lastControl._layoutConstraint.type = "top";
+						centerControl._layoutConstraint.type = "top";
 					}
-					dorado.Object.apply(lastRegion.constraint, getDefaultConstraint("top"));
-					if (this._rendered) this.refreshControl(control);
-					
-					region.previousRegion = lastRegion;
-					regions.insert(region);
-				} else {
-					region.previousRegion = (regions.last.previous) ? regions.last.previous.data : null;
-					lastRegion.previousRegion = region;
-					regions.insert(region, "before", lastRegion);
+					dorado.Object.apply(centerRegion.constraint, getDefaultConstraint("top"));
 				}
-			} else {
-				region.previousRegion = lastRegion;
-				regions.insert(region);
+				this._centerRegion = region;
 			}
-			control._parentLayout = this;
-			if (this.onAddControl) this.onAddControl(control);
+			$invokeSuper.call(this, [control]);
+		},
+		
+		refreshDom: function(dom) {
+			var regions = this._regions;
+			if (this._centerRegion && this._centerRegion != regions.items[regions.size - 1]) {
+				regions.remove(this._centerRegion);
+				regions.append(this._centerRegion);
+			}
+			$invokeSuper.call(this, [dom]);
 		},
 		
 		renderControl: function(region, regionDom, autoWidth, autoHeight) {

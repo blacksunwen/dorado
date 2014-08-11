@@ -81,6 +81,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 	<!-- DataType Parser -->
 	<bean id="dorado.dataTypeParser" parent="dorado.genericObjectParser"
 		class="com.bstek.dorado.data.config.xml.DataTypeParser">
+		<property name="inheritable" value="true" />
 		<property name="impl"
 			value="com.bstek.dorado.data.type.DefaultEntityDataType" />
 		<d:property-parser key="elementDataType,keyDataType,valueDataType"

@@ -47,7 +47,7 @@ dorado.debug.initProcedures.push(function(){
 					tip: "Run Code",
 					listener: {
 						onClick: function() {
-							var code = "var $it = $topView._children.iterator(), view; while($it.hasNext()) { var control = $it.next(); if (control instanceof dorado.widget.View) { view = control; break; } }"
+							var code = "var view = viewMain;\n";
 							code += codeTextArea.get("text");
 							if (dorado.Debugger.trapError) {
 								try {

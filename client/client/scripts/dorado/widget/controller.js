@@ -23,8 +23,74 @@
 				for (var i = 0; i < configs.length; i++) {
 					var config = configs[i], name = config.name, func = config.func, bindingInfos = config.bindingInfos;
 					if (bindingInfos) {
-						for (var j = 0; j < bindingInfos.length; j++) {
-							view.bindByExpression(bindingInfos[j], func);
+						var exp, expSections, fc, count, id, tag, liveIdBindingMap, liveBindings;
+						for (var j = 0, len = bindingInfos.length; j < len; j++) {
+							exp = bindingInfos[j];
+							var fc = exp.charAt(0);
+							var count = view.bindByExpression(exp, func);
+							
+							if (fc === '#') {
+								if (count === 0) {
+									expSections = exp.split('.');
+									id = expSections[0].substring(1);
+									
+									liveBindingMap = view._liveIdBindingMap;
+									if (!liveBindingMap) {
+										view._liveIdBindingMap = liveBindingMap = {};
+									}
+									
+									liveBindings = liveBindingMap[id];
+									if (!liveBindings) {
+										liveBindingMap[id] = liveBindings = [];
+									}
+									
+									if (expSections.length === 2) {
+										liveBindings.push({
+											id: id,
+											event: expSections[1],
+											listener: func
+										});
+									}
+									else {
+										liveBindings.push({
+											id: id,
+											subObject: expSections.slice(1, expSections.length - 2).join('.'),
+											event: expSections[expSections.length - 1],
+											listener: func
+										});
+									}
+								}
+							}
+							else if (fc === '^') {
+								expSections = exp.split('.');
+								tag = expSections[0].substring(1);
+								
+								liveBindingMap = view._liveTagBindingMap;
+								if (!liveBindingMap) {
+									view._liveTagBindingMap = liveBindingMap = {};
+								}
+								
+								liveBindings = liveBindingMap[tag];
+								if (!liveBindings) {
+									liveBindingMap[tag] = liveBindings = [];
+								}
+								
+								if (expSections.length === 2) {
+									liveBindings.push({
+										tag: tag,
+										event: expSections[1],
+										listener: func
+									});
+								}
+								else {
+									liveBindings.push({
+										tag: tag,
+										subObject: expSections.slice(1, expSections.length - 2).join('.'),
+										event: expSections[expSections.length - 1],
+										listener: func
+									});
+								}
+							}
 						}
 					}
 					

@@ -15,6 +15,7 @@ package com.bstek.dorado.view.resolver;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.core.Configure;
@@ -30,29 +31,38 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 	public void output(Writer writer) throws IOException {
 		DoradoContext context = DoradoContext.getCurrent();
 
-		writer.append("\"common.debugEnabled\":").append(
-				String.valueOf(Configure.getBoolean("view.debugEnabled")));
-
-		writeSetting(writer, "common.showExceptionStackTrace",
-				Configure.getBoolean("view.showExceptionStackTrace"), false);
-		writeSetting(writer, "common.enterAsTab",
-				Configure.getBoolean("view.enterAsTab"), false);
-		writeSetting(writer, "common.preventBackspace",
-				Configure.getBoolean("view.preventBackspace"), true);
-
 		String contextPath = Configure.getString("web.contextPath");
 		if (StringUtils.isEmpty(contextPath)) {
 			contextPath = context.getRequest().getContextPath();
 		}
-		writeSetting(writer, "common.contextPath", contextPath, true);
+		writer.append("\"common.contextPath\":\"")
+				.append(StringEscapeUtils.escapeJavaScript(contextPath))
+				.append("\"");
 
-		writeSetting(writer, "common.abortAsyncLoadingOnSyncLoading",
-				Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading"),
-				false);
+		if (Configure.getBoolean("view.debugEnabled")) {
+			writeSetting(writer, "common.debugEnabled", true, false);
+		}
+		if (Configure.getBoolean("view.showExceptionStackTrace")) {
+			writeSetting(writer, "common.showExceptionStackTrace", true, false);
+		}
+		if (Configure.getBoolean("view.enterAsTab")) {
+			writeSetting(writer, "common.enterAsTab", true, false);
+		}
+		if (Configure.getBoolean("view.preventBackspace")) {
+			writeSetting(writer, "common.preventBackspace", true, true);
+		}
+
+		if (Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading")) {
+			writeSetting(writer, "common.abortAsyncLoadingOnSyncLoading", true,
+					false);
+		}
 
 		writeSetting(writer, "widget.skinRoot", ">dorado/client/skins/", true);
 		writeSetting(writer, "widget.skin", context.getAttribute("view.skin"),
 				true);
-	}
 
+		if (Configure.getBoolean("view.lazyInitFloatControl", true)) {
+			writeSetting(writer, "widget.lazyInitFloatControl", true, false);
+		}
+	}
 }

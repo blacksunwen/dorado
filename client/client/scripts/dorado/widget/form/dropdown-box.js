@@ -54,7 +54,7 @@ dorado.widget.DropDownBox = $extend(dorado.widget.FloatContainer, /** @scope dor
 		onDropDownBoxShow: {}
 	},
 
-	constructor: function(config) {
+	_constructor: function(config) {
 		$invokeSuper.call(this, arguments);
 		// this._contentOverflow = "visible"; Commented by Benny for ISSUE 5992
 		if (dorado.Browser.msie && dorado.Browser.version < 9) {

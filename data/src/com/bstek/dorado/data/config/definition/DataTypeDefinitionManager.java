@@ -182,7 +182,7 @@ public class DataTypeDefinitionManager extends
 		StringBuffer id = new StringBuffer(name.length());
 		id.append(dataTypeName.getOriginDataType());
 		id.append(DataTypeName.BRACKET_LEFT);
-		id.append("%AUTO%");
+		id.append(subDataTypeNames[0]);
 		id.append(DataTypeName.BRACKET_RIGHT);
 		definition.setId(id.toString());
 		definition.setBeanId(Constants.SCOPE_DATA_TYPE_PREFIX + name);

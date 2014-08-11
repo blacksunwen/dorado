@@ -42,18 +42,15 @@ dorado.Toolkits = {
 	 * @see dorado.Toolkits.createInstance
 	 */
 	registerPrototype: function(namespace, name, constr) {
-
-		function register(namespace, name, constr) {
-			this.typesRegistry[namespace + '.' + name] = constr;
-		}
-
 		if (typeof name == "object") {
 			for(var p in name) {
-				if (name.hasOwnProperty(p)) register.call(this, namespace, p, name[p]);
+				if (name.hasOwnProperty(p)) {
+					this.typesRegistry[namespace + '.' + p] = name[p];
+				}
 			}
 		}
 		else {
-			register.call(this, namespace, name, constr);
+			this.typesRegistry[namespace + '.' + name] = constr;
 		}
 	},
 

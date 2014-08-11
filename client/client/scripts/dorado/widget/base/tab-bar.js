@@ -208,7 +208,6 @@
 			this._tabs = new dorado.util.KeyedArray(function(value) {
 				return value._name;
 			});
-
 			$invokeSuper.call(this, arguments);
 		},
 

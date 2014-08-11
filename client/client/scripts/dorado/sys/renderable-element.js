@@ -124,12 +124,14 @@ dorado.RenderableElement = $extend(dorado.AttributeSupport, /** @scope dorado.Re
 	},
 
 	doSet: function(attr, value) {
-		$invokeSuper.call(this, [attr, value]);
+		var errorMessage = $invokeSuper.call(this, [attr, value]);
 
 		var def = this.ATTRIBUTES[attr];
 		if (this._rendered && this._ignoreRefresh < 1 && def && !def.skipRefresh) {
 			dorado.Toolkits.setDelayedAction(this, "$refreshDelayTimerId", this.refresh, 50);
 		}
+		
+		return errorMessage;
 	},
 
 	/**

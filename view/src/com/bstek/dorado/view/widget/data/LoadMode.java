@@ -17,5 +17,5 @@ package com.bstek.dorado.view.widget.data;
  * @since 2009-12-15
  */
 public enum LoadMode {
-	preload, onReady, lazy, manual
+	preload, onCreate, onReady, lazy, manual
 }

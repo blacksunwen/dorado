@@ -22,6 +22,8 @@ import org.w3c.dom.Node;
 import com.bstek.dorado.config.ParseContext;
 import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.definition.ObjectDefinition;
+import com.bstek.dorado.config.xml.ObjectParser;
+import com.bstek.dorado.config.xml.ObjectParserInitializationAware;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.core.Configure;
@@ -35,7 +37,8 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-11-17
  */
-public class DataTypeParser extends GenericObjectParser {
+public class DataTypeParser extends GenericObjectParser implements
+		ObjectParserInitializationAware {
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -148,5 +151,10 @@ public class DataTypeParser extends GenericObjectParser {
 
 		parsedDataTypes.put(name, dataType);
 		return dataType;
+	}
+
+	public void postObjectParserInitialized(ObjectParser objectParser)
+			throws Exception {
+		setImpl(null);
 	}
 }

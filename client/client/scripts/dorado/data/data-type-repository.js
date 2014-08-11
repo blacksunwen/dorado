@@ -302,7 +302,8 @@
 			if (dataType) {
 				dataType.loadFromServer = true;
 				dataType._dataTypeRepository = this;
-				dataType.set(jsonData);
+				dataType._config = jsonData;
+				// dataType.set(jsonData);
 			}
 			return dataType;
 		},
@@ -364,6 +365,11 @@
 		
 		_get: function(name) {
 			var dataType = this._dataTypeMap[name];
+			if (dataType && dataType._config) {
+				var config =  dataType._config;
+				delete dataType._config;
+				dataType.set(config);
+			}
 			if (!dataType && this.parent) {
 				dataType = this.parent._get(name);
 			}

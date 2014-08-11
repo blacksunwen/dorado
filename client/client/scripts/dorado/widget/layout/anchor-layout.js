@@ -93,8 +93,9 @@
 				if (clientHeight > 10000) clientHeight = 0;
 				
 				this._maxRegionRight = this._maxRegionBottom = 0;
-				for(var it = this._regions.iterator(); it.hasNext();) {
-					var region = it.next();
+				var regions = this._regions.items, region;
+				for (var i = 0, len = regions.length; i < len; i++) {
+					region = regions[i];
 					var constraint = region.constraint;
 					if (constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
 						var control = region.control;
@@ -149,7 +150,7 @@
 
 			onAddControl: function(control) {
 				if (!this._attached) return;
-				var region = this._regions.get(control._uniqueId);
+				var region = this.getRegion(control);
 				if (region) {
 					var realignArg = this.adjustRegion(region);
 					if (this._disableRendering) return;
@@ -160,7 +161,7 @@
 
 			onRemoveControl: function(control) {
 				if (!this._attached) return;
-				var region = this._regions.get(control._uniqueId);
+				var region = this.getRegion(control);
 				if (region) {
 					this.getDom().removeChild(control.getDom());
 					if (this._disableRendering) return;
@@ -192,16 +193,17 @@
 			},
 
 			calculateRegions: function(fromRegion) {
-				var regions = this._regions;
-				if (regions.size == 0) return;
+				var regions = this._regions.items;
+				if (regions.length == 0) return;
 				
 				var clientSize = this._container.getContentContainerSize();
 				var clientWidth = clientSize[0], clientHeight = clientSize[1];
 				if (clientWidth > 10000) clientWidth = 0;
 				if (clientHeight > 10000) clientHeight = 0;
 				
-				var found = !fromRegion;
-				regions.each(function(region) {
+				var found = !fromRegion, region;
+				for (var i = 0, len = regions.length; i < len; i++) {
+					region = regions[i];
 					if (!found) {
 						found = (fromRegion == region);
 						if (!found) return;
@@ -209,7 +211,7 @@
 					if (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return;
 					var realignArg = this.doAdjustRegion(region, clientWidth, clientHeight);
 					if (realignArg) this.realignRegion(region, realignArg);
-				}, this);
+				}
 			},
 			
 			adjustRegion: function(region) {
@@ -239,9 +241,8 @@
 					}
 					return anchor;
 				}
-
 				var constraint = region.constraint, realignArg;
-				var containerDom = this._dom.parentNode, controlDom = region.control.getDom();
+				var containerDom = this._dom.parentNode;
 
 				var left, right, width, top, bottom, height;
 				left = right = width = top = bottom = height = -1;

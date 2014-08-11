@@ -127,7 +127,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 
 	constructor: function(config) {
-		this._regions = new dorado.util.KeyedList(function(region) {
+		this._regions = new dorado.util.KeyedArray(function(region) {
 			return region.control._uniqueId;
 		});
 		$invokeSuper.call(this, [config]);
@@ -154,6 +154,19 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (this._duringRefreshDom) return;
 		this._duringRefreshDom = true;
 		if (this._attached) {
+			if (this._lazyInitControls) {
+				var control;
+				for (var i = 0, len = this._lazyInitControls.length; i < len; i++) {
+					control = this._lazyInitControls[i];
+					if (control._lazyInit) {
+						control._lazyInit();
+					}
+					var region = this.getRegion(control);
+					region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
+				}
+				delete this._lazyInitControls;
+			}
+			
 			delete this.fakeDoms;
 			this.refreshDom(this.getDom());
 			
@@ -194,9 +207,10 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	onDetachFromDocument: function() {
 		if (this._attached) {
 			this._attached = false;
-			this._regions.each(function(region) {
-				region.control.onDetachFromDocument();
-			});
+			var regions = this._regions.items;
+			for (var i = 0, len = regions.length; i < len; i++) {
+				regions[i].control.onDetachFromDocument();
+			}
 		}
 	},
 
@@ -207,11 +221,13 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @return {Object} 前一个布局区域。
 	 */
 	getPreviousRegion: function(region) {
-		var entry = this._regions.findEntry(region);
-		while(entry) {
-			entry = entry.previous;
-			if (entry && entry.data.constraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return entry.data;
+		var regions = this._regions.items;
+		var i = regions.indexOf(region);
+		for (i--; i >= 0; i--) {
+			region = regions[i];
+			if (region.constraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return region;
 		}
+		return null;
 	},
 
 	/**
@@ -221,11 +237,13 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @return {Object} 下一个布局区域。
 	 */
 	getNextRegion: function(region) {
-		var entry = this._regions.findEntry(region);
-		while(entry) {
-			entry = entry.next;
-			if (entry && entry.data.constraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return entry.data;
+		var regions = this._regions.items;
+		var i = regions.indexOf(region), len = regions.length;
+		for (i++; i < len; i++) {
+			region = regions[i];
+			if (region.constraint != dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) return region;
 		}
+		return null;
 	},
 
 	preprocessLayoutConstraint: function(layoutConstraint, control) {
@@ -242,11 +260,22 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @return {Object} 新增的布局区域描述对象。
 	 */
 	addControl: function(control) {
-		var region = {
-			id: dorado.Core.newId(),
-			control: control,
-			constraint: this.preprocessLayoutConstraint(control._layoutConstraint, control)
-		};
+		var region;
+		if (control._lazyInit) {
+			region = {
+				id: dorado.Core.newId(),
+				control: control
+			};
+			if (!this._lazyInitControls) this._lazyInitControls = [];
+			this._lazyInitControls.push(control);
+		}
+		else {
+			region = {
+				id: dorado.Core.newId(),
+				control: control,
+				constraint: this.preprocessLayoutConstraint(control._layoutConstraint, control)
+			};
+		}
 		this._regions.insert(region);
 		control._parentLayout = this;
 		if (this.onAddControl) this.onAddControl(control);
@@ -259,17 +288,17 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	removeControl: function(control) {
 		control._parentLayout = null;
 		if (this.onRemoveControl) this.onRemoveControl(control);
-		this._regions.removeKey(control._uniqueId);
+		this._regions.remove(control);
 	},
 
 	/**
 	 * 从布局管理器中移除所有子控件。
 	 */
 	removeAllControls: function() {
-		var layout = this;
-		this._regions.toArray().each(function(region) {
-			layout.removeControl(region.control);
-		});
+		var regions = this._regions.items;
+		for (var i = regions.length - 1; i >= 0; i--) {
+			this.removeControl(regions[i].control);
+		}
 	},
 
 	/**
@@ -307,7 +336,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		if (!control._rendered) {
 			var containerDom = this._dom.parentNode, fakeDom = region.fakeDom;
 			if (!fakeDom) {
-				if (this._lazyRenderChild && containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight)) {
+				if (containerDom && this._lazyRenderChild && containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight)) {
 					fakeDom = document.createElement("DIV");
 					region.fakeDom = fakeDom;
 
@@ -329,7 +358,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 					this._ignoreControlSizeChange = false;
 				}
 			}
-			else if (this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight)) {
+			else if (containerDom && this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight)) {
 				this._ignoreControlSizeChange = true;
 				control.replace(region.fakeDom);
 				this._ignoreControlSizeChange = false;
@@ -356,7 +385,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 
 	getRegion: function(control) {
-		return this._regions.get((control instanceof dorado.widget.Control) ? control._uniqueId : control);
+		return this._regions.get(control._uniqueId);
 	},
 
 	/**
@@ -568,9 +597,10 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			$fly(dom).css(style);
 			delete this._style;
 		}
-
-		for(var it = this._regions.iterator(); it.hasNext();) {
-			var region = it.next();
+		
+		var regions = this._regions.items, region;
+		for (var i = 0, len = regions.length; i < len; i++) {
+			region = regions[i];
 			var constraint = region.constraint;
 			this.renderControl(region, dom, false, false);
 		}
@@ -578,7 +608,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 
 	onAddControl: function(control) {
 		if (!this._attached || this._disableRendering) return;
-		var region = this._regions.get(control._uniqueId);
+		var region = this.getRegion(control);
 		if (region) this.renderControl(region, this._dom, false, false);
 	},
 

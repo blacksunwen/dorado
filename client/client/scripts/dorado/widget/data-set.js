@@ -197,7 +197,17 @@
 			constructor: function(configs) {
 				this._dataPathCache = {};
 				this._observers = [];
-				$invokeSuper.call(this, arguments);
+				$invokeSuper.call(this, [configs]);
+			},
+			
+			_constructor: function(configs) {
+				$invokeSuper.call(this, [configs]);
+				
+				if (this._loadMode == "onCreate") {
+					var view = this._view || window._DEFAULT_VIEW;
+					if (view && view._loadingDataSets) view._loadingDataSets.push(this);
+					this.getDataAsync();
+				}
 			},
 
 			/**
@@ -256,10 +266,9 @@
 					}
 				}
 				if (this._loadMode == "onReady") {
-					var dataset = this;
-					var view = dataset._view || window._DEFAULT_VIEW;
-					if (view && view._loadingDataSets) view._loadingDataSets.push(dataset);
-					dataset.getDataAsync();
+					var view = this._view || window._DEFAULT_VIEW;
+					if (view && view._loadingDataSets) view._loadingDataSets.push(this);
+					this.getDataAsync();
 				}
 			},
 

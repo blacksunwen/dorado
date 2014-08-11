@@ -169,7 +169,7 @@
 			onFilterItem: {}
 		},
 		
-		constructor: function() {
+		_constructor: function() {
 			$import("list", dorado._NULL_FUNCTION);
 			$invokeSuper.call(this, arguments);
 		},
@@ -532,10 +532,10 @@
 			}
 		},
 		
-		constructor: function(configs) {
-			var items = configs.items;
-			delete configs.items;
-			$invokeSuper.call(this, [configs]);
+		_constructor: function(config) {
+			var items = config && config.items;
+			delete config.items;
+			$invokeSuper.call(this, [config]);
 			if (items) this.set("items", items);
 		},
 		

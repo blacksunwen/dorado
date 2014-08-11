@@ -95,7 +95,7 @@
 			onDataRowDoubleClick: {}
 		},
 		
-		constructor: function() {
+		_constructor: function() {
 			$invokeSuper.call(this, arguments);
 			if (this._itemModel) this._itemModel.setItemDomSize(this._rowHeight);
 		},

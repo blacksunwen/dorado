@@ -70,9 +70,8 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 	},
 
 	constructor: function(config) {
-		$invokeSuper.call(this, [config]);
-
-		if (AUTO_APPEND_TO_TOPVIEW && window.$topView) {
+		dorado.widget.ViewElement.prototype.constructor.call(this, config);
+		if (!this._parent && AUTO_APPEND_TO_TOPVIEW && window.$topView) {
 			$topView.addChild(this);
 		}
 	},
@@ -83,6 +82,7 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 	 */
 	onReady: function() {
 		if (this._ready) return;
+		if (this._lazyInit) this._lazyInit();
 		this._ready = true;
 		this.fireEvent("onReady", this);
 	},
@@ -92,7 +92,7 @@ dorado.widget.Component = $extend(dorado.widget.ViewElement, /** @scope dorado.w
 		return view ? view._dataTypeRepository : null;
 	},
 
-	fireEvent: function() {
+	fireEvent: function() {		
 		var optimized = (AUTO_APPEND_TO_TOPVIEW === false);
 		if (optimized) AUTO_APPEND_TO_TOPVIEW = true;
 		var retVal = $invokeSuper.call(this, arguments);

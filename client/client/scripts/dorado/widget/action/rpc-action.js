@@ -258,7 +258,7 @@
 				 */
 				dataResolver: {
 					setter: function(v) {
-						this._dataResolver = (v && v.constructor === String) ? dorado.DataResolver.create(v) : v;
+						this._dataResolver = (v && typeof v == "string") ? dorado.DataResolver.create(v) : v;
 					}
 				},
 
