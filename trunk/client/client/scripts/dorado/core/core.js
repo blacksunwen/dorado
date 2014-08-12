@@ -50,7 +50,7 @@ var dorado = {
 		}
 
 		function detect(ua) {
-			var os = {}, android = ua.match(/(Android)\s+([\d.]+)/), android_40 = ua.match(/(Android)\s+(4.0)/),
+			var os = {}, android = ua.match(/(Android)[\s+,;]([\d.]+)?/), android_40 = ua.match(/(Android)\s+(4.0)/),
 				ipad = ua.match(/(iPad).*OS\s([\d_]+)/), iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/), miui = ua.match(/(MiuiBrowser)\/([\d.]+)/i);
 
 			if (android) {
