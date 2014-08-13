@@ -278,7 +278,7 @@ public abstract class EntityEnhancer {
 		}
 	}
 
-	protected void markPropertyHasRead(String property) {
+	protected synchronized void markPropertyHasRead(String property) {
 		if (propertiesHasRead == null) {
 			propertiesHasRead = new HashSet<String>();
 			propertiesHasRead.add(property);
@@ -287,7 +287,7 @@ public abstract class EntityEnhancer {
 		}
 	}
 
-	protected boolean isPropertyHasRead(String property) {
+	protected synchronized boolean isPropertyHasRead(String property) {
 		return (propertiesHasRead == null) ? false : propertiesHasRead
 				.contains(property);
 	}
