@@ -426,10 +426,7 @@
 		},
 
 		resetReadOnly: function() {
-			if (!this._rendered) return;
-
 			var readOnly = !!(this._readOnly || this._readOnly2);
-
 			this._realReadOnly = readOnly;
 			$fly(this.getDom()).toggleClass("d-readonly " + this._className + "-readonly", readOnly);
 

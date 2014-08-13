@@ -72,6 +72,7 @@ public class DoradoLoader {
 	private static final String CONTEXT_CONFIG_PROPERTY = "core.contextConfigLocation";
 	private static final String SERVLET_CONTEXT_CONFIG_PROPERTY = "core.servletContextConfigLocation";
 
+	private static final String IGNORE_ORIGIN_CONTEXT_CONFIGS = "dorado.ignoreOriginContextConfigs";
 	private static final String CONTEXT_CONFIG_LOCATION = "contextConfigLocation";
 	private static final String SERVLET_CONTEXT_CONFIG_LOCATION = "servletContextConfigLocation";
 
@@ -444,8 +445,15 @@ public class DoradoLoader {
 
 		Resource resource;
 
+		boolean ignoreOriginContextConfigs = true;
+		intParam = servletContext
+				.getInitParameter(IGNORE_ORIGIN_CONTEXT_CONFIGS);
+		if (intParam != null) {
+			ignoreOriginContextConfigs = Boolean.parseBoolean(intParam);
+		}
+
 		// context
-		if (processOriginContextConfigLocation) {
+		if (processOriginContextConfigLocation && !ignoreOriginContextConfigs) {
 			intParam = servletContext.getInitParameter(CONTEXT_CONFIG_LOCATION);
 			if (intParam != null) {
 				pushLocations(contextLocations, intParam);
@@ -467,11 +475,14 @@ public class DoradoLoader {
 		}
 
 		// servlet-context
-		intParam = servletContext
-				.getInitParameter(SERVLET_CONTEXT_CONFIG_LOCATION);
-		if (intParam != null) {
-			pushLocations(servletContextLocations, intParam);
+		if (processOriginContextConfigLocation && !ignoreOriginContextConfigs) {
+			intParam = servletContext
+					.getInitParameter(SERVLET_CONTEXT_CONFIG_LOCATION);
+			if (intParam != null) {
+				pushLocations(servletContextLocations, intParam);
+			}
 		}
+
 		resource = resourceLoader.getResource(HOME_SERVLET_CONTEXT_XML);
 		if (resource.exists()) {
 			pushLocations(servletContextLocations, HOME_SERVLET_CONTEXT_XML);

@@ -31,6 +31,7 @@ import com.bstek.dorado.view.output.Outputter;
 import com.bstek.dorado.view.widget.ContainerOutputter;
 import com.bstek.dorado.web.DoradoContext;
 import com.bstek.dorado.web.DoradoContextUtils;
+import com.bstek.dorado.web.WebConfigure;
 
 /**
  * 视图对象的输出器。
@@ -104,6 +105,15 @@ public class ViewOutputter extends ContainerOutputter {
 
 			writer.append("function f(view){");
 
+			boolean bindAfterChildrenCreate = WebConfigure
+					.getBoolean("view.javaScript.bindAfterChildrenCreate");
+
+			if (bindAfterChildrenCreate) {
+				writer.append("view.set(\"children\",");
+				childrenComponentOutputter.output(view.getChildren(), context);
+				writer.append(");");
+			}
+
 			String javaScriptFiles = view.getJavaScriptFile();
 			if (StringUtils.isNotEmpty(javaScriptFiles)) {
 				for (String file : StringUtils.split(javaScriptFiles, ";,")) {
@@ -133,9 +143,11 @@ public class ViewOutputter extends ContainerOutputter {
 				}
 			}
 
-			writer.append("view.set(\"children\",");
-			childrenComponentOutputter.output(view.getChildren(), context);
-			writer.append(");");
+			if (!bindAfterChildrenCreate) {
+				writer.append("view.set(\"children\",");
+				childrenComponentOutputter.output(view.getChildren(), context);
+				writer.append(");");
+			}
 
 			writer.append("}\n");
 
