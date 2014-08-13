@@ -529,7 +529,7 @@ var _NULL_FUNCTION = function(){};
 		if (pkgs instanceof Array) {
 			var v = [];
 			for (var i = 0; i < pkgs.length; i++) {
-				v.concat(pkgs[i].split(','));
+				v = v.concat(pkgs[i].split(','));
 			}
 			pkgs = v;
 		} else {
@@ -589,7 +589,7 @@ var _NULL_FUNCTION = function(){};
 		if (urls instanceof Array) {
 			var v = [];
 			for (var i = 0; i < urls.length; i++) {
-				v.concat(urls[i].split(','));
+				v = v.concat(urls[i].split(','));
 			}
 			urls = v;
 		} else {
