@@ -936,7 +936,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 				$fly(document).bind("touchmove", function (event) {
 					event.preventDefault();
-				});v
+				});
 			}
 
 			dorado.fireAfterInit();
