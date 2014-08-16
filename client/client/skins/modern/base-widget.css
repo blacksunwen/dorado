@@ -583,6 +583,6 @@
   -ms-animation: loading-icon 400ms linear infinite;
   -o-animation: loading-icon 400ms linear infinite;
 }
-.d-sub-view .error-message{
-	margin: 4px;
+.d-sub-view .error-message {
+  margin: 4px;
 }
