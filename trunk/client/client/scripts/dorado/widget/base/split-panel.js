@@ -554,7 +554,7 @@
 				start: function(event, ui){
 					var helper = ui.helper;
 					if(helper){
-						helper.addClass("d-splitter-dragging").bringToFront().find("> .button").css("display", "none");
+						helper.addClass("d-splitter-dragging").bringToFront().find(">*").css("display", "none");
 					}
 					splitterPosition = $fly(doms.splitter).position();
 					var vertical = direction == "top" || direction == "bottom";

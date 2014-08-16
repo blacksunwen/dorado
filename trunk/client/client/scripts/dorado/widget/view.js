@@ -199,13 +199,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 		},
 		
-		_constructor: function(configs) {
-			if (this._id === "viewMain") {
-				this._ignoreOnCreateListeners = true;
-			}
-			$invokeSuper.call(this, [configs]);
-			if (this._id === "viewMain") {
-				delete this._ignoreOnCreateListeners;
+		fireOnCreateForOldJsController: function() {
+			if (this.getListenerCount("onCreate")) {
+				this.fireEvent("onCreate", this);
+				delete this._events[name];
 			}
 		},
 

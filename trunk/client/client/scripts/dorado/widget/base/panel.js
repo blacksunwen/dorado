@@ -714,14 +714,15 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	_createCloseButton: function() {
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
-			captionBar.addButton(new dorado.widget.SimpleButton({
+			captionBar.addButton(new dorado.widget.SimpleIconButton({
+				className: "d-close-button",
+				iconClass:"close-icon",
 				onCreate: function(self) {
 					self._uniqueId = panel._uniqueId + "_close";
 				},
 				onClick: function() {
 					panel.close();
 				},
-				className: "d-close-button"
 			}), 104);
 		}
 	},
@@ -882,8 +883,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 	_createMaximizeButton: function() {
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
-			captionBar.addButton(new dorado.widget.SimpleButton({
+			captionBar.addButton(new dorado.widget.SimpleIconButton({
 				className: "d-maximize-button",
+				iconClass: "maximize-icon",
 				onCreate: function(self) {
 					self._uniqueId = panel._uniqueId + "_maximize";
 				},

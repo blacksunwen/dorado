@@ -26,8 +26,17 @@
 						var exp, expSections, fc, count, id, tag, liveIdBindingMap, liveBindings;
 						for (var j = 0, len = bindingInfos.length; j < len; j++) {
 							exp = bindingInfos[j];
-							var fc = exp.charAt(0);
-							var count = view.bindByExpression(exp, func);
+							var fc = exp.charAt(0), count;
+							
+							if (exp === "view.onCreate" && $setting["widget.bindControllerAfterChildrenCreate"]) {
+								var oldIgnore = view._ignoreOnCreateListeners;
+								view._ignoreOnCreateListeners = true;
+								count = view.bindByExpression(exp, func);
+								view._ignoreOnCreateListeners = oldIgnore;
+							}
+							else {
+								count = view.bindByExpression(exp, func);
+							}
 							
 							if (fc === '#') {
 								if (count === 0) {

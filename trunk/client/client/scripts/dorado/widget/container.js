@@ -280,7 +280,7 @@
 				for (var i = 0, len = children.length; i < len; i++) {
 					child = children[i];
 					if (child._parentActualVisible == parentActualVisible || !(child instanceof dorado.widget.Control)) {
-						return;
+						continue;
 					}
 					child._parentActualVisible = parentActualVisible;
 					child.onActualVisibleChange();
@@ -324,7 +324,7 @@
 		 * 向容器中添加一个组件。
 		 * @param {dorado.widget.Component} component 要添加的组件。
 		 */
-		addChild: function(component) {			
+		addChild: function(component) {
 			if (component._parent) {
 				fireParentChanged = false;
 				if (component._parent.removeChild) {

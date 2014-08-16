@@ -33,7 +33,7 @@
 }
 .d-button .button-left .d-icon {
   float: left;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .d-button .button-left .caption {
   line-height: 24px;
@@ -1143,6 +1143,12 @@
 .d-panel .button-panel .d-button {
   margin-right: 3px;
 }
+.d-panel .d-collapse-button,
+.d-panel .d-close-button,
+.d-panel .d-maximize-button,
+.d-panel .d-restore-button {
+  cursor: pointer;
+}
 .d-panel .d-collapse-button .d-icon {
   line-height: 20px;
   text-align: center;
@@ -1215,16 +1221,10 @@
   -o-transform: rotate(-180deg);
   transform: rotate(-180deg);
 }
-.d-panel .d-close-button,
-.d-panel .d-maximize-button,
-.d-panel .d-restore-button {
-  cursor: pointer;
+.d-panel .d-close-button {
   width: 22px;
   height: 22px;
-  margin-top: 3px;
-  margin-right: 2px;
   line-height: 20px;
-  color: rgba(0, 0, 0, 0.7);
   text-align: center;
   font-size: 14px;
   font-family: entypo;
@@ -1232,47 +1232,36 @@
   font-weight: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  box-sizing: border-box;
-  border-radius: 16px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0);
-  background-color: rgba(0, 0, 0, 0);
-  -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  -ms-transition-duration: 0.3s;
-  -o-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: background-color, border-color, color, -webkit-box-shadow, -webkit-transform;
-  -moz-transition-property: background-color, border-color, color, -moz-box-shadow, -moz-transform;
-  -ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
-  -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
-  transition-property: background-color, border-color, color, box-shadow, transform;
-}
-.d-panel .d-close-button-hover,
-.d-panel .d-maximize-button-hover,
-.d-panel .d-restore-button-hover {
-  color: #000000;
-  border-color: rgba(0, 0, 0, 0.5);
-  background-color: rgba(0, 0, 0, 0);
-  border-radius: 16px;
-}
-.d-panel .d-close-button-click,
-.d-panel .d-maximize-button-click,
-.d-panel .d-restore-button-click {
-  -webkit-transition-duration: 0;
-  -moz-transition-duration: 0;
-  -ms-transition-duration: 0;
-  -o-transition-duration: 0;
-  transition-duration: 0;
-  border-color: #000000;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 .d-panel .d-close-button:before {
   content: "\e605";
 }
+.d-panel .d-maximize-button {
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .d-panel .d-maximize-button:before {
   content: "\e60e";
+}
+.d-panel .d-restore-button {
+  width: 22px;
+  height: 22px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-family: entypo;
+  font-style: normal;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-panel .d-restore-button:before {
   content: "\e60d";
@@ -1598,7 +1587,7 @@
   width: 5px;
   height: 55px;
   font-size: 1%;
-  position: relative;
+  position: absolute;
   left: 0;
   top: 50%;
   margin: -24px 0px;
@@ -1614,7 +1603,7 @@
   cursor: pointer;
   width: 55px;
   height: 5px;
-  position: relative;
+  position: absolute;
   left: 50%;
   top: 0;
   margin: 0px -24px;
@@ -1628,146 +1617,119 @@
 .d-split-panel .collapse-bar {
   position: absolute;
 }
+.d-split-panel .collapse-bar .button {
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  margin: 2px;
+  border-radius: 50%;
+  border-width: 1px;
+  border-style: solid;
+  text-align: center;
+  font-size: 14px;
+  line-height: 14px;
+}
 .d-split-panel .collapse-bar-left,
 .d-split-panel .collapse-bar-right {
-  margin-left: 1px;
   width: 19px;
 }
 .d-split-panel .collapse-bar-top,
 .d-split-panel .collapse-bar-bottom {
   float: right;
-  margin-top: 1px;
   height: 19px;
 }
-.d-split-panel .collapse-bar .button {
-  cursor: pointer;
-  width: 15px;
-  height: 15px;  
-  margin: 1px;
-  border-radius: 15px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0);
-  line-height: 17px;
-  text-align: center;
-  font-size: 14px;
-  font-family: entypo;
-  font-style: normal;
-  font-weight: normal;
+.d-split-panel .collapse-bar-top .button {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.d-split-panel .collapse-bar .button-hover {
-  color: #000000;
-  border-color: rgba(0, 0, 0, 0.5);
-  background-color: rgba(0, 0, 0, 0);
-}
-.d-split-panel .collapse-bar .button-click {
-  border-color: #000000;
-  background-color: rgba(0, 0, 0, 0.1);
-}
 .d-split-panel .collapse-bar-top .button:before {
   content: "\e601";
+  font-family: entypo;
+}
+.d-split-panel .collapse-bar-bottom .button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-split-panel .collapse-bar-bottom .button:before {
   content: "\e602";
+  font-family: entypo;
+}
+.d-split-panel .collapse-bar-left .button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-split-panel .collapse-bar-left .button:before {
   content: "\e603";
+  font-family: entypo;
+}
+.d-split-panel .collapse-bar-right .button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-split-panel .collapse-bar-right .button:before {
   content: "\e600";
+  font-family: entypo;
 }
 .d-split-panel-collapse-both .splitter-left .button,
 .d-split-panel-collapse-both .splitter-right .button {
   margin: -55px 0 0 0;
+  line-height: 55px;
+}
+.d-split-panel-collapse-both .splitter-left .button:before,
+.d-split-panel-collapse-both .splitter-right .button:before {
+  position: absolute;
+  left: -3px;
 }
 .d-split-panel-collapse-both .splitter-top .button,
 .d-split-panel-collapse-both .splitter-bottom .button {
   margin: 0 0 0 -55px;
 }
-.d-split-panel-collapse-both .splitter .button {
-  line-height: 5px;
-  font-size: 8px;
-  text-align: center;
-  font-family: entypo;
-  font-style: normal;
-  font-weight: normal;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-.d-split-panel-collapse-both .splitter:hover .button {
-  background: #d9d9d9 !important;
-}
-.d-split-panel-collapse-both .splitter .button:hover {
-  color: #fbfbfb;
-  background: #15a4fa !important;
-}
-.d-split-panel-collapse-both .splitter-left .button, .d-split-panel-collapse-both .splitter-right .button {
-  line-height: 55px;
-}
-.d-split-panel-collapse-both .splitter-left .button:before, .d-split-panel-collapse-both .splitter-right .button:before {
-  position: absolute;
-  left: -3px;
-}
-.d-split-panel-collapse-both .splitter-top .button:before, .d-split-panel-collapse-both .splitter-bottom .button:before {
+.d-split-panel-collapse-both .splitter-top .button:before,
+.d-split-panel-collapse-both .splitter-bottom .button:before {
   position: absolute;
   top: 1px;
   left: 22px;
 }
-.d-split-panel-collapse-both .splitter-left .button:before {
-  content: "\e600";
-}
-.d-split-panel-collapse-both .splitter-right .button:before {
-  content: "\e603";
-}
-.d-split-panel-collapse-both .splitter-top .button:before {
-  content: "\e602";
-}
-.d-split-panel-collapse-both .splitter-bottom .button:before {
-  content: "\e601";
-}
-.d-split-panel-collapse-both .splitter .opposite-button {
-  -webkit-transition-duration: 0.3s;
-  -moz-transition-duration: 0.3s;
-  -ms-transition-duration: 0.3s;
-  -o-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: background-color, border-color, color, -webkit-box-shadow, -webkit-transform;
-  -moz-transition-property: background-color, border-color, color, -moz-box-shadow, -moz-transform;
-  -ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
-  -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
-  transition-property: background-color, border-color, color, box-shadow, transform;
-  position: absolute;
-  background: #D9D9D9;
-  cursor: pointer;
-  text-align: center;
-  font-size: 8px;
-  font-family: entypo;
-  font-style: normal;
-  font-weight: normal;
+.d-split-panel-collapse-both .splitter-left .button {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.d-split-panel-collapse-both .splitter .opposite-button:hover {
-  background: #15a4fa;
-  color: #FBFBFB;
+.d-split-panel-collapse-both .splitter-left .button:before {
+  content: "\e600";
+  font-family: entypo;
+}
+.d-split-panel-collapse-both .splitter-right .button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-split-panel-collapse-both .splitter-right .button:before {
+  content: "\e603";
+  font-family: entypo;
+}
+.d-split-panel-collapse-both .splitter-top .button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-split-panel-collapse-both .splitter-top .button:before {
+  content: "\e602";
+  font-family: entypo;
+}
+.d-split-panel-collapse-both .splitter-bottom .button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.d-split-panel-collapse-both .splitter-bottom .button:before {
+  content: "\e601";
+  font-family: entypo;
 }
 .d-split-panel-collapse-both .splitter-left .opposite-button,
-.d-split-panel-collapse-both .splitter-right .opposite-button {  
+.d-split-panel-collapse-both .splitter-right .opposite-button {
   width: 5px;
   height: 55px;
   line-height: 55px;
+  position: absolute;
   left: 0;
   top: 50%;
-  margin: 0;
-}
-.d-split-panel-collapse-both .splitter-top .opposite-button,
-.d-split-panel-collapse-both .splitter-bottom .opposite-button {
-  width: 55px;
-  height: 5px;
-  left: 50%;
-  top: 0;
   margin: 0;
 }
 .d-split-panel-collapse-both .splitter-left .opposite-button:before,
@@ -1775,23 +1737,52 @@
   position: absolute;
   left: -3px;
 }
+.d-split-panel-collapse-both .splitter-top .opposite-button,
+.d-split-panel-collapse-both .splitter-bottom .opposite-button {
+  width: 55px;
+  height: 5px;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  margin: 0;
+}
 .d-split-panel-collapse-both .splitter-top .opposite-button:before,
 .d-split-panel-collapse-both .splitter-bottom .opposite-button:before {
   position: absolute;
   top: 1px;
   left: 22px;
 }
+.d-split-panel-collapse-both .splitter-left .opposite-button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 .d-split-panel-collapse-both .splitter-left .opposite-button:before {
   content: "\e603";
+  font-family: entypo;
+}
+.d-split-panel-collapse-both .splitter-right .opposite-button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-split-panel-collapse-both .splitter-right .opposite-button:before {
   content: "\e600";
+  font-family: entypo;
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-split-panel-collapse-both .splitter-top .opposite-button:before {
   content: "\e601";
+  font-family: entypo;
+}
+.d-split-panel-collapse-both .splitter-bottom .opposite-button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .d-split-panel-collapse-both .splitter-bottom .opposite-button:before {
   content: "\e602";
+  font-family: entypo;
 }
 .d-split-panel-collapsed .splitter-h-resizeable,
 .d-split-panel-collapsed .splitter-v-resizeable {
@@ -1825,9 +1816,11 @@
   filter: alpha(opacity=30);
 }
 .d-split-panel .splitter {
+  color: #000000;
   background: #ededed;
 }
 .d-split-panel .splitter .button {
+  color: #000000;
   background: #d9d9d9;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;
@@ -1841,6 +1834,7 @@
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
 .d-split-panel .splitter:hover .button {
+  color: #ffffff;
   background: #15a4fa;
 }
 .d-split-panel .side-panel,
@@ -1852,6 +1846,34 @@
 }
 .d-split-panel .collapse-bar-hover {
   background-color: #ededed;
+}
+.d-split-panel .collapse-bar .button {
+  color: #000000;
+  border-color: transparent;
+}
+.d-split-panel .collapse-bar .button-hover {
+  border-color: #bebebe;
+}
+.d-split-panel .collapse-bar .button-click {
+  -webkit-transition-duration: 0;
+  -moz-transition-duration: 0;
+  -ms-transition-duration: 0;
+  -o-transition-duration: 0;
+  transition-duration: 0;
+  border-color: #bebebe;
+  background-color: #f7f7f7;
+}
+.d-split-panel-collapse-both .splitter:hover .button {
+  color: #000000 !important;
+  background: #d9d9d9 !important;
+}
+.d-split-panel-collapse-both .splitter .opposite-button {
+  background: #d9d9d9;
+}
+.d-split-panel-collapse-both .splitter .button:hover,
+.d-split-panel-collapse-both .splitter .opposite-button:hover {
+  color: #ffffff !important;
+  background: #15a4fa !important;
 }
 /* field-set */
 .d-field-set {
@@ -2270,7 +2292,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 .d-dialog .d-minimize-button:before {
-  content: "\e60d";
+  content: "\e6b2";
 }
 .d-dialog .d-maximize-button {
   width: 16px;

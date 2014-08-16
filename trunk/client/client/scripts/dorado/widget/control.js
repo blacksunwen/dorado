@@ -1045,7 +1045,8 @@
 				}
 
 				var attached = false, renderTarget = this._renderTo || this._renderOn;
-				if (!renderTarget && this._parent && this._parent != dorado.widget.View.TOP) {
+				if (!renderTarget && this._parent && this._parent != dorado.widget.View.TOP &&
+					!(this._floating && dorado.Object.isInstanceOf(this, dorado.widget.FloatControl))) {
 					attached = this._parent._attached;
 				}
 				else {
