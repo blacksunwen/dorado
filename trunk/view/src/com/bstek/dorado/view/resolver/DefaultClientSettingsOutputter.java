@@ -61,8 +61,10 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 		writeSetting(writer, "widget.skin", context.getAttribute("view.skin"),
 				true);
 
-		if (Configure.getBoolean("view.lazyInitFloatControl", true)) {
+		if (Configure.getBoolean("view.lazyInitFloatControl")) {
 			writeSetting(writer, "widget.lazyInitFloatControl", true, false);
+		}if (Configure.getBoolean("view.javaScript.bindAfterChildrenCreate")) {
+			writeSetting(writer, "widget.bindControllerAfterChildrenCreate", true, false);
 		}
 	}
 }
