@@ -1059,39 +1059,26 @@
 .d-panel .expand-icon-bottom {
   background-position: 0 0;
 }
-.d-panel .d-close-button {
-  cursor: pointer;
-  background: url(base/dialog-buttons.png) no-repeat -180px 0;
-  width: 20px;
-  height: 20px;
+.d-panel .maximize-icon {
+  background-image: url(base/dialog-buttons.png);
+  background-repeat: no-repeat;
+  background-position: -60px 0;
 }
-.d-panel .d-close-button-hover {
-  background-position: -200px 0;
-}
-.d-panel .d-close-button-click {
-  background-position: -220px 0;
-}
-.d-panel .d-maximize-button {
-  cursor: pointer;
-  background: url(base/dialog-buttons.png) no-repeat -60px 0;
-  width: 20px;
-  height: 20px;
-}
-.d-panel .d-maximize-button-hover {
+.d-panel .maximize-icon-hover {
   background-position: -80px 0;
 }
-.d-panel .d-maximize-button-click {
+.d-panel .maximize-icon-click {
   background-position: -100px 0;
 }
-.d-panel .d-restore-button {
-  background: url(base/dialog-buttons.png) no-repeat -120px 0;
-  width: 20px;
-  height: 20px;
+.d-panel .restore-icon {
+  background-image: url(base/dialog-buttons.png);
+  background-repeat: no-repeat;
+  background-position: -120px 0;
 }
-.d-panel .d-restore-button-hover {
+.d-panel .restore-icon-hover {
   background-position: -140px 0;
 }
-.d-panel .d-restore-button-click {
+.d-panel .restore-icon-click {
   background-position: -160px 0;
 }
 .d-panel-collapsed {
@@ -1366,75 +1353,44 @@
   float: right;
   height: 19px;
 }
-.d-split-panel .splitter-left,
-.d-split-panel .splitter-right {
-  background: #ededed;
+.d-split-panel-collapsed .splitter-h-resizeable,
+.d-split-panel-collapsed .splitter-v-resizeable {
+  cursor: default;
 }
-.d-split-panel .splitter-left .button,
-.d-split-panel .splitter-right .button {
-  background-image: url(base/split-panel-vert-buttons.png);
-}
-.d-split-panel .splitter-top,
-.d-split-panel .splitter-bottom {
-  background: #ededed;
-}
-.d-split-panel .splitter-top .button,
-.d-split-panel .splitter-bottom .button {
-  background-image: url(base/split-panel-hori-buttons.png);
-}
-.d-split-panel .side-panel,
-.d-split-panel .main-panel {
-  background: #ffffff;
-}
-.d-split-panel .collapse-bar {
-  background-color: #ededed;
-}
-.d-split-panel .collapse-bar .button {
-  background: url(base/collapse-buttons.png);
-}
-.d-split-panel .collapse-bar-left,
-.d-split-panel .collapse-bar-right,
-.d-split-panel .collapse-bar-top,
-.d-split-panel .collapse-bar-bottom {
-  border: 1px solid #a1a1a1;
-}
-.d-split-panel .collapse-bar-hover {
-  background-color: #ededed;
-}
-.d-split-panel .collapse-bar-left .button {
+.d-split-panel-collapsed-left .button {
   background-position: 0 0;
 }
-.d-split-panel .collapse-bar-left .button-hover {
+.d-split-panel-collapsed-left .button-hover {
   background-position: -17px 0;
 }
-.d-split-panel .collapse-bar-left .button-click {
+.d-split-panel-collapsed-left .button-click {
   background-position: -34px 0;
 }
-.d-split-panel .collapse-bar-right .button {
+.d-split-panel-collapsed-right .button {
   background-position: 0 -17px;
 }
-.d-split-panel .collapse-bar-right .button-hover {
+.d-split-panel-collapsed-right .button-hover {
   background-position: -17px -17px;
 }
-.d-split-panel .collapse-bar-right .button-click {
+.d-split-panel-collapsed-right .button-click {
   background-position: -34px -17px;
 }
-.d-split-panel .collapse-bar-top .button {
+.d-split-panel-collapsed-top .button {
   background-position: 0 -34px;
 }
-.d-split-panel .collapse-bar-top .button-hover {
+.d-split-panel-collapsed-top .button-hover {
   background-position: -17px -34px;
 }
-.d-split-panel .collapse-bar-top .button-click {
+.d-split-panel-collapsed-top .button-click {
   background-position: -34px -34px;
 }
-.d-split-panel .collapse-bar-bottom .button {
+.d-split-panel-collapsed-bottom .button {
   background-position: 0 -51px;
 }
-.d-split-panel .collapse-bar-bottom .button-hover {
+.d-split-panel-collapsed-bottom .button-hover {
   background-position: -17px -51px;
 }
-.d-split-panel .collapse-bar-bottom .button-click {
+.d-split-panel-collapsed-bottom .button-click {
   background-position: -34px -51px;
 }
 .d-split-panel-collapse-both .splitter-left .button,
@@ -1445,31 +1401,26 @@
 .d-split-panel-collapse-both .splitter-bottom .button {
   margin: 0 0 0 -55px;
 }
-.d-split-panel-collapse-both .splitter-left .opposite-button,
-.d-split-panel-collapse-both .splitter-right .opposite-button {
+.d-split-panel-collapse-both .splitter .opposite-button {
   cursor: pointer;
-  width: 5px;
-  height: 55px;
   font-size: 1%;
   position: absolute;
-  left: 0;
-  top: 50%;
   margin: 0;
   background-repeat: no-repeat;
-  background-image: url(base/split-panel-vert-buttons.png);
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button,
+.d-split-panel-collapse-both .splitter-right .opposite-button {
+  width: 5px;
+  height: 55px;
+  left: 0;
+  top: 50%;
 }
 .d-split-panel-collapse-both .splitter-top .opposite-button,
 .d-split-panel-collapse-both .splitter-bottom .opposite-button {
-  cursor: pointer;
   width: 55px;
   height: 5px;
-  font-size: 1%;
-  position: absolute;
   left: 50%;
   top: 0;
-  margin: 0;
-  background-repeat: no-repeat;
-  background-image: url(base/split-panel-hori-buttons.png);
 }
 .d-split-panel-collapse-both .splitter-left .opposite-button {
   background-position: right top;
@@ -1513,6 +1464,49 @@
   background: #000000 !important;
   opacity: 0.3;
   filter: alpha(opacity=30);
+}
+.d-split-panel .splitter-left,
+.d-split-panel .splitter-right {
+  background: #ededed;
+}
+.d-split-panel .splitter-left .button,
+.d-split-panel .splitter-right .button {
+  background-image: url(base/split-panel-vert-buttons.png);
+}
+.d-split-panel .splitter-top,
+.d-split-panel .splitter-bottom {
+  background: #ededed;
+}
+.d-split-panel .splitter-top .button,
+.d-split-panel .splitter-bottom .button {
+  background-image: url(base/split-panel-hori-buttons.png);
+}
+.d-split-panel .side-panel,
+.d-split-panel .main-panel {
+  background: #ffffff;
+}
+.d-split-panel .collapse-bar {
+  background-color: #ededed;
+}
+.d-split-panel .collapse-bar .button {
+  background: url(base/collapse-buttons.png);
+}
+.d-split-panel .collapse-bar-left,
+.d-split-panel .collapse-bar-right,
+.d-split-panel .collapse-bar-top,
+.d-split-panel .collapse-bar-bottom {
+  border: 1px solid #a1a1a1;
+}
+.d-split-panel .collapse-bar-hover {
+  background-color: #ededed;
+}
+.d-split-panel-collapse-both .splitter-left .opposite-button,
+.d-split-panel-collapse-both .splitter-right .opposite-button {
+  background-image: url(base/split-panel-vert-buttons.png);
+}
+.d-split-panel-collapse-both .splitter-top .opposite-button,
+.d-split-panel-collapse-both .splitter-bottom .opposite-button {
+  background-image: url(base/split-panel-hori-buttons.png);
 }
 /* field-set */
 .d-field-set {
