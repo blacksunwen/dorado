@@ -18,6 +18,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.common.ClientType;
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.variant.VariantUtils;
 import com.bstek.dorado.view.output.ClientOutputHelper;
 import com.bstek.dorado.view.output.OutputContext;
@@ -62,15 +63,16 @@ public class TopViewOutputter extends ViewOutputter {
 		ViewOutputter outputter = (ViewOutputter) clientOutputHelper
 				.getOutputter(view.getClass());
 		outputter.outputView(view, context);
-		writer.append("view.fireEvent(\"onCreate\");\n");
 
+		if (Configure.getBoolean("view.javaScript.bindAfterChildrenCreate")) {
+			writer.append("view.fireOnCreateForOldJsController();\n");
+		}
 		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");
 
 		ViewRenderMode renderMode = view.getRenderMode();
 		if (renderMode == ViewRenderMode.onCreate) {
 			writer.append("view.render();\n");
-		} 
-		else {
+		} else {
 			writer.append("view.onReady();\n");
 			writer.append("view.loadData();\n");
 		}
@@ -78,7 +80,7 @@ public class TopViewOutputter extends ViewOutputter {
 		writer.append("}\n").append("catch(e){")
 				.append("dorado.Exception.processException(e);}\n");
 		writer.append("});\n");
-		
+
 		context.addDependsPackage("common");
 
 		Set<String> dependsPackages = context.getDependsPackages();
