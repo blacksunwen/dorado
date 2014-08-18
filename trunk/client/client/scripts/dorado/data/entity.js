@@ -954,7 +954,8 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			};
 
 			var dataType = this.dataType;
-			if (dataType && !this.disableEvents && dataType.fireEvent("beforeDataChange", dataType, eventArg)) {
+			if (dataType && !this.disableEvents && dataType.getListenerCount("beforeDataChange")) {
+				dataType.fireEvent("beforeDataChange", dataType, eventArg);
 				value = eventArg.newValue;
 			}
 			if (!eventArg.processDefault) return;
@@ -1023,7 +1024,9 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 				}
 			}
 
-			if (dataType && !this.disableEvents) dataType.fireEvent("onDataChange", dataType, eventArg);
+			if (dataType && !this.disableEvents && dataType.getListenerCount("onDataChange")) {
+				dataType.fireEvent("onDataChange", dataType, eventArg);
+			}
 			this.sendMessage(dorado.Entity._MESSAGE_DATA_CHANGED, eventArg);
 		},
 		

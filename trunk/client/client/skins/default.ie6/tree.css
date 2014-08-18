@@ -71,6 +71,14 @@
   background-repeat: no-repeat;
   background-position: center center;
 }
+.d-tree-node .tree-line {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100%;
+  opacity: 0.6;
+  filter: alpha(opacity=60);
+}
 .d-tree-node .d-checkbox-icononly {
   position: relative;
   top: 2px;
