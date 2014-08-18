@@ -123,18 +123,16 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 				var line = $DomUtils.getOrCreateChild(linesContainer, i, function() {
 					var line = $DomUtils.xCreate({
 						tagName: "LABEL",
+						className: "tree-line",
 						style: {
-							background: "no-repeat center center",
-							display: "inline-block",
-							width: tree._indent,
-							height: "100%"
+							width: tree._indent
 						}
 					});
 					return line;
 				});
 				var lineType = lines[level - i - 1];
 				if (lineType) {
-					line.style.backgroundImage = "url(" + $url("skin>tree/tree-line" + lineType + ".gif") + ")";
+					line.style.backgroundImage = "url(" + $url("skin>tree/tree-line" + lineType + ".png") + ")";
 				} else {
 					line.style.backgroundImage = "";
 				}

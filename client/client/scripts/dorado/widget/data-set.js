@@ -967,7 +967,7 @@
 			sendMessage: function(messageCode, args) {
 				if (this._disableObserversCounter > 0) return;
 				var observers = this._observers;
-				for(var i = 0; i < observers.length; i++) {
+				for(var i = 0, len = observers.length; i < len; i++) {
 					var observer = observers[i];
 					observer.dataSetMessageReceived.call(observer, messageCode, args);
 				}
@@ -975,7 +975,7 @@
 
 			post: function() {
 				var observers = this._observers;
-				for(var i = 0; i < observers.length; i++) {
+				for(var i = 0, len = observers.length; i < len; i++) {
 					var observer = observers[i];
 					if (dorado.Object.isInstanceOf(observer, dorado.widget.AbstractEditor)) {
 						if (observer.get("rendered")) observer.post();
