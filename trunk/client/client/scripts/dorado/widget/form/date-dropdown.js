@@ -55,13 +55,11 @@
 		
 		ATTRIBUTES: /** @scope dorado.widget.DatePicker.prototype */ {
 			width: {
-				independent: true,
-				readOnly: true
+				independent: true
 			},
 			
 			height: {
-				independent: true,
-				readOnly: true
+				independent: true
 			},
 			
 			className: {
@@ -705,6 +703,7 @@
 				content: [{
 					tagName: "div",
 					className: "year-month-block",
+					contextKey: "yearMonthBlock",
 					content: [{
 						tagName: "div",
 						className: "pre-button-div",
@@ -1006,6 +1005,7 @@
 					style: {
 						display: "none"
 					},
+					height: picker._height ? picker._height : undefined,
 					listener: {
 						onPick: function() {
 							var ymPicker = picker._yearMonthPicker, year = ymPicker.get("year"), month = ymPicker.get("month");
@@ -1050,6 +1050,16 @@
 				ymPicker._opened = false;
 				
 				dorado.widget.setFocusedControl(picker);
+			}
+		},
+
+		doOnResize: function() {
+			$invokeSuper.call(this, arguments);
+			var picker = this, dom = picker._dom, doms = picker._doms, height = picker.getRealHeight();
+			if (typeof height == "number" && height > 0) {
+				var innerHeight = dom.clientHeight, blockHeight = innerHeight - doms.dateHeader.offsetHeight - doms.buttonBlock.offsetHeight - doms.yearMonthBlock.offsetHeight;
+				$fly(doms.dateBlock).css("height", blockHeight);
+				$fly(doms.dateTable).css("height", blockHeight * 2);
 			}
 		},
 		
