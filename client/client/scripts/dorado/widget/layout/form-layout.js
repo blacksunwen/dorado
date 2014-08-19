@@ -116,7 +116,7 @@
 		},
 
 		constructor: function(config) {
-			this._useTable = dorado.Browser.msie && dorado.Browser.version < 8;
+			this._useTable = true; //dorado.Browser.msie && dorado.Browser.version < 8;
 			this._currentUseTable = false;
 			this._useBlankRow = true; // !dorado.Browser.webkit;
 			$invokeSuper.call(this, [config]);
@@ -266,9 +266,7 @@
 					colIndex++;
 
 					var cls = this._colClss[col];
-					if (cls) {
-						$fly(td).addClass(cls);
-					}
+					if (cls) $fly(td).addClass(cls);
 
 					// real cell
 					if (region) {
@@ -535,10 +533,14 @@
 					constraint.colSpan = parseInt(constraint.colSpan) || 0;
 
 					var div = getOrCreateChild(dom, domIndex++, "DIV"), control = region.control;
-					// div.style.float = "left";
+					div.className = this._regionClassName;
 					div.style.display = "inline-block";
 					div.style.verticalAlign = "middle";
 					div.style.position = "relative";
+
+					var cls = this._colClss[col];
+					if (cls) $fly(div).addClass(cls);
+					
 					var width = 0;
 					if (constraint.colSpan > 1) {
 						for(var _col = col; _col < (col + constraint.colSpan) && _col < realColWidths.length; _col++) {

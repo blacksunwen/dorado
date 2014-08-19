@@ -715,7 +715,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
 			captionBar.addButton(new dorado.widget.SimpleIconButton({
-				className: "d-close-button",
+				exClassName: "d-close-button",
 				iconClass:"close-icon",
 				onCreate: function(self) {
 					self._uniqueId = panel._uniqueId + "_close";
@@ -884,7 +884,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		var panel = this, captionBar = panel._captionBar;
 		if (captionBar) {
 			captionBar.addButton(new dorado.widget.SimpleIconButton({
-				className: "d-maximize-button",
+				exClassName: "d-maximize-button",
 				iconClass: "maximize-icon",
 				onCreate: function(self) {
 					self._uniqueId = panel._uniqueId + "_maximize";

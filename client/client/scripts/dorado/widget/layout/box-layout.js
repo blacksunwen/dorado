@@ -157,7 +157,7 @@
 				row.style.height = realContainerHeight + "px";
 			}
 			
-			var regions = this._regions.items, region, cell;
+			var regions = this._regions.items, region, cell, childNodeIndex = 0;
 			for (var i = 0, len = regions.length; i < len; i++) {
 				region = regions[i];
 				
@@ -180,7 +180,7 @@
 					}
 					newDomCache[region.id] = cell;
 	
-					var refCell = row.childNodes[i];
+					var refCell = row.childNodes[childNodeIndex];
 					if (refCell != cell) {
 						if (cell.parentNode == row) {
 							while(refCell && refCell != cell) {
@@ -192,6 +192,8 @@
 							(refCell) ? row.insertBefore(cell, refCell) : row.appendChild(cell);
 						}
 					}
+					childNodeIndex ++;
+					
 					cell.style.display = "";
 					if (constraint.align) cell.style.verticalAlign = (constraint.align == "center") ? "middle" : constraint.align;
 	
@@ -397,7 +399,7 @@
 
 			table.style.width = realContainerWidth + "px";
 
-			var regions = this._regions.items, region, row, cell;
+			var regions = this._regions.items, region, row, cell, childNodeIndex = 0;
 			for (var i = 0, len = regions.length; i < len; i++) {
 				region = regions[i];
 
@@ -435,7 +437,7 @@
 				}
 				newDomCache[region.id] = row;
 
-				var refRow = tbody.childNodes[i];
+				var refRow = tbody.childNodes[childNodeIndex];
 				if (refRow != row) {
 					if (row.parentNode == tbody) {
 						while(refRow && refRow != row) {
@@ -447,6 +449,8 @@
 						(refRow) ? tbody.insertBefore(row, refRow) : tbody.appendChild(row);
 					}
 				}
+				childNodeIndex ++;
+				
 				row.style.display = "";
 				cell = row.firstChild;
 				div = (dorado.Browser.msie && dorado.Browser.version < 8) ? cell : cell.firstChild;

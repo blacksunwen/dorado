@@ -164,10 +164,10 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 		}
 	},
 
-	refreshDom: function(dom) {
-		if (this.getRealHeight() || this._children.size) dom.style.display = "inline-block";
-		$invokeSuper.call(this, [dom]);
-	},
+//	refreshDom: function(dom) {
+//		if (this.getRealHeight() || this._children.size) dom.style.display = "inline-block";
+//		$invokeSuper.call(this, [dom]);
+//	},
 
 	/**
 	 * 根据contextKey返回一个内部的子DOM元素。
