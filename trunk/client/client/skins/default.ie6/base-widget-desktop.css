@@ -1081,6 +1081,17 @@
 .d-panel .restore-icon-click {
   background-position: -160px 0;
 }
+.d-panel .close-icon {
+  background-image: url(base/dialog-buttons.png);
+  background-repeat: no-repeat;
+  background-position: -180px 0;
+}
+.d-panel .close-icon-hover {
+  background-position: -200px 0;
+}
+.d-panel .close-icon-click {
+  background-position: -220px 0;
+}
 .d-panel-collapsed {
   border-bottom: 0;
 }
