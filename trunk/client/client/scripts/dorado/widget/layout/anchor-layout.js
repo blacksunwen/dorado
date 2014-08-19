@@ -81,9 +81,20 @@
 			},
 
 			refreshDom: function(dom) {
+				var scrollTop, scrollLeft, parentNode = dom.parentNode;
+				if (parentNode) {
+					scrollTop = parentNode.scrollTop;
+					scrollLeft = parentNode.scrollLeft;
+				}
 				dom.style.width = "100%";
 				dom.style.height = "100%";
 				this.doRefreshDom(dom);
+				if (scrollTop) {
+					parentNode.scrollTop = scrollTop;
+				}
+				if (scrollLeft) {
+					parentNode.scrollLeft = scrollLeft;
+				}
 			},
 
 			doRefreshDom: function(dom) {
