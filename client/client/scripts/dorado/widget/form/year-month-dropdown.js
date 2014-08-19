@@ -345,8 +345,7 @@
 		focusable: true,
 		ATTRIBUTES: /** @scope dorado.widget.YearMonthPicker.prototype */ {
 			height: {
-				independent: true,
-				readOnly: true
+				independent: true
 			},
 
 			className: {
@@ -473,6 +472,15 @@
 			picker.registerInnerControl(cancelButton);
 
 			return dom;
+		},
+
+		doOnResize: function() {
+			$invokeSuper.call(this, arguments);
+			var picker = this, dom = picker._dom, doms = picker._doms, height = picker.getRealHeight();
+			if (typeof height == "number" && height > 0) {
+				var innerHeight = dom.clientHeight, blockHeight = innerHeight - doms.buttonPanel.offsetHeight;
+				$fly([doms.yearTable, doms.monthTable]).css("height", blockHeight);
+			}
 		},
 
 		doOnKeyDown: function(event) {
