@@ -91,6 +91,21 @@
 			 * @see dorado.widget.TextEditor#attribute:property
 			 */
 			entity: {
+				getter: function() {
+					if (this._dataSet && this._dataSet._ready) {
+						var entity = this._dataSet.getData(this._dataPath, {
+							loadMode: "auto",
+							firstResultOnly: true
+						});
+						if (entity && entity instanceof dorado.EntityList) {
+							entity = entity.current;
+						}
+						return entity;
+					}
+					else {
+						return this._entity;
+					}
+				},
 				setter: function(v) {
 					if (this._dataSet) return;
 					this._entity = v;

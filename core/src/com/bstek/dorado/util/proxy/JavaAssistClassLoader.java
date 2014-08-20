@@ -10,19 +10,21 @@
  * at http://www.bstek.com/contact.
  */
 
-package com.bstek.dorado.web.resolver;
+package com.bstek.dorado.util.proxy;
 
-import org.apache.commons.lang.StringUtils;
+import javassist.util.proxy.ProxyFactory;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2012-10-17
+ * @since 2014-8-20
  */
-public class JVMCacheBusterGenerator implements CacheBusterGenerator {
-	private static final String TIMESTAMP = System.currentTimeMillis() + "";
-
-	public String getCacheBuster(String param) throws Exception {
-		return (StringUtils.isEmpty(param)) ? TIMESTAMP : (param + TIMESTAMP);
+public class JavaAssistClassLoader {
+	public static ProxyFactory.ClassLoaderProvider createJavaAssistClassLoader() {
+		ProxyFactory.classLoaderProvider = new ProxyFactory.ClassLoaderProvider() {
+			public ClassLoader get(ProxyFactory pf) {
+				return Thread.currentThread().getContextClassLoader();
+			}
+		};
+		return ProxyFactory.classLoaderProvider;
 	}
-
 }
