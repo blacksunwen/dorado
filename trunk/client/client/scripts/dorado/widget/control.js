@@ -507,6 +507,10 @@
 				this._actualVisible = !dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
 
 				dorado.widget.Component.prototype.constructor.call(this, config);
+			},
+			
+			_constructor: function(config) {
+				dorado.widget.Component.prototype._constructor.call(this, config);
 
 				if (dorado.Object.isInstanceOf(this, dorado.widget.FloatControl) && this._floating) {
 					this._actualVisible = false;
@@ -534,9 +538,6 @@
 					if (isFloatControl) {
 						floating = config && config.floating;
 					}
-				}
-				if (floating != undefined) {
-					this.set("floating", floating);
 				}
 				return lazyInit;
 			},
