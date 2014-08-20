@@ -722,7 +722,7 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 				},
 				onClick: function() {
 					panel.close();
-				},
+				}
 			}), 104);
 		}
 	},
