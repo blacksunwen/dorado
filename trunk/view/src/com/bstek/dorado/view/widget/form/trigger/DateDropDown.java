@@ -26,9 +26,8 @@ import com.bstek.dorado.view.annotation.Widget;
  */
 @Widget(name = "DateDropDown", category = "Trigger",
 		dependsPackage = "base-widget-desktop", autoGenerateId = true)
-@ClientObject(prototype = "dorado.widget.DateDropDown",
-		shortTypeName = "DateDropDown")
-@ClientEvents({ @ClientEvent(name = "onFilterDate") })
+@ClientObject(prototype = "dorado.widget.DateDropDown", shortTypeName = "DateDropDown")
+@ClientEvents({ @ClientEvent(name = "onFilterDate"), @ClientEvent(name = "onRefreshDateCell") })
 @XmlNode(clientTypes = ClientType.DESKTOP)
 public class DateDropDown extends DropDown {
 	private boolean showTimeSpinner;
