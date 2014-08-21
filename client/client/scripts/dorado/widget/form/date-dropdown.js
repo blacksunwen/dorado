@@ -1210,7 +1210,18 @@
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
 			 */
-			onFilterDate: {}
+			onFilterDate: {},
+
+			/**
+			 * 当日期单元格要刷新的时候会触发此事件。
+			 * @param {Object} self 事件的发起者，即组件本身。
+			 * @param {Object} arg 事件参数。
+			 * @param {HtmlElement} arg.cell 要刷新的cell的dom。
+			 * @param {Date} arg.date 要刷新的cell的日期。
+			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
+			 * @event
+			 */
+			onRefreshDateCell: {}
 		},
 		
 		createDropDownBox: function() {
@@ -1237,6 +1248,9 @@
 					},
 					onFilterDate: function(self, arg) {
 						dropDown.fireEvent("onFilterDate", dropDown, arg);
+					},
+					onRefreshDateCell: function(self, arg) {
+						dropDown.fireEvent("onRefreshDateCell", dropDown, arg);
 					}
 				}
 			});
