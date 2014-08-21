@@ -99,7 +99,17 @@ dorado.TagManager = {
 	 */
 	find: function(tags) {
 		var info = this._map[tags];
-		return new dorado.ObjectGroup(info ? info.list : null);
+		if (info) {
+			var objects = info.list, object;
+			for (var i = 0, len = objects.length; i < len; i++) {
+				object = objects[i];
+				if (object._lazyInit) object._lazyInit();
+			}
+			return new dorado.ObjectGroup(objects);
+		}
+		else {
+			return new dorado.ObjectGroup(null);
+		}
 	}
 };
 

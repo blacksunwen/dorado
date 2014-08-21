@@ -40,6 +40,13 @@
   overflow: hidden;
   width: 22px;
   height: 22px;
+  border-width: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.d-text-box .d-trigger .d-icon {
+  margin-top: 0;
 }
 .d-text-box .blank-text {
   font-style: italic;
@@ -104,6 +111,27 @@
   border-color: #d6d6d6;
   background: #efefef;
 }
+.d-text-box .d-trigger {
+  color: #000000;
+  background-color: rgba(0, 0, 0, 0);
+}
+.d-text-box .d-trigger:hover {
+  color: #ffffff;
+  background-color: #15a4fa;
+}
+.d-text-box .d-trigger:active {
+  -webkit-transition-duration: 0;
+  -moz-transition-duration: 0;
+  -ms-transition-duration: 0;
+  -o-transition-duration: 0;
+  transition-duration: 0;
+  color: #ffffff;
+  background-color: #058fe1;
+}
+.d-text-box .d-trigger.d-opened {
+  color: #ffffff;
+  background-color: #058fe1;
+}
 /* text-area */
 .d-text-area {
   height: 26px;
@@ -128,6 +156,13 @@
 }
 .d-text-area .d-trigger-panel .d-trigger {
   display: block;
+  border-width: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.d-text-area .d-trigger-panel .d-trigger .d-icon {
+  margin-top: 0;
 }
 .d-text-area .d-dirty-flag {
   width: 0;
@@ -183,23 +218,15 @@
   border-color: #d6d6d6;
   background: #efefef;
 }
-/* trigger */
-.d-trigger {
-  border-width: 0;
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
+.d-text-area .d-trigger {
   color: #000000;
   background-color: rgba(0, 0, 0, 0);
 }
-.d-trigger .d-icon {
-  margin-top: 0;
-}
-.d-trigger:hover {
+.d-text-area .d-trigger:hover {
   color: #ffffff;
   background-color: #15a4fa;
 }
-.d-trigger:active {
+.d-text-area .d-trigger:active {
   -webkit-transition-duration: 0;
   -moz-transition-duration: 0;
   -ms-transition-duration: 0;
@@ -208,10 +235,11 @@
   color: #ffffff;
   background-color: #058fe1;
 }
-.d-trigger.d-opened {
+.d-text-area .d-trigger.d-opened {
   color: #ffffff;
   background-color: #058fe1;
 }
+/* trigger */
 .d-trigger-icon-drop {
   line-height: 22px;
   text-align: center;
