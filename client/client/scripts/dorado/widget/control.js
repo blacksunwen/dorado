@@ -687,8 +687,10 @@
 				}
 
 				var actualVisible = this.isActualVisible();
-				if (this._parentLayout && this._hideMode == "display") {
-					this._parentLayout.refreshControl(this);
+				if (this._parentLayout) {
+					if (this._hideMode == "display" && this._currentVisible != this._visible) {
+						this._parentLayout.refreshControl(this);
+					}
 					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
 						this.refresh();
 					}

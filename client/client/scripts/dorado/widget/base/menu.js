@@ -201,6 +201,7 @@
 							subGroup.destroy();
 						}
 					}
+					item.unrender();
 					item.doOnRemove && item.doOnRemove();
 					menu.unregisterInnerViewElement(item);
 					items.removeAt(i);
@@ -800,7 +801,7 @@
 				if (!menu._noContentEl) {
 					menu._noContentEl = document.createElement("div");
 					menu._noContentEl.className = "no-content-group";
-					menu._noContentEl.innerHTML = "&lt;Empty Panel&gt;";
+					menu._noContentEl.innerHTML = $resource("dorado.baseWidget.MenuEmptyItem");
 					dom.appendChild(menu._noContentEl);
 				}
 				$fly(dom).addClass(menu._className + "-no-content");

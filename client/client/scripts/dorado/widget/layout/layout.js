@@ -358,7 +358,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 					this._ignoreControlSizeChange = false;
 				}
 			}
-			else if (containerDom && this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight)) {
+			else if (containerDom && (!this._lazyRenderChild || this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight))) {
 				this._ignoreControlSizeChange = true;
 				control.replace(region.fakeDom);
 				this._ignoreControlSizeChange = false;

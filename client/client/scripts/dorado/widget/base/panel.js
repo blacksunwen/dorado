@@ -246,7 +246,6 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 								if (collapseButton) {
 									collapseButton.set("iconClass", "expand-icon");
 								}
-								;
 								beforeCollapsedChange(panel, collapsed);
 							},
 							step: function() {
@@ -265,8 +264,8 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 						if (collapseButton) {
 							collapseButton.set("iconClass", "collapse-icon");
 						}
-						beforeCollapsedChange(panel, collapsed);
 						$fly(doms.body).css("display", "");
+						beforeCollapsedChange(panel, collapsed);
 						onCollapsedChange(panel, collapsed);
 					}
 					else {
