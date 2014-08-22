@@ -36,13 +36,21 @@
 			//view.render(document.body);
 			//tip.show();
 
-			dorado.TipManager.initTip(document.getElementById("tip-target1"), {
-				text: "外部的Tooltip"
+//			dorado.TipManager.initTip(document.getElementById("tip-target1"), {
+//				text: "外部的Tooltip"
+//			});
+
+			$(document.getElementById("tip-target1")).hover(function() {
+				this.style.color = "red";
+				console.log("xxx")
+			}, function() {
+				this.style.color = "";
 			});
 
 			dorado.TipManager.initTip(document.getElementById("inner-target"), {
 				text: "内部的ToolTip",
-				icon: "warning-icon"
+				icon: "warning-icon",
+				stopPropagation: false
 			});
 
 			dorado.TipManager.initTip(document.getElementById("tip-target2"), {
@@ -82,7 +90,8 @@
 			dorado.TipManager.initTip(document.getElementById("tip-target6"), {
 				text: "测试一下2",
 				arrowDirection: "right",
-				trackMouse: true
+				trackMouse: true,
+				stopPropagation: false
 			});
 		});
 	</script>

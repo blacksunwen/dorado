@@ -20,8 +20,8 @@
 		if ((tip._text || tip._content) && !tip._visible) {
 			dorado.TipManager.showTip(element, tip._showDelay || 0, event);
 		}
-		
-		event.stopImmediatePropagation();
+		if (tip._stopPropagation !== false)
+			event.stopImmediatePropagation();
 	};
 	
 	var elementMouseMove = function(event) {
@@ -29,7 +29,8 @@
 		if (tip) {
 			if (tip._showTimer) {
 				tip._latestEvent = event;
-				event.stopImmediatePropagation();
+				if (tip._stopPropagation !== false)
+					event.stopImmediatePropagation();
 			}
 			if (tip._trackMouse && tip._dom && ($fly(tip._dom).css("display") != "none")) {
 				tip._updatePosition(event);
@@ -153,7 +154,9 @@
 			 * @default false
 			 * @type boolean
 			 */
-			trackMouse: {}
+			trackMouse: {},
+
+			stopPropagation: {}
 		},
 		
 		isLazyInit: function() {
