@@ -228,13 +228,13 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 			var orginalZIndex;
 			if (panel._rendered) {
 				if (collapsed) {
-					if (animate === false || animate === undefined) {
+					if (!animate) {
 						$fly(dom).addClass(panel._className + "-collapsed");
 						if (collapseButton) {
 							collapseButton.set("iconClass", "expand-icon");
 						}
-						beforeCollapsedChange(panel, collapsed);
 						$fly(doms.body).css("display", "none");
+						beforeCollapsedChange(panel, collapsed);
 						onCollapsedChange(panel, collapsed);
 					}
 					else {
@@ -259,7 +259,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 					}
 				}
 				else {
-					if (animate === false || animate === undefined) {
+					if (!animate) {
 						$fly(dom).removeClass(panel._className + "-collapsed");
 						if (collapseButton) {
 							collapseButton.set("iconClass", "collapse-icon");

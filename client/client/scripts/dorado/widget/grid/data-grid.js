@@ -510,8 +510,8 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
 					// 此处items._observer != this._dataSet说明当前Grid中的数据已不再属于DataSet
 					var b = (!items || items._observer != this._dataSet ||
-					arg.entity.parent == items ||
-					dorado.DataUtil.isOwnerOf(items, arg.newValue));
+								arg.entity.parent == items ||
+								dorado.DataUtil.isOwnerOf(items, arg.newValue));
 					if (!b && this._columnsInfo.propertyPaths) {
 						b = dorado.DataUtil.isOwnerOf(arg.entity, items);
 						if (b && arg.property) {
@@ -591,7 +591,7 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:{
 					var items = this._itemModel.getItems();
-					if (!items || items._observer != this._dataSet || dorado.DataUtil.isOwnerOf(items, arg.entity)) {
+					if (!items || items._observer != this._dataSet || arg.entity.parent !== items) {
 						this.refresh(true);
 					} else {
 						var entity = arg.entity;
@@ -630,7 +630,7 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
 					var items = this._itemModel.getItems();
-					if (!items || items._observer != this._dataSet) {
+					if (!items || items._observer != this._dataSet || arg.entity.parent !== items) {
 						this.refresh(true);
 					} else {
 						if (this._itemModel.groups) {

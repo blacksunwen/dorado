@@ -158,6 +158,23 @@ dorado.util.KeyedArray = $class(/** @scope dorado.util.KeyedArray.prototype */{
 	},
 	
 	/**
+	 * 从键值对数组中移除指定键值。
+	 * @param {String} key 要移除元素的键值。
+	 * @return {Object} 返回从数组中移除移除的对象.
+	 */
+	removeKey: function(key) {
+		var ctx, data = this._keyMap[key];
+		if (this.beforeRemove) ctx = this.beforeRemove(data); 
+		var i = this.items.remove(data);
+		if (i >= 0) {
+			this.size--;
+			if (key) delete this._keyMap[key];
+		}
+		if (this.afterRemove) this.afterRemove(data, ctx); 
+		return data;
+	},
+	
+	/**
 	 * 根据对象返回其在键值对数组中的下标位置。如果指定的对象不在键值对数组中将返回-1。
 	 * @param {Object} data 查找的对象。
 	 * @return {int} 下标位置。
