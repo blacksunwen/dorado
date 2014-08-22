@@ -95,10 +95,12 @@ dorado.widget.PropertyDataControl = $extend(dorado.widget.DataControl, /** @scop
 			firstResultOnly: true,
 			acceptAggregation: false
 		};
-		if (typeof options == "String") {
-			realOptions.loadMode = options;
-		} else {
-			dorado.Object.apply(realOptions, options);
+		if (options) {
+			if (typeof options == "String") {
+				realOptions.loadMode = options;
+			} else {
+				dorado.Object.apply(realOptions, options);
+			}
 		}
 		return $invokeSuper.call(this, [realOptions]);
 	},

@@ -687,21 +687,14 @@
 				}
 
 				var actualVisible = this.isActualVisible();
-				if (this._parentLayout) {
-					if (this._hideMode == "display" && this._currentVisible != this._visible) {
-						this._parentLayout.refreshControl(this);
-					}
-					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
-						this.refresh();
-					}
+				if (this._parentLayout && this._hideMode == "display" && this._currentVisible != this._visible) {
+					this._parentLayout.refreshControl(this);
+				}				
+				if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
+					this.refresh();
 				}
 				else {
-					if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
-						this.refresh();
-					}
-					else {
-						this.resetAppearance(this._dom);
-					}
+					this.resetAppearance();
 				}
 				notifyChildren(this, actualVisible);
 			},
@@ -771,8 +764,10 @@
 				}
 			},
 			
-			resetAppearance: function(dom) {
-				if (!dom) return;
+			resetAppearance: function() {
+				if (!this._dom) return;
+				
+				var dom = this._dom;
 				if (this._currentVisible !== undefined) {
 					if (this._currentVisible != this._visible) {
 						if (this._hideMode == "display") {
@@ -800,11 +795,12 @@
 						}
 					}
 				}
+				this._currentVisible = !!this._visible;
 			},
 
 			_refreshDom: function(dom) {
 				dom.doradoUniqueId = this._uniqueId;
-				this.resetAppearance(dom);
+				this.resetAppearance();
 
 				var tip = this.get("tip");
 				if (tip) {
@@ -837,8 +833,6 @@
 				this.applyDraggable(dom);
 				this.applyDroppable(dom);
 				$invokeSuper.call(this, [dom]);
-
-				this._currentVisible = !!this._visible;
 			},
 
 			updateModernScroller: function(delay) {

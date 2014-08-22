@@ -76,8 +76,7 @@
 		if (!this._attached || this._disableRendering) return;
 		this.refresh();
 	};
-	p.removeControl = function(control) {
-		this._regions.remove(control);
+	p.onRemoveControl = function(control) {
 		if (!this._attached || this._disableRendering) return;
 		this.refresh();
 	};
@@ -297,14 +296,7 @@
 
 		ATTRIBUTES: /** @scope dorado.widget.layout.VBoxLayout.prototype */ {
 			
-			lazyRenderChild: {
-				setter: function(lazyRenderChild) {
-					if (this._rendered) {
-						throw new dorado.AttributeException("dorado.widget.AttributeWriteBeforeReady", "lazyRenderChild");
-					}
-					this._lazyRenderChild = lazyRenderChild;
-				}
-			},
+			lazyRenderChild: {},
 
 			/**
 			 * left、center、right

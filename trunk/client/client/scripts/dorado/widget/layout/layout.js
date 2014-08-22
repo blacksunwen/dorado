@@ -197,6 +197,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this._attached = true;
 			var dom = this.getDom();
 			if (dom.parentNode != containerElement) containerElement.appendChild(dom);
+			this.refresh();
 		}
 	},
 
@@ -288,7 +289,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	removeControl: function(control) {
 		control._parentLayout = null;
 		if (this.onRemoveControl) this.onRemoveControl(control);
-		this._regions.remove(control);
+		this._regions.removeKey(control._uniqueId);
 	},
 
 	/**
@@ -404,7 +405,8 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			if (!container || !dom) return;
 
 			if (container.isActualVisible()) {
-				// this._ignoreControlSizeChange = true;
+				// TODO: 临时屏蔽测试，如果出现布局问题应首先怀疑此处
+				this._ignoreControlSizeChange = true;
 				if (this.doRefreshRegion) {
 					var currentWidth = dom.offsetWidth, currentHeight = dom.offsetHeight;
 					this.doRefreshRegion(region);
@@ -412,7 +414,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 						container.onContentSizeChange();
 					}
 				}
-				// this._ignoreControlSizeChange = false;
+				this._ignoreControlSizeChange = false;
 			}
 			else {
 				container.refresh(); // 由于container目前不可见，因此本次刷新动作实际会被搁置到可见时再执行。
@@ -529,14 +531,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 
 	ATTRIBUTES: /** @scope dorado.widget.layout.NativeLayout.prototype */ {
 		
-		lazyRenderChild: {
-			setter: function(lazyRenderChild) {
-				if (this._rendered) {
-					throw new dorado.AttributeException("dorado.widget.AttributeWriteBeforeReady", "lazyRenderChild");
-				}
-				this._lazyRenderChild = lazyRenderChild;
-			}
-		},
+		lazyRenderChild: {},
 		
 		container: {
 			setter: function(container) {
@@ -600,8 +595,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 		
 		var regions = this._regions.items, region;
 		for (var i = 0, len = regions.length; i < len; i++) {
-			region = regions[i];
-			var constraint = region.constraint;
+			region = regions[i];			
 			this.renderControl(region, dom, false, false);
 		}
 	},

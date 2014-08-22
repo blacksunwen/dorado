@@ -178,7 +178,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 				lastFilterValue = this._lastFilterValue;
 			} else {
 				delete this._lastFilterValue;
-				dataSet._sysParameter && dataSet._sysParameter.remove("filterValue");
+				dataSet && dataSet._sysParameter && dataSet._sysParameter.remove("filterValue");
 			}
 			doOpen(this._reloadDataOnOpen || lastFilterValue != null);
 		}

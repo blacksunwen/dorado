@@ -482,7 +482,7 @@
 			this._contentContainerVisible = visible;
 
 			var layout = this._layout;
-			if (layout && visible && !(layout._regions.size == 0 && !layout._rendered)) {
+			if (this._rendered && layout && visible && !(layout._regions.size == 0 && !layout._rendered)) {
 				layout.onAttachToDocument(this.getContentContainer());
 			}
 		},

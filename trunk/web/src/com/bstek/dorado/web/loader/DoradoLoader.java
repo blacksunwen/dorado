@@ -445,7 +445,7 @@ public class DoradoLoader {
 
 		Resource resource;
 
-		boolean ignoreOriginContextConfigs = true;
+		boolean ignoreOriginContextConfigs = false;
 		intParam = servletContext
 				.getInitParameter(IGNORE_ORIGIN_CONTEXT_CONFIGS);
 		if (intParam != null) {

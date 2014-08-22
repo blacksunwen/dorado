@@ -271,46 +271,51 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				if (old !== comp) {
 					throw new dorado.ResourceException("dorado.widget.ComponentIdNotUnique", id, this._id);
 				}
-				else {
+				else if (!comp._lazyInit) {
 					return;
 				}
 			}
-			this._identifiedViewElements[id] = comp;
-			
-			if (this.getListenerCount("onViewElementRegistered")) {
-				this.fireEvent("onViewElementRegistered", this, {
-					viewElement: comp
-				});
+			else {
+				this._identifiedViewElements[id] = comp;
 			}
-
-			/**
-			 * @deprecated
-			 */
-			if (this.getListenerCount("onComponentRegistered")) {
-				this.fireEvent("onComponentRegistered", this, {
-					component: comp
-				});
+			
+			if (!comp._lazyInit) { 
+				if (this.getListenerCount("onViewElementRegistered")) {
+					this.fireEvent("onViewElementRegistered", this, {
+						viewElement: comp
+					});
+				}
+	
+				/**
+				 * @deprecated
+				 */
+				if (this.getListenerCount("onComponentRegistered")) {
+					this.fireEvent("onComponentRegistered", this, {
+						component: comp
+					});
+				}
 			}
 		},
 
 		unregisterViewElement: function(id) {
 			if (!id) return;
 
-			if (this.getListenerCount("onViewElementUnregistered")) {
-				var comp = this._identifiedViewElements[id];
-				this.fireEvent("onViewElementUnregistered", this, {
-					component: comp
-				});
-			}
-
-			/**
-			 * @deprecated
-			 */
-			if (this.getListenerCount("onComponentUnregistered")) {
-				var comp = this._identifiedViewElements[id];
-				this.fireEvent("onComponentUnregistered", this, {
-					component: comp
-				});
+			var comp = this._identifiedViewElements[id];
+			if (!comp._lazyInit) { 
+				if (this.getListenerCount("onViewElementUnregistered")) {
+					this.fireEvent("onViewElementUnregistered", this, {
+						component: comp
+					});
+				}
+	
+				/**
+				 * @deprecated
+				 */
+				if (this.getListenerCount("onComponentUnregistered")) {
+					this.fireEvent("onComponentUnregistered", this, {
+						component: comp
+					});
+				}
 			}
 			delete this._identifiedViewElements[id];
 		},

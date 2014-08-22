@@ -149,7 +149,7 @@
 					this.registerViewElement(id, this);
 				}
 				else {
-					var view = this._view || window._DEFAULT_VIEW;
+					var view = window._DEFAULT_VIEW;
 					if (view) view.registerViewElement(id, this);
 				}
 			}
