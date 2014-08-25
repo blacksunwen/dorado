@@ -375,6 +375,9 @@
         },
 
         addTagDom: function (index) {
+			//TODO FireFox浏览器下float:right 折行显示问题,占时通过增加Class来解决 后续优化
+			var closeClassName=dorado.Browser.mozilla?"close mozilla-close-support":"close";
+
             var tagDom = $DomUtils.xCreate({
                 tagName: "DIV",
                 className: "tag",
@@ -385,7 +388,7 @@
                     },
                     {
                         tagName: "SPAN",
-                        className: "close"
+                        className: closeClassName
                     }
                 ]
             });
