@@ -301,7 +301,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			if (!id) return;
 
 			var comp = this._identifiedViewElements[id];
-			if (!comp._lazyInit) { 
+			if (comp && !comp._lazyInit) { 
 				if (this.getListenerCount("onViewElementUnregistered")) {
 					this.fireEvent("onViewElementUnregistered", this, {
 						component: comp
