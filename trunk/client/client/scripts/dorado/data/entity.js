@@ -485,11 +485,10 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 								invokeCallback = false;
 							} else {
 								value = pipe.get();
+								value = transferAndReplaceIf(this, propertyDef, value, true);
 
 								eventArg.data = value;
 								propertyDef.fireEvent("onLoadData", propertyDef, eventArg);
-
-								value = transferAndReplaceIf(this, propertyDef, value, true);
 							}
 						}
 					}
