@@ -13,7 +13,10 @@
 package com.bstek.dorado.web.resolver;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +30,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.springframework.web.servlet.View;
 
 import com.bstek.dorado.core.Constants;
 
@@ -34,18 +38,15 @@ import com.bstek.dorado.core.Constants;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-31
  */
-public class ErrorPageResolver extends AbstractTextualResolver {
-	private static Log logger = LogFactory.getLog(ErrorPageResolver.class);
+public class ErrorPageView implements View {
+	private static Log logger = LogFactory.getLog(ErrorPageView.class);
 
-	public static final String EXCEPTION_ATTRIBUTE = "exception";
+	public static final String JAVAX_EXCEPTION_ATTRIBUTE = "javax.servlet.error.exception";
+	public static final String VELOCITY_EXCEPTION_ATTRIBUTE = "exception";
 
 	private VelocityEngine velocityEngine;
 	private Properties velocityProperties;
 	private StringEscapeHelper stringEscapeHelper = new StringEscapeHelper();
-
-	public ErrorPageResolver() {
-		setContentType(HttpConstants.CONTENT_TYPE_HTML);
-	}
 
 	private VelocityEngine getVelocityEngine() throws Exception {
 		if (velocityEngine == null) {
@@ -64,15 +65,11 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 		return velocityEngine;
 	}
 
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		try {
-			doExcecute(request, response);
-		} catch (Throwable t) {
-			// 确保不会因再次抛出异常而进入死锁状态
-			logger.error(t, t);
-		}
+	protected PrintWriter getWriter(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		OutputStream out = response.getOutputStream();
+		return new PrintWriter(new OutputStreamWriter(out,
+				Constants.DEFAULT_CHARSET));
 	}
 
 	private void doExcecute(HttpServletRequest request,
@@ -81,7 +78,8 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 		response.setCharacterEncoding(Constants.DEFAULT_CHARSET);
 
 		Context velocityContext = new VelocityContext();
-		Exception e = (Exception) request.getAttribute(EXCEPTION_ATTRIBUTE);
+		Exception e = (Exception) request
+				.getAttribute(JAVAX_EXCEPTION_ATTRIBUTE);
 		if (e != null) {
 			logger.error(e, e);
 
@@ -104,7 +102,7 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 					.getName());
 
 			velocityContext.put("message", message);
-			velocityContext.put(EXCEPTION_ATTRIBUTE, throwable);
+			velocityContext.put(VELOCITY_EXCEPTION_ATTRIBUTE, throwable);
 		} else {
 			velocityContext.put("message",
 					"Can not gain exception information!");
@@ -120,6 +118,20 @@ public class ErrorPageResolver extends AbstractTextualResolver {
 		} finally {
 			writer.flush();
 			writer.close();
+		}
+	}
+
+	public String getContentType() {
+		return HttpConstants.CONTENT_TYPE_HTML;
+	}
+
+	public void render(Map<String, ?> model, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		try {
+			doExcecute(request, response);
+		} catch (Throwable t) {
+			// 确保不会因再次抛出异常而进入死锁状态
+			logger.error(t, t);
 		}
 	}
 }
