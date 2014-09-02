@@ -1764,9 +1764,7 @@
 				}
 			}
 
-			if (dorado.Browser.isTouch && this._modernScroller) {
-				this._modernScroller.update();
-			}
+			if (this._modernScroller) this._modernScroller.update();
 		},
 
 		onClick: dorado._NULL_FUNCTION,
