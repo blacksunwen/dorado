@@ -24,4 +24,5 @@
 }
 .d-hbox-layout {
   display: inline-block;
+  text-align: left;
 }

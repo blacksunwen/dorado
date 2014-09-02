@@ -28,11 +28,10 @@
 							exp = bindingInfos[j];
 							var fc = exp.charAt(0), count;
 							
-							if (exp === "view.onCreate" && $setting["widget.bindControllerAfterChildrenCreate"]) {
-								var oldIgnore = view._ignoreOnCreateListeners;
-								view._ignoreOnCreateListeners = true;
+							if (exp === "view.onCreate" && $setting["widget.fireViewOnCreateForOldController"]) {
+								view._ignoreOnCreateListeners ++;
 								count = view.bindByExpression(exp, func);
-								view._ignoreOnCreateListeners = oldIgnore;
+								view._ignoreOnCreateListeners --;
 							}
 							else {
 								count = view.bindByExpression(exp, func);
@@ -63,7 +62,7 @@
 									else {
 										liveBindings.push({
 											id: id,
-											subObject: expSections.slice(1, expSections.length - 2).join('.'),
+											subObject: expSections.slice(1, expSections.length - 1).join('.'),
 											event: expSections[expSections.length - 1],
 											listener: func
 										});
@@ -94,7 +93,7 @@
 								else {
 									liveBindings.push({
 										tag: tag,
-										subObject: expSections.slice(1, expSections.length - 2).join('.'),
+										subObject: expSections.slice(1, expSections.length - 1).join('.'),
 										event: expSections[expSections.length - 1],
 										listener: func
 									});

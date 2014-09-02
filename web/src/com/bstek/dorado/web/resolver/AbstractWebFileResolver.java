@@ -258,7 +258,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 
 				// 告知Client端此资源的最后修改时间
 				SimpleDateFormat dateFormat = new SimpleDateFormat(
-						"EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+						"EEE, dd MMM yyyy HH:mm:ss z", Locale.UK);
 				dateFormat.setTimeZone(GMT_TIME_ZONE);
 
 				response.addHeader(HttpConstants.LAST_MODIFIED,
@@ -270,8 +270,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 				try {
 					for (int i = 0; i < resources.length; i++) {
 						if (i > 0 && contentType.contains("text")) {
-							out.write("\n".getBytes(response
-									.getCharacterEncoding()));
+							out.write("\n".getBytes());
 						}
 						outputFile(out, resources[i]);
 					}

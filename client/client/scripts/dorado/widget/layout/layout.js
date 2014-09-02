@@ -146,6 +146,24 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	getRegionDom: function(region) {
 		if (region) return this._domCache[region.id];
 	},
+	
+	ensureControlInited: function(control, region) {
+		if (control._lazyInit) {
+			control._lazyInit();
+			region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
+		}
+	},
+	
+	ensureControlsInited: function() {
+		if (this._lazyInitControls) {
+			var control;
+			for (var i = 0, len = this._lazyInitControls.length; i < len; i++) {
+				control = this._lazyInitControls[i];
+				this.ensureControlInited(control, this.getRegion(control));
+			}
+			delete this._lazyInitControls;
+		}
+	},
 
 	/**
 	 * 刷新布局。
@@ -153,25 +171,19 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	refresh: function() {
 		if (this._duringRefreshDom) return;
 		this._duringRefreshDom = true;
-		if (this._attached) {
-			if (this._lazyInitControls) {
-				var control;
-				for (var i = 0, len = this._lazyInitControls.length; i < len; i++) {
-					control = this._lazyInitControls[i];
-					if (control._lazyInit) {
-						control._lazyInit();
-					}
-					var region = this.getRegion(control);
-					region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
-				}
-				delete this._lazyInitControls;
+		if (this._attached) {		
+			var regions = this._regions.items, region, control;
+			for (var i = 0, len = regions.length; i < len; i++) {
+				region = regions[i];
+				control = region.control;
+				region.constraint = this.preprocessLayoutConstraint(control._layoutConstraint, control);
 			}
 			
-			delete this.fakeDoms;
+			delete this.overflowedDoms;
 			this.refreshDom(this.getDom());
 			
 			if (this._container) {
-				if (this.fakeDoms) {
+				if (this.overflowedDoms) {
 					var layout = this;
 					this._container.bind("onScroll.layout", function() {
 						layout.onScroll();
@@ -197,7 +209,9 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 			this._attached = true;
 			var dom = this.getDom();
 			if (dom.parentNode != containerElement) containerElement.appendChild(dom);
-			this.refresh();
+			
+			// TODO: 导致container中的layout重新布局
+			// this.refresh();
 		}
 	},
 
@@ -261,21 +275,15 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	 * @return {Object} 新增的布局区域描述对象。
 	 */
 	addControl: function(control) {
-		var region;
+		var region = {
+			id: dorado.Core.newId(),
+			control: control,
+			constraint: this.preprocessLayoutConstraint(control._layoutConstraint, control)
+		};
+		
 		if (control._lazyInit) {
-			region = {
-				id: dorado.Core.newId(),
-				control: control
-			};
 			if (!this._lazyInitControls) this._lazyInitControls = [];
 			this._lazyInitControls.push(control);
-		}
-		else {
-			region = {
-				id: dorado.Core.newId(),
-				control: control,
-				constraint: this.preprocessLayoutConstraint(control._layoutConstraint, control)
-			};
 		}
 		this._regions.insert(region);
 		control._parentLayout = this;
@@ -289,7 +297,8 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	removeControl: function(control) {
 		control._parentLayout = null;
 		if (this.onRemoveControl) this.onRemoveControl(control);
-		this._regions.removeKey(control._uniqueId);
+		var region = this._regions.removeKey(control._uniqueId);
+		if (region.fakeDom) $fly(region.fakeDom).remove();
 	},
 
 	/**
@@ -331,56 +340,18 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 
 	renderControl: function(region, regionDom, autoWidth, autoHeight) {
-		this.resetControlDimension.apply(this, [region, regionDom, autoWidth, autoHeight]);
-
-		var shouldRender = false, control = region.control;
-		if (!control._rendered) {
-			var containerDom = this._dom.parentNode, fakeDom = region.fakeDom;
-			if (!fakeDom) {
-				if (containerDom && this._lazyRenderChild && containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight)) {
-					fakeDom = document.createElement("DIV");
-					region.fakeDom = fakeDom;
-
-					var properHeight = control.getRealHeight();
-					if (!properHeight) properHeight = FAKE_PROPER_HEIGHT;
-					$fly(fakeDom).css({
-						width: control.getRealWidth(),
-						height: properHeight
-					});
-					
-					regionDom.appendChild(fakeDom);
-					
-					if (!this.fakeDoms) this.fakeDoms = [];
-					this.fakeDoms.push(fakeDom);
-				}
-				else {
-					this._ignoreControlSizeChange = true;
-					control.render(regionDom);
-					this._ignoreControlSizeChange = false;
-				}
-			}
-			else if (containerDom && (!this._lazyRenderChild || this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight))) {
-				this._ignoreControlSizeChange = true;
+		this.resetControlDimension(region, regionDom, autoWidth, autoHeight);
+		var control = region.control;
+		if (!control._dom || control._dom.parentNode != regionDom) {
+			this._ignoreControlSizeChange = true;
+			if (region.fakeDom) {
 				control.replace(region.fakeDom);
-				this._ignoreControlSizeChange = false;
-
+				$fly(region.fakeDom).remove();
 				delete region.fakeDom;
 			}
 			else {
-				var properHeight = control.getRealHeight();
-				if (!properHeight) properHeight = FAKE_PROPER_HEIGHT;
-				$fly(fakeDom).css({
-					width: control.getRealWidth(),
-					height: properHeight
-				});
-				
-				if (!this.fakeDoms) this.fakeDoms = [];
-				this.fakeDoms.push(fakeDom);
+				control.render(regionDom);
 			}
-		}
-		else if (control._dom.parentNode != regionDom) {
-			this._ignoreControlSizeChange = true;
-			control.render(regionDom);
 			this._ignoreControlSizeChange = false;
 		}
 	},
@@ -496,12 +467,12 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	},
 	
 	onScroll: function() {
-		if (!this._lazyRenderChild || !this.fakeDoms) return;
+		if (!this._lazyRenderChild || !this.overflowedDoms) return;
 		
 		dorado.Toolkits.setDelayedAction(this, "$onScrollTimerId", function() {
-			var containerDom = this._dom.parentNode, fakeDoms = this.fakeDoms;
-			for(var i = 0; i < fakeDoms.length; i++) {
-				var fakeDom = fakeDoms[i];
+			var containerDom = this._dom.parentNode, overflowedDoms = this.overflowedDoms;
+			for(var i = 0; i < overflowedDoms.length; i++) {
+				var fakeDom = overflowedDoms[i];
 				if (fakeDom && this.getFakeDomOffsetTop(fakeDom) < (containerDom.scrollTop + containerDom.clientHeight)) {
 					this.refresh();
 					break;
@@ -593,17 +564,71 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			delete this._style;
 		}
 		
-		var regions = this._regions.items, region;
+		var containerDom = this._dom.parentNode;
+		var regions = this._regions.items, region, control, overflowed;
 		for (var i = 0, len = regions.length; i < len; i++) {
 			region = regions[i];			
-			this.renderControl(region, dom, false, false);
+
+			control = region.control;
+			fakeDom = region.fakeDom;
+			if (region.constraint == dorado.widget.layout.Layout.NONE_LAYOUT_CONSTRAINT) {
+				if (control._dom && control._dom.parentNode != dom) {
+					dom.appendChild(control._dom);
+				}
+				else if (!fakeDom) {
+					region.fakeDom = fakeDom = document.createElement("DIV");
+					fakeDom.style.display = "none";
+					dom.appendChild(fakeDom);
+				}
+			}
+			else if (!control._rendered) {
+				if (!fakeDom) {
+					if (containerDom && this._lazyRenderChild &&
+							(overflowed || containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight))) {
+						region.fakeDom = fakeDom = document.createElement("DIV");
+
+						var properHeight = control.getRealHeight();
+						if (!properHeight) properHeight = FAKE_PROPER_HEIGHT;
+						$fly(fakeDom).css({
+							width: control.getRealWidth(),
+							height: properHeight
+						});
+						
+						dom.appendChild(fakeDom);
+						
+						if (!this.overflowedDoms) this.overflowedDoms = [];
+						this.overflowedDoms.push(fakeDom);
+						overflowed = true;
+					}
+				}
+				else if (containerDom && this._lazyRenderChild &&
+						(overflowed || this.getFakeDomOffsetTop(fakeDom) > (containerDom.scrollTop + containerDom.clientHeight))) {
+					var properHeight = control.getRealHeight();
+					if (!properHeight) properHeight = FAKE_PROPER_HEIGHT;
+					$fly(fakeDom).css({
+						width: control.getRealWidth(),
+						height: properHeight
+					});
+					
+					if (!this.overflowedDoms) this.overflowedDoms = [];
+					this.overflowedDoms.push(fakeDom);
+					overflowed = true;
+				}
+				
+				if (!overflowed) {
+					this.ensureControlInited(control, region);
+				}
+			}
+			
+			if (!overflowed) {
+				this.renderControl(region, dom, false, false);
+			}
 		}
 	},
 
 	onAddControl: function(control) {
 		if (!this._attached || this._disableRendering) return;
-		var region = this.getRegion(control);
-		if (region) this.renderControl(region, this._dom, false, false);
+		this.refresh();
 	},
 
 	onRemoveControl: function(control) {

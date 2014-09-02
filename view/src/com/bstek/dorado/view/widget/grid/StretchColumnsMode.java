@@ -17,5 +17,5 @@ package com.bstek.dorado.view.widget.grid;
  * @since 2010-10-22
  */
 public enum StretchColumnsMode {
-	off, stretchableColumns, lastColumn, allColumns, allResizeableColumns
+	auto, off, stretchableColumns, lastColumn, allColumns, allResizeableColumns
 }

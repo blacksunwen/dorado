@@ -17,12 +17,12 @@
 		<Package name="common" pattern="res-js" />
 
 		<Package name="silk" pattern="res-css"
-			baseUri=">dorado/client/resources/icons/silk">
+			baseUri=">dorado/client/resources/icons/silk" cacheable="false">
 			classpath:dorado/resources/icons/silk/silk
 		</Package>
 
 		<Package name="font-awesome-support" pattern="res-css"
-			baseUri=">dorado/client/resources/icons/font-awesome">
+			baseUri=">dorado/client/resources/icons/font-awesome" cacheable="false">
 			font-awesome:font-face
 		</Package>
 		<Package name="font-awesome" pattern="res-css" mergeRequests="false"

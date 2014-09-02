@@ -1044,6 +1044,7 @@
 			 * <p>
 			 * 可选的值包括：
 			 * <ul>
+			 * <li>auto    -    自动。当用户没有设置fixedColumnCount时按照stretchableColumns，当用户设置了fixedColumnCount时按照off来处理。</li>
 			 * <li>off    -    不启用列宽度的自动调整。</li>
 			 * <li>stretchableColumns    -    只调整那些可伸缩的列，即那些width属性设置为*的列。</li>
 			 * <li>lastColumn    -    只调整最后一列。</li>
@@ -1052,11 +1053,11 @@
 			 * </ul>
 			 * </p>
 			 * @type String
-			 * @default "stretchableColumns"
+			 * @default "auto"
 			 * @attribute
 			 */
 			stretchColumnsMode: {
-				defaultValue: "stretchableColumns"
+				defaultValue: "auto"
 			}
 		},
 
@@ -1443,7 +1444,13 @@
 				if (this._realFixedColumnCount > this._columns.size) this._realFixedColumnCount = this._columns.size;
 			}
 
-			this._realStretchColumnsMode = (this._realFixedColumnCount > 0) ? "off" : this._stretchColumnsMode;
+			if (this._stretchColumnsMode == "auto") {
+				this._realStretchColumnsMode = (this._realFixedColumnCount > 0) ? "off" : "stretchableColumns";
+			}
+			else {
+				this._realStretchColumnsMode = this._stretchColumnsMode;
+			}
+			
 			var columnsInfo = this._columnsInfo = this.getColumnsInfo(this._realFixedColumnCount);
 			if (columnsInfo) {
 				var cols = columnsInfo.dataColumns;
@@ -1555,6 +1562,8 @@
 			if (!this.hasRealHeight()) this._scrollMode = "simple";
 			this._currentScrollMode = this._scrollMode;
 
+			this.stretchColumnsToFit();
+			
 			// 开始刷新内容
 			if (domMode == 2) {
 				with(fixedInnerGridWrapper.style) {
@@ -1597,7 +1606,6 @@
 			}
 
 			if (domMode != 2) {
-				this.stretchColumnsToFit();
 				if (innerGrid._itemModel instanceof PassiveItemModel) innerGrid._itemModel = itemModel;
 			}
 			else {

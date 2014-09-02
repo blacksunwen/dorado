@@ -64,7 +64,7 @@ public class TopViewOutputter extends ViewOutputter {
 				.getOutputter(view.getClass());
 		outputter.outputView(view, context);
 
-		if (Configure.getBoolean("view.javaScript.bindAfterChildrenCreate")) {
+		if (Configure.getBoolean("view.javaScript.fireViewOnCreateForOldController")) {
 			writer.append("view.fireOnCreateForOldJsController();\n");
 		}
 		writer.append("view.set(\"renderOn\",\"#doradoView\");\n");

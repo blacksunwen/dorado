@@ -587,6 +587,8 @@
 		},
 
 		refreshDom: function(dom) {
+			this.ensureControlsInited();
+			
 			var oldDom;
 			if (this._useTable != this._currentUseTable) {
 				oldDom = dom;

@@ -79,6 +79,7 @@
 						}
 						if (this._attached && layout._regions.size == 0 && !layout._rendered) {
 							layout.onAttachToDocument(this.getContentContainer());
+							layout.refresh();
 						}
 					}
 				},
@@ -233,11 +234,20 @@
 			var children = config && config.children;
 			if (children) delete config.children;
 
+			this._ignoreOnCreateListeners ++;
 			dorado.widget.Control.prototype._constructor.call(this, config);
+			this._ignoreOnCreateListeners --;
 
 			if (children) {
 				config.children = children;
 				this.set("children", children);
+			}
+			
+			if (!this._ignoreOnCreateListeners) {
+				if (this.getListenerCount("onCreate")) {
+					this.fireEvent("onCreate", this);
+				}
+				this._onCreateFired = true;
 			}
 		},
 
@@ -484,6 +494,7 @@
 			var layout = this._layout;
 			if (this._rendered && layout && visible && !(layout._regions.size == 0 && !layout._rendered)) {
 				layout.onAttachToDocument(this.getContentContainer());
+				layout.refresh();
 			}
 		},
 

@@ -166,6 +166,7 @@
 		 * @param {Object|dorado.Entity} entity 要刷新的数据实体。
 		 */
 		refreshEntity: function(entity) {
+			if (!this._rendered) return;			
 			var itemId = this._itemModel.getItemId(entity), row, innerGrid;
 			if (this._domMode == 2) {
 				innerGrid = this._fixedInnerGrid;

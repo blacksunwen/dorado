@@ -367,9 +367,8 @@
 					processDefault: true
 				};
 				if (self._async) {
-					var taskId;
-					if (self._executingMessage || this._modal) {
-						var message = self._executingMessage || $resource("dorado.core.DefaultTaskMessage");
+					var taskId, message = self._executingMessage || $resource("dorado.core.DefaultTaskMessage");
+					if (this._modal) {
 						if (message && message != "none") {
 							taskId = dorado.util.TaskIndicator.showTaskIndicator(message, this._modal ? "main" : "daemon");
 						}

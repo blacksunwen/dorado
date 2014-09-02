@@ -321,9 +321,10 @@
 						$invokeSuper.call(this, [view]);
 
 						if (this._innerControls) {
-							this._innerControls.each(function(control) {
-								control.set("view", view);
-							});
+							var controls = this._innerControls;
+							for (var i = 0, len = controls.length; i < len; i++) {
+								controls[i].set("view", view);
+							}
 						}
 					}
 				}
@@ -347,7 +348,7 @@
 				 * @param {Object} self 事件的发起者，即组件本身。
 				 * @param {Object} arg 事件参数。
 				 * @param {HTMLElement} arg.dom 组件对应的根DOM对象。
-				 * @param {boolean} #arg.processDefault=false 是否要继续系统默认的刷新操作。
+				 * @param {boolean} #arg.processDefault 是否要继续系统默认的刷新操作。
 				 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 				 * @event
 				 */
@@ -507,14 +508,39 @@
 				this._actualVisible = !dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
 
 				dorado.widget.Component.prototype.constructor.call(this, config);
+
+				if (config && typeof config === "object") {
+					if (dorado.Object.isInstanceOf(this, dorado.widget.FloatControl)) {
+						var floating = config.floating;
+						if (floating != null) {
+							this.set("floating", floating);
+							delete config.floating;
+						}
+						if (this._floating) this._actualVisible = false;
+					}
+					
+					var layoutConstraint = config.layoutConstraint;
+					if (layoutConstraint) {
+						this.set("layoutConstraint", layoutConstraint);
+						delete config.layoutConstraint;
+					}
+					
+					var hideMode = config.hideMode;
+					if (hideMode) {
+						this.set("hideMode", hideMode);
+						delete config.hideMode;
+					}
+					
+					var visible = config.visible;
+					if (visible != null) {
+						this.set("visible", visible);
+						delete config.visible;
+					}
+				}
 			},
 			
 			_constructor: function(config) {
 				dorado.widget.Component.prototype._constructor.call(this, config);
-
-				if (dorado.Object.isInstanceOf(this, dorado.widget.FloatControl) && this._floating) {
-					this._actualVisible = false;
-				}
 
 				if (this._renderTo || this._renderOn) {
 					$setTimeout(this, function() {
@@ -546,11 +572,13 @@
 				$invokeSuper.call(this);
 
 				if (this._innerControls) {
-					jQuery.each(this._innerControls, function(i, control) {
+					var controls = this._innerControls, control;
+					for (var i = 0, len = controls.length; i < len; i++) {
+						control = controls[i];
 						if (!( control instanceof dorado.widget.Control) && !control._ready) {
 							control.onReady();
 						}
-					});
+					}
 				}
 			},
 
@@ -678,16 +706,18 @@
 
 				function notifyChildren(control, parentActualVisible) {
 					if (control._innerControls) {
-						jQuery.each(control._innerControls, function(i, child) {
+						var controls = control._innerControls, child;
+						for (var i = 0, len = controls.length; i < len; i++) {
+							child = controls[i];
 							if (child._parentActualVisible == parentActualVisible || !(child instanceof dorado.widget.Control)) return;
 							child._parentActualVisible = parentActualVisible;
 							child.onActualVisibleChange();
-						});
+						}
 					}
 				}
 
 				var actualVisible = this.isActualVisible();
-				if (this._parentLayout && this._hideMode == "display" && this._currentVisible != this._visible) {
+				if (this._parentLayout && this._parentLayout._rendered && this._hideMode == "display" && this._currentVisible != this._visible) {
 					this._parentLayout.refreshControl(this);
 				}				
 				if (actualVisible && this._rendered && this._shouldRefreshOnVisible && !dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE) {
@@ -728,7 +758,6 @@
 							processDefault: true
 						};
 						if (this.getListenerCount("beforeRefreshDom")) {
-							arg.processDefault = false;
 							this.fireEvent("beforeRefreshDom", this, arg);
 						}
 						if (arg.processDefault) {
@@ -750,7 +779,6 @@
 						processDefault: true
 					};
 					if (this.getListenerCount("beforeRefreshDom")) {
-						arg.processDefault = false;
 						this.fireEvent("beforeRefreshDom", this, arg);
 					}
 					if (arg.processDefault) {
@@ -1155,7 +1183,6 @@
 						processDefault: true
 					};
 					if (this.getListenerCount("beforeRefreshDom")) {
-						arg.processDefault = false;
 						this.fireEvent("beforeRefreshDom", this, arg);
 					}
 					if (arg.processDefault) {
@@ -1205,9 +1232,10 @@
 					if (this.doOnDetachFromDocument) this.doOnDetachFromDocument();
 
 					if (this._innerControls) {
-						jQuery.each(this._innerControls, function(i, control) {
-							control.onDetachFromDocument();
-						});
+						var controls = this._innerControls, control;
+						for (var i = 0, len = controls.length; i < len; i++) {
+							controls[i].onDetachFromDocument();
+						}
 					}
 				}
 			},
@@ -1316,7 +1344,9 @@
 			 * 返回可聚焦的子控件的集合。
 			 * @return {[dorado.widget.Control]} 可聚焦的子控件的集合。
 			 */
-			getFocusableSubControls: dorado._NULL_FUNCTION,
+			getFocusableSubControls: function() {
+				return this._innerControls;
+			},
 
 			/**
 			 * 返回控件当前是否可以接收控制焦点成为当前控件。
@@ -1433,7 +1463,8 @@
 						shiftKey: evt.shiftKey,
 						ctrlKey: evt.ctrlKey,
 						altlKey: evt.altlKey,
-						event: evt
+						event: evt,
+						returnValue: true
 					};
 					this.fireEvent("onKeyDown", this, arg);
 					b = arg.returnValue;
@@ -1711,21 +1742,27 @@
 
 	function findNext(from) {
 		var control = null, parent = from._focusParent || from._parent;
-		if (parent) {
+		while (parent) {
 			control = findFocusableControl(parent, {
 				from: from
 			});
+			if (control) break;
+			from = parent;
+			parent = parent._focusParent || parent._parent;
 		}
 		return control;
 	};
 
 	function findPrevious(from) {
 		var control = null, parent = from._focusParent || from._parent;
-		if (parent) {
+		while (parent) {
 			control = findFocusableControl(parent, {
 				from: from,
 				reverse: true
 			});
+			if (control) break;
+			from = parent;
+			parent = parent._focusParent || parent._parent;
 		}
 		return control;
 	};

@@ -146,6 +146,10 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			defaultValue: "d-radiogroup"
 		},
 		
+		height:  {
+			independent : true
+		},
+		
 		/**
 		 * 单选框的排列方式。目前具有以下几种取值:
 		 * <ul>

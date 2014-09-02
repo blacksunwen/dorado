@@ -40,7 +40,6 @@ public class UpdateAction extends AsyncAction {
 	private boolean alwaysExecute;
 
 	@Override
-	@ClientProperty(alwaysOutput = true)
 	public String getExecutingMessage() {
 		return super.getExecutingMessage();
 	}

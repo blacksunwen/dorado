@@ -27,6 +27,7 @@
 	 */
 	dorado.widget.ViewElement = $extend([dorado.AttributeSupport, dorado.EventSupport], /** @scope dorado.widget.ViewElement.prototype */ {
 		$className: "dorado.widget.ViewElement",
+		_ignoreOnCreateListeners: 0,
 
 		ATTRIBUTES: /** @scope dorado.widget.ViewElement.prototype */ {
 			/**
@@ -126,15 +127,17 @@
 		constructor: function(config) {
 			var lazyInit = this.isLazyInit && this.isLazyInit(config);
 			
-			var id, DEFINITION;
+			var id, tags, DEFINITION;
 			if (config && config.constructor == String) {
 				id = config;
 				config = null;
 			}
 			else if (config) {
 				id = config.id;
+				tags = config.tags;
 				DEFINITION = config.DEFINITION;
 				delete config.id;
+				delete config.tags;
 				delete config.DEFINITION;
 			}
 			this._uniqueId = dorado.Core.newId();
@@ -153,8 +156,10 @@
 					if (view) view.registerViewElement(id, this);
 				}
 			}
-			if (DEFINITION) {
+			
+			if (tags || DEFINITION) {
 				this.set({
+					tags: tags,
 					DEFINITION: DEFINITION
 				});
 			}
@@ -166,17 +171,23 @@
 				if (view && view._liveIdBindingMap) {
 					var liveBindings = view._liveIdBindingMap[id];
 					if (liveBindings) {
-						var liveBinding, del = true;
+						var liveBinding, pendingBindings;
 						for (var i = 0, len = liveBindings.length; i < len; i++) {
 							liveBinding = liveBindings[i];
 							if (!liveBinding.subObject) {
 								this.bind(liveBinding.event, liveBinding.listener);
 							}
 							else {
-								del = false;
+								if (!pendingBindings) pendingBindings = [];
+								pendingBindings.push(liveBinding);
 							}
 						}
-						if (del) delete view._liveIdBindingMap[id];
+						if (pendingBindings) {
+							view._liveIdBindingMap[id] = pendingBindings;
+						}
+						else {
+							delete view._liveIdBindingMap[id];
+						}
 					}
 				}	
 			}
@@ -203,7 +214,6 @@
 			if (!this._ignoreOnCreateListeners) {
 				if (this.getListenerCount("onCreate")) {
 					this.fireEvent("onCreate", this);
-					delete this._events[name];
 				}
 				this._onCreateFired = true;
 			}
@@ -287,6 +297,7 @@
 			var retVal = $invokeSuper.call(this, [name, listener, options]);
 			if (name === "onCreate" && !this._ignoreOnCreateListeners && this._onCreateFired) {
 				this.fireEvent("onCreate", this);
+				delete this._events["onCreate"];
 			}
 			return retVal;
 		},

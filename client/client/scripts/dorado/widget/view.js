@@ -202,7 +202,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		fireOnCreateForOldJsController: function() {
 			if (this.getListenerCount("onCreate")) {
 				this.fireEvent("onCreate", this);
-				delete this._events[name];
 			}
 		},
 
@@ -388,7 +387,14 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					objects.push(object);
 				}
 			}
-			if (allowNull && !objects.length) return null;
+			if (!objects.length) {
+				if (allowNull) {
+					return null;
+				}
+				else if ($setting["common.debugEnabled"] && window.console) {
+					console.log("No element found with tag \"" + tags + "\".");
+				}
+			}
 			return new dorado.ObjectGroup(objects);
 		},
 
