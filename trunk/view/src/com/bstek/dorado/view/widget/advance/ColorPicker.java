@@ -22,7 +22,7 @@ import com.bstek.dorado.view.widget.Control;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2013-12-4
  */
-@Widget(name = "ColorPicker", category = "Advance", dependsPackage = "color-picker")
+@Widget(name = "ColorPicker", category = "Form", dependsPackage = "color-picker")
 @ClientObject(prototype = "dorado.widget.ColorPicker", shortTypeName = "ColorPicker")
 public class ColorPicker extends Control {
 	private String color;
