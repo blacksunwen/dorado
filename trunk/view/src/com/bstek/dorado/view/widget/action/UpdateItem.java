@@ -35,6 +35,8 @@ public class UpdateItem {
 	private boolean autoResetEntityState = true;
 	private boolean submitOldData;
 	private boolean submitSimplePropertyOnly;
+	private Boolean submitDeletedEntity;
+
 	private Properties options;
 
 	@ComponentReference("DataSet")
@@ -48,8 +50,7 @@ public class UpdateItem {
 	}
 
 	@ClientProperty(escapeValue = "!DIRTY_TREE")
-	@IdeProperty(
-			enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible],[#current]")
+	@IdeProperty(enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible],[#current]")
 	public String getDataPath() {
 		return dataPath;
 	}
@@ -106,6 +107,14 @@ public class UpdateItem {
 
 	public void setSubmitSimplePropertyOnly(boolean submitSimplePropertyOnly) {
 		this.submitSimplePropertyOnly = submitSimplePropertyOnly;
+	}
+
+	public Boolean getSubmitDeletedEntity() {
+		return submitDeletedEntity;
+	}
+
+	public void setSubmitDeletedEntity(Boolean submitDeletedEntity) {
+		this.submitDeletedEntity = submitDeletedEntity;
 	}
 
 	public Properties getOptions() {

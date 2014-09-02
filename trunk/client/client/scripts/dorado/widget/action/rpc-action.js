@@ -297,8 +297,9 @@
 				 * </li>
 				 * <li>firstResultOnly - {boolean} 用于传递给内部将使用到的{@link dorado.DataPath#evaluate}方法的options.firstResultOnly参数。
 				 * 表示是否只提交dataPath返回结果中的第一个对象。</li>
-				 * <li>submitSimplePropertyOnly - {boolean} 只提交简单数据类型的属性，如String、boolean、int、Date等数据类型。
+				 * <li>submitDeletedEntity    -    {Boolean} 是否提交被删除的数据实体，默认值为null，表示由系统自动根据dataPath的设置来判断。</li>
 				 * 设置此属性起到的效果大致相当于只提交DataPath返回的结果中顶层的数据实体。</li>
+				 * <li>submitDeletedEntity    -    {Boolean} 是否提交被删除的。</li>
 				 * <li>submitOldData - {boolean} 对于那些被修改的数据实体是否提交其原有的属性值。</li>
 				 * <li>options - {Object} 用于传递给内部将使用到的{@link dorado.DataPath#evaluate}方法、{@link dorado.EntityList#toJSON}方法和{@link dorado.EntityList#toJSON}方法的执行选项。
 				 * 其中所支持的子属性为以上3个方法的选项参数所支持的子属性的合集。</li>
@@ -365,7 +366,9 @@
 				},
 
 				executingMessage: {
-					defaultValue: $resource("dorado.baseWidget.SubmitingData")
+					defaultValue: function() {
+						return $resource("dorado.baseWidget.SubmitingData");
+					}
 				}
 			},
 
@@ -374,9 +377,9 @@
 				beforeExecute: {
 					interceptor: function(superFire, self, arg) {
 						var retval = superFire(self, arg);
-						this._realExecutingMessage = this._executingMessage;
+						this._realExecutingMessage = self._executingMessage;
 						this._executingMessage = "none";
-						this._realConfirmMessage = this._confirmMessage;
+						this._realConfirmMessage = self._confirmMessage;
 						this._confirmMessage = "none";
 						return retval;
 					}
@@ -599,6 +602,9 @@
 				for(var i = 0; i < dataItems.length; i++) {
 					var dataItem = dataItems[i], updateItem = dataItem.updateItem, data = dataItem.data, options = updateItem.options;
 					delete dataItem.updateItem;
+					
+					options = options || {};
+					options.includeDeletedEntity = updateItem.submitDeletedEntity;
 
 					var entities = [], context = {
 						entities: []
@@ -674,12 +680,12 @@
 			},
 
 			doExecuteAsync: function(callback) {
-				var confirmMessage = this._realConfirmMessage, executingMessage = this._realExecutingMessage;
-
-				this._executingMessage = executingMessage;
+				this._executingMessage = this._realExecutingMessage;
 				delete this._realExecutingMessage;
-				this._confirmMessage = confirmMessage;
+				this._confirmMessage = this._realConfirmMessage;
 				delete this._realConfirmMessage;
+				
+				var confirmMessage = this._confirmMessage, executingMessage = this._executingMessage;
 
 				function processEntityStates(entityStates, context) {
 

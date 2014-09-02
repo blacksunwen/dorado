@@ -280,7 +280,6 @@
 .d-radiogroup {
   overflow: visible;
   *zoom: 1;
-  height: 20px;
 }
 .d-radiogroup:before {
   content: "";

@@ -47,7 +47,7 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 	private String headerRenderer;
 	private String footerRenderer;
 	private String rowRenderer;
-	private StretchColumnsMode stretchColumnsMode = StretchColumnsMode.stretchableColumns;
+	private StretchColumnsMode stretchColumnsMode = StretchColumnsMode.auto;
 
 	private List<Column> columns = new InnerElementList<Column>(this);
 
@@ -159,7 +159,7 @@ public abstract class GridSupport extends RowList implements ColumnHolder {
 		this.rowRenderer = rowRenderer;
 	}
 
-	@ClientProperty(escapeValue = "stretchableColumns")
+	@ClientProperty(escapeValue = "auto")
 	public StretchColumnsMode getStretchColumnsMode() {
 		return stretchColumnsMode;
 	}

@@ -447,7 +447,6 @@
 /* radio-group */
 .d-radiogroup {
   overflow: visible;
-  height: 24px;
   padding: 0 3px;
 }
 .d-radiogroup:before {

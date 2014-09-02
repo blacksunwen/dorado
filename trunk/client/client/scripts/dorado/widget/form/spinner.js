@@ -906,6 +906,7 @@
 			 * @default "time"
 			 */
 			type: {
+				defaultValue: "time",
 				writeOnce: true,
 				writeBeforeReady: true,
 				setter: function(type) {
@@ -1039,6 +1040,9 @@
 		constructor: function() {
 			this.slotConfigs = [];
 			$invokeSuper.call(this, arguments);
+			if (!this.slotConfigs.length) {
+				this.set("type", this._type);
+			}
 		},
 		
 		createTextDom: function() {

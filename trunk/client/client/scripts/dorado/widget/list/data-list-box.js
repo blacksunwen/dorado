@@ -223,6 +223,11 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		var refEntity = arg.refEntity;
 		
 		var tbody = this._dataTBody, itemDomMap = this._itemDomMap, itemModel = this._itemModel;
+		
+		if (itemModel.filtered) {
+			itemModel._items.push(entity);
+		}
+		
 		if (this._scrollMode != "viewport") {
 			var row;
 			switch (mode) {

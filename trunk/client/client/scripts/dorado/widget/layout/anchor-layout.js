@@ -88,7 +88,10 @@
 				}
 				dom.style.width = "100%";
 				dom.style.height = "100%";
+
+				this.ensureControlsInited();
 				this.doRefreshDom(dom);
+				
 				if (scrollTop) {
 					parentNode.scrollTop = scrollTop;
 				}

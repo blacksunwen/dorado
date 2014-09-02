@@ -395,6 +395,7 @@
 		 * @param {dorado.Entity} entity 数据实体
 		 */
 		refreshEntity: function(entity) {
+			if (!this._rendered) return;
 			if (this._domMode == 2) this._fixedInnerGrid.refreshEntity(entity);
 			this._innerGrid.refreshEntity(entity);
 			if (this._currentCellEditor && this._currentCellEditor.data == entity) {

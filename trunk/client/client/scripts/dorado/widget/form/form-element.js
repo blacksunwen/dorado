@@ -275,8 +275,6 @@
 	 */
 	dorado.widget.FormProfileSupport = $class(/** @scope dorado.widget.FormProfileSupport.prototype */{
 		onProfileChange: function() {
-			var s = new Date();
-			
 			var formProfile = this._formProfile;
 			if (dorado.Object.isInstanceOf(formProfile, dorado.widget.FormProfile)) {
 				var readOnly = formProfile.get("readOnly");
@@ -291,8 +289,6 @@
 					lockWritingTimes: (this instanceof dorado.widget.FormElement)
 				});
 			}
-			
-			window._t = (window._t || 0) + (new Date() - s);
 		}
 	});
 
@@ -1038,7 +1034,7 @@
 			if (labelEl) {
 				var required = !!this.isRequired();
 				if (required && editor) {
-					required = !editor._readOnly && !editor._readOnly2;
+					required = !editor._readOnly;
 				}
 				$fly(labelEl).toggleClass("form-label-required", required);
 			}

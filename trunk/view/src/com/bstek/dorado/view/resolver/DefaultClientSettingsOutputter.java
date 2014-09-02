@@ -51,7 +51,6 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 		if (Configure.getBoolean("view.preventBackspace")) {
 			writeSetting(writer, "common.preventBackspace", true, true);
 		}
-
 		if (Configure.getBoolean("view.abortAsyncLoadingOnSyncLoading")) {
 			writeSetting(writer, "common.abortAsyncLoadingOnSyncLoading", true,
 					false);
@@ -63,8 +62,12 @@ public class DefaultClientSettingsOutputter extends ClientSettingsOutputter {
 
 		if (Configure.getBoolean("view.lazyInitFloatControl")) {
 			writeSetting(writer, "widget.lazyInitFloatControl", true, false);
-		}if (Configure.getBoolean("view.javaScript.bindAfterChildrenCreate")) {
+		}
+		if (Configure.getBoolean("view.javaScript.bindAfterChildrenCreate")) {
 			writeSetting(writer, "widget.bindControllerAfterChildrenCreate", true, false);
+		}
+		if (Configure.getBoolean("view.javaScript.fireViewOnCreateForOldController")) {
+			writeSetting(writer, "widget.fireViewOnCreateForOldController", true, false);
 		}
 	}
 }

@@ -377,11 +377,11 @@
 		refreshExternalReadOnly: function() {
 			if (this._dataSet) {
 				var readOnly = this._dataSet._readOnly;
-				var bindingInfo = this._bindingInfo;
-				if (this._property) {
-					readOnly = readOnly || (bindingInfo.entity == null);
-					if (bindingInfo.propertyDef) {
-						readOnly = readOnly || bindingInfo.propertyDef.get("readOnly");
+				if (!readOnly && this._property) {
+					var bindingInfo = this._bindingInfo;
+					readOnly = (bindingInfo.entity == null);
+					if (!readOnly && bindingInfo.propertyDef) {
+						readOnly = bindingInfo.propertyDef.get("readOnly");
 					}
 				} else {
 					readOnly = true;
