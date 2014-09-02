@@ -35,8 +35,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * @attribute
 		 * @type String
 		 */
-		caption: {
-		},
+		caption: {},
 
 		/**
 		 * 显示在对话框下方的按钮。

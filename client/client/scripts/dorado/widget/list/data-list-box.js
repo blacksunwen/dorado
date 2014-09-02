@@ -176,7 +176,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 				} else {
 					this.removeItemDom(row);
 				}
-				this.refresh(true);
+				this.refresh();
 			} else {
 				var i = itemModel.getItemIndex(entity);
 				if (i >= 0) {
@@ -296,17 +296,15 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 				if (i < this.startIndex) {
 					this.startIndex++;
 					itemModel.setStartIndex(itemModel.getStartIndex() + 1);
-					this._adjustBeginBlankRow();
-				} else if (i >= this.startIndex) {
-					if (i < this.startIndex + this.itemDomCount) {
-						var row = tbody.lastChild;
-						var nextRow = tbody.childNodes[i - this.startIndex];
-						tbody.insertBefore(row, nextRow);
-						this.refresh(true);
-					} else {
-						this._adjustEndBlankRow();
-					}
+				} 
+				else if (i < this.startIndex + this.itemDomCount) {
+					var row = tbody.lastChild;
+					var nextRow = tbody.childNodes[i - this.startIndex];
+					tbody.insertBefore(row, nextRow);
+				} else {
+					itemModel.setStartIndex(i - this.itemDomCount + 1);
 				}
+				this.refresh();
 			}
 		}
 	},
