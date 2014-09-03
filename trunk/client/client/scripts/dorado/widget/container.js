@@ -156,6 +156,10 @@
 							container.addChild(this.createInnerComponent(child));
 						}
 					}
+					
+					if (!this._ready) {
+						dorado.util.AjaxEngine.processAllPendingRequests();
+					}
 
 					if (!optimized) AUTO_APPEND_TO_TOPVIEW = true;
 					if (layout && layout._rendered) {

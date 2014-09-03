@@ -278,7 +278,7 @@
 			 */
 			setData: function(data) {
 				var dataType = this.getDataType(null, true), oldData = this._data;
-				if (dataType || this._getDataCalled) {
+				if (dataType) {
 					if (data != null) {
 						if (!(data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
 							var state = data.$state;
@@ -299,7 +299,7 @@
 						if (data.dataType == null) {
 							data.dataType = dataType;
 						}
-						else if (dataType && dataType != data.dataType) {
+						else if (dataType != data.dataType) {
 							var mismatch = true;
 							if (dataType instanceof dorado.EntityDataType && data.dataType) {
 								mismatch = (data.dataType.getElementDataType() != dataType);
@@ -310,7 +310,6 @@
 						}
 					}
 					this._data = data;
-					this._dataLoaded = true;
 				}
 				else {
 					if (data && !(data instanceof dorado.Entity || data instanceof dorado.EntityList)) {
@@ -323,6 +322,7 @@
 					}
 					this._data = data;
 				}
+				this._dataLoaded = true;
 
 				if (data && (data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
 					data._setObserver(this);
@@ -624,7 +624,6 @@
 				if (options.firstResultOnly) optionsCode += 'F';
 				if (options.acceptAggregation) optionsCode += 'A';
 
-				this._getDataCalled = true;
 				if ((options.flush || this._data === undefined) && loadMode != "never") {
 					var sysParameter;
 					if (this._preloadConfigsMap) {

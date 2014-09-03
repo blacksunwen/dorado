@@ -314,7 +314,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 					}
 				};
 			
-			var useBatch = this._autoBatchEnabled && (options.batchable === true) && !dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE;
+			var useBatch = this._autoBatchEnabled && (options.batchable === true);
 			if (useBatch) {
 				if (options) {
 					if (options.url && options.url != this._defaultOptions.url || options.method && options.method != "POST" || options.timeout) {
@@ -335,6 +335,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 					this._batchTimerId = $setTimeout(this, function() {
 						this._requestBatch();
 					}, this._minConnectInterval);
+					dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS.push(this);
 				}
 
 				this.fireEvent("beforeRequest", this, {
@@ -381,6 +382,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			var requests = this._requests;
 			if (requests.length == 0) return;
 			this._requests = [];
+			dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS.remove(this);
 
 			var batchCallback = {
 				scope: this,
@@ -983,11 +985,11 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		 * <pre class="symbol-example code">
 		 * <code class="javascript">
 		 * {
-	 *	 "content-type": "text/xml",
-	 *	 "header1": "value1",
-	 *	 "header2": "value2",
-	 *	 ... ... ...
-	 * }
+		 *	 "content-type": "text/xml",
+		 *	 "header1": "value1",
+		 *	 "header2": "value2",
+		 *	 ... ... ...
+		 * }
 		 * </code>
 		 * </pre>
 		 * @return {Object} 包含所有的Response头信息的对象。
@@ -1045,7 +1047,7 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 		}
 	});
 
-dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE = false;
+dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS = [];
 dorado.util.AjaxEngine.SHARED_INSTANCES = {};
 dorado.util.AjaxEngine.ASYNC_REQUESTS = {};
 
@@ -1066,6 +1068,14 @@ dorado.util.AjaxEngine.getInstance = function(options) {
 	}
 	return ajax;
 }
+
+dorado.util.AjaxEngine.processAllPendingRequests = function() {
+	var engines = dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS;
+	if (!engines.length) return;
+	for (var i = 0, len = engines.length; i < len; i++) {
+		engines[i]._requestBatch();
+	}
+},
 
 /**
  * @name $ajax

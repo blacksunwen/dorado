@@ -165,7 +165,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		},
 
 		constructor: function(configs) {
-			dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE = true;
 			ALL_VIEWS.push(this);
 
 			this._identifiedViewElements = {};
@@ -211,8 +210,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			this._children.each(function (child) {
 				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
 			});
+			
 			$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
 			this._loadingDataSets = [];
+			dorado.util.AjaxEngine.processAllPendingRequests();
 		},
 
 		onReady: function() {
@@ -221,6 +222,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			if (this._renderMode !== "onDataLoaded") {
 				$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
 				this._loadingDataSets = [];
+				dorado.util.AjaxEngine.processAllPendingRequests();
 			}
 		},
 
@@ -528,7 +530,6 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$invokeSuper.call(this, [containerElement]);
 			if (bodyWidth && bodyWidth > document.body.clientWidth) this.onResize();
 
-			dorado.util.AjaxEngine.DISABLE_ALL_BATCHABLE = false;
 			dorado.Toolkits.setDelayedAction(document.body, "$removeRenderingCls", function() {
 				$fly(document.body).removeClass("d-rendering");
 			}, 500);
@@ -643,7 +644,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (!(tasks instanceof Array)) tasks = [tasks];
 		var simTasks = [];
 		jQuery.each(tasks, function(i, task) {
-			if (task instanceof dorado.widget.DataSet) {
+			if (task instanceof dorado.widget.DataSet && !task.get("dataLoaded")) {
 				simTasks.push({
 					callback: dorado._NULL_FUNCTION,
 					run: function(callback) {
