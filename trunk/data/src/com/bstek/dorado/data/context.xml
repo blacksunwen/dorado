@@ -31,6 +31,18 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="dataTypeDefinitionManager" ref="dorado.dataTypeDefinitionManager" />
 	</bean>
 
+	<bean id="dorado.dataTypeTypeRegistry" class="com.bstek.dorado.data.type.manager.DataTypeTypeRegistry">
+		<property name="defaultType" value="default" />
+	</bean>
+	<bean name="dorado.dataTypeTypeRegister" abstract="true" class="com.bstek.dorado.data.type.manager.DataTypeTypeRegister">
+		<property name="dataTypeTypeRegistry" ref="dorado.dataTypeTypeRegistry" />
+	</bean>
+
+	<bean parent="dorado.dataTypeTypeRegister">
+		<property name="type" value="default" />
+		<property name="classType" value="com.bstek.dorado.data.type.DefaultEntityDataType" />
+	</bean>
+
 	<!-- DataProvider -->
 	<bean name="dorado.dataProviderDefinitionManager" class="com.bstek.dorado.data.config.definition.DataProviderDefinitionManager" />
 	<bean name="dorado.dataProviderInterceptorRegister" class="com.bstek.dorado.data.provider.manager.DataProviderInterceptorRegister" abstract="true">

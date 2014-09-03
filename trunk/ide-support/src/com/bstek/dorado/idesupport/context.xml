@@ -15,6 +15,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 				</entry>
 				<entry key="Model">
 					<bean class="com.bstek.dorado.idesupport.initializer.ModelRuleTemplateInitializer">
+						<property name="dataTypeTypeRegistry" ref="dorado.dataTypeTypeRegistry" />
 						<property name="validatorTypeRegistry" ref="dorado.validatorTypeRegistry" />
 						<property name="dataProviderTypeRegistry" ref="dorado.dataProviderTypeRegistry" />
 						<property name="dataResolverTypeRegistry" ref="dorado.dataResolverTypeRegistry" />

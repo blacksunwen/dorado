@@ -12,9 +12,6 @@
 
 package com.bstek.dorado.data.config.xml;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -27,7 +24,6 @@ import com.bstek.dorado.config.xml.ObjectParserInitializationAware;
 import com.bstek.dorado.config.xml.XmlConstants;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.core.Configure;
-import com.bstek.dorado.data.Constants;
 import com.bstek.dorado.data.config.definition.DataTypeDefinition;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
@@ -39,6 +35,7 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  */
 public class DataTypeParser extends GenericObjectParser implements
 		ObjectParserInitializationAware {
+	private String defaultImpl;
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -50,17 +47,10 @@ public class DataTypeParser extends GenericObjectParser implements
 
 		DataParseContext dataContext = (DataParseContext) context;
 		for (int i = 0; i < parentNames.length; i++) {
-			dataContext
-					.setPrivateObjectNameSection(DataXmlConstants.PATH_PROPERTY_PREFIX
-							+ XmlConstants.ATTRIBUTE_PARENT + (i + 1));
-			try {
-				String parentName = parentNames[i];
-				DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
-						.getDataTypeByName(parentName, dataContext, true);
-				parentReferences[i] = dataTypeRef;
-			} finally {
-				dataContext.restorePrivateObjectName();
-			}
+			String parentName = parentNames[i];
+			DefinitionReference<DataTypeDefinition> dataTypeRef = dataObjectParseHelper
+					.getDataTypeByName(parentName, dataContext, true);
+			parentReferences[i] = dataTypeRef;
 		}
 		return parentReferences;
 	}
@@ -69,6 +59,8 @@ public class DataTypeParser extends GenericObjectParser implements
 	protected void initDefinition(ObjectDefinition definition, Element element,
 			ParseContext context) throws Exception {
 		super.initDefinition(definition, element, context);
+
+		definition.setDefaultImpl(ClassUtils.forName(defaultImpl));
 
 		DataParseContext dataContext = (DataParseContext) context;
 		DefinitionReference<DataTypeDefinition> dataTypeRef;
@@ -86,28 +78,8 @@ public class DataTypeParser extends GenericObjectParser implements
 	protected Object internalParse(Node node, ParseContext context)
 			throws Exception {
 		Element element = (Element) node;
-		DataParseContext dataContext = (DataParseContext) context;
-		Set<Node> parsingNodes = dataContext.getParsingNodes();
-		Map<String, DataTypeDefinition> parsedDataTypes = dataContext
-				.getParsedDataTypes();
-
-		String name = element.getAttribute(XmlConstants.ATTRIBUTE_NAME);
-		if (StringUtils.isEmpty(name)) {
-			throw new XmlParseException("DataType name undefined.", element,
-					context);
-		}
-
-		DataTypeDefinition dataType = parsedDataTypes.get(name);
-		if (dataType != null) {
-			return dataType;
-		}
-
-		parsingNodes.add(element);
-		dataContext.setPrivateObjectName(Constants.PRIVATE_DATA_OBJECT_PREFIX
-				+ DataXmlConstants.PATH_DATE_TYPE_SHORT_NAME
-				+ Constants.PRIVATE_DATA_OBJECT_SUBFIX + name);
-
-		dataType = (DataTypeDefinition) super.internalParse(node, dataContext);
+		DataTypeDefinition dataType = (DataTypeDefinition) super.internalParse(
+				node, context);
 
 		Class<?> matchType = (Class<?>) dataType
 				.removeProperty(DataXmlConstants.ATTRIBUTE_MATCH_TYPE);
@@ -124,13 +96,10 @@ public class DataTypeParser extends GenericObjectParser implements
 			dataType.setCreationType(creationType);
 		}
 
-		dataContext.restorePrivateObjectName();
-		parsingNodes.clear();
-
-		dataType.setName(name);
-
 		final String DEFAULT_DATATYPE_PARENT = Configure.getString(
 				"data.defaultEntityDataTypeParent", "Entity");
+
+		String name = element.getAttribute(XmlConstants.ATTRIBUTE_NAME);
 		if (dataType.getParentReferences() == null
 				&& !DEFAULT_DATATYPE_PARENT.equals(name)) {
 			boolean useDefaultParent = false;
@@ -143,18 +112,18 @@ public class DataTypeParser extends GenericObjectParser implements
 			}
 
 			if (useDefaultParent) {
+				DataParseContext dataContext = (DataParseContext) context;
 				DefinitionReference<?> dataTypeRef = dataContext
 						.getDataTypeReference(DEFAULT_DATATYPE_PARENT);
 				dataType.setParentReferences(new DefinitionReference[] { dataTypeRef });
 			}
 		}
-
-		parsedDataTypes.put(name, dataType);
 		return dataType;
 	}
 
 	public void postObjectParserInitialized(ObjectParser objectParser)
 			throws Exception {
+		defaultImpl = getImpl();
 		setImpl(null);
 	}
 }

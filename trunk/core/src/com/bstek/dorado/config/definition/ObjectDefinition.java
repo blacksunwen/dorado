@@ -40,6 +40,7 @@ public class ObjectDefinition extends Definition {
 
 	public static class CreationInfo {
 		private Class<?> impl;
+		private Class<?> defaultImpl;
 		private Scope scope;
 		private Set<Definition> parents = new LinkedHashSet<Definition>();
 		private Map<String, Object> properties = new HashMap<String, Object>();
@@ -52,6 +53,14 @@ public class ObjectDefinition extends Definition {
 
 		public void setImpl(Class<?> impl) {
 			this.impl = impl;
+		}
+
+		public Class<?> getDefaultImpl() {
+			return defaultImpl;
+		}
+
+		public void setDefaultImpl(Class<?> defaultImpl) {
+			this.defaultImpl = defaultImpl;
 		}
 
 		public Scope getScope() {
@@ -87,6 +96,7 @@ public class ObjectDefinition extends Definition {
 	}
 
 	private Class<?> impl;
+	private Class<?> defaultImpl;
 	private Class<?>[] constructorArgTypes;
 	private Scope scope;
 	private String beanId;
@@ -118,6 +128,14 @@ public class ObjectDefinition extends Definition {
 
 	public void setImplType(Class<?> implType) {
 		impl = implType;
+	}
+
+	public Class<?> getDefaultImpl() {
+		return defaultImpl;
+	}
+
+	public void setDefaultImpl(Class<?> defaultImpl) {
+		this.defaultImpl = defaultImpl;
 	}
 
 	public Class<?>[] getConstructorArgTypes() {
@@ -251,7 +269,7 @@ public class ObjectDefinition extends Definition {
 		}
 
 		if (creationInfo.getImpl() == null) {
-			creationInfo.setImpl(impl);
+			creationInfo.setImpl(creationInfo.getDefaultImpl());
 		}
 
 		Map<String, Expression> expressionProperties = null;
@@ -348,6 +366,12 @@ public class ObjectDefinition extends Definition {
 				Class<?> impl = definition.getImplType();
 				if (impl != null) {
 					creationInfo.setImpl(impl);
+				}
+			}
+			if (creationInfo.getDefaultImpl() == null) {
+				Class<?> impl = definition.getDefaultImpl();
+				if (impl != null) {
+					creationInfo.setDefaultImpl(impl);
 				}
 			}
 
