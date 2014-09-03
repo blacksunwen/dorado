@@ -12,7 +12,6 @@
 
 package com.bstek.dorado.data.type;
 
-import com.bstek.dorado.annotation.ClientEvents;
 import com.bstek.dorado.common.TagSupport;
 import com.bstek.dorado.data.DataModelObject;
 
@@ -34,7 +33,6 @@ import com.bstek.dorado.data.DataModelObject;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Feb 12, 2007
  */
-@ClientEvents(@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChange"))
 public interface DataType extends DataModelObject, TagSupport {
 	/**
 	 * 返回DataType的名称。

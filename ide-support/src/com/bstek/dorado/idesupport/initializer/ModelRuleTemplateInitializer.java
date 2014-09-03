@@ -16,7 +16,8 @@ import com.bstek.dorado.data.provider.manager.DataProviderTypeRegisterInfo;
 import com.bstek.dorado.data.provider.manager.DataProviderTypeRegistry;
 import com.bstek.dorado.data.resolver.manager.DataResolverTypeRegisterInfo;
 import com.bstek.dorado.data.resolver.manager.DataResolverTypeRegistry;
-import com.bstek.dorado.data.type.DefaultEntityDataType;
+import com.bstek.dorado.data.type.manager.DataTypeTypeRegisterInfo;
+import com.bstek.dorado.data.type.manager.DataTypeTypeRegistry;
 import com.bstek.dorado.data.type.validator.Validator;
 import com.bstek.dorado.data.type.validator.ValidatorTypeRegisterInfo;
 import com.bstek.dorado.data.type.validator.ValidatorTypeRegistry;
@@ -30,9 +31,15 @@ import com.bstek.dorado.view.type.property.validator.AbstractValidator;
  * @since 2009-11-26
  */
 public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
+	private DataTypeTypeRegistry dataTypeTypeRegistry;
 	private ValidatorTypeRegistry validatorTypeRegistry;
 	private DataProviderTypeRegistry dataProviderTypeRegistry;
 	private DataResolverTypeRegistry dataResolverTypeRegistry;
+
+	public void setDataTypeTypeRegistry(
+			DataTypeTypeRegistry dataTypeTypeRegistry) {
+		this.dataTypeTypeRegistry = dataTypeTypeRegistry;
+	}
 
 	public void setValidatorTypeRegistry(
 			ValidatorTypeRegistry validatorTypeRegistry) {
@@ -55,13 +62,36 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 		RuleTemplateManager ruleTemplateManager = initializerContext
 				.getRuleTemplateManager();
 
-		RuleTemplate dataTypeRuleTemplate = new RuleTemplate("DataType");
-		dataTypeRuleTemplate.setLabel("DataType");
-		dataTypeRuleTemplate
-				.setIcon("/com/bstek/dorado/data/type/DataType.png");
-		dataTypeRuleTemplate.setScope("public");
-		dataTypeRuleTemplate.setType(DefaultEntityDataType.class.getName());
-		ruleTemplateManager.addRuleTemplate(dataTypeRuleTemplate);
+		for (DataTypeTypeRegisterInfo dataTypeTypeInfo : dataTypeTypeRegistry
+				.getTypes()) {
+			String dataTypeName = dataTypeTypeInfo.getClassType()
+					.getSimpleName();
+			
+			// 旧的EclipseIDE要求DataType的ruleName必须是DataType
+			String ruleName;
+			if ("default".equals(dataTypeTypeInfo.getType())) {
+				ruleName = "DataType";
+			}
+			else {
+				ruleName = dataTypeName;
+			}
+
+			boolean isNew = false;
+			RuleTemplate newRuleTemplate = ruleTemplateManager
+					.getRuleTemplate(ruleName);
+			if (newRuleTemplate == null) {
+				newRuleTemplate = new RuleTemplate(ruleName);
+				newRuleTemplate.setGlobal(true);
+				isNew = true;
+			}
+			newRuleTemplate.setSortFactor(++sortFactor);
+			newRuleTemplate.setScope("public");
+			newRuleTemplate.setType(dataTypeTypeInfo.getClassType().getName());
+
+			if (isNew) {
+				ruleTemplateManager.addRuleTemplate(newRuleTemplate);
+			}
+		}
 
 		for (DataProviderTypeRegisterInfo dataProviderTypeInfo : dataProviderTypeRegistry
 				.getTypes()) {
@@ -76,7 +106,6 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 				newRuleTemplate.setGlobal(true);
 				isNew = true;
 			}
-			newRuleTemplate.setLabel(providerName);
 			newRuleTemplate.setSortFactor(++sortFactor);
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataProviderTypeInfo.getClassType()
@@ -100,7 +129,6 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 				newRuleTemplate.setGlobal(true);
 				isNew = true;
 			}
-			newRuleTemplate.setLabel(resolverName);
 			newRuleTemplate.setSortFactor(++sortFactor);
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataResolverTypeInfo.getClassType()

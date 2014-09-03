@@ -169,8 +169,8 @@ public class ObjectParser extends ConfigurableDispatchableXmlParser {
 			 * XmlParseException("[" + XmlConstants.ATTRIBUTE_PARENT +
 			 * "] attribute should be empty", element, context); }
 			 */
-			ClassUtils.forName(realImpl);
-			definition.setImpl(realImpl);
+			Class<?> realImplType = ClassUtils.forName(realImpl);
+			definition.setImplType(realImplType);
 		}
 
 		if (StringUtils.isNotEmpty(parent)) {

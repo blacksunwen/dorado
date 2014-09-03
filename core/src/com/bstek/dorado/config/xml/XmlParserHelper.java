@@ -277,7 +277,7 @@ public class XmlParserHelper implements BeanFactoryAware {
 			if (xmlParserInfoCache.containsKey(beanType)) {
 				return xmlParserInfoCache.get(beanType);
 			}
-	
+
 			Context context = new Context();
 			List<XmlParserInfo> xmlParserInfos = getSubNodeXmlParserInfosByPropertyType(
 					context, beanType);
