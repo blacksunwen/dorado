@@ -32,7 +32,7 @@ import com.bstek.dorado.view.widget.Component;
 import com.bstek.dorado.view.widget.Container;
 
 @XmlNode(definitionType = "com.bstek.dorado.view.config.definition.ViewDefinition", parser = "spring:dorado.viewParser", implTypes = "com.bstek.dorado.view.*")
-@ClientEvents({ @ClientEvent(name = "onDataLoaded"),
+@ClientEvents({ @ClientEvent(name = "onLoadData"),
 		@ClientEvent(name = "onComponentRegistered"),
 		@ClientEvent(name = "onComponentUnregistered") })
 public abstract class View extends Container {
