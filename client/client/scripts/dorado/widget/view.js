@@ -113,15 +113,16 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		},
 
 		EVENTS: /** @scope dorado.widget.View.prototype */ {
+			
 			/**
-			 * 当组件对应的根DOM对象被创建时触发的事件。
+			 * 当那些loadMode属性为onReady或onCreate的数据集全部完成数据装载时触发的事件。
 			 * @param {Object} self 事件的发起者，即组件本身。
 			 * @param {Object} arg 事件参数。
+			 * @param {dorado.widget.DataSet[]} arg.dataSets 执行过装载数据的DataSet的数组。
 			 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 			 * @event
-			 * @see dorado.widget.DataSet#loadMode
 			 */
-			onDataLoaded: {},
+			onLoadData: {},
 
 			/**
 			 * 当一个子组件被注册到视图中时触发的事件。
@@ -205,37 +206,42 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		},
 
 		loadData: function() {
-			if (this._renderMode !== "onDataLoaded") return;
-
-			this._children.each(function (child) {
-				if (!(child instanceof dorado.widget.Control) && !child._ready) child.onReady();
-			});
-			
-			$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
-			this._loadingDataSets = [];
-			dorado.util.AjaxEngine.processAllPendingRequests();
+			if (this._renderMode === "onDataLoaded") {		
+				var view = this, dataSets = this._loadingDataSets.slice();
+				$waitFor(this._loadingDataSets, function() {
+					view.onLoadData(dataSets);
+				});
+				this._loadingDataSets = [];
+				dorado.util.AjaxEngine.processAllPendingRequests(false);
+			}
 		},
 
 		onReady: function() {
 			$invokeSuper.call(this);
 			
-			if (this._renderMode !== "onDataLoaded") {
-				$waitFor(this._loadingDataSets, $scopify(this, this.onDataLoaded));
+			if (this._renderMode !== "onDataLoaded") {	
+				var view = this, dataSets = this._loadingDataSets.slice();
+				$waitFor(this._loadingDataSets, function() {
+					view.onLoadData(dataSets);
+				});
 				this._loadingDataSets = [];
-				dorado.util.AjaxEngine.processAllPendingRequests();
+				dorado.util.AjaxEngine.processAllPendingRequests(false);
 			}
 		},
 
 		/**
-		 * 当那些loadMode属性为onReady的数据集全部完成数据装载时触发的方法。
+		 * 当那些loadMode属性为onReady或onCreate的数据集全部完成数据装载时触发的方法。
 		 * @protected
+		 * @param dataSets dorado.widget.DataSet[] 执行过装载数据的DataSet的数组。
 		 * @see dorado.widget.DataSet#loadMode
 		 */
-		onDataLoaded: function() {
+		onLoadData: function(dataSets) {
 			if (this._renderMode == "onDataLoaded") {
 				this.render();
 			}
-			this.fireEvent("onDataLoaded", this);
+			this.fireEvent("onLoadData", this, {
+				dataSets: dataSets
+			});
 		},
 
 		destroy: function() {
@@ -644,13 +650,15 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		if (!(tasks instanceof Array)) tasks = [tasks];
 		var simTasks = [];
 		jQuery.each(tasks, function(i, task) {
-			if (task instanceof dorado.widget.DataSet && !task.get("dataLoaded")) {
-				simTasks.push({
-					callback: dorado._NULL_FUNCTION,
-					run: function(callback) {
-						task.loadAsync(callback);
-					}
-				});
+			if (task instanceof dorado.widget.DataSet) {
+				if (!task.get("dataLoaded")) {
+					simTasks.push({
+						callback: dorado._NULL_FUNCTION,
+						run: function(callback) {
+							task.loadAsync(callback);
+						}
+					});
+				}
 			}
 			else if (task instanceof dorado.widget.AsyncAction) {
 				simTasks.push({

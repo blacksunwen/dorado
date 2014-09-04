@@ -133,10 +133,10 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			 * 最小的与服务器建立的连接的时间间隔(毫秒数)。此属性仅在autoBatchEnabled属性为true时生效。
 			 * @type int
 			 * @attribute
-			 * @default 50
+			 * @default 10
 			 */
 			minConnectInterval: {
-				defaultValue: 10
+				defaultValue: 20
 			},
 
 			/**
@@ -333,8 +333,9 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				var requests = this._requests;
 				if (requests.length == 0) {
 					this._batchTimerId = $setTimeout(this, function() {
-						this._requestBatch();
+						this._requestBatch(true);
 					}, this._minConnectInterval);
+					this._oldestPendingRequestTime = new Date();					
 					dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS.push(this);
 				}
 
@@ -365,7 +366,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 				});
 
 				if (requests.length >= this._maxBatchSize) {
-					this._requestBatch();
+					this._requestBatch(true);
 				}
 			}
 			else {
@@ -373,7 +374,13 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			}
 		},
 
-		_requestBatch: function() {
+		_requestBatch: function(force) {
+			if (!force) {
+				if (this._oldestPendingRequestTime && (new Date() - this._oldestPendingRequestTime) < this._minConnectInterval) {
+					return;
+				}
+			}
+
 			if (this._batchTimerId) {
 				clearTimeout(this._batchTimerId);
 				this._batchTimerId = 0;
@@ -382,6 +389,7 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 			var requests = this._requests;
 			if (requests.length == 0) return;
 			this._requests = [];
+			this._oldestPendingRequestTime = 0;
 			dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS.remove(this);
 
 			var batchCallback = {
@@ -1069,11 +1077,11 @@ dorado.util.AjaxEngine.getInstance = function(options) {
 	return ajax;
 }
 
-dorado.util.AjaxEngine.processAllPendingRequests = function() {
+dorado.util.AjaxEngine.processAllPendingRequests = function(force) {
 	var engines = dorado.util.AjaxEngine.INSTANCES_PENDING_REQUESTS;
 	if (!engines.length) return;
 	for (var i = 0, len = engines.length; i < len; i++) {
-		engines[i]._requestBatch();
+		engines[i]._requestBatch(force);
 	}
 },
 

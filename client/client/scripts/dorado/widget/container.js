@@ -158,7 +158,7 @@
 					}
 					
 					if (!this._ready) {
-						dorado.util.AjaxEngine.processAllPendingRequests();
+						dorado.util.AjaxEngine.processAllPendingRequests(false);
 					}
 
 					if (!optimized) AUTO_APPEND_TO_TOPVIEW = true;
