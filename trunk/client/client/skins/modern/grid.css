@@ -94,9 +94,6 @@
   line-height: 32px;
   padding-left: 6px;
 }
-.d-grid .data-table .cell {
-  padding-top: 1px;
-}
 .d-grid .data-table .cell.wrappable {
   white-space: normal;
   word-wrap: break-word;

@@ -1746,7 +1746,8 @@
 				else {
 					divViewPort.style.height = this._innerGridWrapper.offsetHeight + "px";
 				}
-				divScroll.scrollTop = this._scrollTop = Math.round(info.scrollTop * ratio);
+				divScroll.scrollTop = Math.round(info.scrollTop * ratio);
+				if (this._scrollTop !== undefined) this._scrollTop = divScroll.scrollTop;
 
 				//目前已知在动态行高的情况下不需要此行代码
 				//if (this._domMode == 2) this._fixedInnerGrid.setYScrollPos(info.scrollTop / info.scrollHeight);
