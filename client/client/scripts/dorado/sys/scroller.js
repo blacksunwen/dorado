@@ -11,7 +11,7 @@
  */
 (function($) {
 
-	var SCROLLER_SIZE = $setting["widget.scrollerSize"] || 4, SCROLLER_EXPANDED_SIZE = $setting["widget.scrollerExpandedSize"] || 16;
+	var SCROLLER_SIZE, SCROLLER_EXPANDED_SIZE;
 	var SCROLLER_PADDING = 0, MIN_SLIDER_SIZE = SCROLLER_EXPANDED_SIZE, MIN_SPILLAGE = 2;
 
 	function insertAfter(element, refElement) {
@@ -630,6 +630,9 @@
 	 * @param {boolean} [options.listenContentSize]
 	 */
 	dorado.util.Dom.modernScroll = function(container, options) {
+		if (SCROLLER_SIZE === undefined) SCROLLER_SIZE = $setting["widget.scrollerSize"] || 4;
+		if (SCROLLER_EXPANDED_SIZE === undefined) SCROLLER_EXPANDED_SIZE = $setting["widget.scrollerExpandedSize"] || 16;
+		
 		var $container = $(container);
 		if ($container.data("modernScroller")) return;
 
