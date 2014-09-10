@@ -78,6 +78,7 @@
 			 * @attribute
 			 */
 			label: {
+				notifyObservers: true,
 				getter: function() {
 					var label = this._label;
 					if (label == null) label = this._name;
@@ -97,7 +98,9 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			readOnly: {},
+			readOnly: {
+				notifyObservers: true
+			},
 			
 			/**
 			 * 属性是否默认可见。
@@ -196,7 +199,9 @@
 			 * @type boolean
 			 * @attribute
 			 */
-			required: {},
+			required: {
+				notifyObservers: true
+			},
 			
 			/**
 			 * 默认值。
@@ -314,6 +319,22 @@
 					this._name = name.name;
 					delete name.name;
 					this.set(name);
+				}
+			}
+		},
+		
+		doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+			dorado.AttributeSupport.prototype.doSet.call(this, attr, value, skipUnknownAttribute, lockWritingTimes);
+			if (this._parent) {
+				var def = this.ATTRIBUTES[attr];
+				if (def && def.notifyObservers) {
+					var observers = this._parent._observers, observer;
+					for (var key in observers) {
+						observer = observers[key];
+						if (observer.notifyObservers) {
+							dorado.Toolkits.setDelayedAction(observer, "$refreshDelayTimerId", observer.notifyObservers, 50);
+						}
+					}
 				}
 			}
 		},

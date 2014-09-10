@@ -257,7 +257,12 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		_messages : null,
 
 		_setObserver: function(observer) {
+			if (this._observer && this.dataType) this.dataType._removeObserver(this._observer);
+			
 			this._observer = observer;
+			
+			if (this.dataType && observer) this.dataType._addObserver(observer);
+			
 			var data = this._data;
 			for(p in data) {
 				if (data.hasOwnProperty(p)) {

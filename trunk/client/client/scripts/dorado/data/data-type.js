@@ -509,10 +509,25 @@
 			},
 
 			constructor: function (config) {
+				this._observers = {};
 				this._propertyDefs = new dorado.util.KeyedArray(function (propertyDef) {
 					return propertyDef._name;
 				});
 				dorado.DataType.prototype.constructor.call(this, config);
+			},
+			
+			_addObserver: function(observer) {
+				var key = observer._uniqueId;
+				if (!key) observer._uniqueId = key = dorado.Core.newId();
+				if (!this._observers[key]) {
+					this._observers[key] = observer;
+				}
+			},
+			
+			_removeObserver: function(observer) {
+				var key = observer._uniqueId;
+				if (!key) return;
+				delete this._observers[key];
 			},
 
 			doGet: function (attr) {
