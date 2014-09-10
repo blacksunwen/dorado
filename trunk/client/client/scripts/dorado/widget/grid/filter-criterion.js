@@ -574,7 +574,7 @@
 			criterion: {}
 		},
 		
-		_constructor: function(dropDown, dropDownBox) {
+		constructor: function(dropDown, dropDownBox) {
 			$invokeSuper.call(this);
 			
 			this._dropDown = dropDown;

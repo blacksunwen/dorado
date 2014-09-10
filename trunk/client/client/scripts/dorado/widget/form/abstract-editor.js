@@ -206,7 +206,8 @@
 		},
 
 		cancel: function() {
-			this.refreshDom();
+			this.timestamp = 0;
+			this.refresh();
 		},
 		
 		/**

@@ -625,6 +625,11 @@
 					processDefault: true
 				};
 				this.fireEvent("onPostFailed", this, eventArg);
+				
+				if (!eventArg.processDefault) {
+					this.cancel();
+				}
+				
 				if (eventArg.processDefault && !silent) {
 					dorado.Exception.processException(e);
 				}
