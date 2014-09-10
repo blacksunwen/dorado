@@ -50,8 +50,8 @@ dorado.util.KeyedArray = $class(/** @scope dorado.util.KeyedArray.prototype */{
 	size: 0,
 	
 	_getKey: function(data) {
-		var key = this._getKeyFunction ? this._getKeyFunction(data) : null;
-		return key + '';
+		var key = this._getKeyFunction ? this._getKeyFunction(data) : data.id;
+		return (typeof key == "string") ? key : (key + '');
 	},
 	
 	/**

@@ -78,12 +78,15 @@ dorado.widget.tree.TreeNodeRenderer = $extend(dorado.Renderer, {
 	 */
 	doRender: function(cell, node, arg) {
 		// 判断子节点对应的EntityList是否已被Entity.reset
-		if (node._expanded && node._nodesData && !node._nodesData._observer) {
-			node.resetChildren();
-			node._expanded = false;
-			setTimeout(function() {
-				node.expandAsync();
-			}, 0);
+		if (node._expanded) {
+			var nodesData = node._nodesData;
+			if (nodesData && !nodesData._observer && !nodesData.isNull) {
+				node.resetChildren();
+				node._expanded = false;
+				setTimeout(function() {
+					node.expandAsync();
+				}, 0);
+			}
 		}
 
 		var tree = node._tree, level = node.get("level"), hasChild = node.get("hasChild");	

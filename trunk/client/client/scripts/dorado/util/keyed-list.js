@@ -58,7 +58,8 @@ dorado.util.KeyedList = $class(/** @scope dorado.util.KeyedList.prototype */{
 	size: 0,
 	
 	_getKey: function(data) {
-		return this._getKeyFunction ? this._getKeyFunction(data) : null;
+		var key = this._getKeyFunction ? this._getKeyFunction(data) : data.id;
+		return (typeof key == "string") ? key : (key + '');
 	},
 	
 	_registerEntry: function(entry) {

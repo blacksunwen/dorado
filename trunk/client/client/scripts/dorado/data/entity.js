@@ -937,7 +937,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			return messages;
 		},
 		
-		_set: function(property, value, propertyDef) {
+		_set: function(property, value, propertyDef) {	
 			var oldValue = this._data[property];
 			if (oldValue && oldValue instanceof dorado.Entity && value && !(value instanceof dorado.Entity) && typeof value == "object") {
 				oldValue.set(value);
@@ -1467,7 +1467,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 *            <li>never - 不会激活数据装载过程，直接返回数据的当前值。</li>
 		 *            </ul>
 		 * @param {boolean}
-		 *            [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。
+		 *            [options.includeUnloadPage] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。
 		 *            此属性对于{@link dorado.Entity}的toJSON而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的toJSON方法中，
 		 *            因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按true进行处理。
 		 * @param {boolean}
@@ -1579,7 +1579,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		 * @param {boolean}
 		 *            [options.readOnly=false] 是否以只读方式代理Entity。该选项默认值为false。
 		 * @param {boolean}
-		 *            [options.includeUnloadPage=false] 是否处理{@link dorado.EntityList}中尚未装载的页中的数据。
+		 *            [options.includeUnloadPage] 是否处理{@link dorado.EntityList}中尚未装载的页中的数据。
 		 *            此属性对于{@link dorado.Entity}的getWrapper而言是没有意义的，但是由于options参数会自动被传递到实体对象内部{@link dorado.EntityList}的getWrapper方法中，
 		 *            因此它会影响内部{@link dorado.EntityList}的处理过程。 默认按false进行处理。
 		 * @return {Object} 得到的代理对象。
