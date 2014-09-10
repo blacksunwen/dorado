@@ -216,7 +216,7 @@
 			}, 700);
 		},
 
-		update: function() {			
+		update: function() {
 			var scroller = this, container = scroller.container;
 			if (!container) return;
 
@@ -430,7 +430,9 @@
 				});
 			}
 			$container.bind("scroll",function(evt) {
-				modernScroller.update();
+				if (!(xScroller && xScroller.dragging || yScroller && yScroller.dragging)) {
+					modernScroller.update();
+				}
 
 				var arg = {
 					scrollLeft: container.scrollLeft, scrollTop: container.scrollTop,
