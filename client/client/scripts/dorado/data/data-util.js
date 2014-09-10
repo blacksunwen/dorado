@@ -96,8 +96,10 @@
 					if (this.FIRE_ON_ENTITY_LOAD) {
 						var eventArg = {};
 						if (data instanceof dorado.Entity) {
-							eventArg.entity = data;
-							dataType.fireEvent("onEntityLoad", dataType, eventArg);
+							if (dataType.getListenerCount("onEntityLoad")) {
+								eventArg.entity = data;
+								dataType.fireEvent("onEntityLoad", dataType, eventArg);
+							}
 						} else if (data instanceof dorado.EntityList) {
 							if (rudeData.$isWrapper) {
 								data.pageSize = rudeData.pageSize;
@@ -105,7 +107,7 @@
 							}
 							
 							var elementDataType = dataType.get("elementDataType");
-							if (elementDataType) {
+							if (elementDataType && elementDataType.getListenerCount("onEntityLoad")) {
 								for (var it = data.iterator(); it.hasNext();) {
 									eventArg.entity = it.next();
 									elementDataType.fireEvent("onEntityLoad", dataType, eventArg);

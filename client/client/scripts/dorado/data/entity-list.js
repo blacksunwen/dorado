@@ -119,7 +119,7 @@
 			 */
 			this.entityCount = 0;
 			
-			this._pages = [];
+			this._pages = new dorado.util.KeyedList();
 			this._keyMap = {};
 			if (data != null) this.fromJSON(data);
 		},
@@ -128,9 +128,11 @@
 		
 		_setObserver: function(observer) {
 			this._observer = observer;
-			this.each(function(v) {
-				if (v instanceof dorado.Entity) v._setObserver(observer);
-			});
+			var it = this.iterator(), entity;
+			while (it.hasNext()) {
+				entity = it.next();
+				entity._setObserver(observer);
+			}
 		},
 		
 		/**
@@ -218,7 +220,7 @@
 		 * @return {boolean} 是否已经装载。
 		 */
 		isPageLoaded: function(pageNo) {
-			var page = this._pages[pageNo];
+			var page = this._pages.get(pageNo + '');
 			return (page && page.loaded);
 		},
 		
@@ -246,54 +248,71 @@
 			}
 			
 			if (pageNo > 0 && pageNo <= this.pageCount) {
-				var page = this._pages[pageNo];
+				var page = this._pages.get(pageNo + '');
 				if (!page) {
 					page = new dorado.EntityList.Page(this, pageNo);
-					this._pages[pageNo] = page;
+					if (!this._pages.size) {
+						this._pages.insert(page);
+					}
+					else {
+						var it = this._pages.iterator(), refPage, tempPage;
+						it.last();
+						while (it.hasPrevious()) {
+							tempPage = it.previous();
+							if (tempPage.page < pageNo) {
+								refPage = tempPage;
+								break;
+							}
+						}
+						if (refPage) {
+							this._pages.insert(page, "after", refPage);
+						}
+						else {
+							this._pages.insert(page);
+						}
+					}
 				}
 				
 				if (page.loaded) {
 					if (callback) {
 						$callback(callback, true, page);
-						return;
 					}
-				} else {
-					if (loadPage) {
-						if (this.dataProvider) {
-							var pipe = page.loadPagePipe;
-							if (!pipe) {
-								page.loadPagePipe = pipe = new LoadPagePipe(this, pageNo);
-							}
-							
-							if (callback) {
-								var arg = {
-									entityList: this,
-									pageNo: pageNo
-								};
-								var isNewPipe = (pipe.runningProcNum == 0);
-								pipe.getAsync({
-									scope: this,
-									callback: function(success, result) {
-										if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, arg);
-										
-										if (success && !page.loaded) {
-											this._fillPage(page, result, false, true);
-											page.loaded = true;
-											pageLoaded.call(this);
-										}
-										$callback(callback, success, ((success) ? page : result));
-									}
-								});
-								if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, arg);
-							} else {
-								var result = pipe.get();
-								this._fillPage(page, result, false, true);
-								page.loaded = true;
-								pageLoaded.call(this);
-							}
-						} else {
-							page.loaded = true;
+					return page;
+				} else if (loadPage) {
+					if (this.dataProvider) {
+						var pipe = page.loadPagePipe;
+						if (!pipe) {
+							page.loadPagePipe = pipe = new LoadPagePipe(this, pageNo);
 						}
+						
+						if (callback) {
+							var arg = {
+								entityList: this,
+								pageNo: pageNo
+							};
+							var isNewPipe = (pipe.runningProcNum == 0);
+							pipe.getAsync({
+								scope: this,
+								callback: function(success, result) {
+									if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_END, arg);
+									
+									if (success && !page.loaded) {
+										this._fillPage(page, result, false, true);
+										page.loaded = true;
+										pageLoaded.call(this);
+									}
+									$callback(callback, success, ((success) ? page : result));
+								}
+							});
+							if (isNewPipe) this.sendMessage(dorado.Entity._MESSAGE_LOADING_START, arg);
+						} else {
+							var result = pipe.get();
+							this._fillPage(page, result, false, true);
+							page.loaded = true;
+							pageLoaded.call(this);
+						}
+					} else {
+						page.loaded = true;
 					}
 				}
 				return page;
@@ -844,7 +863,7 @@
 		 * 清空集合中的所有数据。
 		 */
 		clear: function() {
-			this._pages = [];
+			this._pages.clear();
 			this._keyMap = {};
 			this.entityCount = 0;
 			this.current = null;
@@ -936,7 +955,7 @@
 		 * <li>auto	-	如果有需要则自动启动异步的数据装载过程，但对于本次方法调用将返回数据的当前值。</li>
 		 * <li>never	-	不会激活数据装载过程，直接返回数据的当前值。</li>
 		 * </ul>
-		 * @param {boolean} [options.includeUnloadPage=true] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。默认按true进行处理。
+		 * @param {boolean} [options.includeUnloadPage] 是否转换{@link dorado.EntityList}中尚未装载的页中的数据。默认按true进行处理。
 		 * @param {boolean} [options.includeDeletedEntity] 是否转换那些被标记为"已删除"的数据实体。
 		 * @param {boolean} [options.simplePropertyOnly] 是否只生成简单类型的属性到JSON中。
 		 * 此属性对于{@link dorado.EntityList}的toJSON而言是没有意义的，但是由于options参数会自动被传递到集合中{@link dorado.Entity}的toJSON方法中，
@@ -1033,8 +1052,12 @@
 		 * });
 		 */
 		each: function(fn, scope) {
-			for (var i = 1; i <= this.pageCount; i++) {
-				if (this.isPageLoaded(i)) this._pages[i].each(fn, scope);
+			var it = this.iterator(), entity;
+			while (it.hasNext()) {
+				entity = it.next();
+				if (fn.call(scope || entity, entity) === false) {
+					break;
+				}
 			}
 		},
 		
@@ -1051,7 +1074,7 @@
 		 * @param {boolean} [options.currentPage] 只遍历当前页号中的数据。
 		 * @param {boolean} [options.simulateUnloadPage] 是否对为未下载的页进行模拟遍历。
 		 * 在模拟遍历的过程中，迭代器将返回一个虚假的dorado.Entity实例代替未下载页中的某个数据实体。
-		 * 当启用此选项时，迭代器将强制按照options.includeUnloadPage=true的情况来进行迭代，但不会在迭代过程中引起数据装载。
+		 * 当启用此选项时，迭代器将在迭代过程中模拟出那些尚未下载的数据实体，但不会在迭代过程中引起实际的数据装载。
 		 * @return {dorado.util.Iterator} 数据实体的迭代器。
 		 */
 		iterator: function(options) {
@@ -1090,6 +1113,7 @@
 			this.entityList = entityList;
 			this.pageNo = pageNo;
 			this.entityCount = entityList.pageSize;
+			this.id = pageNo; // for KeyedList
 		},
 		
 		insert: function(data, insertMode, refData) {
@@ -1128,7 +1152,6 @@
 		
 		constructor: function(entityList, options) {
 			this._entityList = entityList;
-			
 			if (options === true) {
 				this._includeDeletedEntity = true;
 			} else if (options instanceof Object) {
@@ -1145,129 +1168,147 @@
 		
 		firstOrLast: function(reverse) {
 			var entityList = this._entityList;
-			var pageCount = entityList.pageCount;
-			var pageNo = this._pageNo = (this._fixedPageNo || (reverse ? pageCount : 1));
 			
-			this._previous = this._current = this._next = null;
-			this._previousPage = this._currentPage = this._nextPage = pageNo;
+			var it, page, pageNo = 0;
+			if (!this._fixedPageNo) {
+				it = entityList._pages.iterator();
+				if (reverse) it.last();
+			}
+			else {
+				pageNo = this._fixedPageNo;
+			}
 			
 			if (this._nextIndex) {
 				var skiped = 0;
 				if (!this._fixedPageNo) {
-					while (pageNo > 0 && pageNo <= pageCount) {
-						var page = entityList.getPage(pageNo, false);
-						skiped += page.entityCount;
-						if (skiped > this._nextIndex) {
-							skiped -= page.entityCount;
-							break;
+					var tempPage;
+					while (reverse ? it.hasPervious() : it.hasNext()) {
+						tempPage = reverse ? it.pervious() : it.next();
+						if (tempPage.loaded || this._includeUnloadPage) {
+							skiped += page.entityCount;
+							if ((skiped + page.entityCount) > this._nextIndex) {
+								break;
+							}
+							skiped += page.entityCount;
 						}
-						reverse ? pageNo-- : pageNo++;
-						if (skiped >= this._nextIndex) break;
-					}
-				}
-				
-				this._next = this._findFromPage(pageNo);
-				if (this._next) {
-					this._nextPage = this._next.pageNo;
-					this._current = this._findNeighbor(this._next, this._nextPage, true);
-					if (this._current) {
-						this._currentPage = this._current.pageNo;
-						this._previous = this._findNeighbor(this._current, this._currentPage, true);
-						if (this._previous) this._previousPage = this._previous.pageNo;
 					}
 					
-					for (var i = skiped; i < this._nextIndex; i++) {
-						if (this.hasNext()) this.next();
-						else break;
+					if (tempPage) {
+						page = tempPage;
+						pageNo = page.pageNo;
+					}
+				}
+
+				if (pageNo) {
+					this._previous = this._next = this._findFromPage(pageNo);
+					if (this._next && skiped < this._nextIndex) {					
+						for (var i = skiped; i < this._nextIndex; i++) {
+							if (this.hasNext()) this.next();
+							else break;
+						}
 					}
 				}
 				delete this._nextIndex;
 			} else {
-				var result = this._findFromPage(pageNo, reverse);
-				if (reverse) {
-					this._previous = result;
-					if (this._previous) this._previousPage = this._previous.pageNo;
-				} else {
-					this._next = result;
-					if (this._next && this._next.pageNo) this._nextPage = this._next.pageNo;
+				if (!this._fixedPageNo) {
+					var tempPage;
+					while (reverse ? it.hasPervious() : it.hasNext()) {
+						tempPage = reverse ? it.pervious() : it.next();
+						if (tempPage.loaded || this._includeUnloadPage) {
+							page = tempPage;
+							pageNo = page.pageNo;
+							break;
+						}
+					}
+				}
+				
+				if (pageNo) {
+					var result = this._findFromPage(pageNo, reverse);
+					if (reverse) {
+						this._previous = result;
+					} else {
+						this._next = result;
+					}
 				}
 			}
 		},
 		
 		_findFromPage: function(pageNo, reverse) {
-			var result = null, entityList = this._entityList, pageCount = entityList.pageCount, page;
-			if (this._includeUnloadPage) {
-				page = entityList.getPage(pageNo, !this._simulateUnloadPage);
-			} else {
-				while (pageNo > 0 && pageNo <= pageCount) {
-					var p = entityList.getPage(pageNo, false);
-					if (p.loaded) {
-						page = p;
+			var result = null, entityList = this._entityList, pageCount = entityList.pageCount;
+			
+			// 如果simulateUnloadPage为true，那么includeUnloadPage一定也是true
+			var page = entityList.getPage(pageNo, !this._simulateUnloadPage);
+			
+			if (page.loaded) {
+				var entry = reverse ? page.last : page.first;
+				while (entry) {
+					if (this._includeDeletedEntity || entry.data.state != dorado.Entity.STATE_DELETED) {
+						result = entry;
 						break;
 					}
-					if (this._fixedPageNo) break;
-					pageNo += (reverse ? -1 : 1);
+					entry = reverse ? entry.previous : entry.next;
 				}
-			}
-			
-			if (page) {
-				if (page.loaded) {
-					result = reverse ? page.last : page.first;
-					while (result && !this._includeDeletedEntity && result.data.state == dorado.Entity.STATE_DELETED) {
-						result = reverse ? result.previous : result.next;
-					}
-				} else {
-					result = {
-						data: dorado.Entity.getDummyEntity(pageNo)
-					};
-					this._simulatePageSize = (pageNo == pageCount) ? (entityList.entityCount % entityList.pageSize) : entityList.pageSize;
-					this._simulateIndex = (reverse) ? this._simulatePageSize : 0;
-				}
+			} else {
+				result = {
+					data: dorado.Entity.getDummyEntity(pageNo)
+				};
+				var entityList = this._entityList;
+				this._simulatePageSize = (pageNo == pageCount) ? (entityList.entityCount % entityList.pageSize) : entityList.pageSize;
+				this._simulateIndex = (reverse) ? this._simulatePageSize : 0;
 			}
 			return result;
 		},
 		
 		_findNeighbor: function(entry, pageNo, reverse) {
 			if (!entry) return null;
-			var inc = reverse ? -1 : 1;
 			if (entry.data && !entry.data.dummy) {
 				do {
 					entry = reverse ? entry.previous : entry.next;
 				}
-				while (entry && !this._includeDeletedEntity && entry.data.state == dorado.Entity.STATE_DELETED);
-				if (entry) entry.pageNo = pageNo;
+				while (entry && this._includeDeletedEntity && entry.data.state === dorado.Entity.STATE_DELETED);
 			} else {
+				var inc = reverse ? -1 : 1;
 				this._simulateIndex += inc;
 				if (this._simulateIndex < 0 || this._simulateIndex >= this._simulatePageSize) {
 					this._simulateIndex -= inc;
 					entry = null;
 				}
 			}
+			
 			if (entry == null && !this._fixedPageNo) {
-				pageNo += inc;
-				if (pageNo > 0 && pageNo <= this._entityList.pageCount) {
-					entry = this._findFromPage(pageNo, reverse);
+				if (this._includeUnloadPage) {
+					pageNo += (reverse ? -1 : 1);
+					if (pageNo > 0 && pageNo <= this._entityList.pageCount) {
+						entry = this._findFromPage(pageNo, reverse);
+					}
+				}
+				else {
+					var entityList = this._entityList;
+					var page = entityList.getPage(pageNo, false), it = entityList.iterator(page);
+					reverse ? it.previous() : it.next();
+					while (reverse ? it.hasPrevious() : it.hasNext()) {
+						page = reverse ? it.previous() : it.next();
+						if (page.loaded) {
+							entry = this._findFromPage(page.pageNo, reverse);
+							break;
+						}
+					}
 				}
 			}
 			return entry;
 		},
 		
 		_find: function(reverse) {
-			var result = this._findNeighbor((reverse ? this._previous : this._next), (reverse ? this._previousPage : this._nextPage), reverse);
+			var fromEntry = reverse ? this._previous : this._next;
+			var result = this._findNeighbor(fromEntry, fromEntry.data.page.pageNo, reverse);
 			if (reverse) {
 				this._next = this._current;
-				this._nextPage = this._currentPage;
 				this._current = this._previous;
-				this._currentPage = this._previousPage;
 				this._previous = result;
-				this._previousPage = result ? result.data.page.pageNo : 1;
 			} else {
 				this._previous = this._current;
-				this._previousPage = this._currentPage;
 				this._current = this._next;
-				this._currentPage = this._nextPage;
 				this._next = result;
-				this._nextPage = result ? result.data.page.pageNo : this._entityList.pageCount;
 			}
 		},
 		
@@ -1290,9 +1331,7 @@
 		previous: function() {
 			if (!this._previous) {
 				this._next = this._current;
-				this._nextPage = this._currentPage;
 				this._current = this._previous = null;
-				this._currentPage = this._previousPage = 1;
 				return null;
 			}
 			var data = this._previous.data;
@@ -1303,9 +1342,7 @@
 		next: function() {
 			if (!this._next) {
 				this._previous = this._current;
-				this._previousPage = this._currentPage;
 				this._current = this._next = null;
-				this._currentPage = this._nextPage = this._entityList.pageCount;
 				return null;
 			}
 			var data = this._next.data;
@@ -1322,9 +1359,6 @@
 				previous: this._previous,
 				current: this._current,
 				next: this._next,
-				previousPage: this._previousPage,
-				currentPage: this._currentPage,
-				nextPage: this._nextPage,
 				simulateIndex: this._simulateIndex,
 				simulatePageSize: this._simulatePageSize
 			};
@@ -1334,9 +1368,6 @@
 			this._previous = bookmark.previous;
 			this._current = bookmark.current;
 			this._next = bookmark.next;
-			this._previousPage = bookmark.previousPage;
-			this._currentPage = bookmark.currentPage;
-			this._nextPage = bookmark.nextPage;
 			this._simulateIndex = bookmark.simulateIndex;
 			this._simulatePageSize = bookmark.simulatePageSize;
 		}
