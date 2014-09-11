@@ -1185,11 +1185,11 @@
 					while (reverse ? it.hasPervious() : it.hasNext()) {
 						tempPage = reverse ? it.pervious() : it.next();
 						if (tempPage.loaded || this._includeUnloadPage) {
-							skiped += page.entityCount;
-							if ((skiped + page.entityCount) > this._nextIndex) {
+							skiped += tempPage.entityCount;
+							if ((skiped + tempPage.entityCount) > this._nextIndex) {
+								skiped -= tempPage.entityCount;
 								break;
 							}
-							skiped += page.entityCount;
 						}
 					}
 					
