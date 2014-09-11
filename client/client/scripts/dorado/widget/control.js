@@ -1415,10 +1415,7 @@
 			},
 
 			doSetFocus: function() {
-				var dom = this._dom;
-				if (dom) {
-					dom.focus();
-				}
+				document.body.focus();
 			},
 
 			/**
@@ -1600,24 +1597,40 @@
 	dorado.widget.setFocusedControl = function(control, ignorePhyscialFocus, skipGlobalBoardcast) {
 		if (dorado.widget.focusedControl.peek() === control) return;
 		if (!skipGlobalBoardcast && control) {
-			var topDomainWindow = window;
+			debugger;
+			var win = window, topDomainWindow, windowStack = [], parentFrames;
 			do {
 				try {
-					var parent = topDomainWindow.parent;
-					if (parent == null || parent == topDomainWindow) break; // IE8下使用===判断会失败
-					if (parent.frames.length >= 0) {
-						topDomainWindow = parent;
+					var parent = win.parent;
+					if (parent == null || parent == win) break; // IE8下使用===判断会失败
+					windowStack.push(parent);
+					
+					try {
+						parentFrames = parent.jQuery("iframe,frame");
+						if (parentFrames) {
+							parentFrames.each(function() {
+								if (this.contentWindow == win) {		// IE8下使用===判断会失败
+									var frameControl =  parent.dorado.widget.Control.findParentControl(this);
+									parent.dorado.widget.setFocusedControl(frameControl, true, true);
+									return false;
+								}
+							});
+							topDomainWindow = win = parent;
+						}
+					}
+					catch(e) {
+						// do nothing;
 					}
 				}
 				catch(e) {
 					// do nothing
 					break;
 				}
-			} while(topDomainWindow);
+			} while(win);
 
 			function setFrameBlur(win) {
 				try {
-					if (win !== window && win.dorado.widget.Control) {
+					if (win !== window && win.dorado.widget.Control && windowStack.indexOf(win) < 0) {
 						win.dorado.widget.setFocusedControl(null, true, true);
 					}
 				}
@@ -1629,7 +1642,7 @@
 				}
 			}
 
-			setFrameBlur(topDomainWindow);
+			if (topDomainWindow) setFrameBlur(topDomainWindow);
 		}
 
 		if (dorado.Browser.msie && document.activeElement) {
