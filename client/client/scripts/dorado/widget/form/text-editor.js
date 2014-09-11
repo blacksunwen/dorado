@@ -89,10 +89,10 @@
 				},
 				setter: function(value) {
 					/*
-					 * _value将在doPost之后被自动清空，并且当modified==true时，系统也不会将_value的值作为value属性的只返回给外界。
+					 * _value将在doPost之后被自动清空，并且当modified==true时，系统也不会将_value的值作为value属性的值返回给外界。
 					 */
 					this._value = value;
-					var text = this._valueText = this._lastObserve = dorado.$String.toText(value);
+					var text = this._valueText = dorado.$String.toText(value);
 					this.doSetText(text);
 				}
 			},
@@ -117,7 +117,7 @@
 
 			modified: {
 				getter: function() {
-					return (this._focused) ? (this._lastPost != this.get("text")) : false;
+					return (this._focused) ? (this._valueText != this.get("text")) : false;
 				}
 			},
 
@@ -300,14 +300,12 @@
 				var value, dirty, timestamp = 0;
 				this._entity = null;
 				if (this._property) {
-					var bindingInfo = this._bindingInfo, propertyDef = bindingInfo.propertyDef, state, messages;
-					if (propertyDef) {
-						var watcher = this.getAttributeWatcher();
-						if (!watcher.getWritingTimes("displayFormat")) this._displayFormat = propertyDef._displayFormat;
-						if (!watcher.getWritingTimes("inputFormat")) this._inputFormat = propertyDef._inputFormat;
-						if (!propertyDef._mapping && !watcher.getWritingTimes("dataType")) this._dataType = propertyDef._dataType;
+					var bindingInfo = this._bindingInfo, state, messages;
+					
+					if (bindingInfo.propertyDef && this._initBindingProperties) {
+						this._initBindingProperties(bindingInfo.propertyDef);
 					}
-
+					
 					timestamp = bindingInfo.timestamp;
 					if (bindingInfo.entity instanceof dorado.Entity) {
 						var e = this._entity = bindingInfo.entity;
@@ -324,8 +322,6 @@
 
 					if (timestamp != this.timestamp) {
 						this.set("value", value);
-						this._lastPost = this.get("text");
-						this.timestamp = timestamp;
 					}
 					this.setValidationState(state, messages);
 					this.setDirty(dirty);
@@ -387,16 +383,14 @@
 			// if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = !!this._realEditable;
 			if (this._realReadOnly) return;
 
-			this._focusTime = new Date();
-
 			this._editorFocused = true;
-			this._lastPost = this._lastObserve = this.get("text");
+			this._lastPost = this._lastEdit = this.get("text");
 			if (this._useBlankText) this.doSetText('');
 
 			dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", function() {
 				var text = this.get("text");
-				if (this._lastObserve != text) {
-					this._lastObserve = text;
+				if (this._lastEdit != text) {
+					this._lastEdit = text;
 					this.textEdited();
 				}
 				dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", arguments.callee, 50);
@@ -418,6 +412,9 @@
 
 			dorado.Toolkits.cancelDelayedAction(this, "$editObserverTimerId");
 			this.post();
+			
+			delete this._lastPost;
+			delete this._lastEdit;
 
 			this._editorFocused = false;
 			if (this._blankText) {
@@ -625,11 +622,7 @@
 					processDefault: true
 				};
 				this.fireEvent("onPostFailed", this, eventArg);
-				
-				if (!eventArg.processDefault) {
-					this.cancel();
-				}
-				
+								
 				if (eventArg.processDefault && !silent) {
 					dorado.Exception.processException(e);
 				}
@@ -655,7 +648,7 @@
 			value: {
 				skipRefresh: true,
 				getter: function() {
-					var text = this.get("text");
+					var text = this.doGetText();
 					if (this._value !== undefined && text === this._valueText) {
 						return this._value;
 					}
@@ -669,7 +662,7 @@
 					var text = dorado.$String.toText(value);
 					this._skipValidateEmpty = true;
 					this.validate(text);
-					this._text = this._valueText = this._lastObserve = text;
+					this._text = this._valueText = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}
@@ -1008,7 +1001,7 @@
 					var dataType = this.get("dataType");
 					if (dataType) {
 						text = dataType.toText(value, this._editorFocused ? this._typeFormat : this._displayFormat);
-						valueText = (this._editorFocused) ? text : dataType.toText(value, this._typeFormat);
+						valueText = dataType.toText(value, this._typeFormat);
 					}
 					else {
 						valueText = text = dorado.$String.toText(value);
@@ -1017,7 +1010,7 @@
 					this._skipValidateEmpty = true;
 					this.validate(valueText);
 					this._valueText = valueText;
-					this._text = this._lastObserve = text;
+					this._text = text;
 					this.doSetText(text);
 					this.setValidationState(null);
 				}
@@ -1044,7 +1037,6 @@
 					}
 					this.validate(t);
 					this._text = text;
-					if (!this._editorFocused) this._lastObserve = text;
 					this.doSetText(t);
 					this.setValidationState(null);
 				}
@@ -1142,6 +1134,13 @@
 
 			return textDom;
 		},
+		
+		_initBindingProperties: function(propertyDef) {
+			var watcher = this.getAttributeWatcher();
+			if (!watcher.getWritingTimes("displayFormat")) this._displayFormat = propertyDef._displayFormat;
+			if (!watcher.getWritingTimes("inputFormat")) this._inputFormat = propertyDef._inputFormat;
+			if (!propertyDef._mapping && !watcher.getWritingTimes("dataType")) this._dataType = propertyDef._dataType;
+		},
 
 		doValidate: function(text) {
 			var validationResults = [];
@@ -1215,9 +1214,8 @@
 			if (!this._realReadOnly && !this._mapping) {
 				var dataType = this.get("dataType");
 				if (dataType) {
-					if (this._validationState != "error") {
-						var text = dataType.toText(this.get("value"), this._typeFormat);
-						this.doSetText(text);
+					if (this._validationState != "error" && this._valueText !== undefined) {
+						this.doSetText(this._valueText);
 					}
 					var dCode = dataType._code;
 					if (dCode == dorado.DataType.PRIMITIVE_CHAR || dCode == dorado.DataType.CHARACTER) {
