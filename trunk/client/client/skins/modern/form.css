@@ -334,6 +334,7 @@
 /* checkbox */
 .d-checkbox {
   display: inline-block;
+  white-space: nowrap;
   overflow: hidden;
   cursor: default;
   min-width: 14px;
@@ -443,6 +444,10 @@
 .d-checkbox:hover .icon.halfchecked:before,
 .d-checkbox-focused .icon.halfchecked:before {
   background-color: rgba(42, 57, 79, 0.5);
+}
+.d-checkbox-readonly .icon {
+  border-color: #d6d6d6;
+  background: #efefef;
 }
 /* radio-group */
 .d-radiogroup {
