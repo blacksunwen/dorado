@@ -266,10 +266,13 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			RuleTemplateManager ruleTemplateManager, Class<?> type,
 			RuleTemplate parentRuleTemplate) throws Exception {
 		String name = type.getSimpleName(), label = null;
-		String tempName = name;
 		int tryCount = 0;
 		while (ruleTemplateManager.getRuleTemplate(name) != null) {
-			name = tempName + '_' + (++tryCount);
+			name = type.getName();
+			if (tryCount > 0) {
+				name += ('_' + tryCount);
+			}
+			tryCount ++;
 		}
 
 		RuleTemplate newRuleTemplate = new AutoRuleTemplate(name,
