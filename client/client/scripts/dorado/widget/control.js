@@ -1597,7 +1597,6 @@
 	dorado.widget.setFocusedControl = function(control, ignorePhyscialFocus, skipGlobalBoardcast) {
 		if (dorado.widget.focusedControl.peek() === control) return;
 		if (!skipGlobalBoardcast && control) {
-			debugger;
 			var win = window, topDomainWindow, windowStack = [], parentFrames;
 			do {
 				try {
