@@ -723,29 +723,31 @@
 						rowHeightInfos.rows[itemId] = h;
 						rowHeightInfos.unfound[itemId] = true;
 					}
-					else if (oldHeight != h) {
+					else {
 						delete rowHeightInfos.unfound[itemId];
-						var fh = rowHeightInfos.rows[itemId];
-						if (h > fh) {
-							rowHeightInfos.rows[itemId] = h;
-							rowHeightInfos.unmatched.push(itemId);
-							if (!innerGrid._duringRefreshDom) {
-								grid._fixedInnerGrid.syncroRowHeight(itemId);
+						if (oldHeight != h) {
+							var fh = rowHeightInfos.rows[itemId];
+							if (h > fh) {
+								rowHeightInfos.rows[itemId] = h;
+								rowHeightInfos.unmatched.push(itemId);
+								if (!innerGrid._duringRefreshDom) {
+									grid._fixedInnerGrid.syncroRowHeight(itemId);
+								}
 							}
-						}
-						else if (fh > 0) {
-							if (dorado.Browser.msie && dorado.Browser.version == 8) {
-								row.style.height = fh + "px";
-								$fly(row).toggleClass("fix-valign-bug");
+							else if (fh > 0) {
+								if (dorado.Browser.msie && dorado.Browser.version == 8) {
+									row.style.height = fh + "px";
+									$fly(row).toggleClass("fix-valign-bug");
+								}
+								else {
+									row.style.height = fh + "px";
+								}
+								/*
+								 else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
+								 row.firstChild.style.height = fh + "px";
+								 }
+								 */
 							}
-							else {
-								row.style.height = fh + "px";
-							}
-							/*
-							 else if (dorado.Browser.webkit || (dorado.Browser.msie && dorado.Browser.version > 8)) {
-							 row.firstChild.style.height = fh + "px";
-							 }
-							 */
 						}
 					}
 				}
