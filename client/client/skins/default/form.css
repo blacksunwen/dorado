@@ -216,6 +216,7 @@
 /* checkbox */
 .d-checkbox {
   display: inline-block;
+  white-space: nowrap;
   overflow: hidden;
   cursor: default;
   height: 20px;
@@ -268,6 +269,15 @@
 .d-checkbox-icononly .icon {
   position: relative;
   left: -2px;
+}
+.d-checkbox-readonly .icon.halfchecked {
+  background-position: -120px 0px;
+}
+.d-checkbox-readonly .icon.unchecked {
+  background-position: -140px 0px;
+}
+.d-checkbox-readonly .icon.checked {
+  background-position: -160px 0px;
 }
 .d-ie6 .d-checkbox .caption,
 .d-ie7 .d-checkbox .caption {
