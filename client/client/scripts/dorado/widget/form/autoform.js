@@ -421,7 +421,9 @@ dorado.widget.AutoForm = $extend([dorado.widget.Container, dorado.widget.FormPro
 		if (this._autoCreateElements && !this._defaultElementsGenerated) {
 			this.generateDefaultElements();
 		}
-		this.initLayout(this.get("layout"));
+		
+		var layout = this.get("layout");
+		this.initLayout(layout);
 
 		$invokeSuper.call(this, arguments);
 	},
