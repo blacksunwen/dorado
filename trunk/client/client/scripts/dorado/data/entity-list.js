@@ -1242,7 +1242,7 @@
 			if (page.loaded) {
 				var entry = reverse ? page.last : page.first;
 				while (entry) {
-					if (this._includeDeletedEntity || entry.data.state != dorado.Entity.STATE_DELETED) {
+					if (this._includeDeletedEntity || entry.data.state !== dorado.Entity.STATE_DELETED) {
 						result = entry;
 						break;
 					}
@@ -1264,8 +1264,11 @@
 			if (entry.data && !entry.data.dummy) {
 				do {
 					entry = reverse ? entry.previous : entry.next;
+					if (entry && (this._includeDeletedEntity || entry.data.state !== dorado.Entity.STATE_DELETED)) {
+						break;
+					}
 				}
-				while (entry && this._includeDeletedEntity && entry.data.state === dorado.Entity.STATE_DELETED);
+				while (entry);
 			} else {
 				var inc = reverse ? -1 : 1;
 				this._simulateIndex += inc;
