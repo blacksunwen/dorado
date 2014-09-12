@@ -355,6 +355,7 @@
 						}
 						else {
 							entity = new dorado.Entity(data, this.getDataTypeRepository(), dataType);
+							entity.storeOldData();
 							entity.setState(dorado.Entity.STATE_NEW);
 						}
 						this.setData(entity);
