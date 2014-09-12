@@ -25,6 +25,9 @@ button {
   color: #000000;
   background-color: #ffffff;
 }
+.d-ie input::-ms-clear {
+  display: none;
+}
 .d-ie6 * {
   position: relative;
 }
