@@ -208,7 +208,7 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		this.refreshExternalReadOnly();
 
 		$fly(dom).toggleClass(checkBox._className + "-icononly", !!checkBox._iconOnly)
-			.toggleClass(checkBox._className + "-readonly", (checkBox._readOnly || checkBox._readOnly2));
+			.toggleClass(checkBox._className + "-readonly", !!(checkBox._readOnly || checkBox._readOnly2));
 
 		if (checkBox._dataSet) {
 			checked = undefined;
