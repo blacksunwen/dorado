@@ -490,7 +490,9 @@
 			for (var i = 0, len = children.length; i < len; i++) {
 				child = children[i];
 				if (child instanceof dorado.widget.Control) {
-					child.setActualVisible(visible);
+					if (!child._floating || !dorado.Object.isInstanceOf(child, dorado.widget.FloatControl)) {
+						child.setActualVisible(visible);
+					}
 				}
 			}
 			this._contentContainerVisible = visible;

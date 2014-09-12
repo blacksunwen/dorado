@@ -516,7 +516,7 @@
 							this.set("floating", floating);
 							delete config.floating;
 						}
-						if (this._floating) this._actualVisible = false;
+						if (!this._floating) this._actualVisible = true;
 					}
 					
 					var layoutConstraint = config.layoutConstraint;
@@ -551,18 +551,11 @@
 			},
 			
 			isLazyInit: function(config) {
-				var lazyInit = config && config.$lazyInit, isFloatControl, floating;
+				var lazyInit = config && config.$lazyInit, isFloatControl;
 				if (lazyInit == undefined) {
 					isFloatControl = dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
 					if (isFloatControl && $setting["widget.lazyInitFloatControl"]) {
 						lazyInit = true;
-						floating = config && config.floating;
-					}
-				}
-				else if (lazyInit) {
-					isFloatControl = dorado.Object.isInstanceOf(this, dorado.widget.FloatControl);
-					if (isFloatControl) {
-						floating = config && config.floating;
 					}
 				}
 				return lazyInit;

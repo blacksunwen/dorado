@@ -118,6 +118,8 @@ dorado.dequeue = function(namespace) {
 					if (attributeWatcher.getWritingTimes("visible") == 0) {
 						this._visible = !floating;
 					}
+					
+					if (dorado.Object.isInstanceOf(this, dorado.widget.FloatControl)) debugger;
 					this._actualVisible = !floating;
 					this._floating = floating;
 					this.onActualVisibleChange();
