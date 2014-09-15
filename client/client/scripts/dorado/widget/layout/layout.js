@@ -171,7 +171,6 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 	refresh: function() {
 		if (this._duringRefreshDom) return;
 		this._duringRefreshDom = true;
-		if (layout instanceof dorado.widget.layout.FormLayout) debugger;
 		if (this._attached) {		
 			var regions = this._regions.items, region, control;
 			for (var i = 0, len = regions.length; i < len; i++) {
