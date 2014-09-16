@@ -477,17 +477,6 @@ dorado.dequeue = function(namespace) {
 				options = options || {};
 			}
 			var control = this;
-
-			/* Frank屏蔽，会导致某些控件显示不正确。并且屏蔽后已不会重现当初此段代码修复的BUG
-			var oldVisible = control._visible, oldActualVisible = control._actualVisible;
-			control._visible = true;
-			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = true;
-			control.setActualVisible(true);
-			control.refresh();
-			control._visible = oldVisible;
-			dorado.widget.Control.SKIP_REFRESH_ON_VISIBLE = false;
-			control.setActualVisible(oldActualVisible);
-			*/
 			
 			var attrs = ["center", "autoAdjustPosition", "handleOverflow", "gapX", "gapY", "offsetLeft", "offsetTop", "align", "vAlign", "handleOverflow", "anchorTarget"];
 			for (var i = 0; i < attrs.length; i++) {
@@ -678,7 +667,7 @@ dorado.dequeue = function(namespace) {
 		getShowPosition: function(options) {
 			var control = this, anchorTarget = options.anchorTarget, position = options.position, dom = control.getDom(), event = options.event, fixedElement, result;
 
-			if (anchorTarget || options.align || options.vAlign) {
+			if (anchorTarget && (options.align || options.vAlign)) {
 				if (anchorTarget instanceof dorado.widget.Control) {
 					fixedElement = anchorTarget._dom;
 				} else if (dorado.Object.isInstanceOf(anchorTarget, dorado.RenderableElement)) {

@@ -27,10 +27,10 @@ dorado.widget.FloatPanel = $extend([dorado.widget.Panel, dorado.widget.FloatCont
 		}
 	},
 
-    doClose: function(){
-        var panel = this;
-        panel.hide && panel.hide();
-    },
+	doClose: function(){
+		var panel = this;
+		panel.hide && panel.hide();
+	},
 
 	doShow: function() {
 		var panel = this, doms = panel._doms;
