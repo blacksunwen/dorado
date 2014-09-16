@@ -287,6 +287,7 @@
 				 * [#dirty]也是一种常用的dataPath定义方式，此表达式与CASCADE_DIRTY的不同点是只判断数据实体自身的状态，而忽略其中的级联子数据实体。
 				 * </p>
 				 * </li>
+				 * <li>validateData - {boolean=true} 用于设定是否要在提交之前校验所有要提交的数据实体。默认是true，即校验。</li>
 				 * <li>refreshMode - {String="value"} 提交完成后如何刷新客户端提交的数据实体。支持如下4种模式：
 				 *    <ul>
 				 *        <li>none    -    不对提交的数据实体进行刷新。这意味着不论提交成功与否，这些数据实体都会保持提交之前的状态。</li>
@@ -316,6 +317,7 @@
 							jQuery.each(updateItems, function(i, updateItem) {
 								if (updateItem.refreshMode == null) updateItem.refreshMode = "value";
 								if (updateItem.autoResetEntityState == null) updateItem.autoResetEntityState = true;
+								if (updateItem.validateData == null) updateItem.validateData = true;
 
 								if (updateItem.dataSet == null) return;
 								if (typeof updateItem.dataSet == "string") {
@@ -543,29 +545,32 @@
 					data = eventArg.data;
 
 					if (data) {
-						// validaton
-						var validateContext, validateOptions = {
-							force: false,
-							validateSimplePropertyOnly: updateItem.submitSimplePropertyOnly
-						};
-						var validateSubEntities = !updateItem.submitSimplePropertyOnly;
-
-						if (data instanceof Array) {
-							for(var j = 0; j < data.length; j++) {
-								var entity = data[j];
-								if (entity instanceof dorado.Entity) {
+						// validation
+						var validateContext;
+						if (updateItem.validateData) {
+							var validateOptions = {
+								force: false,
+								validateSimplePropertyOnly: updateItem.submitSimplePropertyOnly
+							};
+							var validateSubEntities = !updateItem.submitSimplePropertyOnly;
+	
+							if (data instanceof Array) {
+								for(var j = 0; j < data.length; j++) {
+									var entity = data[j];
+									if (entity instanceof dorado.Entity) {
+										validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
+									}
+								}
+							}
+							else if (data instanceof dorado.EntityList) {
+								for(var it = data.iterator(); it.hasNext();) {
+									var entity = it.next();
 									validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
 								}
 							}
-						}
-						else if (data instanceof dorado.EntityList) {
-							for(var it = data.iterator(); it.hasNext();) {
-								var entity = it.next();
-								validateContext = validateEntity(validateContext, entity, validateOptions, validateSubEntities);
+							else if (data instanceof dorado.Entity) {
+								validateContext = validateEntity(validateContext, data, validateOptions, validateSubEntities);
 							}
-						}
-						else if (data instanceof dorado.Entity) {
-							validateContext = validateEntity(validateContext, data, validateOptions, validateSubEntities);
 						}
 					}
 
