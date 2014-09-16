@@ -43,7 +43,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 		implements BeanFactoryAware, InitializingBean {
 	private static Log logger = LogFactory.getLog(WebFileResolver.class);
 
-	private static final int BUFFER_SIZE = 1024 * 2;
+	private static final int BUFFER_SIZE = 1024 * 8;
 	private static final int ONE_SECOND = 1000;
 	private static final int MIN_RETRIEVE_LAST_MODIFIED_INTERVAL = ONE_SECOND * 10;
 	private static final SimpleTimeZone GMT_TIME_ZONE = new SimpleTimeZone(0,
