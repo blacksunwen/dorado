@@ -30,6 +30,7 @@ public class UpdateItem {
 	private String dataSet;
 	private String dataPath = "!DIRTY_TREE";
 	private String alias;
+	private boolean validateData = true;
 	private RefreshMode refreshMode = RefreshMode.value;
 	private boolean firstResultOnly;
 	private boolean autoResetEntityState = true;
@@ -50,7 +51,8 @@ public class UpdateItem {
 	}
 
 	@ClientProperty(escapeValue = "!DIRTY_TREE")
-	@IdeProperty(enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible],[#current]")
+	@IdeProperty(
+			enumValues = "!DIRTY_TREE,!CASCADE_DIRTY,[#dirty],[#all],[#visible],[#current]")
 	public String getDataPath() {
 		return dataPath;
 	}
@@ -65,6 +67,15 @@ public class UpdateItem {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+
+	@ClientProperty(escapeValue = "true")
+	public boolean isValidateData() {
+		return validateData;
+	}
+
+	public void setValidateData(boolean validateData) {
+		this.validateData = validateData;
 	}
 
 	@ClientProperty(escapeValue = "value")
