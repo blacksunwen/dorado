@@ -339,7 +339,7 @@ public abstract class EntityEnhancer {
 							result = readPropertyDef(entity, propertyDef,
 									originResult);
 						}
-					} else {
+					} else if (propertyDef instanceof BasePropertyDef) {
 						BasePropertyDef basePropertyDef = (BasePropertyDef) propertyDef;
 						propertyPath = basePropertyDef.getPropertyPath();
 						if (StringUtils.isNotEmpty(propertyPath)) {
