@@ -86,17 +86,23 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		<property name="xmlParserHelper" ref="dorado.xmlParserHelper" />
 	</bean>
 	<bean id="dorado.prototype.dataTypeParser" scope="prototype"
-		class="com.bstek.dorado.data.config.xml.DataTypeParser" parent="dorado.genericObjectParser" />
+		class="com.bstek.dorado.data.config.xml.DataTypeParser" parent="dorado.genericObjectParser">
+		<property name="inheritable" value="true" />
+		<d:property-parser key="elementDataType" value-ref="dorado.ignoreParser" />
+	</bean>
 
+	<!-- Deprecated
 	<bean id="dorado.dataTypeParser" parent="dorado.genericObjectParser"
 		class="com.bstek.dorado.data.config.xml.DataTypeParser">
 		<property name="inheritable" value="true" />
 		<d:property-parser key="elementDataType" value-ref="dorado.ignoreParser" />
 	</bean>
-	<bean id="dorado.propertyDefParser" class="com.bstek.dorado.data.config.xml.PropertyDefParser"
-		parent="dorado.genericObjectParser" />
-	<bean id="dorado.referenceParser" class="com.bstek.dorado.data.config.xml.ReferenceParser"
-		parent="dorado.genericObjectParser" />
+	-->
+
+	<bean id="dorado.propertyDefParser" scope="prototype"
+		class="com.bstek.dorado.data.config.xml.PropertyDefParser" parent="dorado.genericObjectParser" />
+	<bean id="dorado.referenceParser" scope="prototype"
+		class="com.bstek.dorado.data.config.xml.ReferenceParser" parent="dorado.genericObjectParser" />
 
 	<bean id="dorado.dataTypePropertyParser" class="com.bstek.dorado.data.config.xml.DataTypePropertyParser"
 		parent="dorado.propertyParser">
