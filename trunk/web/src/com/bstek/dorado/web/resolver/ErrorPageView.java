@@ -30,7 +30,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.context.Context;
 import org.apache.velocity.runtime.RuntimeConstants;
-import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 import com.bstek.dorado.core.Constants;
 
@@ -38,7 +38,7 @@ import com.bstek.dorado.core.Constants;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-1-31
  */
-public class ErrorPageView implements View {
+public class ErrorPageView extends AbstractUrlBasedView {
 	private static Log logger = LogFactory.getLog(ErrorPageView.class);
 
 	public static final String JAVAX_EXCEPTION_ATTRIBUTE = "javax.servlet.error.exception";
@@ -47,6 +47,10 @@ public class ErrorPageView implements View {
 	private VelocityEngine velocityEngine;
 	private Properties velocityProperties;
 	private StringEscapeHelper stringEscapeHelper = new StringEscapeHelper();
+
+	public ErrorPageView() {
+		setContentType(HttpConstants.CONTENT_TYPE_HTML);
+	}
 
 	private VelocityEngine getVelocityEngine() throws Exception {
 		if (velocityEngine == null) {
@@ -72,9 +76,9 @@ public class ErrorPageView implements View {
 				Constants.DEFAULT_CHARSET));
 	}
 
-	private void doExcecute(HttpServletRequest request,
+	private void doRender(HttpServletRequest request,
 			HttpServletResponse response) throws Exception, IOException {
-		response.setContentType(HttpConstants.CONTENT_TYPE_HTML);
+		response.setContentType(getContentType());
 		response.setCharacterEncoding(Constants.DEFAULT_CHARSET);
 
 		Context velocityContext = new VelocityContext();
@@ -121,14 +125,12 @@ public class ErrorPageView implements View {
 		}
 	}
 
-	public String getContentType() {
-		return HttpConstants.CONTENT_TYPE_HTML;
-	}
-
-	public void render(Map<String, ?> model, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	@Override
+	protected void renderMergedOutputModel(Map<String, Object> model,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		try {
-			doExcecute(request, response);
+			doRender(request, response);
 		} catch (Throwable t) {
 			// 确保不会因再次抛出异常而进入死锁状态
 			logger.error(t, t);

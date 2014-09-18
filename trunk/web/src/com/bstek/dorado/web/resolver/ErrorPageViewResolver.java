@@ -14,47 +14,22 @@ package com.bstek.dorado.web.resolver;
 
 import java.util.Locale;
 
-import org.springframework.core.Ordered;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.AbstractCachingViewResolver;
-
-import com.bstek.dorado.util.clazz.ClassUtils;
+import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2014-8-25
  */
-public class ErrorPageViewResolver extends AbstractCachingViewResolver
-		implements Ordered {
+public class ErrorPageViewResolver extends UrlBasedViewResolver {
 	private static final String ERROR_PAGE = "/dorado/ErrorPage";
 
-	private int order;
-	private Class<? extends View> viewClass;
-
-	public void setOrder(int order) {
-		this.order = order;
-	}
-
-	public int getOrder() {
-		return order;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void setViewClass(String viewClass) throws ClassNotFoundException {
-		this.viewClass = ClassUtils.forName(viewClass);
-	}
-
-	public View resolveViewName(String viewName, Locale locale)
-			throws Exception {
-		return new com.bstek.dorado.web.resolver.ErrorPageView();
-	}
-
 	@Override
-	protected View loadView(String viewName, Locale locale) throws Exception {
+	protected View createView(String viewName, Locale locale) throws Exception {
 		if (ERROR_PAGE.equals(viewName)) {
-			return viewClass.newInstance();
+			return (View) getViewClass().newInstance();
 		} else {
-			return null;
+			return super.createView(viewName, locale);
 		}
 	}
 
