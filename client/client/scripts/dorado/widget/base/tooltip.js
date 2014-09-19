@@ -15,11 +15,14 @@
 	
 	var elementMouseEnter = function(event) {
 		var element = this, tip = dorado.TipManager.getTip(element);
-		
-		//console.log("tip._text:" + tip._text + "\ttip._visible:" + tip._visible);
-		if ((tip._text || tip._content) && !tip._visible) {
+
+		if (tip._hideTimer) {
+			clearTimeout(tip._hideTimer);
+			tip._hideTimer = null;
+		} else if ((tip._text || tip._content) && !tip._visible) {
 			dorado.TipManager.showTip(element, tip._showDelay || 0, event);
 		}
+
 		if (tip._stopPropagation !== false)
 			event.stopImmediatePropagation();
 	};
@@ -420,7 +423,7 @@
 		 */
 		showTip: function(element, delay, event) {
 			var manager = this, tip = dorado.TipManager.getTip(element);
-			
+
 			if (tip._autoHide === false && !tip._visible) {
 				if (delay) {
 					tip._showTimer = setTimeout(function() {

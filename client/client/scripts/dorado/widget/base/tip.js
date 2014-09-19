@@ -177,16 +177,27 @@
 			tip._doms = doms;
 
 			$fly(dom).hover(function() {
+				tip = jQuery.data(this, "dorado.tooltip") || tip;
 				if (tip._showDurationTimer) {
 					clearTimeout(tip._showDurationTimer);
 					tip._showDurationTimer = null;
 				}
+
+				if (tip._hideTimer) {
+					clearTimeout(tip._hideTimer);
+					tip._hideTimer = null;
+				}
 			}, function() {
+				tip = jQuery.data(this, "dorado.tooltip") || tip;
 				if (tip._showDuration) {
 					tip._showDurationTimer = setTimeout(function() {
 						tip.hide();
 						tip._showDurationTimer = null;
 					}, tip._showDuration * 1000);
+				}
+
+				if (tip._autoHide) {
+					dorado.TipManager.hideTip(tip, tip._hideDelay || 0);
 				}
 			});
 			
