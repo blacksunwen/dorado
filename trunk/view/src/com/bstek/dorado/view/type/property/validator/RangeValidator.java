@@ -23,22 +23,23 @@ import com.bstek.dorado.core.resource.ResourceManagerUtils;
  * @since 2010-7-27
  */
 @XmlNode(fixedProperties = "type=range")
-@ClientObject(prototype = "dorado.validator.RangeValidator", shortTypeName = "Range")
+@ClientObject(prototype = "dorado.validator.RangeValidator",
+		shortTypeName = "Range")
 public class RangeValidator extends BaseValidator {
 	private static final ResourceManager resourceManager = ResourceManagerUtils
 			.get(RangeValidator.class);
 
-	private float minValue;
+	private double minValue;
 	private RangeValidateMode minValueValidateMode = RangeValidateMode.ignore;
-	private float maxValue;
+	private double maxValue;
 	private RangeValidateMode maxValueValidateMode = RangeValidateMode.ignore;
 
-    @ClientProperty(escapeValue = "-1")
-	public float getMinValue() {
+	@ClientProperty(escapeValue = "-1")
+	public double getMinValue() {
 		return minValue;
 	}
 
-	public void setMinValue(float minValue) {
+	public void setMinValue(double minValue) {
 		this.minValue = minValue;
 	}
 
@@ -51,12 +52,12 @@ public class RangeValidator extends BaseValidator {
 		this.minValueValidateMode = minValueValidateMode;
 	}
 
-    @ClientProperty(escapeValue = "-1")
-	public float getMaxValue() {
+	@ClientProperty(escapeValue = "-1")
+	public double getMaxValue() {
 		return maxValue;
 	}
 
-	public void setMaxValue(float maxValue) {
+	public void setMaxValue(double maxValue) {
 		this.maxValue = maxValue;
 	}
 
@@ -75,7 +76,7 @@ public class RangeValidator extends BaseValidator {
 			return null;
 		}
 
-		float f = ((Number) value).floatValue();
+		double f = ((Number) value).doubleValue();
 		boolean invalid = false;
 		if (minValueValidateMode != RangeValidateMode.ignore) {
 			String subMessage = "";

@@ -599,7 +599,9 @@
 						if (topValidationResult) {
 							state = topValidationResult.state;
 							if (state == "error") {
-								throw new dorado.widget.editor.PostException(validationResults);
+								this.cancel();
+								dorado.Exception.processException(new dorado.widget.editor.PostException(validationResults));
+								return false;
 							}
 						}
 					}
@@ -1155,7 +1157,7 @@
 					}
 				}
 
-				var dataType = this.get("dataType");
+				var dataType = this._dataType;
 				if (dataType) dataType.parse(text, this._typeFormat);
 				validationResults = $invokeSuper.call(this, [text]);
 			}

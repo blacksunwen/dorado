@@ -15,6 +15,8 @@ package com.bstek.dorado.view.output;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -41,6 +43,8 @@ public class JsonBuilder {
 	private int escapeTop;
 	private int leadingTab;
 
+	private NumberFormat numberFormat;
+
 	public JsonBuilder(Writer w) {
 		comma = false;
 		state = 'i';
@@ -55,6 +59,13 @@ public class JsonBuilder {
 	public JsonBuilder(Writer w, boolean reuseable) {
 		this(w);
 		this.reuseable = reuseable;
+	}
+
+	private NumberFormat getNumberFormat() {
+		if (numberFormat == null) {
+			numberFormat = new DecimalFormat("#.#");
+		}
+		return numberFormat;
 	}
 
 	/**
@@ -375,12 +386,27 @@ public class JsonBuilder {
 	public JsonBuilder value(Object o) {
 		if (o == null) {
 			outputValue("null", false);
-		} else if (o instanceof Number || o instanceof Boolean) {
-			if (o instanceof Float && (Float.isNaN((Float) o))) {
-				outputValue("undefined", false);
-			}
-			if (o instanceof Double && (Double.isNaN((Double) o))) {
-				outputValue("undefined", false);
+		} else if (o instanceof Boolean) {
+			outputValue(o.toString(), false);
+		} else if (o instanceof Number) {
+			if (o instanceof Float || o instanceof Double) {
+				if (o instanceof Float) {
+					if ((Float.isNaN((Float) o))) {
+						outputValue("undefined", false);
+					} else {
+						outputValue(
+								getNumberFormat().format(
+										((Number) o).floatValue()), false);
+					}
+				} else {
+					if ((Double.isNaN((Double) o))) {
+						outputValue("undefined", false);
+					} else {
+						outputValue(
+								getNumberFormat().format(
+										((Number) o).doubleValue()), false);
+					}
+				}
 			} else {
 				outputValue(o.toString(), false);
 			}
