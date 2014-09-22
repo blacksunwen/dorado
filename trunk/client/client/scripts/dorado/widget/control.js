@@ -1607,7 +1607,7 @@
 									return false;
 								}
 							});
-							topDomainWindow = win = parent;
+							topDomainWindow = parent;
 						}
 					}
 					catch(e) {
@@ -1618,6 +1618,7 @@
 					// do nothing
 					break;
 				}
+				win = parent;
 			} while(win);
 
 			function setFrameBlur(win) {
