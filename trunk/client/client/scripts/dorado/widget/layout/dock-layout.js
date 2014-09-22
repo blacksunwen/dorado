@@ -180,7 +180,7 @@
 		
 		refreshDom: function(dom) {
 			var regions = this._regions;
-			if (this._centerRegion && this._centerRegion != regions.items[regions.size - 1]) {
+			if (this._centerRegion && this._centerRegion === regions.items[regions.size - 1]) {
 				regions.remove(this._centerRegion);
 				regions.append(this._centerRegion);
 			}
