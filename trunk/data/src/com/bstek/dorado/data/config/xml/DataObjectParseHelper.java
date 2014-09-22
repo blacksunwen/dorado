@@ -22,6 +22,8 @@ import com.bstek.dorado.config.definition.DefinitionReference;
 import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.config.xml.XmlParser;
 import com.bstek.dorado.config.xml.XmlParserUtils;
+import com.bstek.dorado.core.el.Expression;
+import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.data.config.DataTypeName;
 import com.bstek.dorado.data.config.definition.DataProviderDefinition;
@@ -35,7 +37,15 @@ import com.bstek.dorado.data.type.property.PropertyDef;
  * @since 2009-12-30
  */
 public class DataObjectParseHelper {
+	private ExpressionHandler expressionHandler;
 	private XmlParser dataTypeParser;
+
+	/**
+	 * 设置EL表达式的处理器。
+	 */
+	public void setExpressionHandler(ExpressionHandler expressionHandler) {
+		this.expressionHandler = expressionHandler;
+	}
 
 	/**
 	 * 设置全局DataType的解析器。
@@ -137,7 +147,16 @@ public class DataObjectParseHelper {
 		if (node != null && XmlParserUtils.isSimpleValueProperty(node)) {
 			String name = XmlParserUtils.getSimpleValue(node);
 			if (StringUtils.isNotEmpty(name)) {
-				definitionReference = getDataTypeByName(name, context, true);
+				Expression expression = expressionHandler.compile(name);
+				if (expression != null) {
+					Object value = expression.evaluate();
+					if (value instanceof String) {
+						name = (String) value;
+					}
+				}
+				if (StringUtils.isNotEmpty(name)) {
+					definitionReference = getDataTypeByName(name, context, true);
+				}
 			}
 		}
 		return definitionReference;
@@ -168,8 +187,17 @@ public class DataObjectParseHelper {
 		if (node != null) {
 			String name = XmlParserUtils.getSimpleValue(node);
 			if (StringUtils.isNotEmpty(name)) {
-				definitionReference = context.getDataProviderReference(name,
-						context);
+				Expression expression = expressionHandler.compile(name);
+				if (expression != null) {
+					Object value = expression.evaluate();
+					if (value instanceof String) {
+						name = (String) value;
+					}
+				}
+				if (StringUtils.isNotEmpty(name)) {
+					definitionReference = context.getDataProviderReference(
+							name, context);
+				}
 			}
 		}
 		return definitionReference;
@@ -200,8 +228,17 @@ public class DataObjectParseHelper {
 		if (node != null && XmlParserUtils.isSimpleValueProperty(node)) {
 			String name = XmlParserUtils.getSimpleValue(node);
 			if (StringUtils.isNotEmpty(name)) {
-				definitionReference = context.getDataResolverReference(name,
-						context);
+				Expression expression = expressionHandler.compile(name);
+				if (expression != null) {
+					Object value = expression.evaluate();
+					if (value instanceof String) {
+						name = (String) value;
+					}
+				}
+				if (StringUtils.isNotEmpty(name)) {
+					definitionReference = context.getDataResolverReference(
+							name, context);
+				}
 			}
 		}
 		return definitionReference;

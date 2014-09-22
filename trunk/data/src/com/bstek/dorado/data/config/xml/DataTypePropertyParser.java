@@ -16,13 +16,12 @@ import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Node;
 
 import com.bstek.dorado.config.ParseContext;
-import com.bstek.dorado.config.xml.PropertyParser;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-2-22
  */
-public class DataTypePropertyParser extends PropertyParser {
+public class DataTypePropertyParser extends StaticPropertyParser {
 	protected DataObjectParseHelper dataObjectParseHelper;
 
 	public void setDataObjectParseHelper(
