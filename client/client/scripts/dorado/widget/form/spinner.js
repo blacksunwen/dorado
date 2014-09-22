@@ -148,7 +148,14 @@
 			}
 			return this._spinTrigger;
 		},
-		
+
+		_initBindingProperties: function(propertyDef) {
+			var watcher = this.getAttributeWatcher();
+			if (!watcher.getWritingTimes("displayFormat")) this._displayFormat = propertyDef._displayFormat;
+			if (!watcher.getWritingTimes("inputFormat")) this._inputFormat = propertyDef._inputFormat;
+			if (!propertyDef._mapping && !watcher.getWritingTimes("dataType")) this._dataType = propertyDef._dataType;
+		},
+
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments), self = this;
 			jQuery(dom).addClassOnHover(this._className + "-hover", null, function() {
@@ -559,7 +566,7 @@
 			}
 			this._values[slotIndex] = value;
 			
-			dorado.Toolkits.setDelayedAction(spinner, "$refreshDelayTimerId", spinner.refresh, 50);
+			dorado.Toolkits.setDelayedAction(spinner, "$refreshDelayTimerId", spinner.doRefreshSlots, 50);
 		},
 		
 		/**
@@ -608,7 +615,7 @@
 			}
 			
 			var value = spinner.doGetSlotValue(currentSlotIndex) + spinner._step;
-			var config = spinner.slotConfigs[currentSlotIndex], range = spinner.doGetSlotRange(currentSlotIndex), minValue = range[0], maxValue = range[1];
+			var range = spinner.doGetSlotRange(currentSlotIndex), minValue = range[0], maxValue = range[1];
 			if (value == null) value = minValue;
 			else if (maxValue != null && value > maxValue) return;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
@@ -626,7 +633,7 @@
 			}
 			
 			var value = spinner.doGetSlotValue(currentSlotIndex) - spinner._step;
-			var config = spinner.slotConfigs[currentSlotIndex], range = spinner.doGetSlotRange(currentSlotIndex), minValue = range[0], maxValue = range[1];
+			var range = spinner.doGetSlotRange(currentSlotIndex), minValue = range[0], maxValue = range[1];
 			if (value == null) value = maxValue;
 			if (minValue != null && value < minValue) return;
 			spinner.doSetSlotValue(currentSlotIndex, value || 0);
@@ -795,13 +802,17 @@
 				$fly(doms["slot_" + currentSlotIndex]).addClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
 			}
 		},
-		
-		refreshDom: function() {
-			$invokeSuper.call(this, arguments);
+
+		doRefreshSlots: function () {
 			var spinner = this, doms = spinner._doms;
 			for (var i = 0; i < spinner.slotConfigs.length; i++) {
 				$fly(doms["slot_" + i]).html(spinner.doGetSlotText(i));
 			}
+		},
+
+		refreshDom: function() {
+			$invokeSuper.call(this, arguments);
+			this.doRefreshSlots();
 		},
 		
 		doGetText: function() {
