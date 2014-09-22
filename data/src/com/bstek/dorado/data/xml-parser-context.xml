@@ -22,6 +22,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 
 	<!-- XML Parser -->
 	<bean id="dorado.dataObjectParseHelper" class="com.bstek.dorado.data.config.xml.DataObjectParseHelper">
+		<property name="expressionHandler" ref="dorado.expressionHandler" />
 		<property name="dataTypeParser" ref="dorado.dataTypeParserDispatcher" />
 	</bean>
 
