@@ -190,7 +190,8 @@
 							}
 							
 							if (context && dataTypeRepository._view) {
-								dataTypeRepository._view.set("context", context);
+								var context = dataTypeRepository._view.get("context");
+								context.put(context);
 							}
 						} else {
 							$callback(callback, false, result.error, {

@@ -160,7 +160,6 @@
 					if (json.$dataTypeDefinitions) this.dataTypeRepository.parseJsonData(json.$dataTypeDefinitions);
 					if (json.$context && arg && arg.view) {
 						var context = arg.view.get("context");
-						context.clear();
 						context.put(json.$context);
 					}
 				} else {
@@ -202,7 +201,6 @@
 							if (json.$dataTypeDefinitions) this.dataTypeRepository.parseJsonData(json.$dataTypeDefinitions);
 							if (json.$context && arg && arg.view) {
 								var context = arg.view.get("context");
-								context.clear();
 								context.put(json.$context);
 							}
 						} else {

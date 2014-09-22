@@ -108,7 +108,6 @@
 					if (returnValue.$dataTypeDefinitions) this.dataTypeRepository.parseJsonData(returnValue.$dataTypeDefinitions);
 					if (returnValue.$context && arg && arg.view) {
 						var context = arg.view.get("context");
-						context.clear();
 						context.put(returnValue.$context);
 					}
 					returnValue = returnValue.data;
@@ -149,7 +148,6 @@
 							if (returnValue.$dataTypeDefinitions) this.dataTypeRepository.parseJsonData(returnValue.$dataTypeDefinitions);
 							if (returnValue.$context && arg && arg.view) {
 								var context = arg.view.get("context");
-								context.clear();
 								context.put(returnValue.$context);
 							}
 							returnValue = returnValue.data;
