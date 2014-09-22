@@ -114,7 +114,6 @@
 						if (result.$dataTypeDefinitions) dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
 						if (result.$context && this._view) {
 							var context = this._view.get("context");
-							context.clear();
 							context.put(result.$context);
 						}
 					}
@@ -141,7 +140,6 @@
 								if (result.$dataTypeDefinitions) dataTypeRepository.parseJsonData(result.$dataTypeDefinitions);
 								if (result.$context && this._view) {
 									var context = this._view.get("context");
-									context.clear();
 									context.put(result.$context);
 								}
 							}
