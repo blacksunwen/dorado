@@ -30,18 +30,10 @@ public class StaticPropertyParser extends GenericParser {
 	@Override
 	protected Object internalParse(Node node, DataParseContext context)
 			throws Exception {
-		Object value;
-		if (node instanceof Element) {
-			throw new XmlParseException(
-					"Static property should be defined in attribute.", node,
-					context);
-		} else {
-			value = node.getNodeValue();
-			Expression expression = getExpressionHandler().compile(
-					(String) value);
-			if (expression != null) {
-				value = expression.evaluate();
-			}
+		Object value = node.getNodeValue();
+		Expression expression = getExpressionHandler().compile((String) value);
+		if (expression != null) {
+			value = expression.evaluate();
 		}
 		return value;
 	}
