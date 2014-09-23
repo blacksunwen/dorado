@@ -364,7 +364,10 @@
 					if (!(dorado.Object.isInstanceOf(component, dorado.widget.FloatControl) && component._floating)) {
 						var shouldFireOnAttach = (this._attached && layout._regions.size == 0 && !layout._rendered);
 						layout.addControl(component);
-						if (shouldFireOnAttach) layout.onAttachToDocument(this.getContentContainer());
+						if (shouldFireOnAttach) {
+							layout.onAttachToDocument(this.getContentContainer());
+							layout.refresh();
+						}
 					}
 				}
 				if (this._rendered) {
