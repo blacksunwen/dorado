@@ -193,9 +193,9 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 					this._container.unbind("onScroll.layout");
 				}
 			}
+			this._rendered = true;
 		}
 		this._duringRefreshDom = false;
-		this._rendered = true;
 	},
 
 	/**
