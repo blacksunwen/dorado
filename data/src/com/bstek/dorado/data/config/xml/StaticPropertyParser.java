@@ -12,10 +12,8 @@
 
 package com.bstek.dorado.data.config.xml;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.bstek.dorado.config.xml.XmlParseException;
 import com.bstek.dorado.core.el.Expression;
 
 /**
