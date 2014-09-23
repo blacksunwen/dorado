@@ -247,9 +247,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						if (t instanceof ClientRunnableException) {
 							writer.append("<exception type=\"runnable\"><![CDATA[");
 							writer.setEscapeEnabled(true);
-							writer.append("(function(){")
+							writer.append("var fn=(function(){")
 									.append(((ClientRunnableException) t)
-											.getScript()).append("})");
+											.getScript()).append("});");
 						} else {
 							writer.append("<exception><![CDATA[\n");
 							writer.setEscapeEnabled(true);

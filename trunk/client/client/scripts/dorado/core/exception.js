@@ -273,7 +273,8 @@ dorado.Exception.processException = function (e) {
 	if (!e || e instanceof dorado.AbortException) return;
 
 	if (e instanceof dorado.RunnableException) {
-		eval(e.script).call(window, e);
+		eval(e.script);
+		fn.call(window, e);	// 此处的fn是在e.script中声明的
 	} else {
 		var delay = e._processDelay || 0;
 		setTimeout(function () {
