@@ -505,6 +505,7 @@
 					}
 					updateItem.options = options;
 
+					options.includeDeletedEntity = updateItem.submitDeletedEntity;
 					options.firstResultOnly = updateItem.firstResultOnly;
 					options.generateOldData = updateItem.submitOldData;
 					options.simplePropertyOnly = updateItem.submitSimplePropertyOnly;
@@ -607,7 +608,6 @@
 					delete dataItem.updateItem;
 					
 					options = options || {};
-					options.includeDeletedEntity = updateItem.submitDeletedEntity;
 
 					var entities = [], context = {
 						entities: []
