@@ -810,7 +810,7 @@
 			var validationResults = [];
 			var skipValidateEmpty = this._skipValidateEmpty;
 			this._skipValidateEmpty = false;
-			if (!skipValidateEmpty && this._required && text.length == 0) {
+			if (!skipValidateEmpty && this._required && jQuery.trim(text) == "") {
 				validationResults.push({
 					state: "error",
 					text: $resource("dorado.data.ErrorContentRequired")
