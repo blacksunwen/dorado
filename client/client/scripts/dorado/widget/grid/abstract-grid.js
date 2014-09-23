@@ -1562,7 +1562,26 @@
 			if (!this.hasRealHeight()) this._scrollMode = "simple";
 			this._currentScrollMode = this._scrollMode;
 
-			this.stretchColumnsToFit();
+			var shouldProcessScrollerMargin = (this._modernScroller instanceof dorado.util.Dom.DesktopModernScroller);
+			if (this._modernScroller instanceof dorado.util.Dom.DesktopModernScroller) {
+				
+			}
+			
+			if (this.stretchColumnsToFit() && shouldProcessScrollerMargin) {
+				var scrollerSize = $setting["widget.scrollerSize"] || 4;
+				var h = dom.clientHeight - scrollerSize;
+				
+				this._innerGridWrapper.style.height = h + "px";
+				if (this._fixedInnerGridWrapper) {
+					this._fixedInnerGridWrapper.style.height = h + "px";
+				}
+			}
+			else {
+				this._innerGridWrapper.style.height = "100%";
+				if (this._fixedInnerGridWrapper) {
+					this._fixedInnerGridWrapper.style.height = "100%";
+				}
+			}
 			
 			// 开始刷新内容
 			if (domMode == 2) {
@@ -1631,9 +1650,6 @@
 		stretchColumnsToFit: function() {
 			var WIDTH_ADJUST = 6;
 
-			var stretchColumnsMode = this._realStretchColumnsMode;
-			if (stretchColumnsMode == "off") return;
-
 			var columns = this._columnsInfo.dataColumns;
 			if (!columns.length) return;
 
@@ -1647,7 +1663,7 @@
 			if (!clientWidth) return;
 
 			var totalWidth = 0, column;
-			switch(stretchColumnsMode) {
+			switch(this._realStretchColumnsMode) {
 				case "stretchableColumns":
 				{
 					var stretchableColumns = [];
@@ -1677,9 +1693,7 @@
 							column._realWidth = clientWidth - totalWidth - WIDTH_ADJUST;
 							if (column._realWidth < MIN_COL_WIDTH) column._realWidth = MIN_COL_WIDTH;
 						}
-						else {
-							totalWidth += (column._realWidth + WIDTH_ADJUST);
-						}
+						totalWidth += (column._realWidth + WIDTH_ADJUST);
 					}
 					break;
 				}
@@ -1699,9 +1713,10 @@
 							var w = Math.round(clientWidth * weight / totalWeight) - WIDTH_ADJUST;
 							if (w < MIN_COL_WIDTH) w = MIN_COL_WIDTH;
 							column._realWidth = w;
-							assignedWidth += (w + WIDTH_ADJUST);
 						}
+						assignedWidth += (column._realWidth + WIDTH_ADJUST);
 					}
+					totalWeight += assignedWidth;
 					break;
 				}
 				case "allResizeableColumns":
@@ -1724,12 +1739,21 @@
 							var w = Math.round(clientWidth * weight / totalWeight) - WIDTH_ADJUST;
 							if (w < MIN_COL_WIDTH) w = MIN_COL_WIDTH;
 							column._realWidth = w;
-							assignedWidth += (w + WIDTH_ADJUST);
 						}
+						assignedWidth += (column._realWidth + WIDTH_ADJUST);
 					}
+					totalWeight += assignedWidth;
 					break;
 				}
+				default: {	 // off
+					var totalWeight = 0;
+					for(var i = 0; i < columns.length; i++) {
+						totalWeight += (columns[i]._realWidth || 80) + WIDTH_ADJUST;
+					}
+				}
 			}
+			
+			return (totalWeight > clientWidth);
 		},
 
 		syncroRowHeights: function(scrollInfo) {
