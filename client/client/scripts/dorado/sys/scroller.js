@@ -71,8 +71,8 @@
 					scroller.dragging = true;
 				},
 				stop: function() {
-					scroller.dragging = false;
 					(scroller.hover) ? scroller.doMouseEnter() : scroller.doMouseLeave();
+					scroller.dragging = false;
 				},
 				drag: function() {
 					var container = scroller.container;
@@ -446,7 +446,9 @@
 		},
 
 		update: function() {
-			if (this.destroyed || this.dragging) return;
+			if (this.destroyed) return;			
+			if (this.xScroller && this.xScroller.dragging) return; 
+			if (this.yScroller && this.yScroller.dragging) return; 
 
 			if (this.xScroller) this.xScroller.update();
 			if (this.yScroller) this.yScroller.update();
