@@ -1,0 +1,18 @@
+{
+  "rule" : "ViewConfig",
+  "attrs" : {
+    "listener" : "lis"
+  },
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model"
+  }, {
+    "rule" : "DefaultView",
+    "attrs" : {
+      "contentOverflow" : "scroll"
+    }
+  } ]
+}

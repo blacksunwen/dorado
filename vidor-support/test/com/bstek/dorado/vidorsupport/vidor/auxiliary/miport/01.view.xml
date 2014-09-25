@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ViewConfig>
+  <View layout="Anchor padding:20">
+    <Property name="title">视图配置的注入和导出</Property>
+    <Panel layout="regionPadding:1">
+      <Property name="caption">一个面板控件</Property>
+      <Property name="width">400</Property>
+      <Property name="height">300</Property>
+      <Children>
+        <ToolBar layoutConstraint="top">
+          <Import src="com.bstek.dorado.sample.basic.ShardComponents#buttons"/>
+        </ToolBar>
+        <Import src="com.bstek.dorado.sample.basic.ShardComponents#listbox1"/>
+      </Children>
+    </Panel>
+  </View>
+</ViewConfig>

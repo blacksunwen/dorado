@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<Patterns>
+		<Pattern name="vidor-js" contentType="text/javascript" charset="UTF-8"
+			mergeRequests='${configure["view.mergeJavaScript"]}' resourceSuffix=".js" />
+		<Pattern name="vidor-css" contentType="text/css" charset="UTF-8"
+			mergeRequests='${configure["view.mergeStyleSheet"]}' resourceSuffix=".css" />
+	</Patterns>
+	<Packages>
+		<Package name="vidor-drawpad-skins" pattern="vidor-css">
+			classpath:skins/default/dorado/vidor/drawpad
+		</Package>
+		
+		<Package name="vidor-preview-support" pattern="vidor-js">
+			classpath:scripts/dorado/vidor/preview-support
+		</Package>
+		
+		<Package name="vidor-drawpad" pattern="vidor-js"
+			depends="vidor-drawpad-skins,vidor-preview-support">
+			classpath:scripts/dorado/vidor/draw-pad
+		</Package>
+	</Packages>
+</config>

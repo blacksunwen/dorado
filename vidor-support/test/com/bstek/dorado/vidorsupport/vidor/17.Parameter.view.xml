@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="dataType1">
+      <Reference name="reference1">
+        <Property name="parameter">
+          <Collection>
+            <Value>value1</Value>
+          </Collection>
+        </Property>
+      </Reference>
+    </DataType>
+  </Model>
+  <View/>
+</ViewConfig>

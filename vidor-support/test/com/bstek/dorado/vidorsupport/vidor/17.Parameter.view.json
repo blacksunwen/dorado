@@ -1,0 +1,25 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model",
+    "nodes" : [ {
+      "rule" : "DataType",
+      "attrs" : {
+        "name" : "dataType1"
+      },
+      "nodes" : [ {
+        "rule" : "Reference",
+        "attrs" : {
+          "name" : "reference1",
+          "parameter" : ["value1"]
+        }
+      } ]
+    } ]
+  }, {
+    "rule" : "DefaultView"
+  } ]
+}

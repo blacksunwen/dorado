@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <ClientEvent name="onReady">if (1&lt;2) {
+	console.log(123);	
+}
+</ClientEvent>
+    <ClientEvent name="onCreate" signature="self,arg,HHH">console.log(&quot;HHH&quot;);
+</ClientEvent>
+  </View>
+</ViewConfig>

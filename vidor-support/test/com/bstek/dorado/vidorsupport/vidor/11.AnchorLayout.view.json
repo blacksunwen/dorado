@@ -1,0 +1,39 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model"
+  }, {
+    "rule" : "DefaultView",
+    "layout" : {
+      "type" : "anchor",
+      "className" : "className",
+      "padding" : "padding"
+    },
+    "nodes" : [ {
+      "rule" : "Button",
+      "attrs" : {
+        "caption" : "\u6807\u9898"
+      },
+      "position" : {
+        "anchorBottom" : "auto",
+        "anchorLeft" : "none",
+        "anchorRight" : "container",
+        "anchorTop" : "previous",
+        "bottom" : "botton",
+        "className" : "className",
+        "heightOffset" : "heightOffset",
+        "left" : "left",
+        "leftOffset" : "leftOffset",
+        "padding" : "padding",
+        "right" : "right",
+        "top" : "top",
+        "topOffset" : "topOffset",
+        "widthOffset" : "widthOffset"
+      }
+    } ]
+  } ]
+}

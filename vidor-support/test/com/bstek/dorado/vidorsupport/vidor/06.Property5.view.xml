@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <DataSet id="dataSet1">
+      <Property name="userData">
+        <Collection>
+          <Entity>
+            <Property name="key1">value1</Property>
+            <Property name="key2">value2</Property>
+          </Entity>
+          <Value>sss</Value>
+        </Collection>
+      </Property>
+    </DataSet>
+  </View>
+</ViewConfig>

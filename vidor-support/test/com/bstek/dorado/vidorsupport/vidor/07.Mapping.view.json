@@ -1,0 +1,35 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model",
+    "nodes" : [ {
+      "rule" : "DataType",
+      "attrs" : {
+        "name" : "dataType1"
+      },
+      "nodes" : [ {
+        "rule" : "BasePropertyDef",
+        "attrs" : {
+          "name" : "propertyDef1",
+          "mapping" : {
+            "keyProperty" : "key",
+            "mapValues" : [ {
+              "key" : "key1",
+              "value" : "value1"
+            }, {
+              "key" : "key2",
+              "value" : "value2"
+            } ],
+            "valueProperty" : "value"
+          }
+        }
+      } ]
+    } ]
+  }, {
+    "rule" : "DefaultView"
+  } ]
+}
