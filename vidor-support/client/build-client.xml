@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="build" default="build">
+	<target name="build">
+		<copy todir="${dist}/scripts">
+			<fileset dir="${src}/scripts/dorado" />
+		</copy>
+
+		<copy todir="${dist}/skins">
+			<fileset dir="${src}/skins" />
+		</copy>
+
+		<copy todir="${dist}/resources">
+			<fileset dir="${src}/resources" />
+		</copy>
+	</target>
+</project>
