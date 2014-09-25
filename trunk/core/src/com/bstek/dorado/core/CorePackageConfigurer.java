@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.core;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.core.pkgs.AbstractPackageConfigurer;
 
@@ -20,6 +22,21 @@ import com.bstek.dorado.core.pkgs.AbstractPackageConfigurer;
  * @since 2013-6-9
  */
 public class CorePackageConfigurer extends AbstractPackageConfigurer {
+
+	private boolean isVidorSupportEnabled() {
+		String vidorSupportEnabledConfig = Configure.getString(
+				"vidorSupport.enabled", "auto");
+		boolean vidorSupportEnabled;
+		if (StringUtils.isEmpty(vidorSupportEnabledConfig)
+				|| "auto".equalsIgnoreCase(vidorSupportEnabledConfig)) {
+			vidorSupportEnabled = "debug".equals(Configure
+					.getString("core.runMode"));
+		} else {
+			vidorSupportEnabled = Boolean
+					.parseBoolean(vidorSupportEnabledConfig);
+		}
+		return vidorSupportEnabled;
+	}
 
 	public String[] getPropertiesConfigLocations(ResourceLoader resourceLoader)
 			throws Exception {
@@ -30,6 +47,9 @@ public class CorePackageConfigurer extends AbstractPackageConfigurer {
 			throws Exception {
 		if (Configure.getBoolean("console.enabled", false)) {
 			return new String[] { "classpath:com/bstek/dorado/console/context.xml" };
+		}
+		if (isVidorSupportEnabled()) {
+			return new String[] { "classpath:com/bstek/dorado/vidorsupport/context.xml" };
 		}
 		return null;
 	}
@@ -43,6 +63,9 @@ public class CorePackageConfigurer extends AbstractPackageConfigurer {
 			ResourceLoader resourceLoader) throws Exception {
 		if (Configure.getBoolean("console.enabled", false)) {
 			return new String[] { "classpath:com/bstek/dorado/console/servlet-context.xml" };
+		}
+		if (isVidorSupportEnabled()) {
+			return new String[] { "classpath:com/bstek/dorado/vidorsupport/servlet-context.xml" };
 		}
 		return null;
 	}
