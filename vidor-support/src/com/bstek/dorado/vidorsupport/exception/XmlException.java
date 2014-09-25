@@ -2,7 +2,7 @@ package com.bstek.dorado.vidorsupport.exception;
 
 import org.dom4j.Element;
 
-public class XmlException extends CloudoRuntimeException {
+public class XmlException extends RuntimeException {
 
 	private static final long serialVersionUID = -2527121760392056053L;
 
