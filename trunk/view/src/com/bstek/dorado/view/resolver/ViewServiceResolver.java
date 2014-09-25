@@ -253,11 +253,11 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						} else {
 							writer.append("<exception><![CDATA[\n");
 							writer.setEscapeEnabled(true);
-							outputException(jsonBuilder, e);
+							outputException(jsonBuilder, t);
 						}
 						writer.setEscapeEnabled(false);
 						writer.append("\n]]></exception>\n");
-						logger.error(e, e);
+						logger.error(t, t);
 					}
 					writer.append("</request>\n");
 				}
@@ -279,7 +279,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						.append("})");
 			} else {
 				response.setContentType("text/dorado-exception");
-				outputException(jsonBuilder, e);
+				outputException(jsonBuilder, t);
 			}
 
 			logger.error(e, e);
