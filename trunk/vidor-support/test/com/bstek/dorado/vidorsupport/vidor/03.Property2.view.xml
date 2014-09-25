@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ViewConfig listener="lis">
-  <Arguments/>
-  <Context/>
-  <Model/>
-  <View>
-    <Property name="contentOverflow">scroll</Property>
-  </View>
-</ViewConfig>
