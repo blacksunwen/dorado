@@ -1,0 +1,24 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model"
+  }, {
+    "rule" : "DefaultView",
+    "layout" : {
+      "type" : "native",
+      "className" : "className",
+      "padding" : "padding",
+      "style" : "style"
+    },
+    "nodes" : [ {
+      "rule" : "Button",
+      "attrs" : {
+        "caption" : "\u6807\u9898"
+      }
+    } ]
+  } ]
+}

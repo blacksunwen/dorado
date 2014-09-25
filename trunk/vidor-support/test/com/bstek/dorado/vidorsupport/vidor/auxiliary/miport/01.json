@@ -1,0 +1,44 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "DefaultView",
+    "attrs" : {
+      "title" : "视图配置的注入和导出"
+    },
+    "layout" : {
+      "type" : "Anchor",
+      "padding" : "20"
+    },
+    "nodes" : [ {
+      "rule" : "Panel",
+      "attrs" : {
+        "caption" : "一个面板控件",
+        "width" : "400",
+        "height" : "300"
+      },
+      "layout" : {
+        "regionPadding" : "1"
+      },
+      "nodes" : [ {
+        "rule" : "Panel/Wrapper.Children",
+        "nodes" : [ {
+          "rule" : "ToolBar",
+          "position" : {
+            "type" : "top"
+          },
+          "nodes" : [ {
+            "rule" : "Import",
+            "attrs" : {
+              "src" : "com.bstek.dorado.sample.basic.ShardComponents#buttons"
+            }
+          } ]
+        }, {
+          "rule" : "Import",
+          "attrs" : {
+            "src" : "com.bstek.dorado.sample.basic.ShardComponents#listbox1"
+          }
+        } ]
+      } ]
+    } ]
+  } ]
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="form className:className;colPadding:colPadding;cols:cols;padding:padding;rowHeight:rowHeight;rowPadding:rowPadding;stretchWidth:true">
+    <Button layoutConstraint="align:left;className:className;colSpan:colSpan;padding:padding;rowSpan:rowSpan;vAlign:top">
+      <Property name="caption">标题</Property>
+    </Button>
+  </View>
+</ViewConfig>

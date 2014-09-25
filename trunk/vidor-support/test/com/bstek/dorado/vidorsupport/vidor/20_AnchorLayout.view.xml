@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments>
+    <Argument name="layoutRegion">
+      <Property name="value">background:#FDFEDA; border:1px #DBB74A solid; padding:4px; white-space:nowrap; overflow:visible</Property>
+    </Argument>
+  </Arguments>
+  <View layout="Anchor">
+    <Property name="title">AnchorLayout</Property>
+    <Button layoutConstraint="left:20;top:20">
+      <ClientEvent name="onClick" signature="dialog1">dialog1.show();
+</ClientEvent>
+      <Property name="caption">锚定式布局-场景1</Property>
+    </Button>
+    <Button layoutConstraint="anchorTop:previous;left:20;top:4">
+      <ClientEvent name="onClick" signature="dialog2">dialog2.show();
+</ClientEvent>
+      <Property name="caption">锚定式布局-场景2</Property>
+    </Button>
+    <Button layoutConstraint="anchorTop:previous;left:20;top:4">
+      <ClientEvent name="onClick" signature="dialog3">dialog3.show();
+</ClientEvent>
+      <Property name="caption">锚定式布局-场景3</Property>
+    </Button>
+    <Button layoutConstraint="anchorTop:previous;left:20;top:4">
+      <ClientEvent name="onClick" signature="dialog4">dialog4.show();
+</ClientEvent>
+      <Property name="caption">锚定式布局-场景4</Property>
+    </Button>
+    <Dialog id="dialog1" layout="Anchor">
+      <Property name="caption">场景1</Property>
+      <Property name="center">true</Property>
+      <Property name="contentOverflow">hidden</Property>
+      <Property name="height">300</Property>
+      <Property name="maximizeable">true</Property>
+      <Property name="modal">true</Property>
+      <Property name="width">600</Property>
+      <Children>
+        <HtmlContainer content="1) left:20; top:20" layoutConstraint="left:20; top:20" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="2) left:10; top:20; anchorLeft:previous" layoutConstraint="left:10; top:20; anchorLeft:previous" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="3) right:20; bottom:20" layoutConstraint="right:20; bottom:20" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="4) right:10; bottom:20; anchorRight:previous" layoutConstraint="right:10; bottom:20; anchorRight:previous" style="${argument.layoutRegion}"/>
+      </Children>
+    </Dialog>
+    <Dialog id="dialog2" layout="Anchor" caption="场景2" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">
+      <Buttons/>
+      <Children>
+        <HtmlContainer content="1) left:10; top:10; right:10" layoutConstraint="left:10; top:10; right:10" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="2) left:10; top:10; right:10; bottom:10; anchorTop:previous" layoutConstraint="left:10; top:10; right:10; bottom:10; anchorTop:previous" style="${argument.layoutRegion}"/>
+      </Children>
+      <Tools/>
+    </Dialog>
+    <Dialog id="dialog3" layout="Anchor" caption="场景3" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">
+      <Children>
+        <HtmlContainer content="1) left:50%; top:20" layoutConstraint="left:50%; top:20" style="${argument.layoutRegion}"/>
+        <HtmlContainer content="2) left:50%; top:50%; width:60%" layoutConstraint="left:50%; top:50%; width:60%" style="${argument.layoutRegion}">
+          <Property name="width">60%</Property>
+        </HtmlContainer>
+        <HtmlContainer content="3) left:100%; bottom:20; width:300" layoutConstraint="left:100%; bottom:20; width:300" style="${argument.layoutRegion}"/>
+      </Children>
+    </Dialog>
+    <Dialog id="dialog4" layout="Anchor padding:2" center="true" contentOverflow="hidden" height="300" maximizeable="true" modal="true" width="600">
+      <Property name="caption">场景4</Property>
+      <Children>
+        <HtmlContainer layoutConstraint="left:0;top:0;right:0;heightOffset:-40" style="${argument.layoutRegion}">
+          <Property name="height">30%</Property>
+          <Property name="content">权重30%) top:0; left:0; right:0</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="top:0;left:0;right:0;anchorTop:previous" style="${argument.layoutRegion}">
+          <Property name="height">40</Property>
+          <Property name="content">固定高度) top:0; anchorTop:previous; left:0; right:0</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="left:0;top:0;right:0;anchorTop:previous" style="${argument.layoutRegion}">
+          <Property name="height">40%</Property>
+          <Property name="content">权重40%) top:0; anchorTop:previous; left:0; right:0</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="top:0;left:0;anchorTop:previous;right:0" style="${argument.layoutRegion}">
+          <Property name="height">40</Property>
+          <Property name="content">固定高度) top:0; anchorTop:previous; left:0; right:0</Property>
+        </HtmlContainer>
+        <HtmlContainer layoutConstraint="bottom:0;top:0;right:0;left:0;anchorTop:previous" style="${argument.layoutRegion}">
+          <Property name="content">权重30%) top:0; bottom:0; left:0; right:0</Property>
+        </HtmlContainer>
+      </Children>
+    </Dialog>
+  </View>
+</ViewConfig>

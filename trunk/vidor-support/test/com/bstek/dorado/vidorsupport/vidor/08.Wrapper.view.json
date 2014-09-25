@@ -1,0 +1,24 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model"
+  }, {
+    "rule" : "DefaultView",
+    "nodes" : [ {
+      "rule" : "AutoForm",
+      "nodes" : [ {
+        "rule" : "AutoFormElement",
+        "nodes" : [ {
+          "rule" : "AutoFormElement/Wrapper.Editor",
+          "nodes" : [ {
+            "rule" : "TextArea"
+          } ]
+        } ]
+      } ]
+    } ]
+  } ]
+}

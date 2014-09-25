@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean parent="dorado.packagesConfigLoader">
+		<property name="configLocation" value="com/bstek/dorado/vidorsupport/packages-config.xml" />
+	</bean>
+	<!-- 指定view加载路径  防止用户设定短路径影响-->
+	<bean parent="dorado.viewConfigFactoryRegister">
+		<property name="viewNamePattern" value="com.bstek.dorado.vidorsupport.*" />
+		<property name="order" value="2"></property>
+		<property name="viewConfigFactory">
+			<bean parent="dorado.xmlViewConfigDefinitionFactory">
+				<property name="pathPrefix" value="classpath:" />
+			</bean>
+		</property>
+	</bean>
+	<!-- Rule -->
+	<bean id="dorado.vidor.rulesetFactory" class="com.bstek.dorado.vidorsupport.impl.GlobalRuleSetFactory"/>
+	<bean id="dorado.vidor.rulesetOutputter" class="com.bstek.dorado.vidorsupport.impl.GlobalRuleSetOutputter">
+		<property name="factory" ref="dorado.vidor.rulesetFactory"/>
+	</bean>
+	
+	<!-- View -->
+	<bean id="dorado.vidor.viewReader" class="com.bstek.dorado.vidorsupport.impl.ViewReader">
+		<property name="ruleSetFactory" ref="dorado.vidor.rulesetFactory"/>
+	</bean>
+	<bean id="dorado.vidor.viewWriter" class="com.bstek.dorado.vidorsupport.impl.ViewWriter">
+		<property name="ruleSetFactory" ref="dorado.vidor.rulesetFactory"/>
+	</bean>
+	
+	<!-- DataType -->
+	<bean id="dorado.vidor.dataTypeWorkshop" class="com.bstek.dorado.vidorsupport.impl.DataTypeWorkshop">
+		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
+		<property name="ruleSetFactory" ref="dorado.vidor.rulesetFactory"/>
+		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
+		<property name="baseTypeLocation" value="classpath:com/bstek/dorado/data/base-types.xml"/>
+		<property name="hiddenDataTypeLocations">
+			<list>
+				<value>classpath:com/bstek/dorado/view/base-types.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- DataProvider -->
+	<bean id="dorado.vidor.dataProviderWorkshop" class="com.bstek.dorado.vidorsupport.impl.DataProviderWorkshop">
+		<property name="dataProviderManager" ref="dorado.dataProviderManager"/>
+	</bean>
+	
+	<!-- DataResolver -->
+	<bean id="dorado.vidor.dataResolverWorkshop" class="com.bstek.dorado.vidorsupport.impl.DataResolverWorkshop">
+		<property name="dataResolverManager" ref="dorado.dataResolverManager"/>
+	</bean>
+	
+	<!-- ExposedService -->
+	<bean id="dorado.vidor.exposedServiceWorkshop" class="com.bstek.dorado.vidorsupport.impl.ExposedServiceWorkshop">
+		<property name="exposedServiceManager" ref="dorado.exposedServiceManager"/>
+	</bean>
+	
+	<!-- JavaClass -->
+	<bean id="dorado.vidor.packageJavaClassProviderTemplate" class="com.bstek.dorado.vidorsupport.impl.PackageJavaClassProvider" abstract="true"/>
+	<bean id="dorado.vidor.javaClassWorkshop" class="com.bstek.dorado.vidorsupport.impl.JavaClassWorkshop"/>
+	
+
+	<bean id="dorado.vidor.viewInitSupport" class="com.bstek.dorado.vidorsupport.service.InitSupport">
+		<property name="ruleSetOutputter" ref="dorado.vidor.rulesetOutputter" />
+		<property name="dataTypeWorkshop" ref="dorado.vidor.dataTypeWorkshop" />
+	</bean>
+
+
+	<bean id="dorado.vidor.remoteService" class="com.bstek.dorado.vidorsupport.service.RemoteService" parent="dorado.vidor.viewInitSupport">
+		<property name="viewReader" ref="dorado.vidor.viewReader" />
+		<property name="viewWriter" ref="dorado.vidor.viewWriter" />
+		<property name="dataProviderWorkshop" ref="dorado.vidor.dataProviderWorkshop" />
+		<property name="dataResolverWorkshop" ref="dorado.vidor.dataResolverWorkshop" />
+		<property name="dataTypeWorkshop" ref="dorado.vidor.dataTypeWorkshop" />
+		<property name="exposedServiceWorkshop" ref="dorado.vidor.exposedServiceWorkshop" />
+		<property name="javaClassWorkshop" ref="dorado.vidor.javaClassWorkshop" />
+	</bean>
+</beans>

@@ -1,0 +1,24 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model"
+  }, {
+    "rule" : "DefaultView",
+    "nodes" : [ {
+      "rule" : "DataSet",
+      "attrs" : {
+        "id" : "dataSet1",
+        "userData" : "sdfdf",
+        "parameter" : {
+          "key1" : "value1",
+          "key2" : "value2",
+          "key3" : "value3"
+        }
+      }
+    } ]
+  } ]
+}

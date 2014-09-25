@@ -1,0 +1,45 @@
+{
+  "rule" : "ViewConfig",
+  "nodes" : [ {
+    "rule" : "ViewConfig/Arguments"
+  }, {
+    "rule" : "ViewConfig/Context"
+  }, {
+    "rule" : "Model",
+    "nodes" : [ {
+      "rule" : "DataType",
+      "attrs" : {
+        "name" : "dataType1"
+      },
+      "nodes" : [ {
+        "rule" : "BasePropertyDef",
+        "attrs" : {
+          "name" : "propertyDef1"
+        },
+        "nodes" : [ {
+          "rule" : "RequiredValidator"
+        } ]
+      }, {
+        "rule" : "BasePropertyDef",
+        "attrs" : {
+          "name" : "propertyDef2"
+        },
+        "nodes" : [ {
+          "rule" : "LengthValidator"
+        } ]
+      }, {
+        "rule" : "BasePropertyDef",
+        "attrs" : {
+          "name" : "propertyDef3"
+        },
+        "nodes" : [ {
+          "rule" : "EnumValidator"
+        }, {
+          "rule" : "RequiredValidator"
+        } ]
+      } ]
+    } ]
+  }, {
+    "rule" : "DefaultView"
+  } ]
+}

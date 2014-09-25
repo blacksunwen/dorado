@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View layout="hbox align:top;className:className;pack:start;padding:padding;regionPadding:regionPadding;stretch:true">
+    <Button layoutConstraint="align:center;className:className;padding:padding">
+      <Property name="caption">标题</Property>
+    </Button>
+  </View>
+</ViewConfig>

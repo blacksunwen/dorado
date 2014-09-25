@@ -1,0 +1,174 @@
+.c-target {
+
+}
+
+.c-invisible {
+	display: none;
+}
+
+.c-region {
+	border: 1px solid #69bcff;
+}
+
+.c-sub-region {
+	border: 1px dashed #69bcff;
+}
+
+.c-region-highlight {
+	border: 1px solid #df743b;
+}
+
+/*--------------------------------------------------------------*/
+.c-indicator {
+	position: absolute;
+	z-index: 99992;
+	border-radius: 1px;
+	background-color: rgba(73, 164, 230, 0.04);
+	border: 2px solid #69bcff;
+	opacity: 1;
+}
+
+.c-indicator .content {
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	position: absolute;
+}
+
+.c-indicator .content .selector {
+	left: 0px;
+	top: 0px;
+	border: 1px dashed #4B3FE4;
+	position: absolute;
+}
+
+/*--------------------------------------------------------------*/
+.c-selector {
+	position: absolute;
+	z-index: 99992;
+	border-radius: 1px;
+	background-color: rgba(73, 164, 230, 0.04);
+	border: 2px solid #69bcff;
+	opacity: 1;
+}
+
+.c-indicator .buttons {
+	position: absolute;
+	z-index: 1002;
+	height: 20px;
+	padding: 1px 1px 1px 1px;
+	background-color: #eee;
+	-moz-border-radius: 10px;
+	top: -16px;
+	right: -16px;
+	border: 1px solid #999;
+	border-radius: 5px;
+}
+
+.c-indicator .buttons .children-button {
+	float: left;
+}
+
+.c-indicator .buttons .operate-button {
+	float: left;
+}
+
+/*--------------------------------------------------------------*/
+.c-anchor-locator {
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	position: absolute;
+	background: url(images/dot.gif)
+}
+
+.c-anchor-locator .relative {
+	border: 1px dashed #68A33D;
+	position: absolute;
+}
+
+.c-anchor-locator .line {
+	border: 1px solid #df743b;
+	position: absolute;
+	overflow: visible;
+}
+
+.c-anchor-locator .vertical {
+	width: 1px;
+	border-bottom: 0px;
+	border-top: 0px;
+	border-right: 0px;
+}
+
+.c-anchor-locator .horizontal {
+	height: 1px;
+	border-bottom: 0px;
+	border-left: 0px;
+	border-right: 0px;
+}
+
+.c-anchor-locator .dotted {
+	border-style: dotted
+}
+
+.c-anchor-locator .value {
+	position: absolute;
+	color: #df743b;
+	font-size: 11px;
+	background: beige;
+	border: 1px solid #df743b;
+	border-radius: 5px;
+	padding: 1px;
+}
+
+.c-anchor-locator .d-checkbox {
+	position: absolute !important;
+	top: -0.5px !important;
+	right: 2px !important;
+}
+
+.c-anchor-locator .relative .value {
+	color: #68A33D;
+	border: 1px solid #68A33D;
+}
+
+.c-anchor-locator .value:after {
+	/*content: 'px';*/
+}
+
+.c-anchor-locator .value-show-top {
+	top: -20px;
+}
+
+.c-anchor-locator .value-show-left {
+	left: -20px;
+}
+
+.c-anchor-locator .value-show-right {
+	right: -20px;
+}
+
+.c-anchor-locator .value-show-bottom {
+	bottom: -20px;
+}
+
+.c-anchor-locator .indicator {
+	position: absolute;
+	border: 2px dashed #df743b;
+	opacity: 1;
+}
+
+.c-anchor-locator .relative-indicator {
+	position: absolute;
+	border: 2px dashed #68A33D;
+	opacity: 1;
+}
+
+.c-drawpad-iframe {
+	background: url(images/drawpad_bg.png) repeat transparent;
+}
+
+
+

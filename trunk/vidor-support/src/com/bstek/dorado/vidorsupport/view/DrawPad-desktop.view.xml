@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <Property name="packages">vidor-drawpad</Property>
+    <ClientEvent name="onReady" signature="self,arg"> $cloudo.nodeEditorManager.drawAll();$(document.body).css("background-color","transparent");</ClientEvent>
+  </View>
+</ViewConfig>

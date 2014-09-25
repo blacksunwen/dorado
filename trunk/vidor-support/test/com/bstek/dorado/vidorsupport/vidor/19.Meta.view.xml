@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+	<Arguments />
+	<Context />
+	<Model />
+	<View>
+		<Button meta="meta-in-attribute">
+			<Property name="caption">AAA</Property>
+		</Button>
+		<Button>
+			<Property name="caption">AAA</Property>
+			<Property name="meta">
+				<Property name="jdbc.compareLabel">true</Property>
+				<Property name="jdbc.compareDataType">true</Property>
+				<Property name="jdbc.resource">com/bstek/dorado/sample/jdbc/Sample.dbm.xml</Property>
+			</Property>
+		</Button>
+		<Button meta="meta-in-attribute">
+			<Property name="caption">AAA</Property>
+			<Property name="meta">
+				<Property name="jdbc.compareLabel">true</Property>
+				<Property name="jdbc.compareDataType">true</Property>
+				<Property name="jdbc.resource">com/bstek/dorado/sample/jdbc/Sample.dbm.xml</Property>
+			</Property>
+		</Button>		
+	</View>
+</ViewConfig>

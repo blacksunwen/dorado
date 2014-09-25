@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <Container layout="anchor">
+      <Button id="button1">
+        <Property name="caption">后台读取</Property>
+        <Property name="style">
+          <Property name="ss">sss</Property>
+          <Property name="key">ss</Property>
+        </Property>
+        <ClientEvent name="onClick">alert('hello');
+</ClientEvent>
+      </Button>
+    </Container>
+  </View>
+</ViewConfig>

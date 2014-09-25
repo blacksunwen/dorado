@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model/>
+  <View>
+    <DataSet id="dataSet1">
+      <Property name="userData">sdfdf</Property>
+      <Property name="parameter">
+        <Entity>
+          <Property name="key1">value1</Property>
+          <Property name="key2">value2</Property>
+          <Property name="key3">value3</Property>
+        </Entity>
+      </Property>
+    </DataSet>
+  </View>
+</ViewConfig>

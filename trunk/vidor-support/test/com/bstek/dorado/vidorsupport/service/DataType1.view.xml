@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ViewConfig>
+  <Arguments/>
+  <Context/>
+  <Model>
+    <DataType name="dataType1">
+      <Property name="creationType">com.xxx.Pojo</Property>
+      <PropertyDef name="propertyDef1">
+        <Property name="dataType">String</Property>
+      </PropertyDef>
+      <PropertyDef name="propertyDef2"/>
+      <PropertyDef name="propertyDef3"/>
+      <PropertyDef name="propertyDef4"/>
+      <Reference name="reference1"/>
+    </DataType>
+  </Model>
+  <View/>
+</ViewConfig>
