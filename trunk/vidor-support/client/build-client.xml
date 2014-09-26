@@ -5,10 +5,6 @@
 			<fileset dir="${src}/scripts/dorado" />
 		</copy>
 
-		<copy todir="${dist}/skins">
-			<fileset dir="${src}/skins" />
-		</copy>
-
 		<copy todir="${dist}/resources">
 			<fileset dir="${src}/resources" />
 		</copy>
