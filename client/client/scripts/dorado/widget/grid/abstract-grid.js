@@ -1571,13 +1571,17 @@
 				var scrollerSize = $setting["widget.scrollerSize"] || 4;
 				var h = dom.clientHeight - scrollerSize;
 				
-				this._innerGridWrapper.style.height = h + "px";
+				if (this._innerGridWrapper) {
+					this._innerGridWrapper.style.height = h + "px";
+				}
 				if (this._fixedInnerGridWrapper) {
 					this._fixedInnerGridWrapper.style.height = h + "px";
 				}
 			}
 			else {
-				this._innerGridWrapper.style.height = "100%";
+				if (this._innerGridWrapper) {
+					this._innerGridWrapper.style.height = "100%";
+				}
 				if (this._fixedInnerGridWrapper) {
 					this._fixedInnerGridWrapper.style.height = "100%";
 				}
