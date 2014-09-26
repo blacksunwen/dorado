@@ -391,7 +391,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				return;
 			}
 
-			if (!accordion._rendered) {
+			if (!accordion._dom) {
 				accordion._currentSection = newCurrent;
 				return;
 			}

@@ -110,6 +110,9 @@
 			//height: null,
 			//height: 400,
 			dynaHeight: true,
+			onCurrentSectionChange: function(self, arg) {
+				console.log("onCurrentSectionChange");
+			},
 			sections: [{
 				caption: "test",
 				control: new dorado.widget.Container({
