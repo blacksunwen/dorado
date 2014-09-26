@@ -1180,7 +1180,7 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 			if (this.state == dorado.Entity.STATE_NEW && this.parent && this.parent instanceof dorado.EntityList) {
 				this.remove();
 			} else if (this.state != dorado.Entity.STATE_NONE) {
-				var data = this._data, oldData = this._oldData || {};
+				var data = this._data, oldData = this._oldData;
 				if (oldData) {
 					for (var p in data) {
 						if (data.hasOwnProperty(p)) {
