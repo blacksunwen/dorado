@@ -117,8 +117,8 @@
 		 * @param {Object[]|dorado.EntityList} items 数据。
 		 */
 		setItems: function(items) {
-			if (this._filterParams) this.filter();
 			this._items = items;
+			if (this._filterParams) this.filter(this._filterParams);
 		},
 		
 		/**
