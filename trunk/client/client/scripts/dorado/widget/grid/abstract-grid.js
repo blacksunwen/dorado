@@ -2186,11 +2186,11 @@
 		 * 		{
 		 * 			property:"age",
 		 * 			operator:"<",
-		 * 			value：20
+		 * 			value:20
 		 * 		},{
 		 * 			property:"age",
 		 * 			operator:">",
-		 * 			value：50
+		 * 			value:50
 		 * 		}]
 		 * 	}
 		 * ];
