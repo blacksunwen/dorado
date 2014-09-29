@@ -1,4 +1,4 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +12,7 @@ import org.dom4j.io.XMLWriter;
 import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
 import com.bstek.dorado.vidorsupport.iapi.IViewWriter;
-import com.bstek.dorado.vidorsupport.internal.vidor.JsonReader;
+import com.bstek.dorado.vidorsupport.vidor.JsonReader;
 
 public class ViewWriter implements IViewWriter {
 	private IRuleSetFactory ruleSetFactory;
@@ -49,11 +49,11 @@ public class ViewWriter implements IViewWriter {
 	};
 
 	public String toXML(String json, RuleSet ruleSet) throws Exception {
-		com.bstek.dorado.vidorsupport.internal.rule.RuleSet ruleSET;
+		com.bstek.dorado.vidorsupport.rule.RuleSet ruleSET;
 		if (ruleSet == null) {
 			ruleSET = this.getRuleSetFactory().get();
 		} else {
-			ruleSET = new com.bstek.dorado.vidorsupport.internal.rule.RuleSet(ruleSet);
+			ruleSET = new com.bstek.dorado.vidorsupport.rule.RuleSet(ruleSet);
 		}
 		JsonReader reader = new JsonReader();
 		Document document = reader.parse(json, ruleSET);

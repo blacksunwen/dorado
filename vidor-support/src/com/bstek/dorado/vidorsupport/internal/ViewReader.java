@@ -1,4 +1,4 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import java.io.InputStream;
 
@@ -8,9 +8,9 @@ import org.dom4j.io.SAXReader;
 import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
 import com.bstek.dorado.vidorsupport.iapi.IViewReader;
-import com.bstek.dorado.vidorsupport.internal.output.OutputContext;
-import com.bstek.dorado.vidorsupport.internal.vidor.XmlNode;
-import com.bstek.dorado.vidorsupport.internal.vidor.XmlReader;
+import com.bstek.dorado.vidorsupport.output.OutputContext;
+import com.bstek.dorado.vidorsupport.vidor.XmlNode;
+import com.bstek.dorado.vidorsupport.vidor.XmlReader;
 
 public class ViewReader implements IViewReader {
 	private IRuleSetFactory ruleSetFactory;
@@ -37,11 +37,11 @@ public class ViewReader implements IViewReader {
 	public String read(InputStream input, String encoding, RuleSet ruleSet)
 			throws Exception {
 		// TODO Auto-generated method stub
-		com.bstek.dorado.vidorsupport.internal.rule.RuleSet ruleSET;
+		com.bstek.dorado.vidorsupport.rule.RuleSet ruleSET;
 		if (ruleSet == null) {
 			ruleSET = this.getRuleSetFactory().get();
 		} else {
-			ruleSET = new com.bstek.dorado.vidorsupport.internal.rule.RuleSet(ruleSet);
+			ruleSET = new com.bstek.dorado.vidorsupport.rule.RuleSet(ruleSet);
 		}
 		XMLReader xmlReader = new XMLReader();
 
@@ -51,7 +51,7 @@ public class ViewReader implements IViewReader {
 }
 
 class XMLReader extends XmlReader {
-	public XmlNode parse(InputStream input, String encoding, com.bstek.dorado.vidorsupport.internal.rule.RuleSet ruleSet)
+	public XmlNode parse(InputStream input, String encoding, com.bstek.dorado.vidorsupport.rule.RuleSet ruleSet)
 			throws Exception {
 		SAXReader saxReader = new SAXReader();
 		saxReader.setEncoding(encoding);

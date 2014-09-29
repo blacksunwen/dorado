@@ -1,6 +1,6 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
-import com.bstek.dorado.vidorsupport.internal.rule.RuleSet;
+import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public class GlobalRuleSetOutputter extends AbstractRuleSetOutputter {
 

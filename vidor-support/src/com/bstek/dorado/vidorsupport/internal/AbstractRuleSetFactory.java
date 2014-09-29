@@ -1,11 +1,11 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import com.bstek.dorado.core.Context;
 import com.bstek.dorado.idesupport.RuleSetBuilder;
 import com.bstek.dorado.idesupport.RuleTemplateBuilder;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
-import com.bstek.dorado.vidorsupport.internal.rule.RuleSet;
+import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public abstract class AbstractRuleSetFactory implements IRuleSetFactory {
 
@@ -29,7 +29,7 @@ public abstract class AbstractRuleSetFactory implements IRuleSetFactory {
 
 	protected RuleSet doCreate() throws Exception {
 		com.bstek.dorado.idesupport.model.RuleSet ruleSet = this.buildDoradoRuleSet();
-		RuleSet rs = new com.bstek.dorado.vidorsupport.internal.rule.RuleSet(ruleSet);
+		RuleSet rs = new com.bstek.dorado.vidorsupport.rule.RuleSet(ruleSet);
 		return rs;
 	}
 
