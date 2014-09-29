@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<Packages>
-		<Package name="vidor-drawpad-skins" pattern="这个，你们这些健身狂人也可以下">
+		<Package name="vidor-drawpad-skins" baseUri=">dorado/client/resources/vidor" pattern="res-css">
 			classpath:dorado/resources/vidor/drawpad
 		</Package>
 		
