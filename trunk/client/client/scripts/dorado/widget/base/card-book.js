@@ -184,7 +184,7 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 			realHeight = $fly(control._dom).outerHeight(true);
 		}
 
-		card.set("height", realHeight);
+		card._realHeight = realHeight; // 避免后续布局管理器无法继续管理此控件的高度
 		card.resetDimension(true);
 
 		if (dorado.widget.TabControl && card._parent instanceof dorado.widget.TabControl) {
