@@ -60,10 +60,10 @@ public class RemoteService extends InitSupport {
 	}
 
 	@Expose
-	public void saveView(String json, String path) throws Exception {
+	public void saveView(String json, String url) throws Exception {
 		FileOutputStream outputStream = null;
 		try {
-			outputStream = new FileOutputStream(new File(path));
+			outputStream = new FileOutputStream(new File(url));
 			this.viewWriter.write(json, outputStream,
 					Configure.getString(InitSupport.ENCODING));
 		} finally {
