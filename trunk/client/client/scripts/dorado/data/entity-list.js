@@ -1286,16 +1286,21 @@
 					}
 				}
 				else {
-					var entityList = this._entityList;
-					var page = entityList.getPage(pageNo, false), it = entityList.iterator(page);
-					reverse ? it.previous() : it.next();
-					while (reverse ? it.hasPrevious() : it.hasNext()) {
-						page = reverse ? it.previous() : it.next();
-						if (page.loaded) {
-							entry = this._findFromPage(page.pageNo, reverse);
+					var entityList = this._entityList, page, it;
+					do  {
+						pageNo += (reverse ? -1 : 1);
+						if (pageNo > 0 && pageNo <= this._entityList.pageCount) {
+							page = entityList.getPage(pageNo, false);
+							if (page.loaded) {
+								entry = this._findFromPage(pageNo, reverse);
+								break;
+							}
+						}
+						else {
 							break;
 						}
 					}
+					while (true)
 				}
 			}
 			return entry;
