@@ -373,7 +373,7 @@
             if (this._rowSelectionProperty) {
                 var selection = [];
                 if (entityList) {
-                    var it = entityList.iterator(true);
+                    var it = entityList.iterator();
                     while (it.hasNext()) {
                         var entity = it.next();
                         if (entity.get(this._rowSelectionProperty)) selection.push(entity);
