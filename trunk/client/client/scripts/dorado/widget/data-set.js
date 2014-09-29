@@ -391,7 +391,11 @@
 					}
 					hashCode = dorado.Object.hashCode(this._parameter) + '-' + dorado.Object.hashCode(this._sysParameter);
 					data = dataCache[hashCode];
-					this.setData(data);
+					if (data !== undefined) {
+						this.setData(data);
+						if (callback) $callback(callback, true);
+						return;
+					}
 				}
 
 				if (data === undefined || flush) {
