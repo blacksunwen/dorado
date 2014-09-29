@@ -1,4 +1,4 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,10 +24,10 @@ import com.bstek.dorado.core.xml.XmlDocumentBuilder;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.vidorsupport.iapi.IDataTypeWorkshop;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
-import com.bstek.dorado.vidorsupport.internal.output.OutputContext;
-import com.bstek.dorado.vidorsupport.internal.rule.RuleSet;
-import com.bstek.dorado.vidorsupport.internal.vidor.XmlNode;
-import com.bstek.dorado.vidorsupport.internal.vidor.XmlReader;
+import com.bstek.dorado.vidorsupport.output.OutputContext;
+import com.bstek.dorado.vidorsupport.rule.RuleSet;
+import com.bstek.dorado.vidorsupport.vidor.XmlNode;
+import com.bstek.dorado.vidorsupport.vidor.XmlReader;
 
 public abstract class AbstractDataTypeWorkshop implements IDataTypeWorkshop {
 	private IRuleSetFactory ruleSetFactory;

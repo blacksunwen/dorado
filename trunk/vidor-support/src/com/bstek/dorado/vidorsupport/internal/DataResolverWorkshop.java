@@ -1,4 +1,4 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import java.util.Collection;
 import java.util.Map;

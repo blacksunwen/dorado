@@ -1,6 +1,6 @@
 package com.bstek.dorado.vidorsupport.iapi;
 
-import com.bstek.dorado.vidorsupport.internal.rule.RuleSet;
+import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public interface IRuleSetFactory {
 

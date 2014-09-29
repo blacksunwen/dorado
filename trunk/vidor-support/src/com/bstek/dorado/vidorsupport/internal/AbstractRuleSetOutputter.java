@@ -1,9 +1,9 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetOutputter;
-import com.bstek.dorado.vidorsupport.internal.output.OutputContext;
-import com.bstek.dorado.vidorsupport.internal.rule.RuleSet;
+import com.bstek.dorado.vidorsupport.output.OutputContext;
+import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public abstract class AbstractRuleSetOutputter implements IRuleSetOutputter {
 

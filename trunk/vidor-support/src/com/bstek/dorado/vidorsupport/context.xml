@@ -16,21 +16,21 @@
 		</property>
 	</bean>
 	<!-- Rule -->
-	<bean id="dorado.vidor.rulesetFactory" class="com.bstek.dorado.vidorsupport.impl.GlobalRuleSetFactory"/>
-	<bean id="dorado.vidor.rulesetOutputter" class="com.bstek.dorado.vidorsupport.impl.GlobalRuleSetOutputter">
+	<bean id="dorado.vidor.rulesetFactory" class="com.bstek.dorado.vidorsupport.internal.GlobalRuleSetFactory"/>
+	<bean id="dorado.vidor.rulesetOutputter" class="com.bstek.dorado.vidorsupport.internal.GlobalRuleSetOutputter">
 		<property name="factory" ref="dorado.vidor.rulesetFactory"/>
 	</bean>
 	
 	<!-- View -->
-	<bean id="dorado.vidor.viewReader" class="com.bstek.dorado.vidorsupport.impl.ViewReader">
+	<bean id="dorado.vidor.viewReader" class="com.bstek.dorado.vidorsupport.internal.ViewReader">
 		<property name="ruleSetFactory" ref="dorado.vidor.rulesetFactory"/>
 	</bean>
-	<bean id="dorado.vidor.viewWriter" class="com.bstek.dorado.vidorsupport.impl.ViewWriter">
+	<bean id="dorado.vidor.viewWriter" class="com.bstek.dorado.vidorsupport.internal.ViewWriter">
 		<property name="ruleSetFactory" ref="dorado.vidor.rulesetFactory"/>
 	</bean>
 	
 	<!-- DataType -->
-	<bean id="dorado.vidor.dataTypeWorkshop" class="com.bstek.dorado.vidorsupport.impl.DataTypeWorkshop">
+	<bean id="dorado.vidor.dataTypeWorkshop" class="com.bstek.dorado.vidorsupport.internal.DataTypeWorkshop">
 		<property name="dataTypeManager" ref="dorado.dataTypeManager"/>
 		<property name="ruleSetFactory" ref="dorado.vidor.rulesetFactory"/>
 		<property name="xmlDocumentBuilder" ref="dorado.xmlDocumentBuilder" />
@@ -43,23 +43,23 @@
 	</bean>
 	
 	<!-- DataProvider -->
-	<bean id="dorado.vidor.dataProviderWorkshop" class="com.bstek.dorado.vidorsupport.impl.DataProviderWorkshop">
+	<bean id="dorado.vidor.dataProviderWorkshop" class="com.bstek.dorado.vidorsupport.internal.DataProviderWorkshop">
 		<property name="dataProviderManager" ref="dorado.dataProviderManager"/>
 	</bean>
 	
 	<!-- DataResolver -->
-	<bean id="dorado.vidor.dataResolverWorkshop" class="com.bstek.dorado.vidorsupport.impl.DataResolverWorkshop">
+	<bean id="dorado.vidor.dataResolverWorkshop" class="com.bstek.dorado.vidorsupport.internal.DataResolverWorkshop">
 		<property name="dataResolverManager" ref="dorado.dataResolverManager"/>
 	</bean>
 	
 	<!-- ExposedService -->
-	<bean id="dorado.vidor.exposedServiceWorkshop" class="com.bstek.dorado.vidorsupport.impl.ExposedServiceWorkshop">
+	<bean id="dorado.vidor.exposedServiceWorkshop" class="com.bstek.dorado.vidorsupport.internal.ExposedServiceWorkshop">
 		<property name="exposedServiceManager" ref="dorado.exposedServiceManager"/>
 	</bean>
 	
 	<!-- JavaClass -->
-	<bean id="dorado.vidor.packageJavaClassProviderTemplate" class="com.bstek.dorado.vidorsupport.impl.PackageJavaClassProvider" abstract="true"/>
-	<bean id="dorado.vidor.javaClassWorkshop" class="com.bstek.dorado.vidorsupport.impl.JavaClassWorkshop"/>
+	<bean id="dorado.vidor.packageJavaClassProviderTemplate" class="com.bstek.dorado.vidorsupport.internal.PackageJavaClassProvider" abstract="true"/>
+	<bean id="dorado.vidor.javaClassWorkshop" class="com.bstek.dorado.vidorsupport.internal.JavaClassWorkshop"/>
 	
 
 	<bean id="dorado.vidor.viewInitSupport" class="com.bstek.dorado.vidorsupport.service.InitSupport">

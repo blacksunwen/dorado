@@ -1,4 +1,4 @@
-package com.bstek.dorado.vidorsupport.impl;
+package com.bstek.dorado.vidorsupport.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
