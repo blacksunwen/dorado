@@ -76,16 +76,6 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 		this.setFixed(property.isFixed());
 		this.setDeprecated(property.isDeprecated());
 		
-		String javaClass = this.javaClass = property.getType();
-		if ("boolean".equals(javaClass)) {
-			this.setEditorType(Treaty.Editor.BOOLEAN);
-			if (this.defaultValue.getValue() == null || this.defaultValue.getValue().length() == 0) {
-				this.defaultValue.setValue("false");
-			}
-		} else if ("[Ljava.lang.String;".equals(javaClass)) {
-			this.setEditorType(Treaty.Editor.STRING_ARRAY);
-		}
-		
 		Reference reference = property.getReference();
 		if (reference != null) {
 			String propertyName = reference.getProperty();
@@ -98,6 +88,15 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 				context.addEditorMeta(meta);
 			}
 		}
+		
+		String javaClass = this.javaClass = property.getType();
+		//boolean类型
+		if ("boolean".equals(javaClass)) {
+			this.editorType.setValue(Treaty.Editor.BOOLEAN);
+			if (this.defaultValue.getValue() == null || this.defaultValue.getValue().length() == 0) {
+				this.defaultValue.setValue("false");
+			}
+		} 
 		
 		//枚举类
 		if (this.editorType.getValue() == null) {
@@ -123,6 +122,7 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 			} 
 		}
 		
+		//自定义
 		if (this.editorType.getValue() == null) {
 			String editorType = property.getEditor();
 			if (editorType != null && editorType.length() > 0) {
@@ -134,8 +134,14 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 			}
 		}
 		
-		if (this.editorType.getValue() == null && "java.util.Map".equals(javaClass)) {
-			this.editorType.setValue(Treaty.Editor.POJO);
+		//默认
+		if (this.editorType.getValue() == null) {
+			if ("java.util.Map".equals(javaClass)) {
+				this.editorType.setValue(Treaty.Editor.POJO);
+			} else
+			if ("[Ljava.lang.String;".equals(javaClass)) {
+				this.editorType.setValue(Treaty.Editor.STRING_ARRAY);
+			}
 		}
 		
 		{//处理子属性

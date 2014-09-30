@@ -5,11 +5,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 
+import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import com.bstek.dorado.idesupport.model.RuleSet;
+import com.bstek.dorado.vidorsupport.Vidor;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
 import com.bstek.dorado.vidorsupport.iapi.IViewWriter;
 import com.bstek.dorado.vidorsupport.vidor.JsonReader;
@@ -72,7 +74,12 @@ public class ViewWriter implements IViewWriter {
 			throw new IllegalArgumentException(e);
 		}
 
-		return writer.toString();
+		String xml = writer.toString();
+		Log log = Vidor.LOG.getLog("viewWriter");
+		if (log.isDebugEnabled()) {
+			log.debug("View XML ->\n" + xml);
+		}
+		return xml;
 	}
 
 	/* (non-Javadoc)
@@ -80,7 +87,6 @@ public class ViewWriter implements IViewWriter {
 	 */
 	@Override
 	public String toXML(String json) throws Exception {
-		// TODO Auto-generated method stub
 		return this.toXML(json, null);
 	}
 	

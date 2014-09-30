@@ -2,10 +2,12 @@ package com.bstek.dorado.vidorsupport.internal;
 
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
 import com.bstek.dorado.idesupport.model.RuleSet;
+import com.bstek.dorado.vidorsupport.Vidor;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
 import com.bstek.dorado.vidorsupport.iapi.IViewReader;
 import com.bstek.dorado.vidorsupport.output.OutputContext;
@@ -30,7 +32,12 @@ public class ViewReader implements IViewReader {
 	protected String toJSON(XmlNode xmlNode) {
 		OutputContext context = new OutputContext();
 		xmlNode.output(context);
-		return context.getWriter().toString();
+		String json =  context.getWriter().toString();
+		Log log = Vidor.LOG.getLog("viewReader");
+		if (log.isDebugEnabled()) {
+			log.debug("View JSON ->\n" + json);
+		}
+		return json;
 	}
 
 	@Override

@@ -1,5 +1,8 @@
 package com.bstek.dorado.vidorsupport.internal;
 
+import org.apache.commons.logging.Log;
+
+import com.bstek.dorado.vidorsupport.Vidor;
 import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public class GlobalRuleSetOutputter extends AbstractRuleSetOutputter {
@@ -33,6 +36,10 @@ public class GlobalRuleSetOutputter extends AbstractRuleSetOutputter {
 
 	protected void doCapture(String str) {
 		this.cacheStr = str;
+		Log log = Vidor.LOG.getLog("ruleSet");
+		if (log.isDebugEnabled()) {
+			log.debug("RuleSet -> \n" + str);
+		}
 	}
 
 }
