@@ -11,6 +11,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 
 import com.bstek.dorado.annotation.ClientObject;
+import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.vidorsupport.output.AbstractField;
 import com.bstek.dorado.vidorsupport.output.BooleanField;
 import com.bstek.dorado.vidorsupport.output.IOutputFiledsable;
@@ -19,7 +20,6 @@ import com.bstek.dorado.vidorsupport.output.IntegerField;
 import com.bstek.dorado.vidorsupport.output.OutputContext;
 import com.bstek.dorado.vidorsupport.output.StringArrayField;
 import com.bstek.dorado.vidorsupport.output.StringField;
-import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.view.annotation.Widget;
 
 public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
@@ -248,7 +248,6 @@ public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
 				d7Property.setPrimitive(false);
 				allD7Properties.put(p.getName(), d7Property);
 			}
-			
 		}
 		
 		for (Property p: allD7Properties.values()) {
@@ -382,11 +381,18 @@ public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
 			}
 		}
 		this._propertiesCache_ = cache;
-		this.properties = (new ArrayList<Property>(cache.values())).toArray(new Property[0]);
+		this.resetProperties();
 		
 		if (fixedProperties.size() > 0) {
 			this._fixedProperties_ = fixedProperties.toArray(new Property[0]);
 		}
+	}
+	
+	public void removeProperty(String... names) {
+		for (String name: names) {
+			this._propertiesCache_.remove(name);
+		}
+		this.resetProperties();
 	}
 	
 	public Property getProperty(String name) {
@@ -408,7 +414,6 @@ public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
 		return this.getFixedProperty(name) != null;
 	}
 	
-	
 	public ClientEvent[] getEvents() {
 		return events;
 	}
@@ -421,5 +426,11 @@ public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
 	}
 	public void setChildren(Child[] children) {
 		this.children = children;
+	}
+	
+	//************** private methods **************
+	
+	private void resetProperties() {
+		this.properties = (new ArrayList<Property>(_propertiesCache_.values())).toArray(new Property[0]);
 	}
 }

@@ -67,6 +67,26 @@ public class RuleSet implements IOutputable<OutputContext>, IOriginalObjectHolde
 	public Rule getRule(String id) {
 		return ruleCache.get(id);
 	}
+	public Rule getRule(Class<?> clazz) {
+		String name = clazz.getSimpleName();
+		for (int tryCount = 0; true; tryCount++) {
+			if (tryCount > 0) name += "_" + tryCount;
+			Rule rule = this.getRule(name);
+			if (rule != null) {
+				com.bstek.dorado.idesupport.model.Rule drule = rule.getOriginalObject();
+				if (drule != null) {
+					if (clazz.getName().equals(drule.getType())) {
+						return rule;
+					}
+				} else {
+					return rule;
+				}
+			} else {
+				return null;
+			}
+		}
+	}
+	
 	public String getVersion() {
 		return version;
 	}
