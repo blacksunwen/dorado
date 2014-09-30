@@ -77,4 +77,8 @@
 		<property name="exposedServiceWorkshop" ref="dorado.vidor.exposedServiceWorkshop" />
 		<property name="javaClassWorkshop" ref="dorado.vidor.javaClassWorkshop" />
 	</bean>
+	
+	<!-- Configure -->
+	<bean id="dorado.vidor.configureHolder" class="com.bstek.dorado.vidorsupport.plugin.internal.ConfigureHolder">
+	</bean>
 </beans>

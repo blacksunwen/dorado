@@ -13,5 +13,15 @@
 			depends="vidor-drawpad-skins,vidor-preview-support">
 			scripts/dorado/vidor/draw-pad
 		</Package>
+		<!-- Plugins -->
+		<Package name="vidor-plugin-register" pattern="dorado-js">
+			scripts/dorado/vidor/plugins/register
+		</Package>	
+		<Package name="vidor-plugin-client" pattern="dorado-js">
+			scripts/dorado/vidor/plugins/client
+		</Package>
+		<Package name="vidor-plugin-boot" pattern="dorado-js">
+			scripts/dorado/vidor/plugins/boot
+		</Package>
 	</Packages>
 </config>

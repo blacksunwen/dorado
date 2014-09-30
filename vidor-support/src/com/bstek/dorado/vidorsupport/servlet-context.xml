@@ -13,4 +13,22 @@
 			<bean class="com.bstek.dorado.vidorsupport.resolver.ServiceValidateResolver"></bean>
 		</property>
 	</bean>
+	
+	
+	<!-- Plugin Resource -->
+	<bean id="dorado.vidor.plugin.resourceFileResolver" class="com.bstek.dorado.vidorsupport.plugin.internal.PluginResourceFileResolver">
+		<property name="baseUri" value="/dorado/cloudo/plugin/res" />
+		<property name="resourcePrefix" value="classpath:" />
+	</bean>
+	<bean id="dorado.vidor.plugin.resourcesResolverRegister" parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/cloudo/plugin/res/**" />
+		<property name="resolver" ref="dorado.vidor.plugin.resourceFileResolver" />
+	</bean>
+
+	<!-- Plugin Manager -->
+	<bean id="dorado.vidor.plugin.pluginManagerResolver" class="com.bstek.dorado.vidorsupport.plugin.internal.PluginManagerResolver"></bean>
+	<bean id="dorado.vidor.plugin.pluginManagerResolverRegister" parent="dorado.resolverRegister">
+		<property name="url" value="/dorado/cloudo/plugin/manager/**" />
+		<property name="resolver" ref="dorado.vidor.plugin.pluginManagerResolver" />
+	</bean>
 </beans>
