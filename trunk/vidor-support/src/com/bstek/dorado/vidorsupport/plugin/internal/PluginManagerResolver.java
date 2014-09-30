@@ -32,28 +32,28 @@ import com.bstek.dorado.web.resolver.AbstractTextualResolver;
 public class PluginManagerResolver extends AbstractTextualResolver {
 
 	protected ObjectMapper objectMapper = new ObjectMapper();
-	
+
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		String serviceName = this.getServiceName(request);
 		JsonNode result = null;
-		
+
 		if ("packages".equals(serviceName)) {
 			ObjectNode objectNode = objectMapper.createObjectNode();
 			JsonNode packages = packages();
 			if (packages != null) {
 				objectNode.put("def", packages);
 			}
-			
+
 			JsonNode bootPackages = bootPackages();
 			if (bootPackages != null) {
 				objectNode.put("boot", bootPackages);
 			}
-			
+
 			result = objectNode;
 		}
-		
+
 		if (result != null) {
 			response.setContentType("text/plain");
 			PrintWriter writer = this.getWriter(request, response);
@@ -66,70 +66,77 @@ public class PluginManagerResolver extends AbstractTextualResolver {
 			}
 		}
 	}
-	
-	protected JsonNode packages(){
+
+	protected JsonNode packages() {
 		ObjectNode objectNode = objectMapper.createObjectNode();
 		PluginManager pluginManager = PluginManager.getInstance();
-		PluginMeta[] plugins = pluginManager.getPlugins();
-		for (PluginMeta plugin: plugins) {
-			PluginPackages pluginPackages = plugin.getPluginPackages();
-			if (pluginPackages != null) {
-				Map<String, PluginPackage> packageDefinitions = pluginPackages.getPackageDefinitions();
-				for (PluginPackage packageDef: packageDefinitions.values()) {
-					ObjectNode packageNode = objectMapper.createObjectNode();
-					String name = packageDef.getName();
-					String pattern = packageDef.getPattern();
-					packageNode.put("pattern", pattern);
-					
-					String[] fileNames = packageDef.getFileNames();
-					ArrayNode fileNameNode = objectMapper.createArrayNode();
-					for (String fileName: fileNames) {
-						fileNameNode.add(fileName);
-					}
-					packageNode.put("fileName", fileNameNode);
-					
-					Set<String> depends = packageDef.getDepends();
-					if (depends != null && depends.size() > 0) {
-						ArrayNode dependsNode = objectMapper.createArrayNode();
-						for (String dep: depends) {
-							dependsNode.add(dep);
+		if (pluginManager != null) {
+			PluginMeta[] plugins = pluginManager.getPlugins();
+			for (PluginMeta plugin : plugins) {
+				PluginPackages pluginPackages = plugin.getPluginPackages();
+				if (pluginPackages != null) {
+					Map<String, PluginPackage> packageDefinitions = pluginPackages
+							.getPackageDefinitions();
+					for (PluginPackage packageDef : packageDefinitions.values()) {
+						ObjectNode packageNode = objectMapper
+								.createObjectNode();
+						String name = packageDef.getName();
+						String pattern = packageDef.getPattern();
+						packageNode.put("pattern", pattern);
+
+						String[] fileNames = packageDef.getFileNames();
+						ArrayNode fileNameNode = objectMapper.createArrayNode();
+						for (String fileName : fileNames) {
+							fileNameNode.add(fileName);
 						}
-						packageNode.put("depends", dependsNode);
+						packageNode.put("fileName", fileNameNode);
+
+						Set<String> depends = packageDef.getDepends();
+						if (depends != null && depends.size() > 0) {
+							ArrayNode dependsNode = objectMapper
+									.createArrayNode();
+							for (String dep : depends) {
+								dependsNode.add(dep);
+							}
+							packageNode.put("depends", dependsNode);
+						}
+
+						objectNode.put(name, packageNode);
 					}
-					
-					objectNode.put(name, packageNode);
 				}
 			}
 		}
-		
 		return objectNode;
 	}
-	
+
 	protected JsonNode bootPackages() {
 		PluginManager pluginManager = PluginManager.getInstance();
-		PluginMeta[] plugins = pluginManager.getPlugins();
-		Set<String> boot = new LinkedHashSet<String>();
-		for (PluginMeta plugin: plugins) {
-			PluginPackages pluginPackages = plugin.getPluginPackages();
-			if (pluginPackages != null) {
-				Set<String> packages = pluginPackages.getBootPackages();
-				if (packages != null && packages.size() > 0) {
-					boot.addAll(packages);
+		if (pluginManager != null) {
+			PluginMeta[] plugins = pluginManager.getPlugins();
+			Set<String> boot = new LinkedHashSet<String>();
+			for (PluginMeta plugin : plugins) {
+				PluginPackages pluginPackages = plugin.getPluginPackages();
+				if (pluginPackages != null) {
+					Set<String> packages = pluginPackages.getBootPackages();
+					if (packages != null && packages.size() > 0) {
+						boot.addAll(packages);
+					}
 				}
 			}
-		}
-		
-		if (boot.size() > 0) {
-			ArrayNode node = objectMapper.createArrayNode();
-			for (String pkg: boot) {
-				node.add(pkg);
+
+			if (boot.size() > 0) {
+				ArrayNode node = objectMapper.createArrayNode();
+				for (String pkg : boot) {
+					node.add(pkg);
+				}
+				return node;
 			}
-			return node;
 		}
 		return null;
 	}
 
-	protected String getServiceName(HttpServletRequest request) throws Exception {
+	protected String getServiceName(HttpServletRequest request)
+			throws Exception {
 		String uri = this.getRelativeRequestURI(request);
 		int si = uri.lastIndexOf('/');
 		String serviceName = uri.substring(si + 1);
