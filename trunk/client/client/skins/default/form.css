@@ -109,7 +109,7 @@
 }
 .d-text-box.d-text-box-readonly {
   border: 1px #a1a1a1 solid;
-  background: #efefef;
+  background: #f8f8f8;
 }
 /* text-area */
 .d-text-area {
@@ -331,6 +331,12 @@
 .d-radiogroup .d-radio-hover .icon.checked,
 .d-radiogroup .d-radio-focus .icon.checked {
   background-position: -60px top;
+}
+.d-radiogroup .d-radio-readonly .icon.unchecked {
+  background-position: -80px 0px;
+}
+.d-radiogroup .d-radio-readonly .icon.checked {
+  background-position: -100px 0px;
 }
 .d-radiogroup-dirty {
   background: url(base/dirty-flag-left.png) no-repeat left 2px;

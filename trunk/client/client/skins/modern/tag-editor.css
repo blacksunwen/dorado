@@ -40,9 +40,6 @@
 .d-tag-editor .tag-container .tag .tag-label {
   zoom: 1;
 }
-.d-tag-editor .tag-container .tag .mozilla-close-support{
-	margin-top: -18px !important;
-}
 .d-tag-editor .tag-container .tag .close {
   float: right;
   margin-top: 2px;

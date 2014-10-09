@@ -273,8 +273,8 @@
   display: none;
   float: left;
   vertical-align: middle;
-  height: 50px;
-  line-height: 50px;
+  height: 20px;
+  line-height: 20px;
   padding: 0 10px 0 10px;
 }
 .d-menu-no-content {
@@ -1080,6 +1080,17 @@
 }
 .d-panel .restore-icon-click {
   background-position: -160px 0;
+}
+.d-panel .close-icon {
+  background-image: url(base/dialog-buttons.png);
+  background-repeat: no-repeat;
+  background-position: -180px 0;
+}
+.d-panel .close-icon-hover {
+  background-position: -200px 0;
+}
+.d-panel .close-icon-click {
+  background-position: -220px 0;
 }
 .d-panel-collapsed {
   border-bottom: 0;
