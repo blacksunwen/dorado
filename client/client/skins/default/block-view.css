@@ -47,11 +47,6 @@
   margin: 1px;
   color: #000000;
 }
-.d-block-view .selected-block {
-    border: 0;
-    margin: 1px;
-    color: #000000;
-}
 .d-block-view .block-drag-over {
   background-color: #ededed;
 }
