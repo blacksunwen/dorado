@@ -16,15 +16,19 @@ public class GlobalRuleSetFactory extends AbstractRuleSetFactory {
 
 	@Override
 	protected void doCapture(RuleSet rs) {
-		PluginMeta[] metas = PluginManager.getInstance().getPlugins();
-		for (PluginMeta meta: metas) {
-			ICloudoListener l = meta.getCloudoListener();
-			if (l != null) {
-				l.onInitRuleSet(rs);
+		PluginManager pluginManager = PluginManager.getInstance();
+		if (pluginManager != null) {
+			PluginMeta[] metas = pluginManager.getPlugins();
+			for (PluginMeta meta: metas) {
+				ICloudoListener l = meta.getCloudoListener();
+				if (l != null) {
+					l.onInitRuleSet(rs);
+				}
 			}
+			
+			this.singleRS = rs;
 		}
 		
-		this.singleRS = rs;
 	}
 
 }
