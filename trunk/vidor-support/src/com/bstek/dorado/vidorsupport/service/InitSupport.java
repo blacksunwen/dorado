@@ -22,12 +22,24 @@ public class InitSupport {
 	private Collection<String> baseDataTypes;
 	private IRuleSetOutputter ruleSetOutputter;
 	protected IDataTypeWorkshop dataTypeWorkshop;
+
 	protected String parseFileName(String path) throws Exception {
 		String[] paths = StringUtils.replace(path, "\\", "/").split("/");
 		return paths[paths.length - 1];
 	}
 
-	protected String parseClientType(String path) throws Exception {
+	public String parseRuleClientType(String path) throws Exception {
+		String viewName = this.parseFileName(path), clientType;
+		if (viewName.indexOf("touch.xml") > 0) {
+			clientType = ClientType.TOUCH_NAME;
+		} else {
+			clientType = ClientType.DESKTOP_NAME;
+		}
+
+		return clientType;
+	}
+
+	public String parseXMLClientType(String path) throws Exception {
 		String viewName = this.parseFileName(path), clientType;
 		if (viewName.indexOf("touch.xml") > 0) {
 			clientType = ClientType.TOUCH_NAME;
@@ -67,6 +79,8 @@ public class InitSupport {
 
 		if (viewName.indexOf("touch.xml") > 0) {
 			clientType = "touch";
+		} else if (viewName.indexOf("model.xml") > 0) {
+			clientType = "model";
 		}
 
 		Map<String, Object> viewConfig = new HashMap<String, Object>();
