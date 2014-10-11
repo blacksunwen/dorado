@@ -81,7 +81,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 		$invokeSuper.call(this, arguments);
 		var radioButton = this, doms = radioButton._doms, checked = radioButton._checked, text = radioButton._text, jDom;
 		if (dom) {
-			$fly(dom).toggleClass(checkBox._className + "-readonly", !!(radioButton._readOnly || radioButton._readOnly2));
+			$fly(dom).toggleClass(radioButton._className + "-readonly", !!(radioButton._readOnly || radioButton._readOnly2));
 			if (checked) {
 				$fly(doms.icon).removeClass("unchecked").addClass("checked");
 			} else {
