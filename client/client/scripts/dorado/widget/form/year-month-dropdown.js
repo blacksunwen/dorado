@@ -372,6 +372,10 @@
 			month: {
 				defaultValue: 0,
 				path: "_monthTablePicker.value"
+			},
+
+			pickOnClickMonth: {
+				defaultValue: false
 			}
 		},
 
@@ -432,7 +436,11 @@
 			picker._doms = doms;
 
 			var monthTablePicker = new dorado.widget.MonthPicker({
-				value: picker._month || 0
+				value: picker._month || 0,
+				onPick: function(self, arg) {
+					if (picker._pickOnClickMonth)
+						picker.fireEvent("onPick", picker);
+				}
 			});
 
 			monthTablePicker.render(dom, doms.buttonPanel);
@@ -661,6 +669,7 @@
 
 		createDropDownBox: function(editor) {
 			var dropDown = this, box = $invokeSuper.call(this, arguments), picker = new dorado.widget.YearMonthPicker({
+				pickOnClickMonth: true,
 				onPick: function(self) {
 					var retval = new Date(self.get("year"), self.get("month"));
 					retval.year = self.get("year");
