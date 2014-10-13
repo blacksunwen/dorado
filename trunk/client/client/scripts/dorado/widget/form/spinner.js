@@ -254,7 +254,11 @@
 				value += spinner._step;
 				if (this._max !== undefined && value > this._max) return;
 				spinner.set("value", value);
-				if (spinner._postValueOnSpin) spinner.post();
+				if (spinner._postValueOnSpin) {
+					if (!spinner._editorFocused)
+						spinner._editorFocused = true;
+					spinner.post();
+				}
 			}
 		},
 		
@@ -265,7 +269,11 @@
 				value -= spinner._step;
 				if (this._min !== undefined && value < this._min) return;
 				spinner.set("value", value);
-				if (spinner._postValueOnSpin) spinner.post();
+				if (spinner._postValueOnSpin) {
+					if (!spinner._editorFocused)
+						spinner._editorFocused = true;
+					spinner.post();
+				}
 			}
 		},
 		
