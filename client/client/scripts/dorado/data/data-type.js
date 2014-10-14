@@ -629,8 +629,9 @@
 					} else {
 						var oldProcessDefaultValue = SHOULD_PROCESS_DEFAULT_VALUE;
 						SHOULD_PROCESS_DEFAULT_VALUE = false;
-						return new dorado.Entity(data, this._dataTypeRepository, this);
+						var entity = new dorado.Entity(data, this._dataTypeRepository, this);
 						SHOULD_PROCESS_DEFAULT_VALUE = oldProcessDefaultValue;
+                        return entity;
 					}
 				} else {
 					return null;
