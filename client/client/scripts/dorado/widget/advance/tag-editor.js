@@ -462,8 +462,10 @@
         },
 
         refreshDom: function () {
-            if (!this._ready && (this._availableTags || this._availableTagsDataSet) && this._showAvailableTags) {
-                this._defaultTrigger = new TagsDropDown(this);
+        	//TODO 修复继承关系下无法显示DropDown的问题
+           // if (!this._ready && (this._availableTags || this._availableTagsDataSet) && this._showAvailableTags) {
+        	if (!this._defaultTrigger && (this._availableTags || this._availableTagsDataSet) && this._showAvailableTags) {
+        	this._defaultTrigger = new TagsDropDown(this);
                 this.set("trigger", this._defaultTrigger, {
                     preventOverwriting: true,
                     lockWritingTimes: true
