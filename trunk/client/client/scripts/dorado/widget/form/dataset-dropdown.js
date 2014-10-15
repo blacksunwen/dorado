@@ -171,6 +171,8 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
                 this.onFilterItems(filterValue, function() {
                     doOpen(false);
                 });
+            } else {
+                doOpen(false);
             }
 		} else {
 			var lastFilterValue;
