@@ -15,7 +15,7 @@ import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public abstract class AbstractCloudoListener implements ICloudoListener {
 
-	@Override
+	
 	public void onInitRuleSet(RuleSet rs) {
 
 	}

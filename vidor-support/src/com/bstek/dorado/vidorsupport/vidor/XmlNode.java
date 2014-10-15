@@ -147,7 +147,6 @@ public class XmlNode implements IOutputable<OutputContext> {
 		return new LinkedHashMap<String, String>(this.attributes);
 	}
 	
-	@Override
 	public void output(OutputContext context) {
 		JsonGenerator jsonGenerator = context.getJsonGenerator();
 		

@@ -17,7 +17,6 @@ public class DataProviderWorkshop implements IDataProviderWorkshop {
 		this.dataProviderManager = dataProviderManager;
 	}
 
-	@Override
 	public Collection<String> names(Map<String, Object> parameter) throws Exception {
 		Collection<String> nameSet = dataProviderManager.getDataProviderDefinitionManager().getDefinitions().keySet();
 		nameSet = Utils.filter(nameSet, parameter);

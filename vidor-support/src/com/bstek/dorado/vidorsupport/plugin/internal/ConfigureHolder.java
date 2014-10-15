@@ -29,7 +29,7 @@ public class ConfigureHolder implements IConfigureHolder {
 
 	private IConfigure configure;
 
-	@Override
+	
 	public IConfigure getConfigure() {
 		if (configure == null) {
 			Resource resource = getDefaultResource();

@@ -54,7 +54,6 @@ public class RuleSet implements IOutputable<OutputContext>, IOriginalObjectHolde
 		
 	}
 	
-	@Override
 	public com.bstek.dorado.idesupport.model.RuleSet getOriginalObject() {
 		return originalObject;
 	}
@@ -91,7 +90,6 @@ public class RuleSet implements IOutputable<OutputContext>, IOriginalObjectHolde
 		return version;
 	}
 	
-	@Override
 	public void output(OutputContext context) {
 		JsonGenerator jsonGenerator = context.getJsonGenerator();
 		try {

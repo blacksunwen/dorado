@@ -57,7 +57,7 @@ public abstract class AbstractDataTypeWorkshop implements IDataTypeWorkshop {
 		this.xmlDocumentBuilder = xmlDocumentBuilder;
 	}
 	
-	@Override
+
 	public Collection<String> baseNames() throws Exception {
 		if (baseTypeNames == null) {
 			synchronized (this.getClass()) {
@@ -193,7 +193,6 @@ public abstract class AbstractDataTypeWorkshop implements IDataTypeWorkshop {
 		return parentNames;
 	}
 	
-	@Override
 	public String json(Map<String, String> jsonMap, String targetName)
 			throws Exception {
 		Map<String, ObjectNode> jsonObjectMap = new HashMap<String, ObjectNode>(jsonMap.size());

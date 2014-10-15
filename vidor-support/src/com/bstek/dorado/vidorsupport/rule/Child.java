@@ -73,7 +73,6 @@ public class Child implements IOutputable<OutputContext>, IOutputFiledsable, IOr
 		}
 	}
 	
-	@Override
 	public com.bstek.dorado.idesupport.model.Child getOriginalObject() {
 		return originalObject;
 	}
@@ -85,7 +84,6 @@ public class Child implements IOutputable<OutputContext>, IOutputFiledsable, IOr
 		return fields;
 	}
 	
-	@Override
 	public void output(OutputContext context) {
 		JsonGenerator jsonGenerator = context.getJsonGenerator();
 		try {

@@ -40,7 +40,7 @@ public class ViewReader implements IViewReader {
 		return json;
 	}
 
-	@Override
+	
 	public String read(InputStream input, String encoding, RuleSet ruleSet)
 			throws Exception {
 		// TODO Auto-generated method stub

@@ -17,7 +17,7 @@ public class DataResolverWorkshop implements IDataResolverWorkshop {
 		this.dataResolverManager = dataResolverManager;
 	}
 
-	@Override
+
 	public Collection<String> names(Map<String, Object> parameter) throws Exception {
 		Collection<String> nameSet = dataResolverManager.getDataResolverDefinitionManager().getDefinitions().keySet();
 		nameSet = Utils.filter(nameSet, parameter);

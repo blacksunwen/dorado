@@ -17,7 +17,6 @@ import com.bstek.dorado.config.text.TextParser;
 class StringTextParser implements TextParser {
 
 	//com.bstek.dorado.config.text.TextAttributeParser#parse
-	@Override
 	public Object parse(char[] charArray, TextParseContext context)
 			throws Exception {
 		final int BEFORE_ATTRIBUTE_VALUE = 1;

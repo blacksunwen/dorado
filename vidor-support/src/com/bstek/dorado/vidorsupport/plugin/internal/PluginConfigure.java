@@ -78,72 +78,58 @@ public class PluginConfigure implements IConfigure {
 	}
 	
 
-	@Override
 	public String[] keys() {
 		return data.keys();
 	}
-	
-	@Override
+
 	public String getString(String path) {
 		return this.getSingleValue(path, String.class);
 	}
 
-	@Override
 	public void setString(String path, String value) {
 		this.setValue(path, value);
 	}
 
-	@Override
 	public String[] getStrings(String path) {
 		return this.getArrayValues(path, String.class);
 	}
 
-	@Override
 	public void setStrings(String path, String[] value) {
 		this.setValue(path, value);
 	}
 
-	@Override
 	public Boolean getBoolean(String path) {
 		return this.getSingleValue(path, Boolean.class);
 	}
 
-	@Override
 	public void setBoolean(String path, Boolean value) {
 		this.setValue(path, value);
 	}
 
-	@Override
 	public Boolean[] getBooleans(String path) {
 		return this.getArrayValues(path, Boolean.class);
 	}
 
-	@Override
 	public void setBooleans(String path, Boolean[] value) {
 		this.setValue(path, value);
 	}
 
-	@Override
 	public Integer getInteger(String path) {
 		return this.getSingleValue(path, Integer.class);
 	}
 
-	@Override
 	public void setInteger(String path, Integer value) {
 		this.setValue(path, value);
 	}
 
-	@Override
 	public Integer[] getIntegers(String path) {
 		return this.getArrayValues(path, Integer.class);
 	}
 
-	@Override
 	public void setIntegers(String path, Integer[] value) {
 		this.setValue(path, value);
 	}
 
-	@Override
 	public IConfigure getConfigure(String path) {
 		ConfigureData data = this.getSingleValue(path, ConfigureData.class);
 		if (data != null) {
@@ -154,7 +140,6 @@ public class PluginConfigure implements IConfigure {
 		}
 	}
 
-	@Override
 	public IConfigure[] getConfigures(String path) {
 		ConfigureData[] datas = this.getArrayValues(path, ConfigureData.class);
 		if (datas != null) {

@@ -20,7 +20,6 @@ public abstract class AbstractJavaClassWorkshop implements IJavaClassWorkshop {
 		this.providers = providers;
 	}
 
-	@Override
 	public List<String> names(Map<String, Object> parameter) throws Exception {
 		LinkedHashSet<String> names = new LinkedHashSet<String>();
 		for (AbstractJavaClassProvider provider: providers) {

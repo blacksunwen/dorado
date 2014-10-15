@@ -9,7 +9,6 @@ import com.bstek.dorado.vidorsupport.rule.RuleSet;
 
 public abstract class AbstractRuleSetFactory implements IRuleSetFactory {
 
-	@Override
 	public RuleSet get()  throws Exception {
 		RuleSet rs = this.doGet();
 		if (rs == null) {

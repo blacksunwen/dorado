@@ -83,12 +83,10 @@ public class PluginManager implements IPluginManager {
 		return instance;
 	}
 	
-	@Override
 	public PluginMeta[] getPlugins() {
 		return metas.values().toArray(new PluginMeta[0]);
 	}
 
-	@Override
 	public PluginMeta getPlugin(String name) {
 		return metas.get(name);
 	}

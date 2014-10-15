@@ -9,7 +9,7 @@ public class GlobalRuleSetOutputter extends AbstractRuleSetOutputter {
 
 	private String cacheStr = null;
 	
-	@Override
+	
 	public String output() throws Exception {
 		String out = this.doGet();
 		if (out == null) {
