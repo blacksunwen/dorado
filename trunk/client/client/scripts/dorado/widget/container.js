@@ -305,21 +305,32 @@
 			notifyChildren(this, this.isActualVisible());
 		},
 
-		doRenderToOrReplace: function(replace, element, nextChildElement) {
+		doRenderToOrReplace: function(replace, element, nextChildElement) {	
+			var hasChild = false;
 			if (replace && this._children.length == 0 && element.childNodes.length > 0) {
-				var children = [];
-				for(var i = 0; i < element.childNodes.length; i++) {
-					children.push(element.childNodes[i]);
+				hasChild = true;
+				if (element.childNodes.length === 1) {
+					var childNode = element.childNodes[0];
+					if (childNode.nodeType === 3 && jQuery.trim(childNode.textContent) === "") {
+						hasChild = false;
+					}
 				}
+				
+				if (hasChild) {
+					var children = [];
+					for(var i = 0; i < element.childNodes.length; i++) {
+						children.push(element.childNodes[i]);
+					}
 
-				if (dorado.widget.HtmlContainer) {
-					var htmlContrainer = new dorado.widget.HtmlContainer({
-						content: children
-					});
-					this.addChild(htmlContrainer);
-				}
-				else {
-					$fly(this.getContentContainer()).append(children);
+					if (dorado.widget.HtmlContainer) {
+						var htmlContrainer = new dorado.widget.HtmlContainer({
+							content: children
+						});
+						this.addChild(htmlContrainer);
+					}
+					else {
+						$fly(this.getContentContainer()).append(children);
+					}
 				}
 			}
 
