@@ -476,8 +476,9 @@
 		_createMinimizeButton: function() {
 			var dialog = this, captionBar = dialog._captionBar;
 			if (captionBar) {
-				captionBar.addButton(new dorado.widget.SimpleButton({
-					className: "d-minimize-button",
+				captionBar.addButton(new dorado.widget.SimpleIconButton({
+					exClassName: "d-minimize-button",
+					iconClass: "minimize-icon",
 					onCreate: function() {
 						this._uniqueId = dialog._uniqueId + "_minimize";
 					},

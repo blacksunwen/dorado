@@ -794,6 +794,15 @@
 			}
 		},
 		
+		doOnFocus: function() {
+			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
+			spinner._neverEdit = true;
+			if (currentSlotIndex >= 0 && !spinner._realReadOnly) {
+				$fly(doms["slot_" + currentSlotIndex]).addClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
+			}
+			this._editorFocused = true;
+		},
+		
 		doOnBlur: function() {
 			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
 			if (currentSlotIndex >= 0) {
@@ -801,14 +810,7 @@
 				spinner.doAfterSlotBlur(currentSlotIndex);
 			}
 			this.post(true);
-		},
-		
-		doOnFocus: function() {
-			var spinner = this, currentSlotIndex = spinner._currentSlotIndex, doms = spinner._doms;
-			spinner._neverEdit = true;
-			if (currentSlotIndex >= 0 && !spinner._realReadOnly) {
-				$fly(doms["slot_" + currentSlotIndex]).addClass(spinner.slotConfigs[currentSlotIndex].className + "-selected");
-			}
+			this._editorFocused = false;
 		},
 
 		doRefreshSlots: function () {

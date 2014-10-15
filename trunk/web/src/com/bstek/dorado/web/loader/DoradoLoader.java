@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -538,11 +539,13 @@ public class DoradoLoader {
 
 		EngineStartupListenerManager.notifyStartup();
 
-		ConsoleStartedMessagesOutputter consoleStartedMessagesOutputter = (ConsoleStartedMessagesOutputter) DoradoContext
-				.getCurrent().getServiceBean("consoleStartedMessagesOutputter");
+		DoradoContext context = DoradoContext.getCurrent();
+		ConsoleStartedMessagesOutputter consoleStartedMessagesOutputter = (ConsoleStartedMessagesOutputter) context
+				.getServiceBean("consoleStartedMessagesOutputter");
 		StringWriter buffer = new StringWriter();
 		try {
 			consoleStartedMessagesOutputter.output(buffer);
+
 		} finally {
 			buffer.close();
 		}
