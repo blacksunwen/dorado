@@ -4,7 +4,12 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="client"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=vidor-support&amp;ivyXmlPath=..%2Fcore%2Fivy.xml&amp;confs=*"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/data"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ide-support"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/view"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/web"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=vidor-support&amp;ivyXmlPath=..%2Fivy%2Fivy.xml&amp;confs=*"/>
-	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=vidor-support&amp;ivyXmlPath=..%2Fcloudo-core%2Fivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
