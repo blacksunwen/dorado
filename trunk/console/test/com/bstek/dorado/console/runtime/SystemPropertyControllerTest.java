@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bstek.dorado.core.ContextTestCase;
-import com.bstek.dorado.view.MockView;
+import com.bstek.dorado.view.DefaultView;
 import com.bstek.dorado.view.View;
 
 /**
@@ -42,7 +42,7 @@ public class SystemPropertyControllerTest extends ContextTestCase {
 	 */
 	@Test
 	public void testOnReady() {
-		View view = new MockView(null);
+		View view = new DefaultView(null);
 		controller.onReady(view);
 	}
 

@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bstek.dorado.core.ContextTestCase;
-import com.bstek.dorado.view.MockView;
+import com.bstek.dorado.view.DefaultView;
 import com.bstek.dorado.view.View;
 
 /**
@@ -54,7 +54,7 @@ public class FileReaderControllerTest extends ContextTestCase {
 	 */
 	@Test
 	public void testOnReady() {
-		View view = new MockView(null);
+		View view = new DefaultView(null);
 		controller.onReady(view);
 		@SuppressWarnings("unchecked")
 		Map<String, Object> userData = (Map<String, Object>) view.getUserData();
@@ -70,7 +70,8 @@ public class FileReaderControllerTest extends ContextTestCase {
 	@Test
 	public void testGetFileContent() {
 		try {
-			Map<String, Object>  map=	controller.getFileContent("addto-startup.py", 20, true, "uuid", "utf-8");
+			Map<String, Object> map = controller.getFileContent(
+					"addto-startup.py", 20, true, "uuid", "utf-8");
 			System.out.println(map);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -81,7 +82,6 @@ public class FileReaderControllerTest extends ContextTestCase {
 		}
 	}
 
-
 	/**
 	 * Test method for
 	 * {@link com.bstek.dorado.console.system.log.file.FileReaderController#getFileNameList()}
@@ -90,14 +90,12 @@ public class FileReaderControllerTest extends ContextTestCase {
 	@Test
 	public void testGetFileNameList() {
 		try {
-		Collection<String> files=	controller.getFileNameList();
-		System.out.println(files.size());
+			Collection<String> files = controller.getFileNameList();
+			System.out.println(files.size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
-
 
 }
