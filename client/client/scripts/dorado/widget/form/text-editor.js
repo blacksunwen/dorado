@@ -15,7 +15,7 @@
 		return ["input", "textarea"].indexOf(dom.tagName.toLowerCase()) >= 0;
 	}
 
-	var attributesRelativeWithTrigger = ["dataSet", "dataType", "trigger", "dataPath", "property"];
+	var attributesRelativeWithTrigger = ["dataSet", "dataType", "dataPath", "property"]; 	// trigger属性已手动刷新
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -156,10 +156,18 @@
 			 * @attribute
 			 */
 			trigger: {
+				skipRefresh: true,
 				componentReference: true,
 				setter: function(v) {
 					if (v instanceof Array && v.length == 0) v = null;
 					this._trigger = v;
+					
+					if (this._rendered && this.isActualVisible()) {
+						this.refreshTriggerDoms();
+					}
+					else {
+						this._triggerChanged = true;
+					}
 				}
 			}
 		},
@@ -322,6 +330,10 @@
 
 					if (timestamp != this.timestamp) {
 						this.set("value", value);
+						
+						if (this._editorFocused) {
+							this._lastPost = this._lastEdit = this.get("text");
+						}
 					}
 					this.setValidationState(state, messages);
 					this.setDirty(dirty);

@@ -548,7 +548,7 @@
 							data = this._data;
 						}
 
-						if (!(path && (path.charAt(0) == '!' || path.indexOf(".!")))) {
+						if (path && path.charAt(0) != '!' && path.indexOf(".!") < 0) {
 							var key = (path || "$EMPTY") + '~' + optionsCode;
 							var cachedData = this._dataPathCache[key];
 							if (cachedData !== undefined) {
@@ -887,6 +887,7 @@
 			 */
 			discard: function() {
 				delete this._data;
+				this._dataPathCache = {};
 			},
 
 			/**

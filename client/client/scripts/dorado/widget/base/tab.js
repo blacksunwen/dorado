@@ -333,16 +333,23 @@
 				return !tab._disabled;
 			}).bind("contextmenu", function(event) {
 					event = jQuery.event.fix(event || window.event);
-					event.preventDefault();
-					event.returnValue = false;
 					var tabbar = tab._parent, arg = {
 						tab: tab,
-						event: event
+						event: event,
+						processDefault: true
 					};
 					tabbar._contextMenuTab = tab;
-					tabbar.fireEvent("onTabContextMenu", tabbar, arg);
+					
+					if (tabbar.getListenerCount("onTabContextMenu")) {
+						arg.processDefault = false;
+						tabbar.fireEvent("onTabContextMenu", tabbar, arg);
+					}
 
-					return false;
+					if (!arg.processDefault) {
+						event.preventDefault();
+						event.returnValue = false;
+					}
+					return arg.processDefault;
 				});
 
 			if (tab._icon || tab._iconClass) {

@@ -37,7 +37,6 @@
 			while(p) {
 				if (p instanceof dorado.widget.AbstractGrid) {
 					p._columnModelTimestamp = dorado.Core.getTimestamp();
-					;
 					return;
 				}
 				p = p._parent;
@@ -1386,7 +1385,6 @@
 			if (!dom || !cell) return;
 
 			var offsetGrid = $gridDom.offset(), offsetCell = $fly(cell).offset();
-			;
 			var l = offsetCell.left - offsetGrid.left - $gridDom.edgeLeft(), t = offsetCell.top - offsetGrid.top - $gridDom.edgeTop(),
 				w = cell.offsetWidth, h = cell.offsetHeight;
 
@@ -1618,8 +1616,8 @@
 					editorControl.bind("beforePost",function(self, arg) {
 						cellEditor.beforePost(arg);
 					}).bind("onPost", function(self, arg) {
-							cellEditor.onPost(arg);
-						});
+						cellEditor.onPost(arg);
+					});
 					editorControl._cellEditor = cellEditor; // 主要供DropDown进行判断
 					editorControl._propertyDef = column._propertyDef; // 主要供AutoMappingDropDown使用
 				}
