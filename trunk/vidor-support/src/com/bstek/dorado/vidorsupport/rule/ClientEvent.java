@@ -33,7 +33,7 @@ public class ClientEvent implements IOutputable<OutputContext>, IOutputFiledsabl
 		this.deprecated.setValue(event.isDeprecated());
 	}
 
-	@Override
+	
 	public com.bstek.dorado.idesupport.model.ClientEvent getOriginalObject() {
 		return originalObject;
 	}
@@ -61,7 +61,7 @@ public class ClientEvent implements IOutputable<OutputContext>, IOutputFiledsabl
 		return fields;
 	}
 
-	@Override
+
 	public void output(OutputContext context) {
 		if (deprecated.getValue()) {
 			JsonGenerator jsonGenerator = context.getJsonGenerator();

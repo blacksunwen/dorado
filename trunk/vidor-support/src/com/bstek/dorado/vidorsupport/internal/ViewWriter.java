@@ -32,7 +32,7 @@ public class ViewWriter implements IViewWriter {
 		this.write(json, output, encoding, null);
 	}
 
-	@Override
+	
 	public void write(String json, OutputStream output, String encoding,
 			RuleSet ruleSet) throws Exception {
 		OutputStreamWriter writer = new OutputStreamWriter(output, encoding);
@@ -82,10 +82,7 @@ public class ViewWriter implements IViewWriter {
 		return xml;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.bstek.dorado.vidorsupport.iapi.IViewWriter#toXML(java.lang.String)
-	 */
-	@Override
+
 	public String toXML(String json) throws Exception {
 		return this.toXML(json, null);
 	}

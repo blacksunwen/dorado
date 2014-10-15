@@ -165,7 +165,6 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 		return fields;
 	}
 	
-	@Override
 	public void output(OutputContext context) {
 		AbstractField<?>[] fields = this.getOutputFilelds();
 		
@@ -283,7 +282,6 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 		this.properties = properties;
 	}
 
-	@Override
 	public com.bstek.dorado.idesupport.model.Property getOriginalObject() {
 		return this.originalObject;
 	}

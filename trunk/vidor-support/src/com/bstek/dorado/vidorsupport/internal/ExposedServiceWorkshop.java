@@ -18,7 +18,7 @@ public class ExposedServiceWorkshop implements
 		this.exposedServiceManager = exposedServiceManager;
 	}
 
-	@Override
+	
 	public Collection<String> names(Map<String, Object> parameter) throws Exception {
 		Collection<String> names = exposedServiceManager.getServices().keySet();
 		names = Utils.filter(names, parameter);

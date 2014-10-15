@@ -120,7 +120,7 @@ public abstract class AbstractExpressionAttribute implements IOutputable<OutputC
 	
 	public abstract String getJsonAttrubuteName();
 
-	@Override
+
 	public void output(OutputContext context) {
 		String attrName = this.getJsonAttrubuteName();
 		JsonGenerator jsonGenerator = context.getJsonGenerator();

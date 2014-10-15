@@ -14,7 +14,7 @@ public class StringField extends AbstractField<String> {
 		super(name, ignoredValue);
 	}
 	
-	@Override
+
 	public boolean shouldOutput() {
 		if (super.shouldOutput()) {
 			return getValue().length() > 0;
@@ -23,7 +23,6 @@ public class StringField extends AbstractField<String> {
 		}
 	}
 
-	@Override
 	public void output(OutputContext context) {
 		String name = this.getName();
 		String value = this.getValue();

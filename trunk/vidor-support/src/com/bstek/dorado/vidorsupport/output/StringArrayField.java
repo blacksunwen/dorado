@@ -16,7 +16,7 @@ public class StringArrayField extends AbstractField<String[]> {
 		super(name, ignoredValue);
 	}
 
-	@Override
+	
 	public boolean shouldOutput() {
 		String[] value = this.getValue();
 		String[] ignoredValue = this.getIgnoredValue();
@@ -29,7 +29,7 @@ public class StringArrayField extends AbstractField<String[]> {
 			return !Arrays.equals(value, ignoredValue); 
 	}
 	
-	@Override
+	
 	public void output(OutputContext context) {
 		String name = this.getName();
 		String[] value = this.getValue();

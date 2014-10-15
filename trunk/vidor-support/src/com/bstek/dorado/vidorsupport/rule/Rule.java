@@ -108,7 +108,6 @@ public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
 		buildClientEvents(rule);
 	}
 	
-	@Override
 	public com.bstek.dorado.idesupport.model.Rule getOriginalObject(){
 		return this.originalObject;
 	}
@@ -123,7 +122,6 @@ public class Rule implements IOutputable<OutputContext>, IOutputFiledsable,
 		return fields;
 	}
 	
-	@Override
 	public void output(OutputContext context) {
 		if (id == null || id.length() == 0)
 			throw new IllegalArgumentException("the value of 'id' property cant be empty.");

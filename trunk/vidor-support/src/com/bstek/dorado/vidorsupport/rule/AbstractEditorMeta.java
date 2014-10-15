@@ -31,7 +31,6 @@ public abstract class AbstractEditorMeta implements IOutputable<OutputContext> {
 		return type;
 	}
 	
-	@Override
 	public void output(OutputContext context) {
 		JsonGenerator jsonGenerator = context.getJsonGenerator();
 		try {
