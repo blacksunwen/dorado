@@ -38,7 +38,7 @@ public class DefaultDefinitionManager<T extends Definition> implements
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void registerDefinition(String name, T definition) {
+	public synchronized void registerDefinition(String name, T definition) {
 		if (definition instanceof DefinitionManagerAware) {
 			((DefinitionManagerAware) definition).setDefinitionManager(this);
 		}
@@ -46,7 +46,7 @@ public class DefaultDefinitionManager<T extends Definition> implements
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public T unregisterDefinition(String name) {
+	public synchronized T unregisterDefinition(String name) {
 		T definition = definitions.remove(name);
 		if (definition instanceof DefinitionManagerAware) {
 			((DefinitionManagerAware) definition).setDefinitionManager(this);
@@ -54,7 +54,7 @@ public class DefaultDefinitionManager<T extends Definition> implements
 		return definition;
 	}
 
-	public T getDefinition(String name) {
+	public synchronized T getDefinition(String name) {
 		T definition = definitions.get(name);
 		if (definition == null && parent != null) {
 			definition = parent.getDefinition(name);
@@ -70,7 +70,7 @@ public class DefaultDefinitionManager<T extends Definition> implements
 		return definitions.containsKey(name);
 	}
 
-	public void clearAllDefinitions() {
+	public synchronized void clearAllDefinitions() {
 		definitions.clear();
 	}
 

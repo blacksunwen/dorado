@@ -32,10 +32,4 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="url" value="**/*.c" />
 		<property name="resolver" ref="dorado.controllerResolver" />
 	</bean>
-
-	<bean id="dorado.errorPageViewResolver" class="com.bstek.dorado.web.resolver.ErrorPageViewResolver">
-		<property name="order" value="0" />
-		<property name="cacheUnresolved" value="false" />
-		<property name="viewClass" value="com.bstek.dorado.web.resolver.ErrorPageView" />
-	</bean>
 </beans>
