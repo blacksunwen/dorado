@@ -30,6 +30,7 @@ import com.bstek.dorado.core.el.ExpressionHandler;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
 import com.bstek.dorado.data.provider.DataProvider;
+import com.bstek.dorado.data.provider.PagingList;
 import com.bstek.dorado.data.type.CustomEntityDataType;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.type.EntityDataType;
@@ -458,6 +459,7 @@ public abstract class EntityEnhancer {
 		return result;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private Object readReference(Object entity, Reference referenceProperty,
 			Object originResult) throws Throwable {
 		if (!referenceProperty.shouldIntercept()
@@ -471,9 +473,16 @@ public abstract class EntityEnhancer {
 			Object originThis = jexlContext.get(THIS);
 			jexlContext.set(THIS, entity);
 			try {
+				int pageSize = referenceProperty.getPageSize();
 				DataType dataType = referenceProperty.getDataType();
-				return dataProvider.getResult(referenceProperty.getParameter(),
-						dataType);
+
+				Object parameter = referenceProperty.getParameter();
+				if (pageSize > 0) {
+					return new PagingList(dataProvider, dataType, parameter,
+							pageSize);
+				} else {
+					return dataProvider.getResult(parameter, dataType);
+				}
 			} finally {
 				jexlContext.set(THIS, originThis);
 			}
