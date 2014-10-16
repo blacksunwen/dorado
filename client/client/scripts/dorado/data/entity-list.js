@@ -171,10 +171,12 @@
 			var previous = (entry) ? entry.previous : null;
 			while (!(previous && previous.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!previous) {
-					if (pageNo > 1) {
-						pageNo--;
-						if (loadPage || this.isPageLoaded(pageNo)) {
-							previous = this.getPage(pageNo, loadPage).last;
+					var page = entry.data.page, entry = this.pages.findEntry(page);
+					if (entry) {
+						entry = entry.previous;
+						if (entry) {
+							page = entry.data;
+							previous = page.last;
 						}
 					}
 				} else {
@@ -191,10 +193,12 @@
 			var next = (entry) ? entry.next : null;
 			while (!(next && next.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!next) {
-					if (pageNo < this.pageCount) {
-						pageNo++;
-						if (loadPage || this.isPageLoaded(pageNo)) {
-							next = this.getPage(pageNo, loadPage).first;
+					var page = entry.data.page, entry = this.pages.findEntry(page);
+					if (entry) {
+						entry = entry.next;
+						if (entry) {
+							page = entry.data;
+							next = page.first;
 						}
 					}
 				} else {
@@ -249,7 +253,7 @@
 			
 			if (pageNo > 0 && pageNo <= this.pageCount) {
 				var page = this._pages.get(pageNo + '');
-				if (!page) {
+				if (!page && loadPage) {
 					page = new dorado.EntityList.Page(this, pageNo);
 					if (!this._pages.size) {
 						this._pages.insert(page);
@@ -323,7 +327,8 @@
 		
 		getPageEntityCount: function(pageNo) {
 			if (pageNo > 0) {
-				return this.getPage(pageNo).entityCount;
+				var page = this.getPage(pageNo);
+				return page ? page.entityCount : this.pageSize;
 			} else {
 				return this.current ? this.current.page.entityCount : 0;
 			}
@@ -1239,7 +1244,7 @@
 			// 如果simulateUnloadPage为true，那么includeUnloadPage一定也是true
 			var page = entityList.getPage(pageNo, !this._simulateUnloadPage);
 			
-			if (page.loaded) {
+			if (page && page.loaded) {
 				var entry = reverse ? page.last : page.first;
 				while (entry) {
 					if (this._includeDeletedEntity || entry.data.state !== dorado.Entity.STATE_DELETED) {
@@ -1261,6 +1266,8 @@
 		
 		_findNeighbor: function(entry, pageNo, reverse) {
 			if (!entry) return null;
+			
+			var oldEntry = entry;
 			if (entry.data && !entry.data.dummy) {
 				do {
 					entry = reverse ? entry.previous : entry.next;
@@ -1286,21 +1293,17 @@
 					}
 				}
 				else {
-					var entityList = this._entityList, page, it;
-					do  {
-						pageNo += (reverse ? -1 : 1);
-						if (pageNo > 0 && pageNo <= this._entityList.pageCount) {
-							page = entityList.getPage(pageNo, false);
+					var entityList = this._entityList, page = oldEntry.data.page;
+					var entry = entityList._pages.findEntry(page);
+					if (entry) {
+						entry = (reverse ? entry.previous : entry.next);
+						if (entry) {
+							page = entry.data;
 							if (page.loaded) {
-								entry = this._findFromPage(pageNo, reverse);
-								break;
+								entry = this._findFromPage(page.pageNo, reverse);
 							}
 						}
-						else {
-							break;
-						}
 					}
-					while (true)
 				}
 			}
 			return entry;
