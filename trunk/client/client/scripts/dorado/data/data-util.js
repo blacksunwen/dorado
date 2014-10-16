@@ -55,7 +55,7 @@
 		 */
 		convertIfNecessary: function(data, dataTypeRepository, dataType) {
 			if (data == null) return data;
-						
+
 			if (dataType) {
 				if (dataType instanceof dorado.LazyLoadDataType) {
 					dataType = dataType.get();
