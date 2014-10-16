@@ -12,6 +12,9 @@
 
 package com.bstek.dorado.web.servlet;
 
+import java.util.Locale;
+import java.util.Map;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +25,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.View;
 
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.spring.RemovableBeanUtils;
 import com.bstek.dorado.web.ConsoleUtils;
 import com.bstek.dorado.web.loader.DoradoLoader;
+import com.bstek.dorado.web.resolver.ErrorPageView;
 
 /**
  * 用于提供dorado引擎服务的Servlet，同时可用于在Web服务器启动时完成dorado引擎的初始化。
@@ -38,6 +43,8 @@ public class DoradoServlet extends DispatcherServlet {
 	private static final long serialVersionUID = 5788753993615625187L;
 
 	private static final String SERVLET_CONTEXT_CONFIG_PROPERTY = "core.servletContextConfigLocation";
+	private static final String ERROR_PAGE = "/dorado/ErrorPage";
+
 	private static Log logger = LogFactory.getLog(DoradoServlet.class);
 
 	@Override
@@ -77,6 +84,16 @@ public class DoradoServlet extends DispatcherServlet {
 			// System.out.println("totalMemory:" + runtime.totalMemory());
 		} catch (Exception e) {
 			logger.error(e, e);
+		}
+	}
+
+	@Override
+	protected View resolveViewName(String viewName, Map<String, Object> model,
+			Locale locale, HttpServletRequest request) throws Exception {
+		if (ERROR_PAGE.equals(viewName)) {
+			return new ErrorPageView();
+		} else {
+			return super.resolveViewName(viewName, model, locale, request);
 		}
 	}
 
