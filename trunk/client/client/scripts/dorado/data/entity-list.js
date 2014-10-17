@@ -193,7 +193,7 @@
 			var next = (entry) ? entry.next : null;
 			while (!(next && next.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!next) {
-					var page = entry.data.page, entry = this.pages.findEntry(page);
+					var entry = this._pages.findEntry(page), page = entry.data.page;
 					if (entry) {
 						entry = entry.next;
 						if (entry) {
