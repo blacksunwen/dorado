@@ -168,10 +168,11 @@
 		
 		_findPreviousEntry: function(entry, loadPage, pageNo) {
 			if (pageNo == null) pageNo = this.pageNo;
-			var previous = (entry) ? entry.previous : null;
+			var previous = (entry) ? entry.previous : null, pages = this._pages;
 			while (!(previous && previous.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!previous) {
-					var page = entry.data.page, entry = this.pages.findEntry(page);
+					var page = entry.data.page;
+					entry = pages.findEntry(page);
 					if (entry) {
 						entry = entry.previous;
 						if (entry) {
@@ -190,10 +191,11 @@
 		
 		_findNextEntry: function(entry, loadPage, pageNo) {
 			if (pageNo == null) pageNo = this.pageNo;
-			var next = (entry) ? entry.next : null;
+			var next = (entry) ? entry.next : null, pages = this._pages;
 			while (!(next && next.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!next) {
-					var entry = this._pages.findEntry(page), page = entry.data.page;
+					var page = entry.data.page;
+					entry = pages.findEntry(page);
 					if (entry) {
 						entry = entry.next;
 						if (entry) {
