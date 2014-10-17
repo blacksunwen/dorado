@@ -182,7 +182,6 @@ public class Main implements InitializingBean {
 		accordionMenu.addSection(section);
 	}
 
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		InputStream inputStream = Main.class.getClassLoader()
 				.getResourceAsStream(MENU_PATH);
@@ -369,6 +368,5 @@ class MenuItem {
 	public void setOwner(int owner) {
 		this.owner = owner;
 	}
-
 
 }

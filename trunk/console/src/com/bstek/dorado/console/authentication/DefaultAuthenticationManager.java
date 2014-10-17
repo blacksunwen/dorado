@@ -50,7 +50,7 @@ import com.bstek.dorado.web.loader.ConsoleStartedMessagesOutputter;
  */
 public class DefaultAuthenticationManager implements AuthenticationManager,
 		InitializingBean {
-	
+
 	private static final int DEFAULT_PASSWORD_LENGTH = 6;
 
 	private ConsoleStartedMessagesOutputter consoleStartedMessagesOutputter;
@@ -83,7 +83,7 @@ public class DefaultAuthenticationManager implements AuthenticationManager,
 			loginStatus = Boolean.valueOf((Boolean) request.getSession()
 					.getAttribute(Constants.S_DORADO_CONSOLE_LOGIN_STATUS));
 		} catch (Exception e) {
-			
+
 		}
 		return loginStatus;
 	}
@@ -136,7 +136,6 @@ public class DefaultAuthenticationManager implements AuthenticationManager,
 				});
 	}
 
-	@Override
 	public void afterPropertiesSet() throws Exception {
 		initProperties();
 	}
