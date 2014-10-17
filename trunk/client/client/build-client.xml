@@ -8,9 +8,9 @@
 
 		<mkdir dir="${dist}" />
 
-		<echo message="copy ${src} --> ${dist}" />
-		<copy todir="${dist}">
-			<fileset dir="${src}">
+		<echo message="copy ${src}/skins/${skinName} --> ${dist}/skins/${skinName}" />
+		<copy todir="${dist}/skins/${skinName}">
+			<fileset dir="${src}/skins/${skinName}">
 				<exclude name="**/*.less" />
 			</fileset>
 		</copy>
