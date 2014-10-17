@@ -19,7 +19,6 @@
  */
 dorado.widget.FloatContainer = $extend([dorado.widget.Container, dorado.widget.FloatControl], {
 	$className: "dorado.widget.FloatContainer",
-	focusable: true,
 
 	ATTRIBUTES: {
 		visible: {

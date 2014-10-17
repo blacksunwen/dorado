@@ -13,7 +13,7 @@
 (function() {
 	dorado.widget.NumberGridPicker = $extend(dorado.widget.Control, {
 		$className: "dorado.widget.NumberGridPicker",
-		focusable: true,
+		tabStop: true,
 
 		ATTRIBUTES: {
 			className: {},
@@ -175,7 +175,7 @@
 	 * @extends dorado.widget.NumberGridPicker
 	 */
 	dorado.widget.MonthPicker = $extend(dorado.widget.NumberGridPicker, /** @scope dorado.widget.MonthPicker.prototype */{
-		focusable: true,
+		tabStop: true,
 		ATTRIBUTES: /** @scope dorado.widget.MonthPicker.prototype */ {
 			height: {
 				independent: true,
@@ -240,7 +240,7 @@
 	 * @extends dorado.widget.NumberGridPicker
 	 */
 	dorado.widget.YearPicker = $extend(dorado.widget.NumberGridPicker, /** @scope dorado.widget.YearPicker.prototype */{
-		focusable: true,
+		tabStop: true,
 		ATTRIBUTES: /** @scope dorado.widget.YearPicker.prototype */ {
 			height: {
 				independent: true,
@@ -342,7 +342,7 @@
 	dorado.widget.YearMonthPicker = $extend(dorado.widget.Control, /** @scope dorado.widget.YearMonthPicker.prototype */ {
 		$className: "dorado.widget.YearMonthPicker",
 		_opened: false,
-		focusable: true,
+		tabStop: true,
 		ATTRIBUTES: /** @scope dorado.widget.YearMonthPicker.prototype */ {
 			height: {
 				independent: true
@@ -527,7 +527,7 @@
 	 */
 	dorado.widget.YearDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.YearDropDown.prototype */{
 		$className: "dorado.widget.YearDropDown",
-		focusable: true,
+		tabStop: true,
 
 		ATTRIBUTES: {
 			width: {
@@ -591,7 +591,7 @@
 	 */
 	dorado.widget.MonthDropDown = $extend(dorado.widget.DropDown, /** @scope dorado.widget.MonthDropDown.prototype */{
 		$className: "dorado.widget.MonthDropDown",
-		focusable: true,
+		tabStop: true,
 
 		ATTRIBUTES: {
 			width: {

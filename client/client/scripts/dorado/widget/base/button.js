@@ -25,7 +25,7 @@
 	 */
 	dorado.widget.Button = $extend(dorado.widget.AbstractButton, /** @scope dorado.widget.Button.prototype */ {
 		$className: "dorado.widget.Button",
-		focusable: true,
+		tabStop: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.Button.prototype */ {
 			className: {

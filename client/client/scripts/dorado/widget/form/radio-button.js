@@ -17,7 +17,7 @@
  */
 dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.widget.RadioButton.prototype */ {
 	$className: "dorado.widget.RadioButton",
-	focusable: true,
+	tabStop: true,
 	
 	ATTRIBUTES: /** @scope dorado.widget.RadioButton.prototype */ {
 		className: {

@@ -61,7 +61,7 @@
 	 */
 	dorado.widget.AbstractEditor = $extend(dorado.widget.Control, /** @scope dorado.widget.AbstractEditor.prototype */ {
 		$className: "dorado.widget.AbstractEditor",
-		focusable: true,
+		tabStop: true,
 		
 		/**
 		 * @name dorado.widget.AbstractEditor#doPost

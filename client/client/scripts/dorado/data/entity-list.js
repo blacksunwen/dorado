@@ -167,18 +167,22 @@
 		},
 		
 		_findPreviousEntry: function(entry, loadPage, pageNo) {
-			if (pageNo == null) pageNo = this.pageNo;
-			var previous = (entry) ? entry.previous : null, pages = this._pages;
+			var previous = (entry) ? entry.previous : null, pages = this._pages, pageEntry;	
 			while (!(previous && previous.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!previous) {
-					var page = entry.data.page;
-					entry = pages.findEntry(page);
-					if (entry) {
-						entry = entry.previous;
-						if (entry) {
-							page = entry.data;
-							previous = page.last;
+					if (!pageEntry) {
+						pageNo = ((entry) ? entry.page.pageNo : pageNo) ||  this.pageNo;
+						if (pageNo > 1) {
+							pageNo--;
 						}
+						pageEntry = pages.findEntryByKey(pageNo);
+					}
+					else {
+						pageEntry = pageEntry.previous;
+					}
+					
+					if (pageEntry) {
+						next = pageEntry.data.last;
 					}
 				} else {
 					previous = previous.previous;
@@ -190,18 +194,22 @@
 		},
 		
 		_findNextEntry: function(entry, loadPage, pageNo) {
-			if (pageNo == null) pageNo = this.pageNo;
-			var next = (entry) ? entry.next : null, pages = this._pages;
+			var next = (entry) ? entry.next : null, pages = this._pages, pageEntry;			
 			while (!(next && next.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!next) {
-					var page = entry.data.page;
-					entry = pages.findEntry(page);
-					if (entry) {
-						entry = entry.next;
-						if (entry) {
-							page = entry.data;
-							next = page.first;
+					if (!pageEntry) {
+						pageNo = ((entry) ? entry.page.pageNo : pageNo) ||  this.pageNo;
+						if (pageNo < this.pageCount) {
+							pageNo++;
 						}
+						pageEntry = pages.findEntryByKey(pageNo);
+					}
+					else {
+						pageEntry = pageEntry.next;
+					}
+					
+					if (pageEntry) {
+						next = pageEntry.data.first;
 					}
 				} else {
 					next = next.next;
@@ -426,7 +434,7 @@
 		 * @return {dorado.Entity} 第一个数据实体。
 		 */
 		getFirst: function() {
-			var entry = this._findNextEntry(null, false, 0);
+			var entry = this._findNextEntry(null, false, 1);
 			return (entry) ? entry.data : null;
 		},
 		
@@ -436,7 +444,7 @@
 		 * @return {dorado.Entity} 最后一个数据实体。
 		 */
 		getLast: function() {
-			var entry = this._findPreviousEntry(null, false, this.pageCount + 1);
+			var entry = this._findPreviousEntry(null, false, this.pageCount);
 			return (entry) ? entry.data : null;
 		},
 		
@@ -446,7 +454,7 @@
 		 * @return {dorado.Entity} 返回第一个数据实体。
 		 */
 		first: function(loadPage) {
-			var entry = this._findNextEntry(null, loadPage, 0);
+			var entry = this._findNextEntry(null, loadPage, 1);
 			var entity = (entry) ? entry.data : null;
 			this.setCurrent(entity);
 			return entity;
@@ -498,7 +506,7 @@
 		 * @return {dorado.Entity} 返回最后一个数据实体。
 		 */
 		last: function(loadPage) {
-			var entry = this._findPreviousEntry(null, loadPage, this.pageCount + 1);
+			var entry = this._findPreviousEntry(null, loadPage, this.pageCount);
 			var entity = (entry) ? entry.data : null;
 			this.setCurrent(entity);
 			return entity;

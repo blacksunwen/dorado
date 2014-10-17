@@ -51,7 +51,7 @@
 	 */
 	dorado.widget.DatePicker = $extend(dorado.widget.Control, /** @scope dorado.widget.DatePicker.prototype */ {
 		$className: "dorado.widget.DatePicker",
-		focusable: true,
+		tabStop: true,
 		
 		ATTRIBUTES: /** @scope dorado.widget.DatePicker.prototype */ {
 			width: {

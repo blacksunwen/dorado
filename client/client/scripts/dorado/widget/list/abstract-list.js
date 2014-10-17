@@ -26,8 +26,7 @@
 	 */
 	dorado.widget.AbstractList = $extend(dorado.widget.Control, /** @scope dorado.widget.AbstractList.prototype */ {
 		$className: "dorado.widget.AbstractList",
-		
-		focusable: true,
+		tabStop: true,
 		
 		ATTRIBUTES: /** @scope dorado.widget.AbstractList.prototype */ {
 			/**
