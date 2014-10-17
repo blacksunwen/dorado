@@ -36,7 +36,14 @@
 			 * @type boolean
 			 * @description 用于指示该种控件是否支持获得控制焦点。
 			 */
-			focusable: false,
+			focusable: true,
+			
+			/**
+			 * @protected
+			 * @type boolean
+			 * @description 是否可通过Tab键获得控制焦点。
+			 */
+			tabStop: false,
 
 			/**
 			 * @protected
@@ -1645,7 +1652,7 @@
 				if (nodeName == "input" || nodeName == "textarea" || nodeName == "select") return;
 			}
 		}
-		while(control && !control.isFocusable()) {
+		while (control && !control.isFocusable()) {
 			control = control.get("focusParent");
 		}
 		if (control) {
@@ -1742,6 +1749,9 @@
 					if (focusableControl) break;
 				}
 			}
+		}
+		if (!focusableControl.tabStop) {
+			focusableControl = null;
 		}
 		return focusableControl;
 	};

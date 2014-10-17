@@ -19,7 +19,7 @@
 dorado.widget.Slider = $extend(dorado.widget.Control, /** @scope dorado.widget.Slider.prototype */ {
 	$className: "dorado.widget.Slider",
 	selectable: false,
-	focusable: true,
+	tabStop: true,
     
 	ATTRIBUTES: /** @scope dorado.widget.Slider.prototype */{
 		className: {

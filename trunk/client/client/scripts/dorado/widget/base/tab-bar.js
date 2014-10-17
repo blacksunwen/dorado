@@ -22,7 +22,7 @@
 	 */
 	dorado.widget.TabGroup = $extend(dorado.widget.Control, /** @scope dorado.widget.TabGroup.prototype */{
 		$className: "dorado.widget.TabGroup",
-		focusable: true,
+		tabStop: true,
 
 		tabShortTypeName: "tab",
 
@@ -571,7 +571,6 @@
 	 */
 	dorado.widget.TabColumn = $extend(dorado.widget.TabGroup, /** @scope dorado.widget.TabColumn.prototype */{
 		$className: "dorado.widget.TabColumn",
-		focusable: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.TabColumn.prototype */{
 			className: {
@@ -969,7 +968,6 @@
 	 */
 	dorado.widget.TabBar = $extend(dorado.widget.TabGroup, /** @scope dorado.widget.TabBar.prototype */ {
 		$className: "dorado.widget.TabBar",
-		focusable: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.TabBar.prototype */ {
 			className: {

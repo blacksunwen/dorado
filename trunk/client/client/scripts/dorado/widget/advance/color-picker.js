@@ -115,7 +115,7 @@
 	 */
 	dorado.widget.ColorPicker = $extend([dorado.widget.Control, dorado.widget.ColorPickerSupport], /** @scope dorado.widget.ColorPicker.prototype */ {
 		$className: "dorado.widget.ColorPicker",
-		focusable: true,
+		tabStop: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.ColorPicker.prototype */ {
 			className: {

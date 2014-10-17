@@ -234,7 +234,7 @@
 	dorado.widget.Menu = $extend(dorado.widget.AbstractMenu, /** @scope dorado.widget.Menu.prototype */ {
 		$className: "dorado.widget.Menu",
 
-		focusable: true,
+		tabStop: true,
 		selectable: false,
 
 		ATTRIBUTES: /** @scope dorado.widget.Menu.prototype */ {

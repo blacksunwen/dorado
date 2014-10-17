@@ -81,9 +81,8 @@
 	 * @abstract
 	 */
 	dorado.widget.Spinner = $extend(dorado.widget.AbstractTextBox, /** @scope dorado.widget.Spinner.prototype */ {
-		$className: "dorado.widget.Spinner",
-		
-		focusable: true,
+		$className: "dorado.widget.Spinner",		
+		tabStop: true,
 		
 		ATTRIBUTES: /** @scope dorado.widget.Spinner.prototype */ {
 		

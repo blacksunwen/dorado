@@ -139,6 +139,10 @@ dorado.util.KeyedList = $class(/** @scope dorado.util.KeyedList.prototype */{
 		return null;
 	},
 	
+	findEntryByKey: function(key) {
+		return this._keyMap[key];
+	},
+	
 	/**
 	 * 向集合中插入一个对象。
 	 * @param {Object} data 要插入的对象。

@@ -246,7 +246,7 @@ dorado.widget.Section = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	 */
 	dorado.widget.Accordion = $extend(dorado.widget.Control, /** @scope dorado.widget.Accordion.prototype */ {
 		$className: "dorado.widget.Accordion",
-		focusable: true,
+		tabStop: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.Accordion.prototype */ {
 			className: {
