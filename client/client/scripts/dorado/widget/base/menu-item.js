@@ -255,6 +255,7 @@
 	 */
 	dorado.widget.menu.ControlMenuItem = $extend(dorado.widget.menu.TextMenuItem, /** @scope dorado.widget.menu.ControlMenuItem.prototype*/ {
 		$className: "dorado.widget.menu.ControlMenuItem",
+		focusable: true,
 		tabStop: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.menu.ControlMenuItem.prototype*/ {
@@ -364,7 +365,7 @@
 	 */
 	dorado.widget.menu.MenuItem = $extend(dorado.widget.menu.TextMenuItem, /** @scope dorado.widget.menu.MenuItem.prototype */ {
 		$className: "dorado.widget.menu.MenuItem",
-
+		focusable: true,
 		tabStop: true,
 
 		ATTRIBUTES: /** @scope dorado.widget.menu.MenuItem.prototype */ {
