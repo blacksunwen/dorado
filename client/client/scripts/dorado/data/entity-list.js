@@ -882,8 +882,15 @@
 		 * 清空集合中的所有数据。
 		 */
 		clear: function() {
-			this._pages.clear();
 			this._keyMap = {};
+			
+			this._pages.clear();
+			page = new dorado.EntityList.Page(this, 1);
+			page.loaded = true;
+			this._pages.insert(page);
+			
+			this.pageNo = 1;
+			this.pageCount = 1;
 			this.entityCount = 0;
 			this.current = null;
 			this.sendMessage(0);
