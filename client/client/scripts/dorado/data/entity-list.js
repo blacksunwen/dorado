@@ -171,7 +171,7 @@
 			while (!(previous && previous.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!previous) {
 					if (!pageEntry) {
-						pageNo = ((entry) ? entry.page.pageNo : pageNo) ||  this.pageNo;
+						pageNo = ((entry) ? entry.data.page.pageNo : pageNo) ||  this.pageNo;
 						if (pageNo > 1) {
 							pageNo--;
 						}
@@ -198,7 +198,7 @@
 			while (!(next && next.data.state != dorado.Entity.STATE_DELETED)) {
 				if (!next) {
 					if (!pageEntry) {
-						pageNo = ((entry) ? entry.page.pageNo : pageNo) ||  this.pageNo;
+						pageNo = ((entry) ? entry.data.page.pageNo : pageNo) ||  this.pageNo;
 						if (pageNo < this.pageCount) {
 							pageNo++;
 						}
