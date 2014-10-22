@@ -474,23 +474,22 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 						if (group) {
 							group.set(subAttr, value, options);
 						}
-						else {
-							var liveSettingMap = this._liveTagSettingMap;
-							if (!liveSettingMap) {
-								this._liveTagSettingMap = liveSettingMap = {};
-							}
-							
-							var liveSettings = liveSettingMap[tag];
-							if (!liveSettings) {
-								liveSettingMap[tag] = liveSettings = [];
-							}
-							
-							liveSettings.push({
-								attr: subAttr,
-								value: value,
-								options: options
-							});
+						
+						var liveSettingMap = this._liveTagSettingMap;
+						if (!liveSettingMap) {
+							this._liveTagSettingMap = liveSettingMap = {};
 						}
+						
+						var liveSettings = liveSettingMap[tag];
+						if (!liveSettings) {
+							liveSettingMap[tag] = liveSettings = [];
+						}
+						
+						liveSettings.push({
+							attr: subAttr,
+							value: value,
+							options: options
+						});
 					}
 				}
 				else {
