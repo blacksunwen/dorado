@@ -36,9 +36,12 @@ import com.bstek.dorado.data.type.validator.MessageState;
 		nodeName = "DataType",
 		parser = "spring:dorado.prototype.dataTypeParser",
 		definitionType = "com.bstek.dorado.data.config.definition.DataTypeDefinition",
-		inheritable = true, properties = @XmlProperty(
-				propertyName = "overwrite", propertyType = "boolean",
-				attributeOnly = true, ignored = true))
+		inheritable = true, properties = {
+				@XmlProperty(propertyName = "overwrite",
+						propertyType = "boolean", attributeOnly = true,
+						ignored = true),
+				@XmlProperty(propertyName = "cachable",
+						propertyType = "java.lang.Boolean") })
 @ClientObject(prototype = "dorado.EntityDataType", shortTypeName = "Default")
 @ClientEvents({
 		@com.bstek.dorado.annotation.ClientEvent(name = "onAttributeChange"),

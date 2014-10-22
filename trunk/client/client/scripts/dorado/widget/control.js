@@ -1423,9 +1423,16 @@
 			 * @protected
 			 */
 			onFocus: function() {
+				if (this._destroyed) return;
+				
 				this._focused = true;
 				if (this.doOnFocus) this.doOnFocus();
-				if (this._className) $fly(this.getDom()).addClass("d-focused " + this._className + "-focused");
+				if (this._className) {
+					var dom = this.getDom();
+					if (dom) {
+						$fly(dom).addClass("d-focused " + this._className + "-focused");
+					}
+				}
 				this.fireEvent("onFocus", this);
 			},
 
@@ -1434,9 +1441,16 @@
 			 * @protected
 			 */
 			onBlur: function() {
+				if (this._destroyed) return;
+				
 				this._focused = false;
 				if (this.doOnBlur) this.doOnBlur();
-				$fly(this.getDom()).removeClass("d-focused " + this._className + "-focused");
+				
+				var dom = this.getDom();
+				if (dom) {
+					$fly(dom).removeClass("d-focused " + this._className + "-focused");
+				}
+				
 				this.fireEvent("onBlur", this);
 			},
 

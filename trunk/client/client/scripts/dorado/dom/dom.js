@@ -778,13 +778,15 @@
 		/**
 		 * 将相应元素提到最前面，即为相应元素设置合适的style.zIndex使其不至于被其他元素阻挡。
 		 * @param {HTMLElement} element DOM对象。
+		 * @param {int} [radius] zIndex偏移量，默认为0。
 		 * @return {int} 该DOM对象获得的新的zIndex的值。
 		 */
-		bringToFront: function(dom) {
+		bringToFront: function(dom, radius) {
 			if (dorado.Browser.msie) maxZIndex += 2;
 			else maxZIndex += 1;
-			if (dom) dom.style.zIndex = maxZIndex;
-			return maxZIndex;
+			var zIndex = maxZIndex + (radius || 0);
+			if (dom) dom.style.zIndex = zIndex;
+			return zIndex;
 		}
 	};
 	
