@@ -201,8 +201,8 @@
                         var layout = this.get("layout");
                         layout.disableRendering();
 
-                        for (var i = this._elements.length - 1; i >= 0; i--) {
-                            this.removeElement(this._elements[i]);
+                        for (var i = this._elements.items.length - 1; i >= 0; i--) {
+                            this.removeElement(this._elements.items[i]);
                         }
 
                         if (!elements) return;
