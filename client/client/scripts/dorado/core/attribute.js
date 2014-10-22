@@ -506,7 +506,7 @@
 		 * @return {int} 属性的被写入次数。
 		 */
 		getWritingTimes: function(attr) {
-			return this._watcherData[attr] || 0;
+			return (this._watcherData && this._watcherData[attr]) || 0;
 		}
 	});
 

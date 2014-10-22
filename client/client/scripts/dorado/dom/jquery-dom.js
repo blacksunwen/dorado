@@ -86,10 +86,11 @@
 	 * @name jQuery#bringToFront
 	 * @function
 	 * @description 将相应元素提到最前面，即为相应元素设置合适的style.zIndex使其不至于被其他元素阻挡。
+	 * @param {int} [radius] zIndex偏移量，默认为0。
 	 * @return {jQuery} 调用此方法的jQuery对象自身。
 	 */
-	$.fn.bringToFront = function() {
-		return this.css("zIndex", $DomUtils.bringToFront());
+	$.fn.bringToFront = function(radius) {
+		return this.css("zIndex", $DomUtils.bringToFront(null, radius));
 	};
 	
 	// Extend left, top, right, bottom methods
