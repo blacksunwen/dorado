@@ -490,7 +490,7 @@ dorado.dequeue = function(namespace) {
 				options.overflowHandler = $scopify(control, control.doHandleOverflow);
 			}
 			
-			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
+			dorado.queue(control._uniqueId + SHOWHIDE_SUFFIX, function() {
 				options = options || {};
 				if (!control._rendered) {
 					var renderTo = control._renderTo;
@@ -544,7 +544,7 @@ dorado.dequeue = function(namespace) {
 		 */
 		doShow: function(options) {
 			var control = this, dom = control.getDom(), anim = true, handleModal = true;
-			
+
 			//移动到屏幕之外，避免对Document的宽高产生影响
 			$fly(dom).css({
 				display: "",
@@ -552,14 +552,14 @@ dorado.dequeue = function(namespace) {
 				left: -99999,
 				top: -99999
 			});
-			
+
 			var arg = {};
 			control.fireEvent("beforeShow", control, arg);
 			if (arg.processDefault === false) {
-				dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
+				dorado.dequeue(control._uniqueId + SHOWHIDE_SUFFIX);
 				return;
 			}
-			
+
 			if (control._visible) {
 				//anim = false;
 				handleModal = false;
@@ -577,9 +577,9 @@ dorado.dequeue = function(namespace) {
 					mode: control._shadowMode || "sides"
 				});
 			}
-	
+
 			var position = control.getShowPosition(options);
-			
+
 			options.position = position;
 			options.animateTarget = control._animateTarget;
 
@@ -595,7 +595,7 @@ dorado.dequeue = function(namespace) {
 			if (handleModal && control._modal) {
 				dorado.ModalManager.show(dom, dorado.widget.FloatControl.modalTypeClassName[control._modalType]);
 			}
-			
+
 			var animateType = options.animateType || control._showAnimateType || control._animateType;
 			if (anim && animateType != "none") {
 				control.fireEvent("onShow", control);
@@ -615,7 +615,7 @@ dorado.dequeue = function(namespace) {
 				control.doAfterShow.apply(control, [options]);
 			}
 		},
-		
+
 		/**
 		 * 在动画完成之后会调用此方法。
 		 * 该方法会根据组件的设置，为组件添加阴影、移到最前、获得焦点等。
@@ -627,7 +627,7 @@ dorado.dequeue = function(namespace) {
 			if (dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.indexOf(control) < 0) {
 				dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.push(control);
 			}
-			
+
 			if (dom) {
 				jQuery(dom).css({
 					visibility: "",
@@ -648,16 +648,16 @@ dorado.dequeue = function(namespace) {
 					}
 					control._focusParent = focusParent;
 				}
-				
+
 				if (control._focusAfterShow || control._modal) {
 					control.setFocus();
 				}
-				
+
 				control.fireEvent("afterShow", control);
 			}
-			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
+			dorado.dequeue(control._uniqueId + SHOWHIDE_SUFFIX);
 		},
-		
+
 		/**
 		 * 取得组件显示的位置。
 		 * @param {Object} options Json类型的参数，同show方法。
@@ -684,7 +684,7 @@ dorado.dequeue = function(namespace) {
 					left: event.pageX,
 					top: event.pageY
 				};
-				
+
 				result = $DomUtils.locateIn(dom, options);
 			} else {
 				if (options.center && control._left == undefined && control._top == undefined) {
@@ -692,22 +692,22 @@ dorado.dequeue = function(namespace) {
 						width: $fly(window).width(),
 						height: $fly(window).height()
 					};
-					
+
 					control._left = (docSize.width - $fly(dom).width()) / 2 + jQuery(window).scrollLeft();
 					control._top = (docSize.height - $fly(dom).height()) / 2 + jQuery(window).scrollTop();
 				}
-				
+
 				options.position = {
 					left: control._left || 0,
 					top: control._top || 0
 				};
-				
+
 				result = $DomUtils.locateIn(dom, options);
 			}
-			
+
 			return result;
 		},
-		
+
 		/**
 		 * 隐藏浮动控件。
 		 * <p>
@@ -718,21 +718,21 @@ dorado.dequeue = function(namespace) {
 		hide: function(options) {
 			var control = this, args = arguments;
 			if (!control._visible) {
-				dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
+				dorado.dequeue(control._uniqueId + SHOWHIDE_SUFFIX);
 				return;
 			}
-			
-			dorado.queue(control._id + SHOWHIDE_SUFFIX, function() {
+
+			dorado.queue(control._uniqueId + SHOWHIDE_SUFFIX, function() {
 				var arg = {};
-				
+
 				control.fireEvent("beforeHide", control, arg);
 				if (arg.processDefault === false) {
-					dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
+					dorado.dequeue(control._uniqueId + SHOWHIDE_SUFFIX);
 					return;
 				} else {
 					if (control.doBeforeHide) control.doBeforeHide();
 				}
-				
+
 				var focused = control._focused;
 				if (focused) {
 					var focusParent = control._focusParent || control._parent;
@@ -744,7 +744,7 @@ dorado.dequeue = function(namespace) {
 						focusParent = focusParent._focusParent || focusParent._parent;
 					}
 				}
-				
+
 				if (focused && dorado.Browser.msie) dorado.widget.Control.IGNORE_FOCUSIN_EVENT = true;
 				if (control.doHide) {
 					control.doHide.apply(control, args);
@@ -752,7 +752,7 @@ dorado.dequeue = function(namespace) {
 				if (focused && dorado.Browser.msie) dorado.widget.Control.IGNORE_FOCUSIN_EVENT = false;
 			});
 		},
-		
+
 		/**
 		 * 该方法在动画播放之前调用，会按照组件属性的设置执行动画。
 		 * 如果需要在动画播放之前执行一些动作，请覆写该方法。
@@ -763,7 +763,7 @@ dorado.dequeue = function(namespace) {
 			var control = this, dom = control._dom;
 			if (dom) {
 				options = options || {};
-				
+
 				if (control._modal) {
 					dorado.ModalManager.hide(dom);
 				}
@@ -782,9 +782,9 @@ dorado.dequeue = function(namespace) {
 				}
 				control._visible = false;
 				control.setActualVisible(false);
-				
+
 				dorado.widget.FloatControl.VISIBLE_FLOAT_CONTROLS.remove(control);
-				
+
 				var animateType = options.animateType || control._hideAnimateType || control._animateType;
 				options.animateTarget = control._animateTarget;
 				if (animateType != "none") {
@@ -797,7 +797,7 @@ dorado.dequeue = function(namespace) {
 				}
 			}
 		},
-		
+
 		/**
 		 * 在动画完成之后会调用此方法。
 		 * 在该方法的最后，会触发onHide方法。
@@ -812,8 +812,8 @@ dorado.dequeue = function(namespace) {
 			});
 			control._currentVisible = false;
 			control.fireEvent("afterHide", control);
-			dorado.dequeue(control._id + SHOWHIDE_SUFFIX);
-			//log.debug("dorado.dequeue after hide：" + control._id);
+			dorado.dequeue(control._uniqueId + SHOWHIDE_SUFFIX);
+			//log.debug("dorado.dequeue after hide：" + control._uniqueId);
 
 			var continuedFocus = control._continuedFocus === undefined ? control._modal : !!control._continuedFocus;
 
