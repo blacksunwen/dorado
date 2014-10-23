@@ -83,6 +83,7 @@
 				modal: true,
 				resizeable: false,
 				contentOverflow: "visible",
+				animateType: "none",
 				layout: {
 					$type: "Native"
 				},

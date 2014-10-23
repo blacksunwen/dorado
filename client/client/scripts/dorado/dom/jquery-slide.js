@@ -503,19 +503,19 @@
 			width: isTypeIn ? 0 : elementEl.width(),
 			height: isTypeIn ? 0 : elementEl.height()
 		}).bringToFront().animate({
-				top: endTop,
-				left: endLeft,
-				width: isTypeIn ? elementEl.width() : 0,
-				height: isTypeIn ? elementEl.height() : 0
-			}, {
-				duration: options.animateDuration || 300,
-				easing: options.animateEasing,
-				complete: function() {
-					cover.style.display = "none";
-					zoomCoverPool.returnObject(cover);
-					options.complete.apply(null, []);
-				}
-			});
+			top: endTop,
+			left: endLeft,
+			width: isTypeIn ? elementEl.width() : 0,
+			height: isTypeIn ? elementEl.height() : 0
+		}, {
+			duration: options.animateDuration || 300,
+			easing: options.animateEasing,
+			complete: function() {
+				cover.style.display = "none";
+				zoomCoverPool.returnObject(cover);
+				options.complete.apply(null, []);
+			}
+		});
 	};
 
 	jQuery.fn.zoomIn = function(options) {
