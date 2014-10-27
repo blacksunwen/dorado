@@ -430,3 +430,6 @@
 .d-date-picker .date-block .date-table td.unselectable {
   color: #919191;
 }
+.d-drop-down-box .d-date-picker, .d-drop-down-box .d-date-picker .d-year-month-picker {
+  width: 100%;
+}
