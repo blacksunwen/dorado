@@ -18,7 +18,7 @@ dorado.queue = function(namespace, fn) {
 		queue = dorado._queueObject[namespace] = [];
 	}
 	queue.push(fn);
-	if (!queue.processing) {
+	if (queue.length == 1) {
 		dorado.dequeue(namespace);
 	}
 };
@@ -28,11 +28,8 @@ dorado.dequeue = function(namespace) {
 	var queue = dorado._queueObject[namespace];
 	if (queue) {
 		if (queue.length > 0) {
-			queue.processing = true;
 			var fn = queue.shift();
 			fn.call(null, []);
-		} else {
-			queue.processing = false;
 		}
 	}
 };
