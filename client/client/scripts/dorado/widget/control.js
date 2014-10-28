@@ -1658,7 +1658,7 @@
 
 			if (topDomainWindow) setFrameBlur(topDomainWindow);
 		}
-
+		/*
 		if (dorado.Browser.msie && document.activeElement) {
 			var activeControl = dorado.widget.Control.findParentControl(document.activeElement);
 			if (activeControl && !(activeControl instanceof dorado.widget.View)) {
@@ -1666,6 +1666,7 @@
 				if (nodeName == "input" || nodeName == "textarea" || nodeName == "select") return;
 			}
 		}
+		*/
 		while (control && !control.isFocusable()) {
 			control = control.get("focusParent");
 		}
