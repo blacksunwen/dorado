@@ -425,7 +425,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 	
 	locate: function() {
-		if (!this._box || !this._editor || !this._editor.getDom()) return;
+		if (!this._box || !this._editor || !this._editor._actualVisible) return;
 		this.doLocate();
 	},
 	
