@@ -484,8 +484,10 @@
 
 			if (!dorado.Browser.isTouch) {
 				$setTimeout(this, function() {
-					if (this._textDom){
-						this._textDom.focus();
+					try{
+						this._textDom.focus();	
+					} catch(e){
+						//do nothing
 					}
 				}, 0);
 			}
@@ -912,8 +914,13 @@
 		doOnFocus: function() {
 			$invokeSuper.call(this);
 			if (this._selectTextOnFocus && this._realEditable) {
-				if (this.get("focused") && this._editorFocused && this._textDom) {
-					this._textDom.select();
+				if (this.get("focused") && this._editorFocused) {
+					try {
+						this._textDom.select();
+					}
+					catch(e) {
+						// do nothing
+					}
 				}
 			}
 		}
