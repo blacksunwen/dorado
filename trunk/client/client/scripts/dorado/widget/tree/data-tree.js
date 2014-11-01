@@ -181,6 +181,9 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		checked: {
 			getter: function() {
 				var bg = this._bindingConfig;
+                if (this._duringSetChecked && this._checked != undefined){
+                    return this._checked;
+                }
 				if (bg.checkedProperty && this._data) {
 					this._checked = this._getEntityProperty(this._data, bg.checkedProperty);
 				}
@@ -191,7 +194,12 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				var currentChecked = this._checked, bg = this._bindingConfig;
 				if (currentChecked == undefined) currentChecked = bg.checked;
 				if (currentChecked === checked) return;
-				$invokeSuper.call(this, arguments);
+                this._duringSetChecked = true;
+                try{
+                    $invokeSuper.call(this, arguments);
+                }finally{
+                    this._duringSetChecked = false;
+                }
 				var entity = this._data, property = bg.checkedProperty;
 				if (entity && property) {
 					(entity instanceof dorado.Entity) ? entity.set(property, checked) : entity[property] = checked;
