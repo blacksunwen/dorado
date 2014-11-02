@@ -349,6 +349,8 @@
 				
 				var resetFilterTrigger = getDropDownResetFilterTrigger();
 				var filterTrigger = getDropDownFilterTrigger();
+				triggers.remove(filterTrigger);
+				triggers.remove(resetFilterTrigger);
 				triggers.insert(resetFilterTrigger);
 				triggers.insert(filterTrigger);
 				resetFilterTrigger._dropDown = this;
