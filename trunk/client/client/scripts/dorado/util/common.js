@@ -234,7 +234,7 @@ dorado.util.Common = {
 			n = dorado.util.Common.parseExponential(n);
 		}
 		if (!format) return n;
-		var n1, n2, f1, f2, i;
+		var n1, n2, f1, f2, f3 = '', i;
 		i = n.indexOf('.');
 		if (i > 0) {
 			n1 = n.substring(0, i);
@@ -247,6 +247,17 @@ dorado.util.Common = {
 		if (i > 0) {
 			f1 = format.substring(0, i);
 			f2 = format.substring(i + 1);
+			var j = 0;
+			for (j = 0; j < f2.length; j++) {
+				var c = f2.charAt(j);
+				if (c != '#' && c != '0') {
+					break;
+				} 
+			}
+			if (j > 0){
+				f3 = f2.substring(j);
+				f2 = f2.substring(0, j);
+			}
 		} else {
 			f1 = format;
 		}
@@ -257,7 +268,7 @@ dorado.util.Common = {
 		if (r[1]) {
 			n1 = (parseInt(n1, 10) + ((n1.charAt(0) == '-') ? -1 : 1)) + '';
 		}
-		return formatInt(n1, f1, dec) + ((dec) ? ('.' + dec) : '');
+		return formatInt(n1, f1, dec) + ((dec) ? ('.' + dec) : '') + f3;
 	},	
 	
 	/**
