@@ -359,7 +359,13 @@
 			label.innerText = column.get("caption") || "";
 
 			if (column instanceof dorado.widget.grid.DataColumn) {
-				$fly(label).toggleClass("caption-required", !!column.get("required") && grid.shouldEditing(column));
+				var readOnly = false;
+				if (grid._dataSet) {
+					readOnly = grid._dataSet.get("readOnly");
+				}
+				readOnly = readOnly && grid.get("readOnly");
+				
+				$fly(label).toggleClass("caption-required", !!column.get("required") && !readOnly);
 
 				var sortState = column.get("sortState"), sortIndicator;
 				if (sortState) {
