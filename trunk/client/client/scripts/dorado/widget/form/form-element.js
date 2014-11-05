@@ -755,12 +755,17 @@
 		},
 
 		setFocus: function() {
-			var editor = this.getEditor(false);
-			if (editor) {
-				editor.setFocus();
+			if (this._focused) {
+				$invokeSuper.call(this);
 			}
 			else {
-				$invokeSuper.call(this);
+				var editor = this.getEditor(false);
+				if (editor) {
+					editor.setFocus();
+				}
+				else {
+					$invokeSuper.call(this);
+				}
 			}
 		},
 

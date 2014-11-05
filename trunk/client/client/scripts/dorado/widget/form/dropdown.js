@@ -277,9 +277,11 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 
 	onEditorFocus: function(editor) {
 		if (this._autoOpen && !editor._realReadOnly && !this._skipEditorOnFocusProcedure) {
-			$setTimeout(this, function() {
-				this.execute(editor);
-			}, 50);
+			if (dorado.widget.getFocusedControl() == editor) {
+				$setTimeout(this, function() {
+					this.execute(editor);
+				}, 50);
+			}
 		}
 		delete this._skipEditorOnFocusProcedure;
 	},
