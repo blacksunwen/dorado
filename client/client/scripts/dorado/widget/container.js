@@ -244,7 +244,7 @@
 
 			if (children) {
 				config.children = children;
-				if (!this.isLazyInitChildren || this.isLazyInitChildren()) {
+				if (!this.isLazyInitChildren || !this.isLazyInitChildren()) {
 					this.set("children", children);
 				}
 				else {
