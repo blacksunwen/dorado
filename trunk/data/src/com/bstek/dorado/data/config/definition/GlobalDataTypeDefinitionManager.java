@@ -17,9 +17,6 @@ package com.bstek.dorado.data.config.definition;
  * @since 2012-5-10
  */
 public class GlobalDataTypeDefinitionManager extends DataTypeDefinitionManager {
-	public GlobalDataTypeDefinitionManager() {
-		super();
-	}
 
 	@Override
 	public void registerDefinition(String name, DataTypeDefinition definition) {

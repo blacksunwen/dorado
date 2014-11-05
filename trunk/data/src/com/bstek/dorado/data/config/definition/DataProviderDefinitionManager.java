@@ -40,7 +40,7 @@ public class DataProviderDefinitionManager extends
 	}
 
 	@Override
-	public void registerDefinition(String name,
+	public synchronized void registerDefinition(String name,
 			DataProviderDefinition definition) {
 		Assert.notEmpty(name);
 

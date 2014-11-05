@@ -1415,7 +1415,7 @@
 			},
 
 			doSetFocus: function() {
-				document.body.focus();
+				//if (this._dom) this._dom.focus();
 			},
 
 			/**
@@ -1764,9 +1764,9 @@
 					if (focusableControl) break;
 				}
 			}
-		}
-		if (!focusableControl.tabStop) {
-			focusableControl = null;
+			if (focusableControl && !focusableControl.tabStop) {
+				focusableControl = null;
+			}
 		}
 		return focusableControl;
 	};

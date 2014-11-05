@@ -244,7 +244,15 @@
 
 			if (children) {
 				config.children = children;
-				this.set("children", children);
+				if (!this.isLazyInitChildren || this.isLazyInitChildren()) {
+					this.set("children", children);
+				}
+				else {
+					this._lazyInitChildren = function() {
+						delete this._lazyInitChildren;
+						this.set("children", children);
+					}
+				}
 			}
 			
 			if (!this._ignoreOnCreateListeners) {
