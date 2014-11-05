@@ -73,7 +73,7 @@ public class DataTypeDefinitionManager extends
 	}
 
 	@Override
-	public void registerDefinition(String name, DataTypeDefinition definition) {
+	public synchronized void registerDefinition(String name, DataTypeDefinition definition) {
 		Assert.notEmpty(name);
 
 		if (StringUtils.isEmpty(definition.getId())) {
@@ -94,7 +94,7 @@ public class DataTypeDefinitionManager extends
 	}
 
 	@Override
-	public DataTypeDefinition unregisterDefinition(String name) {
+	public synchronized DataTypeDefinition unregisterDefinition(String name) {
 		DataTypeDefinition definition = super.unregisterDefinition(name);
 
 		if (definition != null) {
@@ -118,7 +118,7 @@ public class DataTypeDefinitionManager extends
 	 * @return DataType的配置声明对象
 	 */
 	@Override
-	public DataTypeDefinition getDefinition(String name) {
+	public synchronized DataTypeDefinition getDefinition(String name) {
 		DataTypeDefinition definition = getDefinitions().get(name);
 		if (definition == null) {
 			DataTypeName dataTypeName = new DataTypeName(name);

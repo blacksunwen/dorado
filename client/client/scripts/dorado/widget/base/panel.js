@@ -131,6 +131,17 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 					}
 				}
 			}
+		},
+		
+		/**
+		 * 如果此面板控件初始处于折叠状态是否要自动的懒初始化其中的所有子控件。
+		 *
+		 * @type boolean
+		 * @default false
+		 * @attribute writerBeforeReady
+		 */
+		lazyInitChildren: {
+			writerBeforeReady: true
 		}
 	},
 
@@ -146,6 +157,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * @event
 		 */
 		beforeCollapsedChange: {},
+		
 		/**
 		 * 在容器折叠或者展开之后触发，只有当collapseable为true的时候才会触发该事件。
 		 *
@@ -157,6 +169,10 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * @event
 		 */
 		onCollapsedChange: {}
+	},
+	
+	isLazyInitChildren: function() {
+		return this._isLazyInitChildren && this._collapsed;
 	},
 
 	doOnResize: function() {
@@ -209,6 +225,11 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		var panel = this, dom = panel._dom, doms = panel._doms, collapseButton = panel._collapseButton, eventArg = {};
 		panel.fireEvent("beforeCollapsedChange", panel, eventArg);
 		if (eventArg.processDefault === false) return;
+		
+		if (!collapsed && this._lazyInitChildren) {
+			this._lazyInitChildren();
+		}
+		
 		if (panel._parent instanceof dorado.widget.SplitPanel && panel._parent._sideControl == panel && panel._parent._collapseable) {
 			var direction = panel._parent._direction;
 			if (collapseButton) {

@@ -911,7 +911,7 @@
 			return true;
 		},
 
-		doOnFocus: function() {
+		doSetFocus: function() {
 			$invokeSuper.call(this);
 			if (this._selectTextOnFocus && this._realEditable) {
 				if (this.get("focused") && this._editorFocused) {

@@ -31,7 +31,8 @@ public abstract class AbstractPanel extends Container {
 	private List<Button> buttons = new InnerElementList<Button>(this);
 	private Align buttonAlign = Align.center;
 	private boolean collapseable = true;
-	private boolean collapsed = false;
+	private boolean collapsed;
+	private boolean isLazyInitChildren;
 
 	public String getCaption() {
 		return caption;
@@ -47,7 +48,7 @@ public abstract class AbstractPanel extends Container {
 
 	@XmlSubNode(nodeName = "*", parser = "spring:dorado.childComponentParser",
 			wrapper = @XmlNodeWrapper(nodeName = "Buttons",
-			icon = "/com/bstek/dorado/view/widget/base/Buttons.png"))
+					icon = "/com/bstek/dorado/view/widget/base/Buttons.png"))
 	@ClientProperty
 	public List<Button> getButtons() {
 		return buttons;
@@ -78,6 +79,14 @@ public abstract class AbstractPanel extends Container {
 
 	public void setCollapsed(boolean collapsed) {
 		this.collapsed = collapsed;
+	}
+
+	public boolean isLazyInitChildren() {
+		return isLazyInitChildren;
+	}
+
+	public void setLazyInitChildren(boolean isLazyInitChildren) {
+		this.isLazyInitChildren = isLazyInitChildren;
 	}
 
 	@Override

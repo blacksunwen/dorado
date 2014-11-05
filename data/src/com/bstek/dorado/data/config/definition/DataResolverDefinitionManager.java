@@ -38,7 +38,7 @@ public class DataResolverDefinitionManager extends
 	}
 
 	@Override
-	public void registerDefinition(String name,
+	public synchronized void registerDefinition(String name,
 			DataResolverDefinition definition) {
 		Assert.notEmpty(name);
 

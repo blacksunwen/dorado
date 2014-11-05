@@ -503,10 +503,6 @@
 			return dom;
 		},
 		
-		doSetFocus: function() {
-			dorado.widget.onControlGainedFocus(this);
-		},
-		
 		/**
 		 * 取得某个槽的取值范围。
 		 * @protected

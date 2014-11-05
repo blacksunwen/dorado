@@ -428,7 +428,12 @@ dorado.util.TaskGroupPanel = $extend(dorado.RenderableElement, { /** @scope dora
 		$fly(panel._dom).bringToFront();
 		
 		if (options) {
-			$DomUtils.dockAround(panel._dom, document.body, options);
+			try {
+				$DomUtils.dockAround(panel._dom, document.body, options);
+			}
+			catch(e) {
+				// do nothing
+			}
 		}
 	},
 	

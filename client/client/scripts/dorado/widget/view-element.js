@@ -342,7 +342,7 @@
 							var liveBindings = view._liveTagBindingMap[tag];
 							if (liveBindings) {
 								var liveBinding;
-								for (var j = 0, len = liveBindings.length; j < len; j++) {
+								for (var j = 0, l = liveBindings.length; j < l; j++) {
 									liveBinding = liveBindings[j];
 									if (liveBinding.subObject) {
 										var subObject = this.get(liveBinding.subObject);
@@ -358,7 +358,7 @@
 							var liveSettings = view._liveTagSettingMap[tag];
 							if (liveSettings) {
 								var liveSetting;
-								for (var j = 0, len = liveSettings.length; j < len; j++) {
+								for (var j = 0, l = liveSettings.length; j < l; j++) {
 									liveSetting = liveSettings[j];
 									this.set(liveSetting.attr, liveSetting.value, liveSetting.options);
 								}
