@@ -332,7 +332,7 @@
 					for (var key in observers) {
 						observer = observers[key];
 						if (observer.notifyObservers) {
-							dorado.Toolkits.setDelayedAction(observer, "$refreshDelayTimerId", observer.notifyObservers, 50);
+							dorado.Toolkits.setDelayedAction(observer, "$refreshDelayTimerId", observer.notifyObservers, 0);
 						}
 					}
 				}
