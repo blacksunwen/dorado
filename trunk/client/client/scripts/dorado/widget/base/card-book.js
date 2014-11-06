@@ -375,13 +375,15 @@ dorado.widget.CardBook = $extend(dorado.widget.Control, /** @scope dorado.widget
 				if (dynaHeight) {
 					currentControl._parentLayout = {
 						onControlSizeChange: card._onControlSizeChange
-					}
+					};
 					card.syncCurrentControlHeight(currentControl);
 				}
 			} else {
 				$fly(currentControl._dom).css("display", "block");
 				currentControl.setActualVisible(true);
-				card.syncCurrentControlHeight(currentControl);
+				if (dynaHeight) {
+					card.syncCurrentControlHeight(currentControl);
+				}
 			}
 		}
 	},
