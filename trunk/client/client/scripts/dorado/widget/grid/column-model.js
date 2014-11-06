@@ -1836,7 +1836,7 @@
 			}
 
 			if (editor === undefined) {
-				if (column._wrappable) {
+				if (column._wrappable && dtCode != dorado.DataType.TIME && dtCode != dorado.DataType.DATE && dtCode != dorado.DataType.DATETIME) {
 					editor = new dorado.widget.TextArea();
 				}
 				else {
