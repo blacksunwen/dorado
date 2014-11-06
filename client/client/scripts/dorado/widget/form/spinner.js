@@ -810,6 +810,7 @@
 
 		doRefreshSlots: function () {
 			var spinner = this, doms = spinner._doms;
+			if (!spinner._dom) return;
 			for (var i = 0; i < spinner.slotConfigs.length; i++) {
 				$fly(doms["slot_" + i]).html(spinner.doGetSlotText(i));
 			}
