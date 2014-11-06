@@ -18,9 +18,11 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Stack;
+import java.util.TimeZone;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.core.resource.ResourceManager;
 import com.bstek.dorado.core.resource.ResourceManagerUtils;
@@ -165,8 +167,12 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		if (EntityUtils.isSimpleValue(object)) {
 			if (object instanceof Date) {
 				Date d = (Date) object;
+				long time = d.getTime();
+				if (!Configure.getBoolean("core.useGMTTimeZone")){
+					time += TimeZone.getDefault().getOffset(time);
+				}
 				if (d instanceof Time || d instanceof Timestamp
-						|| d.getTime() % ONE_DAY != 0) {
+						|| time % ONE_DAY != 0) {
 					json.value(DateUtils
 							.format(com.bstek.dorado.core.Constants.ISO_DATETIME_FORMAT1,
 									d));
