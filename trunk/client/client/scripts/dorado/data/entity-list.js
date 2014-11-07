@@ -965,6 +965,9 @@
 			}
 			var page = this.getPage(this.pageNo, true);
 			this._fillPage(page, jsonArray, true);
+            if (this.entityCount > 0){
+                if (this.isNull) delete this.isNull;
+            }
 		},
 		
 		/**
