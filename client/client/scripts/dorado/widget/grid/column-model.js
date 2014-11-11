@@ -972,7 +972,9 @@
 			}
 
 			if (this.refreshSubControl) this.refreshSubControl(subControl, arg);
-			if (attach) {
+			if (!subControl._cellRendererInited) {
+				subControl._cellRendererInited = true;
+				
 				var controlEl = subControl.getDom();
 				if (controlEl.parentNode == dom) {
 					subControl.refresh();
@@ -988,6 +990,9 @@
 					dom._subControlId = null;
 					if (control) control.destroy();
 				});
+				subControl.bind("onClick", function() {
+					arg.grid.setCurrentColumn(arg.column);
+				});
 				arg.innerGrid.registerInnerControl(subControl);
 			}
 
@@ -997,7 +1002,7 @@
 
 	/**
 	 * @author Benny Bao (mailto:benny.bao@bstek.com)
-	 * @class 用于将一个复选框填充到表格单元格中单元格渲染器。
+	 * @class 用于将一个复选框填充到表格单元格中的单元格渲染器。
 	 * @extends dorado.widget.grid.SubControlCellRenderer
 	 */
 	dorado.widget.grid.CheckBoxCellRenderer = $extend(dorado.widget.grid.SubControlCellRenderer, /** @scope dorado.widget.grid.CheckBoxCellRenderer.prototype */{

@@ -298,7 +298,7 @@
 			}
 		},
 
-		refreshDom: function(dom) {
+		refreshDom: function(dom) {			
 			$invokeSuper.call(this, [dom]);
 
 			this.refreshExternalReadOnly();
@@ -423,7 +423,7 @@
 			if (this._realReadOnly) return;
 
 			dorado.Toolkits.cancelDelayedAction(this, "$editObserverTimerId");
-			this.post();
+			if (!this._duringRefreshDom) this.post();
 			
 			delete this._lastPost;
 			delete this._lastEdit;
