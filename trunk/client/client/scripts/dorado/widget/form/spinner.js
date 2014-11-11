@@ -918,14 +918,12 @@
 			 * <li>dateMinutes	-	日期+小时+分。</li>
 			 * </ul>
 			 * </p>
-			 * @attribute writeOnce,writeBeforeReady
+			 * @attribute
 			 * @type String
 			 * @default "time"
 			 */
 			type: {
 				defaultValue: "time",
-				writeOnce: true,
-				writeBeforeReady: true,
 				setter: function(type) {
 					this._type = type = type || "time";
 					this._typeChanged = true;

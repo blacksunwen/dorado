@@ -920,6 +920,14 @@
 			}
 			return p;
 		},
+		
+		processDataSetMessage: function (messageCode, arg, data) {
+			switch (messageCode) {
+				case dorado.widget.DataSet.MESSAGE_REFRESH:
+					this.refresh(true);
+					break;
+			}
+		},
 
 		getLabel: function() {
 			var label = this._label;
