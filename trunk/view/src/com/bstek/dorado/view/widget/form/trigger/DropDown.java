@@ -105,5 +105,4 @@ public abstract class DropDown extends Trigger {
 	public void setAssignmentMap(String assignmentMap) {
 		this.assignmentMap = assignmentMap;
 	}
-
 }
