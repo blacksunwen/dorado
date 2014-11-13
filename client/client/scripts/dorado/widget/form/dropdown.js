@@ -363,17 +363,56 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var box = boxCache ? boxCache[dorado.id + '$' + dropdown._uniqueId] : null;
 		if (!box) {
 			box = dropdown.createDropDownBox();
-			box.set({
-				onDropDownBoxShow: function() {
+			dropdown._duringShowAnimation = true;	
+			if (dorado.Object.isInstanceOf(box, dorado.widget.DropDownBox)) {
+				box.bind("onDropDownBoxShow", function() {
 					if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
+				});
+				
+				dropdown._duringShowAnimation = false;
+				
+				if (dropdown.shouldAutoRelocate()) {
+					dropdown._relocateTimeId = setInterval(function() {
+						var editorDom = dropdown._editor && dropdown._editor.getDom();
+						if (editorDom) {
+							var offset = $fly(editorDom).offset();
+							if (offset.left != dropdown._currentEditorOffsetLeft ||
+							offset.top != dropdown._currentEditorOffsetTop ||
+							editorDom.offsetWidth != dropdown._currentEditorOffsetWidth ||
+							editorDom.offsetHeight != dropdown._currentEditorOffsetHeight) {
+								dropdown.locate();
+							}
+						}
+					}, 300);
+
+					dropdown._relocateListener = function() {
+						dropdown.locate();
+					};
+					$fly(window).bind("resize", dropdown._relocateListener);
 				}
-			});
+				
+				if (dropdown._shouldRelocate) dropdown.locate();
+			}
+			else if (dorado.Object.isInstanceOf(box, dorado.widget.FloatControl)){
+				box._useAsDropDownBox = true;
+				box.bind("afterShow", function() {
+					if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
+				});
+				box.bind("afterHide", function() {
+					dropdown.close();
+				});
+			}
 			(dropdown._view || $topView).registerInnerControl(box);
 
 			box.render(box._renderTo || win.document.body);
-			var boxDom = box.getDom(), containerDom = box.get("containerDom");
-			box._edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
-			box._edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
+			if (box instanceof dorado.widget.Container) {
+				var boxDom = box.getDom(), containerDom = box.get("containerDom");
+				box._edgeWidth = boxDom.offsetWidth - containerDom.offsetWidth;
+				box._edgeHeight = boxDom.offsetHeight - containerDom.offsetHeight;
+			}
+			else {
+				box._edgeWidth = box._edgeHeight = 0;
+			}
 
 			if (boxCache) boxCache[dorado.id + '$' + dropdown._uniqueId] = box;
 		}
@@ -386,35 +425,13 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		}, {
 			once : true
 		});
-
-		dropdown._duringShowAnimation = true;		
-		box.bind("afterShow", function() {
-			dropdown._duringShowAnimation = false;
-			
-			if (dropdown.shouldAutoRelocate()) {
-				dropdown._relocateTimeId = setInterval(function() {
-					var editorDom = dropdown._editor && dropdown._editor.getDom();
-					if (editorDom) {
-						var offset = $fly(editorDom).offset();
-						if (offset.left != dropdown._currentEditorOffsetLeft ||
-						offset.top != dropdown._currentEditorOffsetTop ||
-						editorDom.offsetWidth != dropdown._currentEditorOffsetWidth ||
-						editorDom.offsetHeight != dropdown._currentEditorOffsetHeight) {
-							dropdown.locate();
-						}
-					}
-				}, 300);
-
-				dropdown._relocateListener = function() {
-					dropdown.locate();
-				};
-				$fly(window).bind("resize", dropdown._relocateListener);
-			}
-			
-			if (dropdown._shouldRelocate) dropdown.locate();
-		});
 		
-		dropdown.locate();
+		if (dorado.Object.isInstanceOf(box, dorado.widget.DropDownBox)) {
+			dropdown.locate();
+		}
+		else {
+			box.show();
+		}
 		
 		var triggerButton = editor.getTriggerButton(dropdown);
 		if (triggerButton) {
@@ -428,7 +445,9 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	
 	locate: function() {
 		if (!this._box || !this._editor || !this._editor._actualVisible) return;
-		this.doLocate();
+		if (dorado.Object.isInstanceOf(this._box, dorado.widget.DropDownBox)) {
+			this.doLocate();
+		}
 	},
 	
 	getDefaultWidth: function(editor) {
@@ -579,6 +598,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	 */
 	close : function(selectedValue) {
 		var dropdown = this;
+		if (!dropdown.get("opened")) return;
 		
 		clearInterval(dropdown._relocateTimeId);
 		$fly(window).unbind("resize", dropdown._relocateListener);
@@ -608,7 +628,10 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		dropdown._editor = null;
 
 		editor.unbind("onBlur._closeDropDown");
-		box.hide();
+		
+		if (dorado.Object.isInstanceOf(box, dorado.widget.FloatControl)) {
+			box.hide();
+		}
 
 		if (eventArg.selectedValue !== undefined) {
 			dropdown.fireEvent("onValueSelect", dropdown, eventArg);
@@ -698,11 +721,28 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
  * @param {dorado.widget.Control} control 任意的控件。
  * @return {dorado.widget.DropDown} 所属的下拉框。
  * 
- * @example // 例如自定义下拉框中的关闭按钮可以这样定义 new dorado.widget.Button({ caption: "Close",
- *          onClick: function(self, arg) {
- *          dorado.widget.DropDown.findDropDown(self).close(); } });
+ * @example // 例如自定义下拉框中的关闭按钮可以这样定义
+ * new dorado.widget.Button({
+ * 	caption: "Close",
+ *	onClick: function(self, arg) {
+ * 		dorado.widget.DropDown.findDropDown(self).close();
+ * }
+ * });
  */
 dorado.widget.DropDown.findDropDown = function(control) {
-	var box = control.findParent(dorado.widget.DropDownBox);
-	return box ? box.get("dropDown") : null;
+	
+	function findDropDownBox(control) {
+		var parent = control._parent;
+		while(parent) {
+			if (dorado.Object.isInstanceOf(parent, dorado.widget.DropDownBox) || 
+				dorado.Object.isInstanceOf(parent, dorado.widget.FloatControl) && parent._useAsDropDownBox) {
+				return parent;
+			}
+			parent = parent._parent;
+		}
+		return null;
+	}
+	
+	var box = findDropDownBox(control);
+	return box ? box._dropDown : null;
 };
