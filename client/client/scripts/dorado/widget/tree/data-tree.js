@@ -684,7 +684,12 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 				if (this._data) {
 					if (dorado.DataUtil.isOwnerOf(this._data, arg.entityList)) return true;
 					if (this._data == arg.entityList && this._pageNo != arg.entityList.pageNo) return true;
-				}
+                    var data = this._data;
+                    while (true) {
+                        data = data.parent;
+                        if (data == null) return true;
+                    }
+                }
 				return false;
 				
 			case dorado.widget.DataSet.MESSAGE_LOADING_START:
