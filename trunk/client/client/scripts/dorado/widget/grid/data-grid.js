@@ -583,7 +583,7 @@
 							this.refresh(true);
 							this.refreshSummary();
 						} else {
-							if (this._itemModel.groups && oldCurrentEntity.parent == null) {
+							if (this._itemModel.groups && oldCurrentEntity.state == dorado.Entity.STATE_NEW && oldCurrentEntity.parent == null) {
 								this._itemModel.refreshItems();
 							}
 							this.setCurrentEntity(arg.entityList.current);
@@ -653,7 +653,9 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_DELETED:{
 					if (this._itemModel.groups) {
-						this._itemModel.refreshItems();
+						if (arg.entity.state !== dorado.Entity.STATE_NEW){
+							this._itemModel.refreshItems();
+						}
 						this.refresh(true);
 					} else {
 						var items = this._itemModel.getItems();

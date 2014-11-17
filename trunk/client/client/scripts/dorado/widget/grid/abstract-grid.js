@@ -355,9 +355,6 @@
 
 			for(var i = 0; i < entities.length; i++) {
 				entity = entities[i];
-				if (!entity.parent){
-					continue;
-				}
 				groupValue = getEntityText(entity, groupProperty);
 				if (curGroupValue != groupValue) {
 					if (curGroup) {
