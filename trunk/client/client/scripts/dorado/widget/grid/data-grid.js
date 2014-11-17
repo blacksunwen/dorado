@@ -567,7 +567,7 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					this.hideCellEditor();
 					if (this._itemModel.groups) this._itemModel.refreshItems();
-					else this.refresh(true);
+					this.refresh(true);
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
@@ -583,6 +583,9 @@
 							this.refresh(true);
 							this.refreshSummary();
 						} else {
+							if (this._itemModel.groups && oldCurrentEntity.parent == null) {
+								this._itemModel.refreshItems();
+							}
 							this.setCurrentEntity(arg.entityList.current);
 						}
 					} else {
