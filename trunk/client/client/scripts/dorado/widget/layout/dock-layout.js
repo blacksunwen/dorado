@@ -178,6 +178,14 @@
 			$invokeSuper.call(this, [control]);
 		},
 		
+		onRemoveControl: function(control) {
+			var region = this.getRegion(control);
+			if (this._centerRegion === region && region) {
+				delete this._centerRegion;
+			}
+			$invokeSuper.call(this, [control]);
+		},
+		
 		refreshDom: function(dom) {
 			var regions = this._regions;
 			if (this._centerRegion && this._centerRegion !== regions.items[regions.size - 1]) {
