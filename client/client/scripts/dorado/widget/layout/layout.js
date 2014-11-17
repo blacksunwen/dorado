@@ -298,7 +298,7 @@ dorado.widget.layout.Layout = $extend(dorado.AttributeSupport, /** @scope dorado
 		control._parentLayout = null;
 		if (this.onRemoveControl) this.onRemoveControl(control);
 		var region = this._regions.removeKey(control._uniqueId);
-		if (region.fakeDom) $fly(region.fakeDom).remove();
+		if (region && region.fakeDom) $fly(region.fakeDom).remove();
 	},
 
 	/**
