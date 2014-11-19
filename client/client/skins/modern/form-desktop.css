@@ -391,6 +391,9 @@
   top: 0;
   border: 0;
 }
+.d-date-picker {
+  background-color: #ffffff;
+}
 .d-date-picker .year-month-block {
   background-color: #ffffff;
 }
@@ -429,7 +432,4 @@
 }
 .d-date-picker .date-block .date-table td.unselectable {
   color: #919191;
-}
-.d-drop-down-box .d-date-picker, .d-drop-down-box .d-date-picker .d-year-month-picker {
-  width: 100%;
 }

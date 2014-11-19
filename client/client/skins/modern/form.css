@@ -477,7 +477,7 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  margin-top: 4px;
+  margin-top: 5px;
 }
 .d-radiogroup .d-radio .text {
   margin-left: 4px;
@@ -504,7 +504,6 @@
   -ms-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
-  top: 1px;
 }
 .d-radiogroup-flow .d-radio {
   float: left;
@@ -567,8 +566,11 @@
 }
 .d-radio:hover:before,
 .d-radio-focused:before {
-  border-color: #15a4fa;
   background-color: #ffffff;
+}
+.d-radio:hover .icon,
+.d-radio-focused .icon {
+  border-color: #15a4fa;
 }
 .d-radio:hover .icon:before,
 .d-radio-focused .icon:before {
