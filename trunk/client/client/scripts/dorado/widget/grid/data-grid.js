@@ -370,23 +370,27 @@
 					}
 				}
 			}
-            if (this._rowSelectionProperty) {
-                var selection = [];
-                if (entityList) {
-                    var it = entityList.iterator();
-                    while (it.hasNext()) {
-                        var entity = it.next();
-                        if (entity.get(this._rowSelectionProperty)) selection.push(entity);
-                    }
-                }
-                this.set("selection", selection);
-            }
+			if (this._rowSelectionProperty) {
+				var selection = [];
+			if (entityList) {
+					var it = entityList.iterator();
+					while (it.hasNext()) {
+						var entity = it.next();
+						if (entity.get(this._rowSelectionProperty)) selection.push(entity);
+					}
+				}
+				this.set("selection", selection);
+			}
 
 			if (!columnsInited) this.initColumns();
 			$invokeSuper.call(this, arguments);
 			
 			if (!this._ready && this._dataSet && this._dataSet._loadingData) {
 				this.showLoadingTip();
+			}
+			if (this._shouldHideLoadingTipOnVisible) {
+				this.hideLoadingTip();
+				this._shouldHideLoadingTipOnVisible = false;
 			}
 		},
 		
@@ -561,7 +565,16 @@
 					}
 			}
 		},
-		
+
+		dataSetMessageReceived: function(messageCode, arg) {
+			if (this._rendered && dorado.widget.DataSet.MESSAGE_LOADING_END) {
+				if (!this.isActualVisible()) {
+					this._shouldHideLoadingTipOnVisible = true;
+				}
+			}
+			$invokeSuper.call(this, arguments);
+		},
+
 		processDataSetMessage: function(messageCode, arg, data) {
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
