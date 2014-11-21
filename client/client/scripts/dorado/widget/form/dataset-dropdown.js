@@ -158,7 +158,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 						emptyItem.isEmptyItem = true;
 					}
 				}
-                if (editor && editor._actualVisible) {
+                if (editor && editor._actualVisible && editor._focused) {
                     superClass.prototype.open.call(dropdown, editor);
                 }
 			}, {
