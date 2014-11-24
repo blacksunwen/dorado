@@ -18,6 +18,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-8-17
@@ -46,7 +48,11 @@ public class RequestParameterWrapperMap implements Map<String, String> {
 	}
 
 	public String get(Object key) {
-		return request.getParameter((String) key);
+		String result = request.getParameter((String) key);
+		if (StringUtils.isNotBlank(result)){
+			result = cleanXSS(result);
+		}
+		return result;
 	}
 
 	public String put(String key, String value) {
@@ -77,5 +83,15 @@ public class RequestParameterWrapperMap implements Map<String, String> {
 	public Set<java.util.Map.Entry<String, String>> entrySet() {
 		throw new UnsupportedOperationException();
 	}
-
+	
+	private String cleanXSS(String value)
+    {
+        value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
+        value = value.replaceAll("'", "& #39;");
+        value = value.replaceAll("eval\\((.*)\\)", "");
+        value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
+        value = value.replaceAll("script", "");
+        return value;
+    }
 }
