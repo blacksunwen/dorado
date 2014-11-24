@@ -167,33 +167,29 @@
 		},
 		
 		_findPreviousEntry: function(entry, loadPage, pageNo) {
-			function dofindPreviousEntry(pages, pageEntry, entry){
-				var previous = null;
-				if (!pageEntry) {
-					if (entry) {
-						pageEntry = pages.findEntry(entry.data.page);
-						pageEntry = pageEntry.previous;
-					}
-					else {
-						pageEntry = pages.last;
-					}
-				}
-				else {
-					pageEntry = pageEntry.previous;
-				}
-				
-				if (pageEntry) {
-					previous = pageEntry.data.last;
-				}
-				return previous;
-			}
 			var previous = (entry) ? entry.previous : null, pages = this._pages, pageEntry;	
 			while (!(previous && previous.data.state != dorado.Entity.STATE_DELETED)) {
 				if (previous) {
+					entry = previous;
 					previous = previous.previous;
 				} 
 				if (!previous){
-					previous = dofindPreviousEntry(pages, pageEntry, entry);
+					if (!pageEntry) {
+						if (entry) {
+							pageEntry = pages.findEntry(entry.data.page);
+							pageEntry = pageEntry.previous;
+						}
+						else {
+							pageEntry = pages.last;
+						}
+					}
+					else {
+						pageEntry = pageEntry.previous;
+					}
+					
+					if (pageEntry) {
+						previous = pageEntry.data.last;
+					}
 				}
 				
 				if (!previous) break;
