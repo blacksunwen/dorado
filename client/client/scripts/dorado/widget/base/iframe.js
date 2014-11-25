@@ -277,8 +277,10 @@
 			if (frame._toReplaceUrl) {
 				if (actualVisible) {
 					setTimeout(function() {
-						frame.replaceUrl(frame._toReplaceUrl);
-						frame._toReplaceUrl = null;
+						if (frame._toReplaceUrl){
+							frame.replaceUrl(frame._toReplaceUrl);
+							frame._toReplaceUrl = null;
+						}
 					}, 10);
 					return;
 				} else {
