@@ -13,14 +13,14 @@
 /**
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
  * @class 抽象面板。
- *        <p>
- *        该类是抽象类，是FieldSet、GroupBox、Panel的超类。 继承该类之后，会拥有以下功能：
- *        <ul>
- *        <li>标题的显示</li>
- *        <li>面板下方的Button的显示。</li>
- *        <li>收缩与展开。</li>
- *        </ul>
- *        </p>
+ *		<p>
+ *		该类是抽象类，是FieldSet、GroupBox、Panel的超类。 继承该类之后，会拥有以下功能：
+ *		<ul>
+ *		<li>标题的显示</li>
+ *		<li>面板下方的Button的显示。</li>
+ *		<li>收缩与展开。</li>
+ *		</ul>
+ *		</p>
  * @abstract
  * @extends dorado.widget.Container
  */
@@ -150,9 +150,9 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * 在容器折叠或者展开之前触发，只有当collapseable为true的时候才会触发该事件。
 		 *
 		 * @param {Object}
-		 *            self 事件的发起者，即组件本身。
+		 *			self 事件的发起者，即组件本身。
 		 * @param {Object}
-		 *            arg 事件参数。
+		 *			arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -162,9 +162,9 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 		 * 在容器折叠或者展开之后触发，只有当collapseable为true的时候才会触发该事件。
 		 *
 		 * @param {Object}
-		 *            self 事件的发起者，即组件本身。
+		 *			self 事件的发起者，即组件本身。
 		 * @param {Object}
-		 *            arg 事件参数。
+		 *			arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -196,7 +196,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 				button.setActualVisible(collapsed);
 			}
 		}
-		if (doms && dorado.Browser.msie && dorado.Browser.version == 6) {
+		if (doms && dorado.Browser.msie && dorado.Browser.version < 8) {
 			$fly(doms.body).css("zoom", "1");
 		}
 		$invokeSuper.call(this, arguments);
@@ -355,14 +355,14 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
  * @author Frank Zhang (mailto:frank.zhang@bstek.com)
  * @component Base
  * @class 面板容器
- *        <p>
- *        面板容器默认支持三种类型的边框：
- *        <ul>
- *        <li>none：无边框</li>
- *        <li>normal：普通边框</li>
- *        <li>curve：圆角边框</li>
- *        </ul>
- *        </p>
+ *		<p>
+ *		面板容器默认支持三种类型的边框：
+ *		<ul>
+ *		<li>none：无边框</li>
+ *		<li>normal：普通边框</li>
+ *		<li>curve：圆角边框</li>
+ *		</ul>
+ *		</p>
  *
  * <p>
  * 面板容器可以支持显示标题栏，并且标题栏可以支持图标、工具按钮等。<br />
@@ -558,9 +558,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * 在组件最大化之前触发此事件。
 		 *
 		 * @param {Object}
-		 *            self 事件的发起者，即组件本身。
+		 *			self 事件的发起者，即组件本身。
 		 * @param {Object}
-		 *            arg 事件参数。
+		 *			arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -570,9 +570,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * 在组件最大化之后触发此事件。
 		 *
 		 * @param {Object}
-		 *            self 事件的发起者，即组件本身。
+		 *			self 事件的发起者，即组件本身。
 		 * @param {Object}
-		 *            arg 事件参数。
+		 *			arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -582,9 +582,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * 在组件关闭之前触发。
 		 *
 		 * @param {Object}
-		 *            self 事件的发起者，即组件本身。
+		 *			self 事件的发起者，即组件本身。
 		 * @param {Object}
-		 *            arg 事件参数。
+		 *			arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -594,9 +594,9 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		 * 在组件关闭之后触发。
 		 *
 		 * @param {Object}
-		 *            self 事件的发起者，即组件本身。
+		 *			self 事件的发起者，即组件本身。
 		 * @param {Object}
-		 *            arg 事件参数。
+		 *			arg 事件参数。
 		 * @return {boolean} 是否要继续后续事件的触发操作，不提供返回值时系统将按照返回值为true进行处理。
 		 * @event
 		 */
@@ -744,10 +744,10 @@ dorado.widget.Panel = $extend(dorado.widget.AbstractPanel, /** @scope dorado.wid
 		}
 	},
 
-    doClose: function(){
-        var panel = this;
-        panel.set("visible", false);
-    },
+	doClose: function(){
+		var panel = this;
+		panel.set("visible", false);
+	},
 
 	/**
 	 * 关闭面板。
