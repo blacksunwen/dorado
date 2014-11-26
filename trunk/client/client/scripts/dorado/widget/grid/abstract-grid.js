@@ -3585,7 +3585,7 @@
 					if (grid._divScroll) {
 						var offset1 = $fly(grid._divScroll).offset(), offset2 = $fly(cell).offset();
 						var t = offset2.top - offset1.top;
-						if ((t + cell.offsetHeight) > grid._divScroll.clientHeight || t < 0) {
+						if ((t + cell.offsetHeight/2) > grid._divScroll.clientHeight || t < 0) {
 							return;
 						}
 					}
