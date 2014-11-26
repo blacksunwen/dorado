@@ -303,7 +303,7 @@
 
 			if (filterParams && filterParams.length > 0) {
 				if (this._originItems) this._items = this._originItems;
-				else this._originItems = this._items;
+				else if (this.getItemCount() > 0) this._originItems = this._items;
 				var filtered = [];
 				for (var it = this.iterator(0); it.hasNext();) {
 					var item = it.next(), passed = undefined;
