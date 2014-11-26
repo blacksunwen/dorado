@@ -91,7 +91,8 @@ public class RequestParameterWrapperMap implements Map<String, String> {
         value = value.replaceAll("'", "& #39;");
         value = value.replaceAll("eval\\((.*)\\)", "");
         value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-        value = value.replaceAll("script", "");
+        value = value.replace("window['location']=", "");
+        value = value.replace("window[\"location\"]=", "");
         return value;
     }
 }
