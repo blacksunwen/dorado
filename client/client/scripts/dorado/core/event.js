@@ -364,6 +364,13 @@ dorado.EventSupport = $class(/** @scope dorado.EventSupport.prototype */{
 			if (def.disallowMultiListeners && handlers.length) {
 				new dorado.ResourceException("dorado.core.MultiListenersNotSupport", name);
 			}
+			if (alias) {
+				for (var i = handlers.length - 1; i >= 0; i--) {
+					if (handlers[i].alias == alias) {
+						handlers.removeAt(i);
+					}
+				}
+			}
 			handlers.push(handler);
 		} else this._events[name] = [handler];
 		return this;
