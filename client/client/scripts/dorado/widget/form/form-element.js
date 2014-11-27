@@ -755,7 +755,23 @@
 		},
 
 		setFocus: function() {
-			if (this._focused) {
+			function getMouseEvent(){
+		        if(window.event)  return window.event;    
+		        var func = getEvent.caller;        
+		        while(func != null){  
+		            var arg0 = func.arguments[0]; 
+		            if(arg0) 
+		            { 
+		              if((arg0.constructor == Event || arg0.constructor == MouseEvent) || (typeof(arg0) == "object" && arg0.preventDefault && arg0.stopPropagation))
+		              {  
+		            	  return arg0; 
+		              } 
+		            } 
+		            func = func.caller; 
+		        } 
+		        return null; 
+			}
+			if (getMouseEvent()) {
 				$invokeSuper.call(this);
 			}
 			else {
