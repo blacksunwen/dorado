@@ -332,7 +332,11 @@
 					for (var key in observers) {
 						observer = observers[key];
 						if (observer.notifyObservers) {
-							dorado.Toolkits.setDelayedAction(observer, "$refreshDelayTimerId", observer.notifyObservers, 0);
+                            if (dorado.Browser.msie && dorado.Browser.version < 9){
+                                observer.notifyObservers();
+                            } else {
+                                dorado.Toolkits.setDelayedAction(observer, "$refreshDelayTimerId", observer.notifyObservers, 0);
+                            }
 						}
 					}
 				}
