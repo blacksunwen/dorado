@@ -771,7 +771,8 @@
 		        } 
 		        return null; 
 			}
-			if (getMouseEvent()) {
+			var evt = getMouseEvent();
+			if (evt && (evt.srcElement || evt.target) == this._labelEl) {
 				$invokeSuper.call(this);
 			}
 			else {
