@@ -49,7 +49,7 @@ public class RequestParameterWrapperMap implements Map<String, String> {
 
 	public String get(Object key) {
 		String result = request.getParameter((String) key);
-		if (StringUtils.isNotBlank(result)){
+		if (StringUtils.isNotBlank(result)) {
 			result = cleanXSS(result);
 		}
 		return result;
@@ -60,7 +60,6 @@ public class RequestParameterWrapperMap implements Map<String, String> {
 	}
 
 	public String remove(Object key) {
-
 		throw new UnsupportedOperationException();
 	}
 
@@ -83,16 +82,21 @@ public class RequestParameterWrapperMap implements Map<String, String> {
 	public Set<java.util.Map.Entry<String, String>> entrySet() {
 		throw new UnsupportedOperationException();
 	}
-	
-	private String cleanXSS(String value)
-    {
-        value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-        value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
-        value = value.replaceAll("'", "& #39;");
-        value = value.replaceAll("eval\\((.*)\\)", "");
-        value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-        value = value.replace("window['location']=", "");
-        value = value.replace("window[\"location\"]=", "");
-        return value;
-    }
+
+	/*
+	 * TODO: 此处的做法后面需要改进
+	 * 1. 如果用户获得Request Parameter的目的不是向response输出，那么任何内容都是安全的，不能武断的把关键词过滤掉
+	 * 2. 如何过滤关键词需要有一个词库或配置文件，下面的看起来并不全
+	 */
+	private String cleanXSS(String value) {
+		value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
+		value = value.replaceAll("'", "& #39;");
+		value = value.replaceAll("eval\\((.*)\\)", "");
+		value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']",
+				"\"\"");
+		value = value.replace("window['location']=", "");
+		value = value.replace("window[\"location\"]=", "");
+		return value;
+	}
 }

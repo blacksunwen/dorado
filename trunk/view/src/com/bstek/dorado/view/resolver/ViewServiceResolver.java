@@ -167,8 +167,8 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 		}
 
 		try {
-			jsonBuilder.object(); // TODO: 此行在部分情况下会报错，与出错之前JSONBuilder的输出状态相关
-			jsonBuilder.key("exceptionType").value("JavaException")
+			jsonBuilder.object();
+			jsonBuilder.key("exceptionType").value(throwable.getClass().getName())
 					.key("message").value(message).key("stackTrace");
 			jsonBuilder.array();
 			StackTraceElement[] stackTrace = throwable.getStackTrace();

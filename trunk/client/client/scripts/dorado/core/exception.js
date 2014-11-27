@@ -268,9 +268,18 @@ dorado.Exception.getExceptionMessage = function (e) {
  */
 dorado.Exception.processException = function (e) {
 	if (dorado.Exception.IGNORE_ALL_EXCEPTIONS || dorado.windowClosed) return;
+	
+	if (!e) dorado.Exception.removeException(e);
+	if (e instanceof dorado.AbortException) {
+		dorado.Exception.removeException(e);
+		return;
+	}
+	
+	if (dorado._fireOnException(e) === false) {
+		return;
+	}
 
 	dorado.Exception.removeException(e);
-	if (!e || e instanceof dorado.AbortException) return;
 
 	if (e instanceof dorado.RunnableException) {
 		eval(e.script);
@@ -318,4 +327,41 @@ dorado.Exception.processException = function (e) {
  */
 dorado.Exception.removeException = function (e) {
 	dorado.Exception.EXCEPTION_STACK.remove(e);
+};
+
+dorado._exceptionListeners;
+
+/**
+ * 当系统中有异常发生时触发的方法。
+ * @param {Function} listener 监听器。
+ * 此监听器支持一个传入的参数arg，该arg参数具有下列子属性：
+ * <ul>
+ * <li>exception - 异常对象。</li>
+ * <li>processDefault - 是否允许系统继续按照默认的方式来处理该异常。</li>
+ * </ul>
+ */
+dorado.onException = function(listener) {
+	if (!dorado._exceptionListeners) {
+		dorado._exceptionListeners = [];
+	}
+	dorado._exceptionListeners.push(listener);
+};
+
+dorado._fireOnException = function(e) {
+	if (dorado._exceptionListeners && dorado._exceptionListeners.length) {
+		var arg = {
+			exception: e,
+			processDefault: true
+		};
+		dorado._exceptionListeners.each(function(listener) {
+			if (listener.call(window, arg) === false) {
+				return false;
+			}
+		});
+		if (!arg.processDefault) {
+			dorado.Exception.removeException(e);
+			return false;
+		}
+	}
+	return true;
 };
