@@ -169,11 +169,7 @@
 		_findPreviousEntry: function(entry, loadPage, pageNo) {
 			var previous = (entry) ? entry.previous : null, pages = this._pages, pageEntry;	
 			while (!(previous && previous.data.state != dorado.Entity.STATE_DELETED)) {
-				if (previous) {
-					entry = previous;
-					previous = previous.previous;
-				} 
-				if (!previous){
+				if (!previous) {
 					if (!pageEntry) {
 						if (entry) {
 							pageEntry = pages.findEntry(entry.data.page);
@@ -190,9 +186,12 @@
 					if (pageEntry) {
 						previous = pageEntry.data.last;
 					}
+					else {
+						break;
+					}
+				} else {
+					previous = previous.previous;
 				}
-				
-				if (!previous) break;
 			}
 			return previous;
 		},
@@ -217,11 +216,12 @@
 					if (pageEntry) {
 						next = pageEntry.data.first;
 					}
+					else {
+						break;
+					}
 				} else {
 					next = next.next;
 				}
-				
-				if (!next) break;
 			}
 			return next;
 		},
@@ -572,7 +572,7 @@
 					entry = entry.next;
 				}
 				var entity = (entry) ? entry.data : null;
-				if (entity) this.setCurrent(entity);
+				if (entity) this.setCurrent(entity); 
 				return entity;
 			}
 		},
