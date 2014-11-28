@@ -2059,13 +2059,17 @@
 				column._property && column._property != "none" && column._property != this._groupProperty;
 		},
 
-		setCurrentColumn: function(column) {
+		_doSetCurrentColumn: function(column, showCellEditor) {
 			if (this._currentColumn != column) {
 				if (this._currentCell) $fly(this._currentCell).removeClass("current-cell");
 				this.hideCellEditor();
 				this._currentColumn = column;
-				if (column) this.showCellEditor(column);
+				if (column && showCellEditor) this.showCellEditor(column);
 			}
+		},
+		
+		setCurrentColumn: function(column) {
+			this._doSetCurrentColumn(column, true);
 		},
 
 		showCellEditor: function(column) {

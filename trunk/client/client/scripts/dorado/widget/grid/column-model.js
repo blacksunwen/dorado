@@ -991,7 +991,8 @@
 					if (control) control.destroy();
 				});
 				subControl.bind("onClick", function() {
-					arg.grid.setCurrentColumn(arg.column);
+					arg.grid._editing = false;
+					arg.grid._doSetCurrentColumn(arg.column, false);
 				});
 				arg.innerGrid.registerInnerControl(subControl);
 			}
