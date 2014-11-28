@@ -277,12 +277,35 @@
 						iconClass: itemCode.showIcon ? "icon-previous-page" : null,
 						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotPreviousPage") : null,
 						onClick: function() {
+							function getPreviousPageNo(list, pageNo){
+								if (pageNo <= 1) return -1;								
+								if (!list.isPageLoaded(pageNo)) return pageNo;
+								
+								var page = list.getPage(pageNo, false);
+								var entry = page.first;
+								while (entry && entry.data.state == dorado.Entity.STATE_DELETED) {
+									entry = entry.next;
+								}
+								var entity = (entry) ? entry.data : null;
+								if (entity) {
+									return pageNo;
+								}
+								else {
+									return getPreviousPageNo(list, pageNo - 1);
+								}
+							}
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();
-							if (list instanceof dorado.EntityList &&
-							list.pageNo > 1) {
+							if (list instanceof dorado.EntityList && list.pageNo > 1) {
 								pilot.set("disabled", true);
-								list.previousPage(callback);
+								var pageNo = list.pageNo - 1;
+								pageNo = getPreviousPageNo(list, pageNo);
+								if (pageNo > -1) {
+									list.gotoPage(pageNo, callback);
+								}
+								else {
+									pilot.set("disabled", false);
+								}
 							}
 						}
 					});
@@ -292,12 +315,35 @@
 						iconClass: itemCode.showIcon ? "icon-next-page" : null,
 						tip: itemCode.showCaption ? $resource("dorado.baseWidget.DataPilotNextPage") : null,
 						onClick: function() {
+							function getNextPageNo(list, pageNo){
+								if (pageNo >= list.pageCount) return -1;
+								if (!list.isPageLoaded(pageNo)) return pageNo;
+								
+								var page = list.getPage(pageNo, false);
+								var entry = page.first;
+								while (entry && entry.data.state == dorado.Entity.STATE_DELETED) {
+									entry = entry.next;
+								}
+								var entity = (entry) ? entry.data : null;
+								if (entity) {
+									return pageNo;
+								}
+								else {
+									return getNextPageNo(list, pageNo + 1);
+								}
+							}
 							if (!fireOnActionEvent.call(pilot, itemCode.code, self)) return;
 							var list = pilot.getBindingData();
-							if (list instanceof dorado.EntityList &&
-							list.pageNo < list.pageCount) {
+							if (list instanceof dorado.EntityList && list.pageNo < list.pageCount) {
 								pilot.set("disabled", true);
-								list.nextPage(callback);
+								var pageNo = list.pageNo + 1;
+								pageNo = getNextPageNo(list, pageNo);
+								if (pageNo > -1) {
+									list.gotoPage(pageNo, callback);
+								}
+								else {
+									pilot.set("disabled", false);
+								}
 							}
 						}
 					});
