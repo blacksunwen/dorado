@@ -63,7 +63,9 @@ dorado.widget.DropDownBox = $extend(dorado.widget.FloatContainer, /** @scope dor
 	},
 
 	doAfterShow: function(editor) {
-		$invokeSuper.call(this, arguments);
-		this.fireEvent("onDropDownBoxShow", this);
+		if (this._dropDown._editor){
+			$invokeSuper.call(this, arguments);
+			this.fireEvent("onDropDownBoxShow", this);
+		}
 	}
 });
