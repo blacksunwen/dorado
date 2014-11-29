@@ -395,6 +395,10 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			}
 			else if (dorado.Object.isInstanceOf(box, dorado.widget.FloatControl)){
 				box._useAsDropDownBox = true;
+				box.set({
+					center: true,
+					modal: true
+				});
 				box.bind("afterShow", function() {
 					if (dropdown.onDropDownBoxShow) dropdown.onDropDownBoxShow();
 				});
@@ -598,7 +602,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	 */
 	close : function(selectedValue) {
 		var dropdown = this;
-		if (!dropdown.get("opened")) return;
+		if (!dropdown._editor) return;
 		
 		clearInterval(dropdown._relocateTimeId);
 		$fly(window).unbind("resize", dropdown._relocateListener);
