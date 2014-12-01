@@ -513,13 +513,13 @@
 				offsetParentHeight = offsetParentEl.height(), offsetParentBottom, offsetParentRight, overflowTrigger = false,
 				offsetParentOffset = offsetParentEl.offset() || { left: 0, top: 0 }, maxWidth, maxHeight, adjustLeft, adjustTop;
 
-			offsetParentRight = offsetParentWidth + offsetParentOffset.left;
-			offsetParentBottom = offsetParentHeight + offsetParentOffset.top;
+			offsetParentRight = Math.floor(offsetParentWidth + offsetParentOffset.left);
+			offsetParentBottom = Math.floor(offsetParentHeight + offsetParentOffset.top);
 
 			if (fixedElement == window || !fixedElement) fixedElement = document.body;
 			
 			var position = jQuery(fixedElement).offset(),
-				left = position.left, top = position.top, rect, newAlign, vAlignPrefix, overflowRect;
+				left = Math.floor(position.left), top = Math.floor(position.top), rect, newAlign, vAlignPrefix, overflowRect;
 
 			if (fixedElement) {
 				rect = getRect(fixedElement);
@@ -804,8 +804,8 @@
 				height = $win.height();
 				
 				return {
-					left: left,
-					top: top,
+					left: Math.floor(left),
+					top: Math.floor(top),
 					right: left + width,
 					bottom: top + height
 				};
@@ -820,8 +820,8 @@
 				height = $fly(element).outerHeight();
 			}
 			return {
-				left: offset.left,
-				top: offset.top,
+				left: Math.floor(offset.left),
+				top: Math.floor(offset.top),
 				right: offset.left + width,
 				bottom: offset.top + height
 			};
