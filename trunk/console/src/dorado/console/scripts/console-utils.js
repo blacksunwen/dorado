@@ -26,7 +26,6 @@ dorado.console.util = {
 			return 'Invalid size';
 		}
 
-		
 		var result = '', temp = 0;
 		for ( var i = 0; i < dividers.length; i++) {
 			var divider = dividers[i];
