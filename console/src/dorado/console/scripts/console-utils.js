@@ -18,6 +18,7 @@ dorado.console.util = {
 		function _format(value, unit) {
 			return (value.toFixed(1) + ' ' + unit).replace('.0', '');
 		}
+		
 		var K = 1024, M = K * K, G = M * K, T = G * K;
 		var dividers = [ T, G, M, K, 1 ], units = [ 'TB', 'GB', 'MB', 'KB', 'B' ];
 		if (value == 0) {
