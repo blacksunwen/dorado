@@ -806,8 +806,8 @@
 				return {
 					left: Math.floor(left),
 					top: Math.floor(top),
-					right: left + width,
-					bottom: top + height
+					right: Math.floor(left) + width,
+					bottom: Math.floor(top) + height
 				};
 			}
 			
@@ -822,8 +822,8 @@
 			return {
 				left: Math.floor(offset.left),
 				top: Math.floor(offset.top),
-				right: offset.left + width,
-				bottom: offset.top + height
+				right: Math.floor(offset.left + width),
+				bottom: Math.floor(offset.top + height)
 			};
 		}
 		return null;
