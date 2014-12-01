@@ -31,6 +31,22 @@
 			}
 		},
 		
+		getItemId: function(item, index) {
+			if (this.filtered) {
+				return item.entityId;
+			} else {
+				return $invokeSuper.call(this, arguments);
+			}
+		},
+
+		getItemById: function(itemId) {
+			if (this.filtered) {
+				return this._originItems.getById(itemId);
+			} else {
+				return $invokeSuper.call(this, arguments);
+			}
+		},
+		
 		iterator: function(startIndex) {
 			if (!this._items) return this.EMPTY_ITERATOR;
 			if (this.groups || this._items instanceof Array) {
