@@ -926,6 +926,7 @@
 			this._disableObserversCounter++;
 			try {
 				this.clear();
+				this.getPage(this.pageNo, false).loaded = false;
 			}
 			finally {
 				this._disableObserversCounter--;
