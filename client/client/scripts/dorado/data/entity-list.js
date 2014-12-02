@@ -636,6 +636,34 @@
 			return this.entityCount == 0;
 		},
 		
+		/*
+		 * insert或remove的时候需要调用此函数,用于清空父属性的required为true,且数据类型为EntityList的propertyInfo信息
+		 */
+		_doEmptyParentPropertyInfo: function(entity, mode) {
+			var parent = entity.parent;
+			if (parent != null && parent instanceof dorado.EntityList && parent.parent!=null && parent.parent instanceof dorado.Entity){
+				var parentProperty = parent.parentProperty;
+				var parentPropertyDef = parent.parent.getPropertyDef(parentProperty);
+
+				var required = parentPropertyDef._required;
+				if (!required && parentPropertyDef._validators) {
+					for (var i = 0; i < parentPropertyDef._validators.length; i++) {
+						if (parentPropertyDef._validators[i] instanceof dorado.validator.RequiredValidator) {
+							required = true;
+							break;
+						}
+					}
+				}
+
+				if (required){
+					if (mode == "insert" || (mode == "remove" && parent.entityCount == 0)){
+						var propertyInfoMap = parent.parent._propertyInfoMap, propertyInfo = propertyInfoMap[parentProperty];
+						if (propertyInfo) propertyInfoMap[parentProperty] = propertyInfo = {};
+					}
+				}
+			}
+		},
+
 		/**
 		 * 向集合中插入一个数据实体。
 		 * @param {dorado.Entity|Object} entity {optional} 要插入的数据实体或数据实体对应的JSON数据对象。
@@ -687,6 +715,7 @@
 			if (entity.state != dorado.Entity.STATE_DELETED) this.changeEntityCount(page, 1);
 			if (entity.state != dorado.Entity.STATE_MOVED) entity.setState(dorado.Entity.STATE_NEW);
 			this.timestamp = dorado.Core.getTimestamp();
+			this._doEmptyParentPropertyInfo(entity, "insert");
 			if (this.isNull) delete this.isNull;
 			
 			if (dataType) dataType.fireEvent("onInsert", dataType, eventArg);
@@ -695,7 +724,7 @@
 			this.setCurrent(entity);
 			return entity;
 		},
-		
+
 		/**
 		 * 从集合中删除一个数据实体。
 		 * @param {dorado.Entity} [entity] 要删除的数据实体，如果此参数为空则表示将要删除集合中的当前数据实体。
@@ -743,6 +772,7 @@
 			}
 			
 			this.timestamp = dorado.Core.getTimestamp();
+			this._doEmptyParentPropertyInfo(entity, "remove");
 			
 			if (!simpleDetach) {
 				if (dataType) dataType.fireEvent("onRemove", dataType, eventArg);
