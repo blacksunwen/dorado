@@ -502,11 +502,13 @@
 					break;
 				}
 				case 45:{ /* insert */
-					items.insert();
+					if (!this._readOnly) {
+						items.insert();
+					}
 					break;
 				}
 				case 46:{ /* delete */
-					if (evt.ctrlKey) {
+					if (evt.ctrlKey && !this._readOnly) {
 						items.remove();
 					}
 					break;
