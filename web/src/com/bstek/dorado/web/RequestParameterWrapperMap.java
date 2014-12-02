@@ -90,7 +90,6 @@ public class RequestParameterWrapperMap implements Map<String, String> {
 	 */
 	private String cleanXSS(String value)
     {
-		System.out.println(value);
         value = value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
         value = value.replaceAll("\\(", "&#40;").replaceAll("\\)", "&#41;");
         value = value.replaceAll("'", "& #39;");
