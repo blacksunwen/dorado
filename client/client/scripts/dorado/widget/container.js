@@ -96,7 +96,7 @@
 			/**
 			 * 此属性在读取和写入时具有不同的含义。
 			 * <ul>
-			 * <li>读取时返回的是容器控件中子组件的集合。返回的对象是{@link dorado.util.KeyedList}，该集合的键为组件的id，值为相应的组件。</li>
+			 * <li>读取时返回的是容器控件中子组件的集合。返回的对象是一个数组，数组中的每一个元素是子控件的实例（{@link dorado.widget.Component}）。</li>
 			 * <li>而写入时则是作为用于简化为容器添加子控件操作的虚拟属性。
 			 * 写入的数值应该是一个数组，数组中的每一个元素是子控件的实例（{@link dorado.widget.Component}）或以JSON配置对象描述的子控件。</li>
 			 * </ul>
@@ -449,6 +449,48 @@
 				}
 			});
 			this._container = dom.firstChild;
+			var container = this;
+			$fly(dom).keydown(function(evt) {
+				var b, c = dorado.widget.getFocusedControl();
+				if (c) b = c.onKeyDown(evt);
+				if (b === false) {
+					evt.preventDefault();
+					evt.cancelBubble = true;
+					return false;
+				}
+				else {
+					if (container._modernScroller){
+						var modernScroller = container._modernScroller;
+						var subContainer = modernScroller.container;
+						switch (evt.keyCode) {
+							case 33:{ /* pageup */
+								modernScroller.setScrollTop(subContainer.scrollTop - $(subContainer).height());
+								return false;
+							}
+							case 34:{ /* pagedown */
+								modernScroller.setScrollTop(subContainer.scrollTop + $(subContainer).height());
+								return false;
+							}
+							case 35:{ /* end */
+								modernScroller.setScrollTop(subContainer.scrollHeight);
+								return false;
+							}
+							case 36:{ /* home */
+								modernScroller.setScrollTop(0);
+								return false;
+							}
+							case 38:{ /* up */
+								modernScroller.setScrollTop(subContainer.scrollTop - 20);
+								return false;
+							}
+							case 40:{ /* down */
+								modernScroller.setScrollTop(subContainer.scrollTop + 20);
+								return false;
+							}				
+						}
+					}
+				}
+			});
 			return dom;
 		},
 
