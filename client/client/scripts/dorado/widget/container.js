@@ -449,48 +449,6 @@
 				}
 			});
 			this._container = dom.firstChild;
-			var container = this;
-			$fly(dom).keydown(function(evt) {
-				var b, c = dorado.widget.getFocusedControl();
-				if (c) b = c.onKeyDown(evt);
-				if (b === false) {
-					evt.preventDefault();
-					evt.cancelBubble = true;
-					return false;
-				}
-				else {
-					if (container._modernScroller){
-						var modernScroller = container._modernScroller;
-						var subContainer = modernScroller.container;
-						switch (evt.keyCode) {
-							case 33:{ /* pageup */
-								modernScroller.setScrollTop(subContainer.scrollTop - $(subContainer).height());
-								return false;
-							}
-							case 34:{ /* pagedown */
-								modernScroller.setScrollTop(subContainer.scrollTop + $(subContainer).height());
-								return false;
-							}
-							case 35:{ /* end */
-								modernScroller.setScrollTop(subContainer.scrollHeight);
-								return false;
-							}
-							case 36:{ /* home */
-								modernScroller.setScrollTop(0);
-								return false;
-							}
-							case 38:{ /* up */
-								modernScroller.setScrollTop(subContainer.scrollTop - 20);
-								return false;
-							}
-							case 40:{ /* down */
-								modernScroller.setScrollTop(subContainer.scrollTop + 20);
-								return false;
-							}				
-						}
-					}
-				}
-			});
 			return dom;
 		},
 
