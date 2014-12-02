@@ -457,20 +457,6 @@
 				function validateEntity(validateContext, entity, validateOptions, validateSubEntities) {
 					if (entity.isDirty() && entity.state != dorado.Entity.STATE_DELETED) {
 						validateOptions.context = {};
-
-						/*
-						if (validateSubEntities) {
-							entity._propertyDefs.each(function(propertyDef) {
-								var property = propertyDef._name;
-								var propertyDataType = propertyDef.get("dataType");
-								if (propertyDataType instanceof dorado.EntityDataType || 
-										(propertyDataType instanceof dorado.AggregationDataType && propertyDataType.elementDataType instanceof dorado.EntityDataType)) {
-									var propertyInfoMap = entity._propertyInfoMap, propertyInfo = propertyInfoMap[property];
-									if (!propertyInfo) propertyInfoMap[property] = propertyInfo = {};
-								}
-							});
-						}
-						*/
 						entity.validate(validateOptions);
 						validateContext = mergeValidateContext(validateContext, validateOptions.context);
 					}
