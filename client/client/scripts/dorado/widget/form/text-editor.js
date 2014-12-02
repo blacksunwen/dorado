@@ -544,6 +544,14 @@
 						retValue = false;
 					}
 					break;
+				case 8: //backspace
+					if (firstTrigger && firstTrigger._autoOpen){
+						if  (!firstTrigger.get("opened")){
+							this.onTriggerClick(firstTrigger);
+						}
+						retValue = forwardKeyDownEvent(trigger, this);
+					}
+					break;
 				case 13: // enter
 					retValue = forwardKeyDownEvent(trigger, this);
 					if (retValue) {
