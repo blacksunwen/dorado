@@ -644,18 +644,7 @@
 			if (parent != null && parent instanceof dorado.EntityList && parent.parent!=null && parent.parent instanceof dorado.Entity){
 				var parentProperty = parent.parentProperty;
 				var parentPropertyDef = parent.parent.getPropertyDef(parentProperty);
-
-				var required = parentPropertyDef._required;
-				if (!required && parentPropertyDef._validators) {
-					for (var i = 0; i < parentPropertyDef._validators.length; i++) {
-						if (parentPropertyDef._validators[i] instanceof dorado.validator.RequiredValidator) {
-							required = true;
-							break;
-						}
-					}
-				}
-
-				if (required){
+				if (parentPropertyDef._required){
 					if (mode == "insert" || (mode == "remove" && parent.entityCount == 0)){
 						var propertyInfoMap = parent.parent._propertyInfoMap, propertyInfo = propertyInfoMap[parentProperty];
 						if (propertyInfo) propertyInfoMap[parentProperty] = propertyInfo = {};
