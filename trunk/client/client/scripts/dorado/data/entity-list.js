@@ -934,18 +934,21 @@
 			
 			if (callback) {
 				var self = this;
-				this.getPage(this.pageNo, true, function(success, page) {
-					self._disableObserversCounter++;
-					try {
-						if (success) {
-							var entity = (page.first) ? page.first.data : null;
-							self.setCurrent(entity);
-							$callback(callback, true, null);
+				
+				this.getPage(this.pageNo, true, {
+					callback: function(success, page) {
+						self._disableObserversCounter++;
+						try {
+							if (success) {
+								var entity = (page.first) ? page.first.data : null;
+								self.setCurrent(entity);
+								$callback(callback, true, null);
+							}
 						}
-					}
-					finally {
-						self._disableObserversCounter--;
-						self.sendMessage(0);
+						finally {
+							self._disableObserversCounter--;
+							self.sendMessage(0);
+						}
 					}
 				});
 			} else {
