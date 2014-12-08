@@ -109,7 +109,11 @@ dorado.widget.TabControl = $extend(dorado.widget.TabBar, /** @scope dorado.widge
 		}
 
 		if (card) {
-			card.addControl(tab.getControl(), index, current);
+			var control = tab.getControl();
+			if (!control) {
+				control = new dorado.widget.Control();
+			}
+			card.addControl(control, index, current);
 		}
 	},
 
@@ -290,7 +294,11 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 		}
 
 		if (card) {
-			card.addControl(tab.getControl(), index, current);
+			var control = tab.getControl();
+			if (!control) {
+				control = new dorado.widget.Control();
+			}
+			card.addControl(control, index, current);
 		}
 	},
 
