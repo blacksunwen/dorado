@@ -145,11 +145,24 @@ dorado.widget.CheckBox = $extend(dorado.widget.AbstractDataEditor, /** @scope do
 		onValueChange: {}
 	},
 
-    //event: 传入true强制执行onClick，用来响应键盘事件。
+ 	_isReadOnly: function() {
+ 		var checkBox = this;
+		var extraReadOnly = false;
+		var column = checkBox._cellColumn;
+		if (column) {
+			var grid = column._grid;
+			if (grid) {
+				extraReadOnly = !grid.shouldEditing(column);
+			}
+		}
+		return checkBox._readOnly || this._readOnly2 || extraReadOnly;
+	},
+
+   //event: 传入true强制执行onClick，用来响应键盘事件。
 	onClick: function(event) {
 		var checkBox = this;
 		
-		if (checkBox._readOnly || this._readOnly2) {
+		if (checkBox._isReadOnly()) {
 			return;
 		}
 

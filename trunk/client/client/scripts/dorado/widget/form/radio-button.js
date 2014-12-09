@@ -61,7 +61,15 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 	
 	_isReadOnly: function() {
 		var radioButton = this, radioGroup = radioButton._radioGroup;
-		return radioButton._readOnly || radioGroup._readOnly || radioGroup._readOnly2;
+		var extraReadOnly = false;
+		var column = radioGroup._cellColumn;
+		if (column) {
+			var grid = column._grid;
+			if (grid) {
+				extraReadOnly = !grid.shouldEditing(column);
+			}
+		}
+		return radioButton._readOnly || radioGroup._readOnly || radioGroup._readOnly2 || extraReadOnly;
 	},
 	
 	onClick: function(event) {
