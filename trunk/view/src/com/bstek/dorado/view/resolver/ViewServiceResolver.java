@@ -274,9 +274,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 			if (t instanceof ClientRunnableException) {
 				response.setContentType("text/runnable");
-				writer.append("(function(){")
+				writer.append("var fn=(function(){")
 						.append(((ClientRunnableException) t).getScript())
-						.append("})");
+						.append("});");
 			} else {
 				response.setContentType("text/dorado-exception");
 				outputException(jsonBuilder, t);
