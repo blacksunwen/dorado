@@ -388,11 +388,17 @@
 			}
 			if (this._rowSelectionProperty) {
 				var selection = [];
-			if (entityList) {
+				if (entityList) {
 					var it = entityList.iterator();
 					while (it.hasNext()) {
 						var entity = it.next();
-						if (entity.get(this._rowSelectionProperty)) selection.push(entity);
+						if (entity.get(this._rowSelectionProperty)) {
+							if (this._selectionMode == "singleRow") {
+								selection = entity;
+								break;
+							}
+							selection.push(entity);
+						}
 					}
 				}
 				this.set("selection", selection);
@@ -995,7 +1001,6 @@
 							var selectionMode = grid._selectionMode;
 							switch (selectionMode) {
 								case "singleRow":{
-									removed = self.get("selection");
 									if (removed) removed.set(property, false);
 									if (added) added.set(property, true);
 									break;
