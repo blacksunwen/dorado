@@ -614,7 +614,7 @@
 							this.refresh(true);
 							this.refreshSummary();
 						} else {
-							if (this._itemModel.groups && oldCurrentEntity.state == dorado.Entity.STATE_NEW && oldCurrentEntity.parent == null) {
+							if (this._itemModel.groups && oldCurrentEntity && oldCurrentEntity.state == dorado.Entity.STATE_NEW && oldCurrentEntity.parent == null) {
 								this._itemModel.refreshItems();
 							}
 							this.setCurrentEntity(arg.entityList.current);
