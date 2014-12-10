@@ -490,9 +490,11 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 		 * <li>icon	-	{String} 节点图标的URL。</li>
 		 * <li>iconProperty	-	{String} 用于从数据实体中读取节点图标的URL的属性名。</li>
 		 * <li>iconClass	-	{String} 图标元素的CSS Class。</li>
+		 * <li>iconClassProperty	-	{String} 用于从数据实体中读取节点图标元素的CSS Class。</li>
 		 * <li>expandedIcon	-	{String} 展开节点图标的URL。</li>
 		 * <li>expandedIconProperty	-	{String} 用于从数据实体中读取展开节点图标URL的属性名。</li>
 		 * <li>expandedIconClass	-	{String} 展开节点的图标元素的CSS Class。</li>
+		 * <li>expandedIconClassProperty	-	{String} 用于从数据实体中读取展开节点的图标元素的CSS Class。</li>
 		 * <li>checkable	-	{boolean} 节点是否是支持勾选的。</li>
 		 * <li>checkedProperty	-	{String} 用于从数据实体中读取节点是否支持勾选的属性名。</li>
 		 * <li>autoCheckChildren	-	{boolean} 是否自动根据本节点的勾选状态来维护所有子节点的勾选状态。。默认为true。</li>
