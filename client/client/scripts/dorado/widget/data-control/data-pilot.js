@@ -350,7 +350,7 @@
 					break;
 				case "pageSize":
 					item = new PageSizeControl({
-						step: itemCode.options,
+						step: itemCode.options || 5,
 						onAction: function(self, arg) {
 							if (!arg.pageSize || arg.pageSize < 1) {
 								self._pageSize = 10;
@@ -449,7 +449,7 @@
 					code = itemCode.substring(0, index);
 					options = itemCode.substring(index + 1);
 					if (code == "pageSize") {
-						options = parseInt(options) || 5;
+						options = parseInt(options);
 					} else {
 						showIcon = (options.indexOf('i') >= 0);
 						showCaption = (options.indexOf('c') >= 0);
