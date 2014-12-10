@@ -387,7 +387,7 @@
 				}
 			}
 			if (this._rowSelectionProperty) {
-				var selection = [];
+				var selection = ("multiRows" == this._selectionMode) ? [] : null;
 				if (entityList) {
 					var it = entityList.iterator();
 					while (it.hasNext()) {
