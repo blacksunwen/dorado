@@ -143,21 +143,21 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			}
 		},
 
-		expanededIcon: {
+		expandedIcon: {
 			getter: function() {
-				if (this._expanededIcon) return this._expanededIcon;
+				if (this._expandedIcon) return this._expandedIcon;
 				var bg = this._bindingConfig;
-				if (bg.expanededIcon) return bg.expanededIcon;
-				return this._getEntityProperty(this._data, bg.expanededIconProperty);
+				if (bg.expandedIcon) return bg.expandedIcon;
+				return this._getEntityProperty(this._data, bg.expandedIconProperty);
 			}
 		},
 
-		expanededIconClass: {
+		expandedIconClass: {
 			getter: function() {
-				if (this._expanededIconClass) return this._expanededIconClass;
+				if (this._expandedIconClass) return this._expandedIconClass;
 				var bg = this._bindingConfig;
-				if (bg.expanededIconClass) return bg.expanededIconClass;
-				return this._getEntityProperty(this._data, bg.expanededIconClassProperty);
+				if (bg.expandedIconClass) return bg.expandedIconClass;
+				return this._getEntityProperty(this._data, bg.expandedIconClassProperty);
 			}
 		},
 		
