@@ -778,8 +778,7 @@
 			}
 		},
 		
-		filter: function(criterions) {
-		
+		_doInitFilterServerCriterions: function(sysParameter, criterions) {
 			function criterionToServerCriterion(criterion, column, dataColumns) {
 				var serverCriterion = null;
 				if (criterion.junction) {
@@ -860,31 +859,18 @@
 					verifyCriterion.property = column._property;
 				}
 			}
+
 			
-			if (this._filterMode == "serverSide") {
-				var dataSet = this._dataSet;
-				if (!dataSet) return;
-				
-				var serverCriterions = [], dataColumns = this._columnsInfo.dataColumns;
-				if (criterions === undefined) {
-					var filterEntity = this._itemModel.filterEntity;
-					for (var i = 0; i < dataColumns.length; i++) {
-						var column = dataColumns[i];
-						if (!column._property || column._property == "none") continue;
-						
-						var criterion = filterEntity.get(column._property);
-						if (criterion) {
-							var serverCriterion = criterionToServerCriterion(criterion, column, null);
-							if (serverCriterion.junction && serverCriterion.junction != "or") {
-								serverCriterions = serverCriterions.concat(serverCriterion.criterions);
-							} else {
-								serverCriterions.push(serverCriterion);
-							}
-						}
-					}
-				} else {
-					for (var i = 0; i < criterions.length; i++) {
-						var serverCriterion = criterionToServerCriterion(criterions[i], null, dataColumns);
+			var serverCriterions = [], dataColumns = this._columnsInfo.dataColumns;
+			if (criterions === undefined) {
+				var filterEntity = this._itemModel.filterEntity;
+				for (var i = 0; i < dataColumns.length; i++) {
+					var column = dataColumns[i];
+					if (!column._property || column._property == "none") continue;
+					
+					var criterion = filterEntity.get(column._property);
+					if (criterion) {
+						var serverCriterion = criterionToServerCriterion(criterion, column, null);
 						if (serverCriterion.junction && serverCriterion.junction != "or") {
 							serverCriterions = serverCriterions.concat(serverCriterion.criterions);
 						} else {
@@ -892,7 +878,29 @@
 						}
 					}
 				}
-				
+			} else {
+				for (var i = 0; i < criterions.length; i++) {
+					var serverCriterion = criterionToServerCriterion(criterions[i], null, dataColumns);
+					if (serverCriterion.junction && serverCriterion.junction != "or") {
+						serverCriterions = serverCriterions.concat(serverCriterion.criterions);
+					} else {
+						serverCriterions.push(serverCriterion);
+					}
+				}
+			}
+			
+			
+			var criteria = sysParameter.get("criteria") || {};
+			criteria.criterions = serverCriterions;
+			if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
+			sysParameter.put("criteria", criteria);
+		},
+
+		filter: function(criterions) {
+			if (this._filterMode == "serverSide") {
+				var dataSet = this._dataSet;
+				if (!dataSet) return;
+
 				var parentEntityInfo, hostObject;
 				if (this._dataPath) {
 					parentEntityInfo = this._getParentEntityInfo();
@@ -903,14 +911,12 @@
 				} else {
 					hostObject = dataSet;
 				}
-				
+
 				var sysParameter = hostObject._sysParameter;
 				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
-				var criteria = sysParameter.get("criteria") || {};
-				criteria.criterions = serverCriterions;
-				if (!(criteria.criterions || criteria.criterions.length || criteria.orders || criteria.orders.length)) criteria = null;
-				sysParameter.put("criteria", criteria);
-				
+
+				this._doInitFilterServerCriterions(sysParameter, criterions);
+
 				if (parentEntityInfo) {
 					parentEntityInfo.parentEntity.reset(parentEntityInfo.subProperty);
 				} else {
@@ -940,6 +946,9 @@
 				
 				var sysParameter = hostObject._sysParameter;
 				if (!sysParameter) hostObject._sysParameter = sysParameter = new dorado.util.Map();
+				
+				this._doInitFilterServerCriterions(sysParameter);
+				
 				var criteria = sysParameter.get("criteria") || {};
 				if (column) {
 					criteria.orders = orders = [{
