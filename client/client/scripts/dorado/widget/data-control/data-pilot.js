@@ -350,6 +350,7 @@
 					break;
 				case "pageSize":
 					item = new PageSizeControl({
+						step: itemCode.options,
 						onAction: function(self, arg) {
 							if (!arg.pageSize || arg.pageSize < 1) {
 								self._pageSize = 10;
