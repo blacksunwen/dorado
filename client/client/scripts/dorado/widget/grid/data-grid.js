@@ -438,6 +438,9 @@
 		onEntityDeleted: function(arg) {
 			if (this._domMode == 2) this._fixedInnerGrid.onEntityDeleted(arg);
 			this._innerGrid.onEntityDeleted(arg);
+			if (this._itemModel.filtered && this._filterMode == "clientSide" && this._itemModel._items instanceof Array && arg.entity) {
+				this._itemModel._items.remove(arg.entity);
+			}
 			this.updateScroller(this._innerGrid._container);
 		},
 		
@@ -604,11 +607,7 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					this.hideCellEditor();
 					if (this._itemModel.groups) this._itemModel.refreshItems();
-					if (this._itemModel.filtered && this._filterMode == "clientSide" && this._itemModel._items instanceof Array) {
-						this.filter();
-					} else {
-						this.refresh(true);
-					}
+					this.refresh(true);
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
