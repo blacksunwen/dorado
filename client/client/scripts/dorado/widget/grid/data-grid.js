@@ -604,7 +604,14 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					this.hideCellEditor();
 					if (this._itemModel.groups) this._itemModel.refreshItems();
-					this.refresh(true);
+					if (this._itemModel.filtered) {
+						this._itemModel._items = this._itemModel._originItems;
+						if (this._filterMode == "clientSide") {
+							this.filter();
+						}
+					} else {
+						this.refresh(true);
+					}
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
