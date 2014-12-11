@@ -604,14 +604,18 @@
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					this.hideCellEditor();
 					if (this._itemModel.groups) this._itemModel.refreshItems();
-					if (this._itemModel.filtered) {
-						this._itemModel._items = this._itemModel._originItems;
-						if (this._filterMode == "clientSide") {
-							this.filter();
-						}
-					} else {
+//					if (this._itemModel.filtered && this._itemModel._items instanceof Array) {
+//						var entityList = this.getBindingData({
+//							firstResultOnly: true,
+//							acceptAggregation: true
+//						});
+//						this._itemModel.setItems(entityList);	
+//						if (this._filterMode == "clientSide") {
+//							this.filter();
+//						}
+//					} else {
 						this.refresh(true);
-					}
+//					}
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
