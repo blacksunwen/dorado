@@ -98,6 +98,9 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
+.d-list-box .data-table .odd-row {
+  background: #ffffff;
+}
 .d-list-box .data-table .hover-row {
   background: #c5e8fe;
 }
