@@ -225,6 +225,10 @@
 		 * @return {Object} 命令执行后的返回结果。
 		 */
 		execute: function (callback) {
+			if (this._disabled) {
+				throw new dorado.ResourceException("dorado.baseWidget.ErrorCallDisabledAction", this._id);
+			}
+
 			var self = this, retval;
 
 			function realCall() {
