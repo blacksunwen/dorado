@@ -605,7 +605,7 @@
 		processDataSetMessage: function(messageCode, arg, data) {
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
-					this.hideCellEditor();
+					// this.hideCellEditor(); 在IE8下导致部分情况下编辑框被意外关掉，录入的数据丢失
 					if (this._itemModel.groups) this._itemModel.refreshItems();
 					this.refresh(true);
 					break;
