@@ -47,7 +47,7 @@ public abstract class Context implements ResourceLoader {
 
 	private static Context failSafeContext;
 
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private Map<String, Object> attributes;
 
 	/**
 	 * 获得当前线程相关的Context实例。<br>
@@ -140,7 +140,7 @@ public abstract class Context implements ResourceLoader {
 	 */
 	public Object getAttribute(String scope, String key) {
 		if (THREAD.equals(scope)) {
-			return attributes.get(key);
+			return (attributes != null) ? attributes.get(key) : null;
 		} else {
 			return throwsInvalidScope(scope);
 		}
@@ -157,7 +157,9 @@ public abstract class Context implements ResourceLoader {
 	 */
 	public void removeAttribute(String scope, String key) {
 		if (THREAD.equals(scope)) {
-			attributes.remove(key);
+			if (attributes != null) {
+				attributes.remove(key);
+			}
 		} else {
 			throwsInvalidScope(scope);
 		}
@@ -176,6 +178,9 @@ public abstract class Context implements ResourceLoader {
 	 */
 	public void setAttribute(String scope, String key, Object value) {
 		if (THREAD.equals(scope)) {
+			if (attributes == null) {
+				attributes = new HashMap<String, Object>();
+			}
 			attributes.put(key, value);
 		} else {
 			throwsInvalidScope(scope);

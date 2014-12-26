@@ -410,9 +410,13 @@ public final class PackageManager {
 									+ "\" found. They are "
 									+ conflictInfo.toString());
 					logger.warn(e, e);
-				}
 
-				packageMap.put(packageName, packageInfo);
+					if (comparePackages(conflictPackageInfo, packageInfo) > 0) {
+						packageMap.put(packageName, packageInfo);
+					}
+				} else {
+					packageMap.put(packageName, packageInfo);
+				}
 			} catch (Exception e) {
 				throw new IllegalArgumentException(
 						"Error occured during parsing \"" + url.getPath()
@@ -433,6 +437,43 @@ public final class PackageManager {
 		for (PackageInfo packageInfo : calculatedPackages) {
 			packageInfosMap.put(packageInfo.getName(), packageInfo);
 		}
+	}
+
+	private static int parseVersionSection(String section) {
+		if (StringUtils.isNumeric(section)) {
+			return Integer.parseInt(section) * 10;
+		} else if ("RELEASE".equalsIgnoreCase(section)) {
+			return 6;
+		} else if ("STABLE".equalsIgnoreCase(section)) {
+			return 7;
+		} else if ("BETA".equalsIgnoreCase(section)) {
+			return 4;
+		} else if ("ALPHA".equalsIgnoreCase(section)) {
+			return 3;
+		} else if ("SNAPSHOT".equalsIgnoreCase(section)) {
+			return 2;
+		} else {
+			return 5;
+		}
+	}
+
+	private static int comparePackages(PackageInfo pkg1, PackageInfo pkg2) {
+		String[] version1 = StringUtils.split(pkg1.getVersion(), '.'), version2 = StringUtils
+				.split(pkg2.getVersion(), '.');
+		if (version1 == null || version1.length == 0) {
+			version1 = new String[] { "9999" };
+		}
+		if (version2 == null || version2.length == 0) {
+			version2 = new String[] { "9999" };
+		}
+
+		for (int i = 0; i < version1.length && i < version2.length; i++) {
+			int v1 = parseVersionSection(version1[i]), v2 = parseVersionSection(version1[i]);
+			if (v1 != v2) {
+				return v2 - v1;
+			}
+		}
+		return 0;
 	}
 
 	private static void buildPackageInfos() throws Exception {
