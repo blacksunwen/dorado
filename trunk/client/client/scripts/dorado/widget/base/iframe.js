@@ -327,7 +327,7 @@
 		 */
 		getIFrameWindow: function() {
 			var frame = this, doms = frame._doms || {};
-			if (doms.iframe) {
+			if (frame._parent != null && doms.iframe) {
 				return doms.iframe.contentWindow;
 			}
 			return null;
