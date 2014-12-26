@@ -386,17 +386,23 @@
 				});
 			}
 		},
-
+		
+		// 尝试修正在IE8下快速切换焦点并录入信息时偶尔内容无法被编辑框确认的BUG
+		setFocus: function() {
+			if (!this._realReadOnly && !this._editorFocused) {
+				this._lastPost = this._lastEdit = this.get("text");
+			}
+			$invokeSuper.call(this);
+		},
+		
 		doSetFocus: function() {
 			if (!dorado.Browser.isTouch && this._textDom) this._textDom.focus();
 		},
 
 		doOnFocus: function() {
-			// if (dorado.Browser.msie && dorado.Browser.version < 9) this._textDom.readOnly = !!this._realEditable;
 			if (this._realReadOnly) return;
 
 			this._editorFocused = true;
-			this._lastPost = this._lastEdit = this.get("text");
 			if (this._useBlankText) this.doSetText('');
 
 			dorado.Toolkits.setDelayedAction(this, "$editObserverTimerId", function() {

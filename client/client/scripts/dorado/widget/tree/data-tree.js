@@ -454,12 +454,13 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		} else {
 			$invokeSuper.call(this, arguments);
 		}
-	},
-
-	doCollapse: function() {
-		$invokeSuper.call(this, arguments);
-		this.resetChildren();
 	}
+
+	// 导致自动全选功能异常，暂时屏蔽
+	//	doCollapse: function() {
+	//		$invokeSuper.call(this, arguments);
+	//		this.resetChildren();
+	//	}
 });
 
 /**
@@ -738,7 +739,13 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 
 			case dorado.widget.DataSet.MESSAGE_DELETED:{
 				var node = this.findNode(arg.entity);
-				if (node) node.remove();
+				if (node) {
+					var parentNode = node._parent;
+					node.remove();					
+					if (parentNode && parentNode.get("autoCheckChildren")) {
+						parentNode._resetNodeAutoCheckedState();
+					}
+				}
 				break;
 			}
 
@@ -757,9 +764,12 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 					parentNode = this._root;
 				}
 				
-				if (parentNode && parentNode._expanded) {
+				if (parentNode) {
 					this.disableAutoRefresh();
 					parentNode._prepareChildren();
+					if (parentNode.get("autoCheckChildren")) {
+						parentNode._resetNodeAutoCheckedState();
+					}
 					this.enableAutoRefresh();
 					this.refresh(true);
 				}
