@@ -110,7 +110,9 @@
 					this._hotkey = hotkey;
 					var self = this;
 					if (hotkey) jQuery(document).bind("keydown", hotkey, function () {
-						self.execute();
+						if (!this._disabled) {
+							self.execute();
+						}
 						return false;
 					});
 				}
