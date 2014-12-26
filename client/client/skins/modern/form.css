@@ -84,7 +84,7 @@
   color: #000000;
 }
 .d-text-box > .editor-wrapper > .blank-text {
-  color: rgba(0, 0, 0, 0.5) !important;
+  color: #808080 !important;
 }
 .d-text-box.d-text-box-hover {
   border-color: #15a4fa;

@@ -78,6 +78,9 @@
 .d-list-box .data-table .row {
   background: #ffffff;
 }
+.d-list-box .data-table .odd-row {
+  background: #ffffff;
+}
 .d-list-box .data-table .hover-row {
   background: #e8e8e8;
 }
