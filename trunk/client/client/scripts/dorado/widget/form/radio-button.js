@@ -89,7 +89,7 @@ dorado.widget.RadioButton = $extend(dorado.widget.Control, /** @scope dorado.wid
 		$invokeSuper.call(this, arguments);
 		var radioButton = this, doms = radioButton._doms, checked = radioButton._checked, text = radioButton._text, jDom;
 		if (dom) {
-			$fly(dom).toggleClass(radioButton._className + "-readonly", !!(radioButton._readOnly || radioButton._readOnly2));
+			$fly(dom).toggleClass(radioButton._className + "-readonly", radioButton._isReadOnly());
 			if (checked) {
 				$fly(doms.icon).removeClass("unchecked").addClass("checked");
 			} else {
@@ -197,6 +197,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 					radioGroup.clearRadioButtons();
 				}
 				radioGroup._radioButtons = radioButtons;
+				this._dontGenerateButtons = (radioButtons && radioButtons.length);
 				if (radioButtons) {
 					for (var i = 0; i < radioButtons.length; i++) {
 						var radioButton = radioButtons[i];
@@ -449,7 +450,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 					dirty = bindingInfo.entity.isDirty(group._property);
 				}
 				
-				if (bindingInfo.propertyDef) {
+				if (!group._dontGenerateButtons && bindingInfo.propertyDef) {
 					var oldMapping = group._propertyDefMapping, mapping = bindingInfo.propertyDef._mapping;
 					if ((oldMapping || mapping) && (oldMapping != mapping)) {
 						var radioButtons = [];
@@ -463,7 +464,10 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 								});
 							}
 						}
-						if (radioButtons) group.set("radioButtons", radioButtons);
+						if (radioButtons) {
+							group.set("radioButtons", radioButtons);
+							group._dontGenerateButtons = false;
+						}
 					}
 				}
 			}

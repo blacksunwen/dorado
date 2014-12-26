@@ -387,6 +387,34 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 		return this._timestamp;
 	},
 	
+	_resetNodeAutoCheckedState: function() {
+		var tree = this._tree, node = this;
+		if (node.get("autoCheckChildren")) {
+			if (!tree._autoChecking) tree._autoCheckingParent = true;
+			if (tree._autoCheckingParent && node && node.get("checkable")) {
+				tree._autoCheckingChildren = false;
+				var checkedCount = 0, checkableCount = 0, halfCheck = false, self = this;
+				node._nodes.each(function(child) {
+					if (child.get("checkable")) {
+						checkableCount++;
+						var c = (child == self) ? checked : child.get("checked");
+						if (c === true) checkedCount++;
+						else if (c == null) halfCheck = true;
+					}
+				});
+				if (checkableCount) {
+					tree._autoChecking = true;
+					var c = null;
+					if (!halfCheck) {
+						c = (checkedCount == 0) ? false : ((checkedCount == checkableCount) ? true : null)
+					}
+					node.set("checked", c);
+					tree._autoChecking = false;
+				}
+			}
+		}	
+	},
+	
 	_nodeCheckedChanged: function(checked, processChildren, processParent) {
 		var tree = this._tree;
 		if (!tree) return;
@@ -404,31 +432,7 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 		}
 		
 		if (processParent) {
-			var parent = this._parent;
-			if (parent.get("autoCheckChildren")) {
-				if (!tree._autoChecking) tree._autoCheckingParent = true;
-				if (tree._autoCheckingParent && parent && parent.get("checkable")) {
-					tree._autoCheckingChildren = false;
-					var checkedCount = 0, checkableCount = 0, halfCheck = false, self = this;
-					parent._nodes.each(function(child) {
-						if (child.get("checkable")) {
-							checkableCount++;
-							var c = (child == self) ? checked : child.get("checked");
-							if (c === true) checkedCount++;
-							else if (c == null) halfCheck = true;
-						}
-					});
-					if (checkableCount) {
-						tree._autoChecking = true;
-						var c = null;
-						if (!halfCheck) {
-							c = (checkedCount == 0) ? false : ((checkedCount == checkableCount) ? true : null)
-						}
-						parent.set("checked", c);
-						tree._autoChecking = false;
-					}
-				}
-			}
+			this._parent._resetNodeAutoCheckedState();
 		}
 	},
 	
