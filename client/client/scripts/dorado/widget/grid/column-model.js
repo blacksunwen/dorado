@@ -1579,7 +1579,7 @@
 				}
 				if (this.cachable) this._editorControl = editorControl;
 
-				if (editorControl instanceof dorado.widget.TextArea) {
+				if (editorControl && editorControl instanceof dorado.widget.TextArea) {
 					var attrWatcher = editorControl.getAttributeWatcher();
 					this.minWidth = (attrWatcher.getWritingTimes("width")) ? editorControl.get("width") : 120;
 					this.minHeight = (attrWatcher.getWritingTimes("height")) ? editorControl.get("height") : 40;
@@ -1605,19 +1605,21 @@
 				}
 			}
 
-			editorControl.set({
-				dataType: dataType,
-				displayFormat: displayFormat,
-				typeFormat: typeFormat,
-				trigger: trigger,
-				editable: column._editable
-			}, {
-				skipUnknownAttribute: true,
-				tryNextOnError: true,
-				preventOverwriting: true,
-				lockWritingTimes: true
-			});
-
+			if (editorControl) {
+				editorControl.set({
+					dataType: dataType,
+					displayFormat: displayFormat,
+					typeFormat: typeFormat,
+					trigger: trigger,
+					editable: column._editable
+				}, {
+					skipUnknownAttribute: true,
+					tryNextOnError: true,
+					preventOverwriting: true,
+					lockWritingTimes: true
+				});
+			}
+			
 			if (editorControl && !editorControl._initedForCellEditor) {
 				editorControl._initedForCellEditor = true;
 
