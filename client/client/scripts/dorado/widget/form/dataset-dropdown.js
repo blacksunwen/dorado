@@ -120,7 +120,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 		
 		var doOpen = function(flush) {
 			if (dropdown._useDataBinding) {
-				if (dropdown._useDataBinding && dropdown._useEmptyItem) {
+				if (dropdown._useEmptyItem) {
 					dataSet.bind("onLoadData._insertEmptyItem", function(self, arg) {
 						if (arg.pageNo == 1) {
 							var items = self.getData(self._dataPath);
