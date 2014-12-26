@@ -1328,7 +1328,9 @@
 						var cell = $DomUtils.findParent(event.target, function(parentNode) {
 							return parentNode.parentNode == row;
 						}, true);
-						column = grid._columnsInfo.idMap[cell.colId];
+						if (cell) {
+							column = grid._columnsInfo.idMap[cell.colId];
+						}
 					}
 					return column;
 				}
@@ -1925,7 +1927,7 @@
 					break;
 			}
 			if (this._editing && !this._currentCellEditor && this._currentColumn) {
-				if (dorado.Browser.msie && dorado.Browser.version == 8) {
+				if (dorado.Browser.msie && dorado.Browser.version <= 8) {
 					$setTimeout(this, function() {
 						this.showCellEditor(this._currentColumn);
 					}, 0);
