@@ -138,7 +138,7 @@
 }
 .d-text-area .blank-text {
   font-style: italic;
-  color: #a7a7a7;
+  color: #808080 !important;
 }
 .d-text-area .d-dirty-flag {
   position: absolute;

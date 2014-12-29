@@ -197,7 +197,7 @@
   color: #000000;
 }
 .d-text-area > .blank-text {
-  color: rgba(0, 0, 0, 0.5) !important;
+  color: #808080 !important;
 }
 .d-text-area.d-text-area-hover {
   border-color: #15a4fa;
