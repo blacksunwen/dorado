@@ -193,10 +193,10 @@
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
 }
-.d-text-area > .text-area {
+.d-text-area .text-area {
   color: #000000;
 }
-.d-text-area > .blank-text {
+.d-text-area .blank-text {
   color: #808080 !important;
 }
 .d-text-area.d-text-area-hover {
