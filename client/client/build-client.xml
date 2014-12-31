@@ -291,6 +291,13 @@
 				<include name="underscore.js" />
 			</fileset>
 		</copy>
+
+		<mkdir dir="${dist}/scripts/nprogress" />
+		<copy todir="${dist}/scripts/nprogress">
+			<fileset dir="${src}/scripts/nprogress">
+				<include name="nprogress.js" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="copyResources">
