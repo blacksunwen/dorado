@@ -38,7 +38,7 @@ public class EntityList<E> extends EntityCollection<E> implements List<E> {
 	public EntityList(List<E> target, AggregationDataType dataType)
 			throws Exception {
 		super(target, dataType);
-		listTarget = (List<E>) getTarget();
+		listTarget = target;
 	}
 
 	@Override
@@ -53,12 +53,16 @@ public class EntityList<E> extends EntityCollection<E> implements List<E> {
 	}
 
 	public boolean addAll(int index, Collection<? extends E> c) {
-		boolean b = false;
-		for (E o : c) {
-			listTarget.add(proxyElementIfNecessary(o));
-			b = true;
+		if (elementsReplaced) {
+			boolean b = false;
+			for (E o : c) {
+				listTarget.add(proxyElementIfNecessary(o));
+				b = true;
+			}
+			return b;
+		} else {
+			return listTarget.addAll(index, c);
 		}
-		return b;
 	}
 
 	public E get(int index) {
@@ -77,16 +81,14 @@ public class EntityList<E> extends EntityCollection<E> implements List<E> {
 	}
 
 	public E remove(int index) {
-		return proxyElementIfNecessary(listTarget.remove(index));
+		return listTarget.remove(index);
 	}
 
 	public int indexOf(Object o) {
-		replaceAllElementIfNecessary();
 		return listTarget.indexOf(o);
 	}
 
 	public int lastIndexOf(Object o) {
-		replaceAllElementIfNecessary();
 		return listTarget.lastIndexOf(o);
 	}
 

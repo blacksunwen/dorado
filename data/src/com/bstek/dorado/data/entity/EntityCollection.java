@@ -37,7 +37,8 @@ public abstract class EntityCollection<E> implements Collection<E> {
 	 */
 	private DataType elementDataType;
 
-	private boolean elementsReplaced = false;
+	protected boolean elementsReplaced = false;
+	protected boolean replaceElementFailed = false;
 
 	/**
 	 * @param target
@@ -90,8 +91,13 @@ public abstract class EntityCollection<E> implements Collection<E> {
 	}
 
 	protected void replaceAllElementIfNecessary() {
-		if (!elementsReplaced) {
-			replaceAllElementWithProxyIfNecessary(target);
+		if (!elementsReplaced && !replaceElementFailed) {
+			try {
+				replaceAllElementWithProxyIfNecessary(target);
+			} catch (UnsupportedOperationException e) {
+				// 为了处理那些经Collections.unmodifieableXXX()处理过的只读集合
+				replaceElementFailed = true;
+			}
 			elementsReplaced = true;
 		}
 	}
@@ -111,19 +117,25 @@ public abstract class EntityCollection<E> implements Collection<E> {
 	}
 
 	public boolean add(E o) {
-		replaceAllElementIfNecessary();
-		o = proxyElementIfNecessary(o);
+		if (elementsReplaced) {
+			replaceAllElementIfNecessary();
+			o = proxyElementIfNecessary(o);
+		}
 		return target.add(o);
 	}
 
 	public boolean addAll(Collection<? extends E> c) {
-		replaceAllElementIfNecessary();
-		boolean b = false;
-		for (E o : c) {
-			target.add(proxyElementIfNecessary(o));
-			b = true;
+		if (elementsReplaced) {
+			replaceAllElementIfNecessary();
+			boolean b = false;
+			for (E o : c) {
+				target.add(proxyElementIfNecessary(o));
+				b = true;
+			}
+			return b;
+		} else {
+			return target.addAll(c);
 		}
-		return b;
 	}
 
 	public void clear() {
@@ -131,12 +143,10 @@ public abstract class EntityCollection<E> implements Collection<E> {
 	}
 
 	public boolean contains(Object o) {
-		replaceAllElementIfNecessary();
 		return target.contains(o);
 	}
 
 	public boolean containsAll(Collection<?> c) {
-		replaceAllElementIfNecessary();
 		return target.containsAll(c);
 	}
 
@@ -160,17 +170,14 @@ public abstract class EntityCollection<E> implements Collection<E> {
 	}
 
 	public boolean remove(Object o) {
-		replaceAllElementIfNecessary();
 		return target.remove(o);
 	}
 
 	public boolean removeAll(Collection<?> c) {
-		replaceAllElementIfNecessary();
 		return target.removeAll(c);
 	}
 
 	public boolean retainAll(Collection<?> c) {
-		replaceAllElementIfNecessary();
 		return target.retainAll(c);
 	}
 
