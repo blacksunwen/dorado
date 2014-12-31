@@ -168,8 +168,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 		try {
 			jsonBuilder.object();
-			jsonBuilder.key("exceptionType").value(throwable.getClass().getName())
-					.key("message").value(message).key("stackTrace");
+			jsonBuilder.key("exceptionType")
+					.value(throwable.getClass().getName()).key("message")
+					.value(message).key("stackTrace");
 			jsonBuilder.array();
 			StackTraceElement[] stackTrace = throwable.getStackTrace();
 			for (StackTraceElement stackTraceElement : stackTrace) {
@@ -257,7 +258,10 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						}
 						writer.setEscapeEnabled(false);
 						writer.append("\n]]></exception>\n");
-						logger.error(t, t);
+
+						if (!(t instanceof AbortException)) {
+							logger.error(t, t);
+						}
 					}
 					writer.append("</request>\n");
 				}
@@ -282,7 +286,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				outputException(jsonBuilder, t);
 			}
 
-			logger.error(e, e);
+			if (!(t instanceof AbortException)) {
+				logger.error(e, e);
+			}
 		} finally {
 			writer.flush();
 			writer.close();

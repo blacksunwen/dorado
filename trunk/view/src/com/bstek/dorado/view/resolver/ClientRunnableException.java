@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.view.resolver;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2011-7-18
@@ -24,7 +26,21 @@ public class ClientRunnableException extends RuntimeException {
 		this.script = script;
 	}
 
+	public ClientRunnableException(String message, String script) {
+		super(message);
+		this.script = script;
+	}
+
 	public String getScript() {
 		return script;
+	}
+
+	public String toString() {
+		String message = getMessage();
+		if (StringUtils.isEmpty(message)) {
+			return script;
+		} else {
+			return super.toString();
+		}
 	}
 }

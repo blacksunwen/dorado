@@ -980,7 +980,12 @@ dorado.util.AjaxResult = $class(/** @scope dorado.util.AjaxResult.prototype */
 
 		_parseException: function(text) {
 			var json = dorado.JSON.parse(text);
-			return new dorado.RemoteException(json.message, json.exceptionType, json.stackTrace);
+			if (json.exceptionType == "com.bstek.dorado.view.resolver.AbortException") {
+				return new dorado.AbortException(json.message);
+			}
+			else {
+				return new dorado.RemoteException(json.message, json.exceptionType, json.stackTrace);
+			}
 		},
 
 		_parseRunnableException: function(text) {
