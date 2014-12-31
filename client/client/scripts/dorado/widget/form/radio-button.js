@@ -440,7 +440,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 		
 		this.refreshExternalReadOnly();
 		
-		var group = this, layout = group._layout;
+		var group = this, layout = group._layout, radioButtonsRebuilded = false;
 		if (group._dataSet) {
 			var value, dirty;
 			if (group._property) {
@@ -467,6 +467,7 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 						if (radioButtons) {
 							group.set("radioButtons", radioButtons);
 							group._dontGenerateButtons = false;
+							radioButtonsRebuilded = true;
 						}
 					}
 				}
@@ -480,6 +481,15 @@ dorado.widget.RadioGroup = $extend(dorado.widget.AbstractDataEditor, /** @scope 
 			$fly(dom).addClass(group._className + "-flow");
 		} else {
 			$fly(dom).removeClass(group._className + "-flow");
+		}
+		
+		if (!radioButtonsRebuilded) {
+			var radioButtons = group._radioButtons;
+			if (radioButtons) {
+				for (var i = 0, j = radioButtons.length; i < j; i++) {
+					radioButtons[i].refresh();
+				}
+			}
 		}
 	},
 
