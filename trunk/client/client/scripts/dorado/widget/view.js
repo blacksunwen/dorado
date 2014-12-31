@@ -748,92 +748,90 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				dorado.widget.setFocusedControl(control, ignorePhyscialFocus);
 			}
 		});
-		if (!dorado.Browser.isTouch) {
-			$fly(document).keydown(function(evt) {
-				var b, c = dorado.widget.getFocusedControl();
-				if (c) b = c.onKeyDown(evt);
+		$fly(document).keydown(function(evt) {
+			var b, c = dorado.widget.getFocusedControl();
+			if (c) b = c.onKeyDown(evt);
 
-				if ((dorado.widget.HtmlContainer && c instanceof dorado.widget.HtmlContainer) ||
-					(dorado.widget.TemplateField && c instanceof dorado.widget.TemplateField)) {
-					return true;
-				}
+			if ((dorado.widget.HtmlContainer && c instanceof dorado.widget.HtmlContainer) ||
+				(dorado.widget.TemplateField && c instanceof dorado.widget.TemplateField)) {
+				return true;
+			}
 
-				if (b === false) {
-					evt.preventDefault();
-					evt.cancelBubble = true;
-					return false;
-				}
-				else {
-					if ($setting["common.preventBackspace"]) {
-						switch(evt.keyCode || evt.which) {
-							case 8:
-								var doPrevent = false;
-								var d = evt.srcElement || evt.target;
-								if ((d.tagName.toLowerCase() === 'input' && (d.type.toLowerCase() === 'text' || d.type.toLowerCase() === 'password' || d.type.toLowerCase() === 'file'))
-									|| d.tagName.toLowerCase() === 'textarea') {
-									doPrevent = d.readOnly || d.disabled;
-								}
-								else {
-									doPrevent = true;
-								}
+			if (b === false) {
+				evt.preventDefault();
+				evt.cancelBubble = true;
+				return false;
+			}
+			else {
+				if ($setting["common.preventBackspace"]) {
+					switch(evt.keyCode || evt.which) {
+						case 8:
+							var doPrevent = false;
+							var d = evt.srcElement || evt.target;
+							if ((d.tagName.toLowerCase() === 'input' && (d.type.toLowerCase() === 'text' || d.type.toLowerCase() === 'password' || d.type.toLowerCase() === 'file'))
+								|| d.tagName.toLowerCase() === 'textarea') {
+								doPrevent = d.readOnly || d.disabled;
+							}
+							else {
+								doPrevent = true;
+							}
 
-								if (doPrevent) {
-									evt.preventDefault();
-									evt.cancelBubble = true;
-									return false;
-								}
-								break;
-						}
+							if (doPrevent) {
+								evt.preventDefault();
+								evt.cancelBubble = true;
+								return false;
+							}
+							break;
 					}
+				}
 
-					if (b === true) {
-						switch(evt.keyCode || evt.which) {
-							case 8:
-							{	// Backspace
-								if (evt.srcElement) {
-									var nodeName = evt.srcElement.nodeName.toLowerCase();
-									if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
-										return false;
-									}
-								}
-								break;
-							}
-							case 13:
-							{ // Enter
-								if ($setting["common.enterAsTab"]) {
-									var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
-									if (c) c.setFocus();
-									evt.preventDefault();
-									evt.cancelBubble = true;
+				if (b === true) {
+					switch(evt.keyCode || evt.which) {
+						case 8:
+						{	// Backspace
+							if (evt.srcElement) {
+								var nodeName = evt.srcElement.nodeName.toLowerCase();
+								if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
 									return false;
 								}
-								break;
 							}
-							case 9:
-							{ // Tab
+							break;
+						}
+						case 13:
+						{ // Enter
+							if ($setting["common.enterAsTab"]) {
 								var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
 								if (c) c.setFocus();
 								evt.preventDefault();
 								evt.cancelBubble = true;
 								return false;
 							}
+							break;
+						}
+						case 9:
+						{ // Tab
+							var c = (evt.shiftKey) ? dorado.widget.findPreviousFocusableControl() : dorado.widget.findNextFocusableControl();
+							if (c) c.setFocus();
+							evt.preventDefault();
+							evt.cancelBubble = true;
+							return false;
 						}
 					}
-					return true;
 				}
-			}).keypress(function(evt) {
-					var b, c = dorado.widget.getFocusedControl();
-					if (c) b = c.onKeyPress(evt);
-					if (b === false) {
-						evt.preventDefault();
-						evt.cancelBubble = true;
-						return false;
-					}
-					else {
-						return true;
-					}
-				});
-		}
+				return true;
+			}
+		}).keypress(function(evt) {
+			var b, c = dorado.widget.getFocusedControl();
+			if (c) b = c.onKeyPress(evt);
+			if (b === false) {
+				evt.preventDefault();
+				evt.cancelBubble = true;
+				return false;
+			}
+			else {
+				return true;
+			}
+		});
 
 		var cls = "d-unknown-browser", b = dorado.Browser, v = b.version;
 		if (b.isTouch) {
