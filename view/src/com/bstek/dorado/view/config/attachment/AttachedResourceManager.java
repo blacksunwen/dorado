@@ -73,7 +73,7 @@ public class AttachedResourceManager {
 		this.charset = charset;
 	}
 
-	public Object getContent(Resource resource) throws Exception {
+	public synchronized Object getContent(Resource resource) throws Exception {
 		Element element = cache.get(resource);
 		if (element == null) {
 			Object content = parseContent(resource);
