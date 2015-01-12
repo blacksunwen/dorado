@@ -280,7 +280,36 @@
 //	jQuery.ui.draggable.prototype.options.useShim = false;
 	
 	jQuery.ui.draggable.prototype.options.iframeFix = true;
-	
+
+	jQuery.ui.draggable.prototype._mouseCapture = function(event) {
+
+		var o = this.options;
+
+		// among others, prevent a drag on a resizable-handle
+		if (this.helper || o.disabled || $(event.target).closest(".ui-resizable-handle").length > 0) {
+			return false;
+		}
+
+		//Quit if we're not on a valid handle
+		this.handle = this._getHandle(event);
+		if (!this.handle) {
+			return false;
+		}
+
+		$(o.iframeFix === true ? "iframe" : o.iframeFix).each(function() {
+			$("<div class='ui-draggable-iframeFix' style='background: #fff;'></div>")
+				.css({
+					width: this.offsetWidth+"px", height: this.offsetHeight+"px",
+					position: "absolute", opacity: "0.001", zIndex: 1000000
+				})
+				.css($(this).offset())
+				.appendTo("body");
+		});
+
+		return true;
+
+	};
+
 	//修复this.options.axis不能设置为空的问题。
 	//	$.ui.draggable.prototype._mouseDrag = function(event, noPropagation) {
 	//
