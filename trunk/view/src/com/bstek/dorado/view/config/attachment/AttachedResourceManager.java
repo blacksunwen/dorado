@@ -73,16 +73,19 @@ public class AttachedResourceManager {
 		this.charset = charset;
 	}
 
-	public synchronized Object getContent(Resource resource) throws Exception {
-		Element element = cache.get(resource);
-		if (element == null) {
-			Object content = parseContent(resource);
-			if (!(resource instanceof RefreshableResource)) {
-				resource = new DefaultRefreshableResource(resource);
+	public Object getContent(Resource resource) throws Exception {
+		Element element;
+		synchronized (cache) {
+			element = cache.get(resource);
+			if (element == null) {
+				Object content = parseContent(resource);
+				if (!(resource instanceof RefreshableResource)) {
+					resource = new DefaultRefreshableResource(resource);
+				}
+				element = new ResourceCacheElement(
+						(RefreshableResource) resource, content);
+				cache.put(element);
 			}
-			element = new ResourceCacheElement((RefreshableResource) resource,
-					content);
-			cache.put(element);
 		}
 		return element.getObjectValue();
 	}
