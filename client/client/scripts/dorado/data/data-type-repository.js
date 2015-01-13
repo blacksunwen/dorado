@@ -184,11 +184,11 @@
 							
 							if (dataTypeRepository.parseJsonData(dataTypeJson) > 0) {
 								var dataType = dataTypeRepository._dataTypeMap[this.name];
-								if (dataType && dataType._config) {
-									var config =  dataType._config;
-									delete dataType._config;
-									dataType.set(config);
-								}
+//								if (dataType && dataType._config) {
+//									var config =  dataType._config;
+//									delete dataType._config;
+//									dataType.set(config);
+//								}
 								$callback(callback, true, dataType, {
 									scope: this
 								});
@@ -211,11 +211,11 @@
 				var jsonData = result.getJsonData(), dataType;
 				if (jsonData && dataTypeRepository.parseJsonData(jsonData) > 0) {
 					dataType = dataTypeRepository._dataTypeMap[this.name];
-					if (dataType && dataType._config) {
-						var config =  dataType._config;
-						delete dataType._config;
-						dataType.set(config);
-					}
+//					if (dataType && dataType._config) {
+//						var config =  dataType._config;
+//						delete dataType._config;
+//						dataType.set(config);
+//					}
 				}
 				if (!dataType) {
 					throw new dorado.ResourceException("dorado.data.DataTypeLoadFailed", this.name);
@@ -313,8 +313,8 @@
 			if (dataType) {
 				dataType.loadFromServer = true;
 				dataType._dataTypeRepository = this;
-				dataType._config = jsonData;
-				// dataType.set(jsonData);
+				//dataType._config = jsonData;
+				dataType.set(jsonData);
 			}
 			return dataType;
 		},
@@ -353,7 +353,7 @@
 			if (this._dataTypeMap[name] instanceof dorado.DataType) return;
 			this._dataTypeMap[name] = dataType;
 			if (dataType instanceof dorado.DataType) {
-				dataType._dataTypeRepository = this;
+				dataType.setDataTypeRepository(this);
 				if (hasRespositoryListener) {
 					this.fireEvent("onDataTypeRegister", this, {
 						dataType: dataType
