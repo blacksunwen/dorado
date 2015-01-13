@@ -115,6 +115,16 @@
 					}
 				}
 			},
+			
+			setDataTypeRepository: function(dataTypeRepository) {
+				this._dataTypeRepository = dataTypeRepository;
+				if (this._processLiveBinding && dataTypeRepository) {
+					var view = dataTypeRepository._view;
+					if (view && view !== $topView && !this._liveBindingProcessed) {
+						this._processLiveBinding(view);
+					}
+				}
+			},
 
 			getListenerScope: function () {
 				return this.get("view");
@@ -666,6 +676,44 @@
 					newDataType.addPropertyDef(dorado.Core.clone(pd));
 				});
 				return newDataType;
+			},
+			
+			_processLiveBinding: function(view) {
+				if (view) {
+					if (this._tags) {
+						var tag;
+						for (var i = 0, len = this._tags.length; i < len; i++) {
+							tag = this._tags[i];
+							if (view._liveTagBindingMap) {
+								var liveBindings = view._liveTagBindingMap[tag];
+								if (liveBindings) {
+									var liveBinding;
+									for (var j = 0, l = liveBindings.length; j < l; j++) {
+										liveBinding = liveBindings[j];
+										if (liveBinding.subObject) {
+											var subObject = this.get(liveBinding.subObject);
+											if (subObject) subObject.bind(liveBinding.event, liveBinding.listener);
+										}
+										else {
+											this.bind(liveBinding.event, liveBinding.listener);
+										}
+									}
+								}
+							}
+							if (view._liveTagSettingMap) {
+								var liveSettings = view._liveTagSettingMap[tag];
+								if (liveSettings) {
+									var liveSetting;
+									for (var j = 0, l = liveSettings.length; j < l; j++) {
+										liveSetting = liveSettings[j];
+										this.set(liveSetting.attr, liveSetting.value, liveSetting.options);
+									}
+								}
+							}
+						}
+					}
+				}
+				this._liveBindingProcessed = true;
 			},
 
 			updateWrapperType: function () {
