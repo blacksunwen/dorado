@@ -236,12 +236,12 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		 * @see dorado.widget.DataSet#loadMode
 		 */
 		onLoadData: function(dataSets) {
-			if (this._renderMode == "onDataLoaded") {
-				this.render();
-			}
 			this.fireEvent("onLoadData", this, {
 				dataSets: dataSets
 			});
+			if (this._renderMode == "onDataLoaded") {
+				this.render();
+			}
 		},
 
 		destroy: function() {
@@ -925,6 +925,16 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 
 			window.onresize = function() {
 				oldResize && oldResize.apply(window, arguments);
+				
+				// 防止因浏览器尺寸改变导致正在编辑的内容消失的问题
+				var control = dorado.widget.getFocusedControl();
+				while(control) {
+					if (control instanceof dorado.widget.AbstractEditor) {
+						control.post();
+					}
+					control = control._focusParent || control._parent;
+				}
+				
 				if (dorado.Browser.isTouch) {
 					var width = $fly(window).width(), height = $fly(window).height();
 					if ((oldWidth === undefined && oldHeight === undefined) || (width !== oldWidth && height !== oldHeight)) {
