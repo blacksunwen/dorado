@@ -41,13 +41,12 @@ public class DelegatingFilterChain implements FilterChain {
 		this.realFilterChain = realFilterChain;
 	}
 
-	private String getContextPath(HttpServletRequest request) {
-		return request.getContextPath();
-	}
-
-	private String getPath(HttpServletRequest request) {
-		return request.getRequestURI().substring(
-				getContextPath(request).length());
+	private String getRequestPath(HttpServletRequest request) {
+		String url = request.getServletPath();
+		if (request.getPathInfo() != null) {
+			url += request.getPathInfo();
+		}
+		return url;
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response)
@@ -63,7 +62,7 @@ public class DelegatingFilterChain implements FilterChain {
 
 				List<String> urlPatterns = targetFilter.getUrlPatterns();
 				if (urlPatterns != null) {
-					String path = getPath((HttpServletRequest) request);
+					String path = getRequestPath((HttpServletRequest) request);
 					for (String pattern : urlPatterns) {
 						if (pathMatcher.match(pattern, path)) {
 							matched = true;

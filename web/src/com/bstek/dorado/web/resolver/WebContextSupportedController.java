@@ -35,19 +35,17 @@ import com.bstek.dorado.web.DoradoContext;
 public abstract class WebContextSupportedController extends AbstractController {
 	private static final char ESCAPED_PATH_DELIM = '^';
 
-	private String getContextPath(HttpServletRequest request) {
-		return request.getContextPath();
-	}
-
 	/**
 	 * 返回请求的相对URI，即相对于应用的ContentPath的URI。
 	 */
-	protected String getRelativeRequestURI(HttpServletRequest request)
+	protected String getRequestPath(HttpServletRequest request)
 			throws UnsupportedEncodingException {
 		String uri = (String) request.getAttribute("originalUrlPath");
 		if (uri == null) {
-			uri = request.getRequestURI().substring(
-					getContextPath(request).length());
+			uri = request.getServletPath();
+			if (request.getPathInfo() != null) {
+				uri += request.getPathInfo();
+			}
 		}
 		uri = StringUtils
 				.replaceChars(

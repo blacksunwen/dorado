@@ -60,7 +60,7 @@ public abstract class AbstractControllerResolver extends
 	@Override
 	protected ModelAndView doHandleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		String uri = getRelativeRequestURI(request);
+		String uri = getRequestPath(request);
 		if (!PathUtils.isSafePath(uri)) {
 			throw new PageAccessDeniedException("[" + request.getRequestURI()
 					+ "] Request forbidden.");

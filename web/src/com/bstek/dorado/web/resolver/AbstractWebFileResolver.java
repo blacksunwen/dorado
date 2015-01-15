@@ -212,12 +212,12 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 
 	protected String getResourceCacheKey(HttpServletRequest request)
 			throws Exception {
-		return getRelativeRequestURI(request);
+		return getRequestPath(request);
 	}
 
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		String path = getRelativeRequestURI(request);
+		String path = getRequestPath(request);
 		String resourceSuffix = getUriSuffix(request);
 		Resource[] resources = context.getResources(path);
 		return new ResourcesWrapper(resources, getResourceTypeManager()
