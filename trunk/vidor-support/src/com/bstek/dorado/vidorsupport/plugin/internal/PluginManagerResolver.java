@@ -137,7 +137,7 @@ public class PluginManagerResolver extends AbstractTextualResolver {
 
 	protected String getServiceName(HttpServletRequest request)
 			throws Exception {
-		String uri = this.getRelativeRequestURI(request);
+		String uri = getRequestPath(request);
 		int si = uri.lastIndexOf('/');
 		String serviceName = uri.substring(si + 1);
 		return serviceName;

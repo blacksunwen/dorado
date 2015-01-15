@@ -329,7 +329,7 @@ public class BootPackagesResolver extends WebFileResolver {
 	@Override
 	protected String getResourceCacheKey(HttpServletRequest request)
 			throws Exception {
-		StringBuffer buf = new StringBuffer(getRelativeRequestURI(request));
+		StringBuffer buf = new StringBuffer(getRequestPath(request));
 		buf.append('-').append(request.getParameter("clientType")).append('-')
 				.append(request.getParameter("skin")).append('-')
 				.append(Configure.getString("view.useMinifiedJavaScript"));

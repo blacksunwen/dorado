@@ -65,7 +65,7 @@ public class WebFileResolver extends AbstractWebFileResolver {
 	@Override
 	protected ResourcesWrapper createResourcesWrapper(
 			HttpServletRequest request, DoradoContext context) throws Exception {
-		String path = getRelativeRequestURI(request);
+		String path = getRequestPath(request);
 		if (StringUtils.isNotEmpty(baseUri)) {
 			path = path.substring(baseUri.length());
 		}

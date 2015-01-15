@@ -247,7 +247,7 @@ public class PackageFileResolver extends WebFileResolver {
 		if (locale == null) {
 			locale = defaultLocale;
 		}
-		return getRelativeRequestURI(request) + "|" + locale.toString();
+		return getRequestPath(request) + "|" + locale.toString();
 	}
 
 	/**

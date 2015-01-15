@@ -161,7 +161,7 @@ public class HtmlViewResolver extends AbstractTextualResolver {
 			}
 		}
 
-		String uri = getRelativeRequestURI(request);
+		String uri = getRequestPath(request);
 		if (!PathUtils.isSafePath(uri)) {
 			throw new PageAccessDeniedException("[" + request.getRequestURI()
 					+ "] Request forbidden.");
