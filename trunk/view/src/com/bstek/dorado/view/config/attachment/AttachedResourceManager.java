@@ -77,13 +77,15 @@ public class AttachedResourceManager {
 		Element element;
 		synchronized (cache) {
 			element = cache.get(resource);
-			if (element == null) {
-				Object content = parseContent(resource);
-				if (!(resource instanceof RefreshableResource)) {
-					resource = new DefaultRefreshableResource(resource);
-				}
-				element = new ResourceCacheElement(
-						(RefreshableResource) resource, content);
+		}
+		if (element == null) {
+			Object content = parseContent(resource);
+			if (!(resource instanceof RefreshableResource)) {
+				resource = new DefaultRefreshableResource(resource);
+			}
+			element = new ResourceCacheElement((RefreshableResource) resource,
+					content);
+			synchronized (cache) {
 				cache.put(element);
 			}
 		}

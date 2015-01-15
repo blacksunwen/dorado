@@ -73,17 +73,22 @@ public class CacheableXmlViewConfigDefinitionFactory extends
 	protected ViewConfigDefinition doCreate(String viewName) throws Exception {
 		ViewConfigDefinition definition;
 		Object definitionCacheKey = getDefinitionCacheKey(viewName);
-		Element element = cache.get(definitionCacheKey);
+		Element element;
+		synchronized (cache) {
+			element = cache.get(definitionCacheKey);
+		}
 		if (element != null) {
 			definition = (ViewConfigDefinition) element.getObjectValue();
 		} else {
 			definition = super.doCreate(viewName);
 			element = new DefinitionCacheElement(definitionCacheKey, definition);
-			cache.put(element);
+			synchronized (cache) {
+				cache.put(element);
+			}
 		}
 		return definition;
 	}
-	
+
 	protected Object getDefinitionCacheKey(String viewName) throws Exception {
 		return viewName;
 	}
