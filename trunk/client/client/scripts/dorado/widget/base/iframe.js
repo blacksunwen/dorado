@@ -288,6 +288,24 @@
 				}
 			}
 
+			if (dorado.Browser.isTouch) {
+				var frameDom = frame._dom;
+				if (actualVisible === false) {
+					var frameWin = frame.getIFrameWindow();
+
+					if (frame.isSameDomain() && frameWin) {
+						if (frameWin.document.activeElement)
+							frameWin.document.activeElement.blur();
+						$fly(frameWin.document.body).find("input").blur();
+					}
+
+					if (frameDom) {
+						$fly(frameDom).find("iframe").prop("src", BLANK_PATH);
+						frame._toReplaceUrl = frame._path;
+					}
+				}
+			}
+
 			if (dorado.Browser.android) return;
 
 			var iframeWindow = frame.getIFrameWindow();
