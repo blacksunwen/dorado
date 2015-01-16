@@ -875,13 +875,14 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 		}
 
 		$fly(document.body).addClass(cls);
-		$fly(document.body).focusin(function(evt) {
-			if (dorado.widget.Control.IGNORE_FOCUSIN_EVENT) return;
-			var control = getControlByElement(evt.target);
-			if (control) {
-				dorado.widget.onControlGainedFocus(control);
-			}
-		});
+		if (!dorado.Browser.isTouch)
+			$fly(document.body).focusin(function(evt) {
+				if (dorado.widget.Control.IGNORE_FOCUSIN_EVENT) return;
+				var control = getControlByElement(evt.target);
+				if (control) {
+					dorado.widget.onControlGainedFocus(control);
+				}
+			});
 
 		var resizeTopView = function() {
 			if (topView.onResizeTimerId) {
