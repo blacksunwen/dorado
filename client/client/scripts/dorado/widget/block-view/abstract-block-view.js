@@ -556,25 +556,29 @@
 			if (dorado.Browser.isTouch || $setting["common.simulateTouch"]) {
                 $fly(blockView._container).css("position", "relative");
 				$fly(dom).bind("tap", function(evt) {
-					var blockDom = blockView._findBlockDom(evt);
-					if (blockDom) {
-						var data = $fly(blockDom).data("item");
-						if (data) {
-							blockView.fireEvent("onBlockTap", blockView, {
-								data: data
-							});
+					setTimeout(function() {
+						var blockDom = blockView._findBlockDom(evt);
+						if (blockDom) {
+							var data = $fly(blockDom).data("item");
+							if (data) {
+								blockView.fireEvent("onBlockTap", blockView, {
+									data: data
+								});
+							}
 						}
-					}
+					}, 10);
 				}).bind("taphold", function(evt) {
-					var blockDom = blockView._findBlockDom(evt);
-					if (blockDom) {
-						var data = $fly(blockDom).data("item");
-						if (data) {
-							blockView.fireEvent("onBlockTapHold", blockView, {
-								data: data
-							});
+					setTimeout(function() {
+						var blockDom = blockView._findBlockDom(evt);
+						if (blockDom) {
+							var data = $fly(blockDom).data("item");
+							if (data) {
+								blockView.fireEvent("onBlockTapHold", blockView, {
+									data: data
+								});
+							}
 						}
-					}
+					}, 10);
 				});
 			}
 			else {
