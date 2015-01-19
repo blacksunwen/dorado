@@ -1415,7 +1415,7 @@
 			},
 
 			doSetFocus: function() {
-				//if (this._dom) this._dom.focus();
+				if (this._dom) this._dom.focus();
 			},
 
 			/**

@@ -2044,7 +2044,20 @@
 		},
 
 		doOnFocus: function() {
-			if (this._currentColumn) {
+			if (!this._currentColumn) {
+				var dataColumns = this._columnsInfo.dataColumns;
+				for(var i = 0; i < dataColumns.length; i++) {
+					var column = dataColumns[i];
+					if (!column._property || column._property == "none") continue;
+					if (this.shouldEditing(column)) {
+						dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
+							if (!this._currentColumn) this.setCurrentColumn(column);
+						}, 100);
+						break;
+					};
+				}
+			}
+			else  {
 				dorado.Toolkits.setDelayedAction(this, "$showEditorTimerId", function() {
 					if (this._currentColumn && !this._currentCellEditor) this.showCellEditor(this._currentColumn);
 				}, 100);

@@ -128,9 +128,15 @@
 		doOnKeyDown: function(event) {
 			var retValue = true;
 			var button = this;
-			if (event.keyCode == 32 || event.keyCode == 13) {
+			if (event.keyCode == 32) {
 				button.fireEvent("onClick", button);
 				retValue = false;
+			}
+			else if (event.keyCode == 13) {
+				if (!$setting["common.enterAsTab"]) {
+					button.fireEvent("onClick", button);
+					retValue = false;
+				}
 			}
 			return retValue;
 		},

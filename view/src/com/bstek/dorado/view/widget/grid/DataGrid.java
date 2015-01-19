@@ -32,6 +32,7 @@ public class DataGrid extends AbstractGrid implements DataControl {
 	private String dataPath;
 	private EntityDataType dataType;
 	private boolean supportsPaging;
+	private boolean appendOnLastEnter;
 	private Boolean autoCreateColumns;
 	private FilterMode filterMode = FilterMode.clientSide;
 	private SortMode sortMode = SortMode.clientSide;
@@ -72,6 +73,14 @@ public class DataGrid extends AbstractGrid implements DataControl {
 
 	public void setSupportsPaging(boolean supportsPaging) {
 		this.supportsPaging = supportsPaging;
+	}
+
+	public boolean isAppendOnLastEnter() {
+		return appendOnLastEnter;
+	}
+
+	public void setAppendOnLastEnter(boolean appendOnLastEnter) {
+		this.appendOnLastEnter = appendOnLastEnter;
 	}
 
 	public Boolean getAutoCreateColumns() {

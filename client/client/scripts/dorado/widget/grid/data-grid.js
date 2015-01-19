@@ -488,26 +488,48 @@
 					var columns = this._columnsInfo.dataColumns, i;
 					if (this._currentColumn) {
 						i = columns.indexOf(this._currentColumn) || 0;
+					}
+					else {
+						i = evt.shiftKey ? (columns.length) : -1;
+					}
+					
+					var count = 0, column, newColumn, wrapped;
+					i = columns.indexOf(this._currentColumn) || 0;
+					while (count < columns.length) {
+						count++;
+						
+						(evt.shiftKey) ? i-- : i++;
+						if (i < 0) {
+							i = columns.length - 1;
+							wrapped = true;
+						}
+						else if (i >= columns.length) {
+							i = 0;
+							wrapped = true;
+						}
+						
+						column = columns[i];
+						if (this.shouldEditing(column)) {
+							newColumn = column;
+							break;
+						}
+					}
+					
+					if (wrapped) {
 						if (evt.shiftKey) {
-							if (i > 0) i--;
-							else if (items.hasPrevious()) {
+							if (items.hasPrevious()) {
 								items.previous(this._supportsPaging);
-								i = columns.length - 1;
 							} else retValue = true;
 						} else {
-							if (i < columns.length - 1) i++;
-							else if (items.hasNext()) {
+							if (items.hasNext()) {
 								items.next(this._supportsPaging);
-								i = 0;
 							} else if (this._appendOnLastEnter && items.current) {
 								items.insert();
-								i = 0;
 							} else retValue = true;
 						}
-					} else {
-						i = evt.shiftKey ? (columns.length - 1) : 0;
 					}
-					this.setCurrentColumn(columns[i]);
+					
+					this.setCurrentColumn(newColumn);
 					break;
 				}
 				case 45:{ /* insert */
