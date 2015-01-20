@@ -1686,7 +1686,7 @@
 
 			var control = this.getEditorControl();
 			if (!control) return;
-			control.set("focusParent", parent);
+			control.set("focusParent", parent._grid);
 			control.setActualVisible(true);
 			control.setFocus();
 		},

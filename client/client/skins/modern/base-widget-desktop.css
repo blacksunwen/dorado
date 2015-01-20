@@ -97,6 +97,14 @@
 .d-button.d-button-hover .d-icon {
   color: rgba(0, 0, 0, 0.7);
 }
+.d-button.d-button-focused {
+  color: #000000;
+  border-color: #bebebe;
+  background-color: #e6e6e6;
+}
+.d-button.d-button-focused .d-icon {
+  color: rgba(0, 0, 0, 0.7);
+}
 .d-button.d-button-click {
   -webkit-transition-duration: 0;
   -moz-transition-duration: 0;
@@ -142,6 +150,14 @@
 .d-button-highlight.d-button-hover .d-icon {
   color: rgba(255, 255, 255, 0.7);
 }
+.d-button-highlight.d-button-focused {
+  color: #ffffff;
+  border-color: #0588d7;
+  background-color: #0588d7;
+}
+.d-button-highlight.d-button-focused .d-icon {
+  color: rgba(255, 255, 255, 0.7);
+}
 .d-button-highlight.d-button-click {
   -webkit-transition-duration: 0;
   -moz-transition-duration: 0;
@@ -184,6 +200,14 @@
   background-color: #ff171d;
 }
 .d-button-decline.d-button-hover .d-icon {
+  color: rgba(255, 255, 255, 0.7);
+}
+.d-button-decline.d-button-focused {
+  color: #ffffff;
+  border-color: #ff171d;
+  background-color: #ff171d;
+}
+.d-button-decline.d-button-focused .d-icon {
   color: rgba(255, 255, 255, 0.7);
 }
 .d-button-decline.d-button-click {
@@ -1414,6 +1438,11 @@
 }
 .d-toolbar .d-icon-button-hover,
 .d-toolbar .d-button-hover {
+  color: #000000;
+  background-color: #e6e6e6;
+}
+.d-toolbar .d-icon-button-focused,
+.d-toolbar .d-button-focused {
   color: #000000;
   background-color: #e6e6e6;
 }
