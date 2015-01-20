@@ -1761,11 +1761,12 @@
 							reverse: reverse
 						});
 					}
+					
+					if (focusableControl && !focusableControl.tabStop) {
+						focusableControl = null;
+					}
 					if (focusableControl) break;
 				}
-			}
-			if (focusableControl && !focusableControl.tabStop) {
-				focusableControl = null;
 			}
 		}
 		return focusableControl;

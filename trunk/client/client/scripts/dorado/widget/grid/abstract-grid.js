@@ -1249,6 +1249,10 @@
 		notifySizeChange: function() {
 			if (!this.xScroll || !this.yScroll) $invokeSuper.call(this, arguments);
 		},
+		
+		getFocusableSubControls: function() {
+			return null;
+		},
 
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);

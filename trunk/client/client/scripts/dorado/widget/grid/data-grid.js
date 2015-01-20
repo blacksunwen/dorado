@@ -529,7 +529,13 @@
 						}
 					}
 					
-					this.setCurrentColumn(newColumn);
+					if (retValue) {
+						this.setCurrentColumn(null);
+						this.hideCellEditor();
+					}
+					else {
+						this.setCurrentColumn(newColumn);
+					}
 					break;
 				}
 				case 45:{ /* insert */
