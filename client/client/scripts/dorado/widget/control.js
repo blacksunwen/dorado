@@ -1698,21 +1698,21 @@
 		return v.peek();
 	};
 
-	dorado.widget.findFocusableControlInElement = function(element) {
+	dorado.widget.findFocusableControlInElement = function(element, reverse) {
 
 		function findInChildren(element) {
-			var el = element.firstChild, control = null;
+			var el = (reverse ? element.lastChild : element.firstChild), control = null;
 			while(el) {
 				control = findInChildren(el);
 				if (control) break;
 				if (el.doradoUniqueId) {
 					var c = dorado.widget.ViewElement.ALL[el.doradoUniqueId];
-					if (c && c.isFocusable()) {
+					if (c && c.isFocusable() && c.tabStop) {
 						control = c;
 						break;
 					}
 				}
-				el = el.nextSibling;
+				el = reverse ? el.previousSibling: el.nextSibling;
 			}
 			return control;
 		}
