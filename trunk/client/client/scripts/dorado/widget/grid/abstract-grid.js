@@ -3657,6 +3657,10 @@
 							if (cellEditor.shouldShow()) {
 								cellEditor.show(this, cell);
 							}
+							else {
+								var subCellControl = dorado.widget.findFocusableControlInElement(cell);
+								if (subCellControl) subCellControl.setFocus();
+							}
 						}
 						else {
 							var fc = dorado.widget.findFocusableControlInElement(cell);
