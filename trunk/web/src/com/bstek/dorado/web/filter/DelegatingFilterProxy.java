@@ -29,6 +29,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.context.WebApplicationContext;
@@ -57,8 +58,8 @@ public class DelegatingFilterProxy implements Filter {
 	private List<DelegatingFilter> getTargetFilters(ServletRequest request) {
 		if (targetFilters == null) {
 			WebApplicationContext wac = getWebApplicationContext(request);
-			Map<String, DelegatingFilter> targetFilterMap = wac
-					.getBeansOfType(DelegatingFilter.class);
+			Map<String, DelegatingFilter> targetFilterMap = BeanFactoryUtils
+					.beansOfTypeIncludingAncestors(wac, DelegatingFilter.class);
 
 			if (targetFilterMap.isEmpty()) {
 				targetFilters = Collections.EMPTY_LIST;
@@ -74,6 +75,7 @@ public class DelegatingFilterProxy implements Filter {
 								return (o1 == o2) ? 0 : 1;
 							}
 						});
+
 				treeSet.addAll(targetFilterMap.values());
 				targetFilters = new ArrayList<DelegatingFilter>(treeSet);
 			}
