@@ -77,7 +77,7 @@
 					return new Date();
 				},
 				setter: function(value) {
-					this._date = new Date(value.getTime());
+					this._date = value && value.getTime ? new Date(value.getTime()) : value;
 					this.refreshButtonOnFilterDate();
 				}
 			},
