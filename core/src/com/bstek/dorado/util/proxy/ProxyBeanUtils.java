@@ -203,7 +203,6 @@ public abstract class ProxyBeanUtils {
 		return proxyBean;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static boolean isProxy(Class<?> cl) {
 		boolean b = net.sf.cglib.proxy.Enhancer.isEnhanced(cl)
 				|| ProxyFactory.isProxyClass(cl);
@@ -211,7 +210,7 @@ public abstract class ProxyBeanUtils {
 			if (!extraEnhancersInited) {
 				extraEnhancersInited = true;
 				try {
-					Class enhancerType = ClassUtils
+					Class<?> enhancerType = ClassUtils
 							.forName("org.springframework.cglib.proxy.Enhancer");
 					springCglibIsEnhancerMethod = enhancerType.getMethod(
 							"isEnhanced", new Class[] { Class.class });
