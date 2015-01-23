@@ -1415,7 +1415,7 @@
 			},
 
 			doSetFocus: function() {
-				if (this._dom) this._dom.focus();
+				//if (this._dom) this._dom.focus();
 			},
 
 			/**
@@ -1624,7 +1624,7 @@
 							parentFrames.each(function() {
 								if (this.contentWindow == win) {		// IE8下使用===判断会失败
 									var frameControl =  parent.dorado.widget.Control.findParentControl(this);
-									parent.dorado.widget.setFocusedControl(frameControl, true, true);
+									parent.dorado.widget.setFocusedControl(frameControl, false, true);
 									return false;
 								}
 							});
@@ -1645,7 +1645,7 @@
 			function setFrameBlur(win) {
 				try {
 					if (win !== window && win.dorado.widget.Control && windowStack.indexOf(win) < 0) {
-						win.dorado.widget.setFocusedControl(null, true, true);
+						win.dorado.widget.setFocusedControl(null, false, true);
 					}
 				}
 				catch(e) {
