@@ -1675,7 +1675,7 @@
 				control.setFocus();
 			}
 			else {
-//				dorado.widget.onControlGainedFocus(control);
+				dorado.widget.onControlGainedFocus(control);
 			}
 		}
 		else {
