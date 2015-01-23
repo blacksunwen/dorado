@@ -1671,7 +1671,12 @@
 			control = control.get("focusParent");
 		}
 		if (control) {
-			if (!ignorePhyscialFocus) control.setFocus();
+			if (!ignorePhyscialFocus) {
+				control.setFocus();
+			}
+			else {
+				dorado.widget.onControlGainedFocus(control);
+			}
 		}
 		else {
 			if (document.body) {
