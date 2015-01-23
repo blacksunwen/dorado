@@ -754,25 +754,41 @@
 			return dom;
 		},
 
+// 直接调用导致死锁，暂时屏蔽
+//		setFocus: function() {
+//			function getMouseEvent(){
+//		        if(window.event)  return window.event;    
+//		        var func = getMouseEvent.caller;        
+//		        while(func != null){  
+//		            var arg0 = func.arguments[0]; 
+//		            if(arg0) 
+//		            { 
+//		              if((arg0.constructor == Event || arg0.constructor == MouseEvent) || (typeof(arg0) == "object" && arg0.preventDefault && arg0.stopPropagation))
+//		              {  
+//		            	  return arg0; 
+//		              } 
+//		            } 
+//		            func = func.caller; 
+//		        } 
+//		        return null; 
+//			}
+//			var evt = getMouseEvent();
+//			if (evt && ((evt.srcElement || evt.target) == this._labelEl || (evt.srcElement || evt.target) == this._contentEl)) {
+//				$invokeSuper.call(this);
+//			}
+//			else {
+//				var editor = this.getEditor(false);
+//				if (editor) {
+//					editor.setFocus();
+//				}
+//				else {
+//					$invokeSuper.call(this);
+//				}
+//			}
+//		},
+		
 		setFocus: function() {
-			function getMouseEvent(){
-		        if(window.event)  return window.event;    
-		        var func = getMouseEvent.caller;        
-		        while(func != null){  
-		            var arg0 = func.arguments[0]; 
-		            if(arg0) 
-		            { 
-		              if((arg0.constructor == Event || arg0.constructor == MouseEvent) || (typeof(arg0) == "object" && arg0.preventDefault && arg0.stopPropagation))
-		              {  
-		            	  return arg0; 
-		              } 
-		            } 
-		            func = func.caller; 
-		        } 
-		        return null; 
-			}
-			var evt = getMouseEvent();
-			if (evt && ((evt.srcElement || evt.target) == this._labelEl || (evt.srcElement || evt.target) == this._contentEl)) {
+			if (this._focused) {
 				$invokeSuper.call(this);
 			}
 			else {
