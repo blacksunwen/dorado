@@ -346,7 +346,7 @@ dorado.widget.AbstractPanel = $extend(dorado.widget.Container, /** @scope dorado
 	},
 
 	getFocusableSubControls: function() {
-		var controls = this._children.toArray();
+		var controls = this._children ? this._children.toArray() : [];
 		return controls.concat(this._buttons);
 	}
 });
