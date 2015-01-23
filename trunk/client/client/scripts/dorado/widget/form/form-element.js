@@ -757,7 +757,7 @@
 		setFocus: function() {
 			function getMouseEvent(){
 		        if(window.event)  return window.event;    
-		        var func = getEvent.caller;        
+		        var func = getMouseEvent.caller;        
 		        while(func != null){  
 		            var arg0 = func.arguments[0]; 
 		            if(arg0) 
@@ -772,7 +772,7 @@
 		        return null; 
 			}
 			var evt = getMouseEvent();
-			if (evt && (evt.srcElement || evt.target) == this._labelEl) {
+			if (evt && ((evt.srcElement || evt.target) == this._labelEl || (evt.srcElement || evt.target) == this._contentEl)) {
 				$invokeSuper.call(this);
 			}
 			else {
