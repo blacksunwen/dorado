@@ -63,7 +63,7 @@ public class JsonBuilder {
 
 	private NumberFormat getNumberFormat() {
 		if (numberFormat == null) {
-			numberFormat = new DecimalFormat("#.###############");
+			numberFormat = new DecimalFormat("#.#######");
 		}
 		return numberFormat;
 	}
