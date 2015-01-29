@@ -626,6 +626,7 @@
 					iframeFix: true,
 					addClasses: false,
 					handle: ".d-dialog-caption-bar",
+					cancel: ".button-group > div",
 					cursor: "move",
 					distance: 10,
 					containment: dialog._dragOutside ? null : "parent",
