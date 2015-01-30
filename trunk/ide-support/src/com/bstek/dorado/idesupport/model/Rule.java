@@ -44,6 +44,7 @@ public class Rule {
 
 	private String name;
 	private String label;
+	private boolean global = true;
 	private String nodeName;
 	private String type;
 	private String category;
@@ -81,7 +82,6 @@ public class Rule {
 						return result;
 					}
 				}
-
 			});
 	private Map<String, Child> childMap = new HashMap<String, Child>();
 
@@ -150,6 +150,14 @@ public class Rule {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public boolean isGlobal() {
+		return global;
+	}
+
+	public void setGlobal(boolean global) {
+		this.global = global;
 	}
 
 	public String getNodeName() {
