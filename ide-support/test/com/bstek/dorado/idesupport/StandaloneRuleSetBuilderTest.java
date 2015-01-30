@@ -25,7 +25,7 @@ import com.bstek.dorado.idesupport.model.Child;
 import com.bstek.dorado.idesupport.model.Property;
 import com.bstek.dorado.idesupport.model.Rule;
 import com.bstek.dorado.idesupport.model.RuleSet;
-import com.bstek.dorado.idesupport.output.RuleSetOutputter;
+import com.bstek.dorado.idesupport.output.RuleSetXmlOutputter;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -39,9 +39,9 @@ public class StandaloneRuleSetBuilderTest extends IdeSupportContextTestCase {
 				.getServiceBean("idesupport.ruleTemplateBuilder");
 	}
 
-	private RuleSetOutputter getRuleSetOutputter() throws Exception {
+	private RuleSetXmlOutputter getRuleSetOutputter() throws Exception {
 		Context context = Context.getCurrent();
-		return (RuleSetOutputter) context
+		return (RuleSetXmlOutputter) context
 				.getServiceBean("idesupport.ruleSetOutputter");
 	}
 

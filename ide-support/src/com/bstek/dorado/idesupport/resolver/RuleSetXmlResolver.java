@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.bstek.dorado.idesupport.RuleTemplateBuilder;
 import com.bstek.dorado.idesupport.RuleTemplateManager;
-import com.bstek.dorado.idesupport.output.RuleSetOutputter;
+import com.bstek.dorado.idesupport.output.RuleSetXmlOutputter;
 import com.bstek.dorado.web.resolver.AbstractTextualResolver;
 import com.bstek.dorado.web.resolver.HttpConstants;
 
@@ -27,14 +27,11 @@ import com.bstek.dorado.web.resolver.HttpConstants;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-18
  */
-public class RuleSetResolver extends AbstractTextualResolver {
-	public static final String ROBOT_MAP_ATTRIBUTE_KEY = RuleSetResolver.class
-			.getName() + ".robotMap";
-
+public class RuleSetXmlResolver extends AbstractTextualResolver {
 	private RuleTemplateBuilder ruleTemplateBuilder;
-	private RuleSetOutputter ruleSetOutputter;
+	private RuleSetXmlOutputter ruleSetOutputter;
 
-	public RuleSetResolver() {
+	public RuleSetXmlResolver() {
 		setContentType(HttpConstants.CONTENT_TYPE_XML);
 		setCacheControl(HttpConstants.NO_CACHE);
 	}
@@ -43,7 +40,7 @@ public class RuleSetResolver extends AbstractTextualResolver {
 		this.ruleTemplateBuilder = ruleTemplateBuilder;
 	}
 
-	public void setRuleSetOutputter(RuleSetOutputter ruleSetOutputter) {
+	public void setRuleSetOutputter(RuleSetXmlOutputter ruleSetOutputter) {
 		this.ruleSetOutputter = ruleSetOutputter;
 	}
 

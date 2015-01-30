@@ -46,7 +46,7 @@ import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.core.io.ResourceUtils;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
-import com.bstek.dorado.idesupport.output.RuleSetOutputter;
+import com.bstek.dorado.idesupport.output.RuleSetXmlOutputter;
 import com.bstek.dorado.web.ConsoleUtils;
 
 /**
@@ -80,9 +80,9 @@ public class StandaloneRuleSetExporter {
 				.getServiceBean("idesupport.ruleTemplateBuilder");
 	}
 
-	private RuleSetOutputter getRuleSetOutputter() throws Exception {
+	private RuleSetXmlOutputter getRuleSetOutputter() throws Exception {
 		Context context = Context.getCurrent();
-		return (RuleSetOutputter) context
+		return (RuleSetXmlOutputter) context
 				.getServiceBean("idesupport.ruleSetOutputter");
 	}
 

@@ -41,7 +41,7 @@ import com.bstek.dorado.util.clazz.ClassUtils;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2009-11-19
  */
-public class RuleSetOutputter {
+public class RuleSetXmlOutputter {
 	public void output(Writer writer, RuleTemplateManager ruleTemplateManager)
 			throws Exception {
 		OutputFormat format = OutputFormat.createPrettyPrint();

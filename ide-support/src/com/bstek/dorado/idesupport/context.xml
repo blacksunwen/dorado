@@ -64,5 +64,6 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 		</property>
 	</bean>
 
-	<bean id="dorado.idesupport.ruleSetOutputter" class="com.bstek.dorado.idesupport.output.RuleSetOutputter" />
+	<bean id="dorado.idesupport.ruleSetXmlOutputter" class="com.bstek.dorado.idesupport.output.RuleSetXmlOutputter" />
+	<bean id="dorado.idesupport.ruleSetJsonOutputter" class="com.bstek.dorado.idesupport.output.RuleSetJsonOutputter" />
 </beans>
