@@ -30,7 +30,7 @@ import com.bstek.dorado.idesupport.model.CompositeType;
 import com.bstek.dorado.idesupport.model.Property;
 import com.bstek.dorado.idesupport.model.Rule;
 import com.bstek.dorado.idesupport.model.RuleSet;
-import com.bstek.dorado.idesupport.output.RuleSetOutputter;
+import com.bstek.dorado.idesupport.output.RuleSetXmlOutputter;
 
 public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 
@@ -40,9 +40,9 @@ public class RuleSetBuilderTest extends IdeSupportContextTestCase {
 				.getServiceBean("idesupport.ruleTemplateBuilder");
 	}
 
-	protected RuleSetOutputter getRuleSetOutputter() throws Exception {
+	protected RuleSetXmlOutputter getRuleSetOutputter() throws Exception {
 		Context context = Context.getCurrent();
-		return (RuleSetOutputter) context
+		return (RuleSetXmlOutputter) context
 				.getServiceBean("idesupport.ruleSetOutputter");
 	}
 
