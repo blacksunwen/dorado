@@ -139,7 +139,7 @@ public class RuleSetBuilder {
 		applyProperties(
 				ruleTemplate,
 				rule,
-				"label,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,clientTypes,reserve,deprecated,visible");
+				"label,global,abstract,nodeName,type,category,robots,icon,labelProperty,autoGenerateId,clientTypes,reserve,deprecated,visible");
 
 		if (StringUtils.isEmpty(rule.getNodeName())) {
 			if (StringUtils.isNotEmpty(rule.getType())) {

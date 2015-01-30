@@ -14,8 +14,11 @@ package com.bstek.dorado.idesupport.output;
 
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -23,13 +26,13 @@ import org.apache.commons.lang.StringUtils;
 import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.core.pkgs.PackageInfo;
 import com.bstek.dorado.core.pkgs.PackageManager;
-import com.bstek.dorado.idesupport.RuleTemplateManager;
+import com.bstek.dorado.idesupport.model.Child;
 import com.bstek.dorado.idesupport.model.ClientEvent;
 import com.bstek.dorado.idesupport.model.CompositeType;
-import com.bstek.dorado.idesupport.template.ChildTemplate;
-import com.bstek.dorado.idesupport.template.PropertyTemplate;
-import com.bstek.dorado.idesupport.template.ReferenceTemplate;
-import com.bstek.dorado.idesupport.template.RuleTemplate;
+import com.bstek.dorado.idesupport.model.Property;
+import com.bstek.dorado.idesupport.model.Reference;
+import com.bstek.dorado.idesupport.model.Rule;
+import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.util.clazz.ClassUtils;
 import com.bstek.dorado.view.output.JsonBuilder;
 
@@ -37,20 +40,23 @@ import com.bstek.dorado.view.output.JsonBuilder;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2015-01-30
  */
-public class RuleSetJsonOutputter {
-	public void output(Writer writer, RuleTemplateManager ruleTemplateManager)
-			throws Exception {
+public class ComputedRuleSetJsonOutputter {
+	public void output(Writer writer, RuleSet ruleSet) throws Exception {
 		JsonBuilder jsonBuilder = new JsonBuilder(writer);
+		jsonBuilder.setPrettyFormat(true);
 
 		jsonBuilder.object();
-		jsonBuilder.key("version").value(ruleTemplateManager.getVersion());
+		jsonBuilder.key("version").value(ruleSet.getVersion());
 
 		OutputContext context = new OutputContext();
-		outputPackageInfos(jsonBuilder, ruleTemplateManager, context);
+		outputPackageInfos(jsonBuilder, ruleSet, context);
 
-		jsonBuilder.key("rules").array();
-		for (RuleTemplate ruleTemplate : ruleTemplateManager.getRuleTemplates()) {
-			outputRuleTemplate(jsonBuilder, ruleTemplate, context);
+		jsonBuilder.escapeableKey("rules").escapeableArray();
+		for (Rule rule : ruleSet.getRuleMap().values()) {
+			if (rule.isAbstract()) {
+				continue;
+			}
+			outputRule(jsonBuilder, rule, context);
 		}
 		jsonBuilder.endArray();
 
@@ -58,14 +64,12 @@ public class RuleSetJsonOutputter {
 		writer.flush();
 	}
 
-	protected void outputPackageInfos(JsonBuilder jsonBuilder,
-			RuleTemplateManager ruleTemplateManager, OutputContext context)
-			throws Exception {
+	protected void outputPackageInfos(JsonBuilder jsonBuilder, RuleSet ruleSet,
+			OutputContext context) throws Exception {
 		Map<String, PackageInfo> finalPackageInfos = new LinkedHashMap<String, PackageInfo>(
 				PackageManager.getPackageInfoMap());
 
-		Collection<PackageInfo> packageInfos = ruleTemplateManager
-				.getPackageInfos();
+		Collection<PackageInfo> packageInfos = ruleSet.getPackageInfos();
 		if (packageInfos != null) {
 			for (PackageInfo packageInfo : packageInfos) {
 				finalPackageInfos.put(packageInfo.getName(), packageInfo);
@@ -82,52 +86,39 @@ public class RuleSetJsonOutputter {
 		jsonBuilder.endArray();
 	}
 
-	protected void outputRuleTemplate(JsonBuilder jsonBuilder,
-			RuleTemplate ruleTemplate, OutputContext context) throws Exception {
+	protected void outputRule(JsonBuilder jsonBuilder, Rule rule,
+			OutputContext context) throws Exception {
 		jsonBuilder.object();
-		outputKey(jsonBuilder, ruleTemplate, "name");
-
-		RuleTemplate[] parents = ruleTemplate.getParents();
-		if (parents != null && parents.length > 0) {
-			String parentsText = "";
-			for (RuleTemplate parent : parents) {
-				if (parentsText.length() > 0)
-					parentsText += ',';
-				parentsText += parent.getName();
-			}
-			jsonBuilder.key("parents").value(parentsText);
-		}
+		outputKey(jsonBuilder, rule, "name");
 
 		outputKeys(
 				jsonBuilder,
-				ruleTemplate,
-				"label,abstract,nodeName,type,scope,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
-		if (!ruleTemplate.isVisible()) {
+				rule,
+				"label,nodeName,type,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
+		if (!rule.isVisible()) {
 			jsonBuilder.key("visible").value(false);
 		}
 
-		Collection<PropertyTemplate> primitiveProperties = ruleTemplate
+		Collection<Property> primitiveProperties = rule
 				.getPrimitiveProperties().values();
 		if (!primitiveProperties.isEmpty()) {
 			jsonBuilder.key("primitiveProps").array();
-			for (PropertyTemplate property : primitiveProperties) {
+			for (Property property : primitiveProperties) {
 				outputProperty(jsonBuilder, property, context);
 			}
 			jsonBuilder.endArray();
 		}
 
-		Collection<PropertyTemplate> properties = ruleTemplate.getProperties()
-				.values();
+		Collection<Property> properties = rule.getProperties().values();
 		if (!properties.isEmpty()) {
 			jsonBuilder.key("props").array();
-			for (PropertyTemplate property : primitiveProperties) {
+			for (Property property : properties) {
 				outputProperty(jsonBuilder, property, context);
 			}
 			jsonBuilder.endArray();
 		}
 
-		Collection<ClientEvent> clientEvents = ruleTemplate.getClientEvents()
-				.values();
+		Collection<ClientEvent> clientEvents = rule.getClientEvents().values();
 		if (!clientEvents.isEmpty()) {
 			jsonBuilder.key("clientEvents").array();
 			for (ClientEvent clientEvent : clientEvents) {
@@ -135,12 +126,12 @@ public class RuleSetJsonOutputter {
 			}
 			jsonBuilder.endArray();
 		}
-		Collection<ChildTemplate> children = ruleTemplate.getChildren()
-				.values();
+
+		Collection<Child> children = rule.getChildren().values();
 		if (!children.isEmpty()) {
 			jsonBuilder.key("children").array();
-			for (ChildTemplate childTemplate : children) {
-				outputChildTemplate(jsonBuilder, childTemplate, context);
+			for (Child child : children) {
+				outputChild(jsonBuilder, child, context);
 			}
 			jsonBuilder.endArray();
 		}
@@ -148,8 +139,32 @@ public class RuleSetJsonOutputter {
 		jsonBuilder.endObject();
 	}
 
-	protected void outputProperty(JsonBuilder jsonBuilder,
-			PropertyTemplate property, OutputContext context) throws Exception {
+	private void doFindAllSubRules(Rule rule, Set<Rule> subRules) {
+		if (!rule.isAbstract()) {
+			subRules.add(rule);
+		}
+		for (Rule subRule : rule.getSubRules()) {
+			doFindAllSubRules(subRule, subRules);
+		}
+	}
+
+	private Set<Rule> findAllSubRules(Rule rule) {
+		Set<Rule> subRules = new TreeSet<Rule>(new Comparator<Rule>() {
+			public int compare(Rule rule1, Rule rule2) {
+				int result = rule1.getSortFactor() - rule2.getSortFactor();
+				if (result == 0) {
+					result = rule1.getName().compareTo(rule2.getName());
+				}
+				return result;
+			}
+		});
+
+		doFindAllSubRules(rule, subRules);
+		return subRules;
+	}
+
+	protected void outputProperty(JsonBuilder jsonBuilder, Property property,
+			OutputContext context) throws Exception {
 		jsonBuilder.object();
 		outputKeys(
 				jsonBuilder,
@@ -175,20 +190,26 @@ public class RuleSetJsonOutputter {
 			jsonBuilder.key("compositeType").value(compositeType.toString());
 		}
 
-		ReferenceTemplate reference = property.getReference();
+		Reference reference = property.getReference();
 		if (reference != null) {
-			String referenceText = reference.getRuleTemplate().getName();
-			if (StringUtils.isNotEmpty(reference.getProperty())) {
-				referenceText += ':' + reference.getProperty();
+			StringBuffer referenceText = new StringBuffer();
+			Rule rule = reference.getRule();
+			for (Rule subRule : findAllSubRules(rule)) {
+				if (referenceText.length() > 0) {
+					referenceText.append(',');
+				}
+				referenceText.append(subRule.getName());
+				if (StringUtils.isNotEmpty(reference.getProperty())) {
+					referenceText.append(':').append(reference.getProperty());
+				}
 			}
-			jsonBuilder.key("reference").value(referenceText);
+			jsonBuilder.key("reference").value(referenceText.toString());
 		}
 
-		if (compositeType == CompositeType.Fixed
-				|| compositeType == CompositeType.Open) {
-			jsonBuilder.escapeableKey("props").escapeableArray();
-			for (PropertyTemplate subProperty : property.getProperties()
-					.values()) {
+		if ((compositeType == CompositeType.Fixed || compositeType == CompositeType.Open)
+				&& !property.getProperties().isEmpty()) {
+			jsonBuilder.key("props").array();
+			for (Property subProperty : property.getProperties().values()) {
 				outputProperty(jsonBuilder, subProperty, context);
 			}
 			jsonBuilder.endArray();
@@ -205,32 +226,29 @@ public class RuleSetJsonOutputter {
 		jsonBuilder.endObject();
 	}
 
-	protected void outputChildTemplate(JsonBuilder jsonBuilder,
-			ChildTemplate childTemplate, OutputContext context)
-			throws Exception {
-		jsonBuilder.object();
+	protected void outputChild(JsonBuilder jsonBuilder, Child child,
+			OutputContext context) throws Exception {
+		for (Rule subRule : child.getConcreteRules()) {
+			jsonBuilder.object();
 
-		RuleTemplate ruleTemplate = childTemplate.getRuleTemplate();
-		String ruleName = ruleTemplate.getName();
-		if (ruleTemplate.isGlobal()) {
-			jsonBuilder.key("rule").value(ruleName);
-		}
+			String ruleName = subRule.getName();
+			if (subRule.isGlobal()) {
+				jsonBuilder.key("rule").value(ruleName);
+			}
 
-		outputKeys(jsonBuilder, childTemplate,
-				"name,fixed,aggregated,clientTypes,deprecated,reserve");
-		if (!childTemplate.isPublic()) {
-			jsonBuilder.key("public").value(false);
-		}
-		if (!childTemplate.isVisible()) {
-			jsonBuilder.key("visible").value(false);
-		}
+			outputKeys(jsonBuilder, child,
+					"name,fixed,aggregated,clientTypes,deprecated,reserve");
+			if (!subRule.isVisible()) {
+				jsonBuilder.key("visible").value(false);
+			}
 
-		if (!ruleTemplate.isGlobal()) {
-			jsonBuilder.key("rule");
-			outputRuleTemplate(jsonBuilder, ruleTemplate, context);
-		}
+			if (!subRule.isGlobal()) {
+				jsonBuilder.key("rule");
+				outputRule(jsonBuilder, subRule, context);
+			}
 
-		jsonBuilder.endObject();
+			jsonBuilder.endObject();
+		}
 	}
 
 	private void outputKeys(JsonBuilder jsonBuilder, Object object,
