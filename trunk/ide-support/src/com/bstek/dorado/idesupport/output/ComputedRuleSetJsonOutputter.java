@@ -34,13 +34,33 @@ import com.bstek.dorado.idesupport.model.Reference;
 import com.bstek.dorado.idesupport.model.Rule;
 import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.util.clazz.ClassUtils;
+import com.bstek.dorado.view.output.ClientObjectOutputter;
+import com.bstek.dorado.view.output.ClientOutputHelper;
 import com.bstek.dorado.view.output.JsonBuilder;
+import com.bstek.dorado.view.output.Outputter;
+import com.bstek.dorado.view.registry.ComponentTypeRegisterInfo;
+import com.bstek.dorado.view.registry.ComponentTypeRegistry;
+import com.bstek.dorado.view.widget.Component;
+import com.bstek.dorado.view.widget.Container;
+import com.bstek.dorado.view.widget.Control;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since 2015-01-30
  */
 public class ComputedRuleSetJsonOutputter {
+	private ClientOutputHelper clientOutputHelper;
+	private ComponentTypeRegistry componentTypeRegistry;
+
+	public void setClientOutputHelper(ClientOutputHelper clientOutputHelper) {
+		this.clientOutputHelper = clientOutputHelper;
+	}
+
+	public void setComponentTypeRegistry(
+			ComponentTypeRegistry componentTypeRegistry) {
+		this.componentTypeRegistry = componentTypeRegistry;
+	}
+
 	public void output(Writer writer, RuleSet ruleSet) throws Exception {
 		JsonBuilder jsonBuilder = new JsonBuilder(writer);
 		jsonBuilder.setPrettyFormat(true);
@@ -97,6 +117,41 @@ public class ComputedRuleSetJsonOutputter {
 				"label,nodeName,type,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
 		if (!rule.isVisible()) {
 			jsonBuilder.key("visible").value(false);
+		}
+
+		String className = rule.getType();
+		if (StringUtils.isNotEmpty(className)) {
+			Class<?> type = ClassUtils.forName(className);
+
+			if (Component.class.isAssignableFrom(type)) {
+				if (Control.class.isAssignableFrom(type)) {
+					jsonBuilder.key("isControl").value(true);
+					if (Container.class.isAssignableFrom(type)) {
+						jsonBuilder.key("isContainer").value(true);
+					}
+				}
+
+				ComponentTypeRegisterInfo registerInfo = componentTypeRegistry
+						.getRegisterInfo(type);
+				if (registerInfo != null
+						&& StringUtils.isNotEmpty(registerInfo
+								.getDependsPackage())) {
+					jsonBuilder.key("dependsPackage").value(
+							registerInfo.getDependsPackage());
+				}
+			}
+
+			Outputter outputter = clientOutputHelper.getOutputter(type);
+			if (outputter instanceof ClientObjectOutputter) {
+				ClientObjectOutputter coo = (ClientObjectOutputter) outputter;
+				if (StringUtils.isNotEmpty(coo.getPrototype())) {
+					jsonBuilder.key("jsPrototype").value(coo.getPrototype());
+				}
+				if (StringUtils.isNotEmpty(coo.getShortTypeName())) {
+					jsonBuilder.key("jsShortType")
+							.value(coo.getShortTypeName());
+				}
+			}
 		}
 
 		Collection<Property> primitiveProperties = rule
