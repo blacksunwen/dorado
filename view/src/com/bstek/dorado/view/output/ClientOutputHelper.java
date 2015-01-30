@@ -133,9 +133,7 @@ public class ClientOutputHelper {
 
 	private Map<Class<?>, Map<String, PropertyConfig>> propertyConfigsCache = new HashMap<Class<?>, Map<String, PropertyConfig>>();
 
-
-	public Outputter getOutputter(Class<?> beanType)
-			throws Exception {
+	public Outputter getOutputter(Class<?> beanType) throws Exception {
 		beanType = ProxyBeanUtils.getProxyTargetType(beanType);
 
 		synchronized (beanType) {
@@ -143,7 +141,7 @@ public class ClientOutputHelper {
 			if (outputter != null) {
 				return outputter;
 			}
-	
+
 			ClientObjectInfo clientObjectInfo = getClientObjectInfo(beanType);
 			String outputterExpr = null;
 			if (clientObjectInfo != null) {
@@ -155,13 +153,14 @@ public class ClientOutputHelper {
 			BeanWrapper beanWrapper = BeanFactoryUtils.getBean(outputterExpr,
 					Scope.instant);
 			outputter = (Outputter) beanWrapper.getBean();
-	
+
 			if (outputter instanceof ObjectOutputter) {
 				ObjectOutputter objectOutputter = (ObjectOutputter) outputter;
 				if (clientObjectInfo != null) {
-					objectOutputter.setEscapeMode(clientObjectInfo.getEscapeMode());
+					objectOutputter.setEscapeMode(clientObjectInfo
+							.getEscapeMode());
 				}
-	
+
 				Map<String, PropertyConfig> propertyConfigs = objectOutputter
 						.getPropertieConfigs();
 				if (propertyConfigs.get(WILCARD) == null) {
@@ -171,7 +170,7 @@ public class ClientOutputHelper {
 					propertyConfig.setOutputter(beanWrapper.getBean());
 					propertyConfigs.put(WILCARD, propertyConfig);
 				}
-	
+
 				if (objectOutputter instanceof ClientObjectOutputter) {
 					ClientObjectOutputter clientObjectOutputter = (ClientObjectOutputter) objectOutputter;
 					if (clientObjectInfo != null) {
@@ -182,22 +181,23 @@ public class ClientOutputHelper {
 						clientObjectOutputter.setShortTypeName(clientObjectInfo
 								.getShortTypeName());
 					}
-	
+
 					if (ClientEventSupported.class.isAssignableFrom(beanType)) {
 						PropertyConfig propertyConfig = new PropertyConfig();
-						beanWrapper = BeanFactoryUtils.getBean(
-								CLIENT_EVENT_LISTENERS_OUTPUTTER, Scope.instant);
+						beanWrapper = BeanFactoryUtils
+								.getBean(CLIENT_EVENT_LISTENERS_OUTPUTTER,
+										Scope.instant);
 						propertyConfig.setOutputter(beanWrapper.getBean());
 						propertyConfigs.put(LISTENER, propertyConfig);
 					}
 				}
-	
+
 				Map<String, PropertyConfig> configs = getPropertyConfigs(beanType);
 				if (configs != null) {
 					propertyConfigs.putAll(configs);
 				}
 			}
-	
+
 			OUTPUTTER_MAP.put(beanType, outputter);
 			return outputter;
 		}
@@ -345,6 +345,10 @@ public class ClientOutputHelper {
 				.getPropertyDescriptors(beanType)) {
 			String property = propertyDescriptor.getName();
 			Method readMethod = propertyDescriptor.getReadMethod();
+			if (readMethod == null) {
+				continue;
+			}
+
 			if (readMethod.getDeclaringClass() != beanType) {
 				try {
 					readMethod = beanType.getMethod(readMethod.getName(),
