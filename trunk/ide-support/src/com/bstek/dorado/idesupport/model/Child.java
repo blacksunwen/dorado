@@ -22,6 +22,7 @@ import java.util.TreeSet;
  */
 public class Child {
 	private String name;
+	private String property;
 	private Rule rule;
 	private Set<Rule> concreteRules = new TreeSet<Rule>(new Comparator<Rule>() {
 		public int compare(Rule rule1, Rule rule2) {
@@ -46,6 +47,14 @@ public class Child {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getProperty() {
+		return property;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
 	public void setRule(Rule rule) {

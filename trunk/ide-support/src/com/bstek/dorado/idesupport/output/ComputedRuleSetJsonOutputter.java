@@ -109,7 +109,10 @@ public class ComputedRuleSetJsonOutputter {
 	protected void outputRule(JsonBuilder jsonBuilder, Rule rule,
 			OutputContext context) throws Exception {
 		jsonBuilder.object();
-		outputKey(jsonBuilder, rule, "name");
+
+		if (rule.isGlobal()) {
+			outputKey(jsonBuilder, rule, "name");
+		}
 
 		outputKeys(
 				jsonBuilder,
@@ -277,7 +280,11 @@ public class ComputedRuleSetJsonOutputter {
 			ClientEvent clientEvent, OutputContext context) throws Exception {
 		jsonBuilder.object();
 		outputKeys(jsonBuilder, clientEvent,
-				"name,parameters,clientTypes,deprecated,reserve");
+				"name,clientTypes,deprecated,reserve");
+		String parameters = StringUtils.join(clientEvent.getParameters(), ',');
+		if (StringUtils.isNotEmpty(parameters) && !"self,arg".equals(parameters)) {
+			jsonBuilder.key("parameters").value(parameters);
+		}
 		jsonBuilder.endObject();
 	}
 
@@ -292,7 +299,10 @@ public class ComputedRuleSetJsonOutputter {
 			}
 
 			outputKeys(jsonBuilder, child,
-					"name,fixed,aggregated,clientTypes,deprecated,reserve");
+					"property,fixed,clientTypes,deprecated,reserve");
+			if (!child.isAggregated()) {
+				jsonBuilder.key("aggregated").value(false);
+			}
 			if (!subRule.isVisible()) {
 				jsonBuilder.key("visible").value(false);
 			}
@@ -331,6 +341,9 @@ public class ComputedRuleSetJsonOutputter {
 				value = ((Class<?>) value).getName();
 		}
 
+		if (value instanceof String && StringUtils.isEmpty((String) value)) {
+			return;
+		}
 		jsonBuilder.escapeableKey(propertyName).value(value);
 	}
 }
