@@ -272,7 +272,7 @@ public class RuleSetBuilder {
 		Rule rule = exportRule(childTemplate.getRuleTemplate(), ruleSet);
 		child.setRule(rule);
 		applyProperties(childTemplate, child,
-				"fixed,aggregated,clientTypes,deprecated,reserve");
+				"property,fixed,aggregated,clientTypes,deprecated,reserve");
 		if (childTemplate.isDeprecated()) {
 			child.setDeprecated(true);
 		}

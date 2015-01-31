@@ -792,6 +792,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					xmlSubNode, aggregated, implType, "protected",
 					initializerContext);
 			if (childTemplate != null) {
+				childTemplate.setProperty(propertyName);
 				childTemplate.setPublic(isPublic);
 				childTemplates.add(childTemplate);
 			}
@@ -804,6 +805,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 						StringUtils.capitalize(propertyName), xmlSubNode,
 						aggregated, propertyType, null, initializerContext);
 				if (childTemplate != null) {
+					childTemplate.setProperty(propertyName);
 					childTemplates.add(childTemplate);
 				}
 			}

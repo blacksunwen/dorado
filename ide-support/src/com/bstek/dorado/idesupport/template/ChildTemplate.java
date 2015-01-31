@@ -20,6 +20,7 @@ import com.bstek.dorado.util.Assert;
  */
 public class ChildTemplate {
 	private String name;
+	private String property;
 	private RuleTemplate ruleTemplate;
 	private boolean fixed;
 	private boolean aggregated;
@@ -46,6 +47,14 @@ public class ChildTemplate {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getProperty() {
+		return property;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
 	public RuleTemplate getRuleTemplate() {
