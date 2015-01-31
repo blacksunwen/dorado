@@ -160,7 +160,7 @@ public class Property implements IOutputable<OutputContext>, IOutputFiledsable,
 	public AbstractField<?>[] getOutputFilelds() {
 		AbstractField<?>[] fields = new AbstractField[]{
 			defaultValue, editorType,
-			visible, fixed, deprecated
+			visible, fixed, deprecated,primitive
 		};
 		return fields;
 	}
