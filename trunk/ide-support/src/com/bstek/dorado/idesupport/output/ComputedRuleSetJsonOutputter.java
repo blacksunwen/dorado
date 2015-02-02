@@ -110,14 +110,10 @@ public class ComputedRuleSetJsonOutputter {
 			OutputContext context) throws Exception {
 		jsonBuilder.object();
 
-		if (rule.isGlobal()) {
-			outputKey(jsonBuilder, rule, "name");
-		}
-
 		outputKeys(
 				jsonBuilder,
 				rule,
-				"label,nodeName,type,sortFactor,category,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
+				"name,label,nodeName,type,sortFactor,category,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
 		if (!rule.isVisible()) {
 			jsonBuilder.key("visible").value(false);
 		}
