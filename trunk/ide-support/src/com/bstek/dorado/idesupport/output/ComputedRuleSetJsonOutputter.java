@@ -117,7 +117,7 @@ public class ComputedRuleSetJsonOutputter {
 		outputKeys(
 				jsonBuilder,
 				rule,
-				"label,nodeName,type,sortFactor,category,robots,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
+				"label,nodeName,type,sortFactor,category,icon,labelProperty,autoGenerateId,clientTypes,deprecated,reserve");
 		if (!rule.isVisible()) {
 			jsonBuilder.key("visible").value(false);
 		}
