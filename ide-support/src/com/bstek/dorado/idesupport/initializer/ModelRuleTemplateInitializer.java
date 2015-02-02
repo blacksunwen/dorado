@@ -66,13 +66,12 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 				.getTypes()) {
 			String dataTypeName = dataTypeTypeInfo.getClassType()
 					.getSimpleName();
-			
+
 			// 旧的EclipseIDE要求DataType的ruleName必须是DataType
 			String ruleName;
 			if ("default".equals(dataTypeTypeInfo.getType())) {
 				ruleName = "DataType";
-			}
-			else {
+			} else {
 				ruleName = dataTypeName;
 			}
 
@@ -110,6 +109,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataProviderTypeInfo.getClassType()
 					.getName());
+			newRuleTemplate.setReserve(dataProviderTypeInfo.getType());
 
 			if (isNew) {
 				ruleTemplateManager.addRuleTemplate(newRuleTemplate);
@@ -133,6 +133,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataResolverTypeInfo.getClassType()
 					.getName());
+			newRuleTemplate.setReserve(dataResolverTypeInfo.getType());
 
 			if (isNew) {
 				ruleTemplateManager.addRuleTemplate(newRuleTemplate);
@@ -172,6 +173,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(validatorTypeRegisterInfo.getClassType()
 					.getName());
+			newRuleTemplate.setReserve(validatorTypeRegisterInfo.getType());
 
 			ruleTemplateManager.addRuleTemplate(newRuleTemplate);
 		}
