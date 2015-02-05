@@ -118,6 +118,8 @@ public class LongPollingServiceProcessor extends AbstractRemoteServiceProcessor 
 					+ serviceName + "].");
 		}
 
+		context.setAttribute(SERVICE_NAME_ATTRIBUTE, exposedService.getName());
+
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
 				null, false);
 

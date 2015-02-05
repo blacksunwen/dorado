@@ -86,7 +86,6 @@ public abstract class AbstractRemoteServiceProcessor extends
 		}
 
 		Object returnValue = null;
-		context.setAttribute(SERVICE_NAME_ATTRIBUTE, exposedService.getName());
 
 		boolean methodInvoked = false;
 		MethodAutoMatchingException[] exceptions = new MethodAutoMatchingException[4];
