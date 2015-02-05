@@ -87,13 +87,21 @@ public abstract class EntityUtils {
 		return methodInterceptorFactory;
 	}
 
+	public static boolean isEnumValue(Class<?> cls) {
+		return cls.isEnum() || cls.getSuperclass().isEnum();
+	}
+
+	public static boolean isEnumValue(Object data) {
+		return isEnumValue(data.getClass());
+	}
+
 	/**
 	 * 判断传入的数据是否是简单的数值。
 	 */
 	public static boolean isSimpleValue(Object data) {
 		boolean b = (data == null || data instanceof String
 				|| data.getClass().isPrimitive() || data instanceof Boolean
-				|| data instanceof Number || data.getClass().isEnum()
+				|| data instanceof Number || isEnumValue(data)
 				|| data instanceof Date || data instanceof Character);
 		if (!b && data.getClass().isArray()) {
 			b = isSimpleType(data.getClass().getComponentType());
@@ -107,7 +115,7 @@ public abstract class EntityUtils {
 	public static boolean isSimpleType(Class<?> cl) {
 		boolean b = (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
-				|| Number.class.isAssignableFrom(cl) || cl.isEnum()
+				|| Number.class.isAssignableFrom(cl) || isEnumValue(cl)
 				|| Date.class.isAssignableFrom(cl) || Character.class
 				.isAssignableFrom(cl));
 		if (!b && cl.isArray()) {
@@ -798,7 +806,7 @@ public abstract class EntityUtils {
 					targetEnhancer.writeProperty(source, (String) property,
 							sourceMap.get(property));
 				}
-			}else {
+			} else {
 				BeanUtils.copyProperties(target, source);
 			}
 		} catch (Exception e) {
