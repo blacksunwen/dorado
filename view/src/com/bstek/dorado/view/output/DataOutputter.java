@@ -13,8 +13,6 @@
 package com.bstek.dorado.view.output;
 
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -56,9 +54,6 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 	private static final ResourceManager resourceManager = ResourceManagerUtils
 			.get(DataOutputter.class);
 	private static final Long ONE_DAY = 1000L * 60 * 60 * 24;
-
-	private static Method ENUM_NAME_METHOD;
-	private static final Object[] ENUM_NAME_METHOD_ARGS = new Object[0];
 
 	private boolean evaluateExpression = true;
 	private boolean ignoreEmptyProperty;
@@ -160,16 +155,6 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		json.endObject();
 	}
 
-	protected void outputEnumValue(JsonBuilder json, Object value)
-			throws SecurityException, NoSuchMethodException,
-			IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
-		if (ENUM_NAME_METHOD == null) {
-			ENUM_NAME_METHOD = Enum.class.getMethod("name", new Class<?>[0]);
-		}
-		json.value(ENUM_NAME_METHOD.invoke(value, ENUM_NAME_METHOD_ARGS));
-	}
-
 	/**
 	 * @param object
 	 * @param writer
@@ -196,7 +181,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 							com.bstek.dorado.core.Constants.ISO_DATE_FORMAT, d));
 				}
 			} else if (object != null && EntityUtils.isEnumValue(object)) {
-				outputEnumValue(json, object);
+				json.value(((Enum<?>) object).name());
 			} else {
 				json.value(object);
 			}
