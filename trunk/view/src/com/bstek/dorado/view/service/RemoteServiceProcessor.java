@@ -36,6 +36,8 @@ public class RemoteServiceProcessor extends AbstractRemoteServiceProcessor {
 			DoradoContext context) throws Exception {
 		String serviceName = JsonUtils.getString(objectNode, "service");
 		Assert.notEmpty(serviceName);
+		
+		context.setAttribute(SERVICE_NAME_ATTRIBUTE, serviceName);
 
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
 				null, false);
