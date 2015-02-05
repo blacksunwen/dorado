@@ -87,12 +87,13 @@ public abstract class EntityUtils {
 		return methodInterceptorFactory;
 	}
 
-	public static boolean isEnumValue(Class<?> cls) {
-		return cls.isEnum() || cls.getSuperclass().isEnum();
+	public static boolean isEnumType(Class<?> cls) {
+		return cls.isEnum()
+				|| (cls.getSuperclass() != null && cls.getSuperclass().isEnum());
 	}
 
 	public static boolean isEnumValue(Object data) {
-		return isEnumValue(data.getClass());
+		return data != null && isEnumType(data.getClass());
 	}
 
 	/**
@@ -115,7 +116,7 @@ public abstract class EntityUtils {
 	public static boolean isSimpleType(Class<?> cl) {
 		boolean b = (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
-				|| Number.class.isAssignableFrom(cl) || isEnumValue(cl)
+				|| Number.class.isAssignableFrom(cl) || isEnumType(cl)
 				|| Date.class.isAssignableFrom(cl) || Character.class
 				.isAssignableFrom(cl));
 		if (!b && cl.isArray()) {
