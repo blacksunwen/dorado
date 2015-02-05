@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Stack;
 import java.util.TimeZone;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.bstek.dorado.core.Configure;
@@ -180,7 +181,9 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 					json.value(DateUtils.format(
 							com.bstek.dorado.core.Constants.ISO_DATE_FORMAT, d));
 				}
-			} else {
+			}if (EntityUtils.isEnumValue(object)) {
+				json.value(PropertyUtils.getSimpleProperty(object, "name"));
+			}else {
 				json.value(object);
 			}
 		} else {
