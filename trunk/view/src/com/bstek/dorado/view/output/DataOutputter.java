@@ -169,7 +169,7 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 			if (object instanceof Date) {
 				Date d = (Date) object;
 				long time = d.getTime();
-				if (!Configure.getBoolean("core.useGMTTimeZone")){
+				if (!Configure.getBoolean("core.useGMTTimeZone")) {
 					time += TimeZone.getDefault().getOffset(time);
 				}
 				if (d instanceof Time || d instanceof Timestamp
@@ -181,9 +181,9 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 					json.value(DateUtils.format(
 							com.bstek.dorado.core.Constants.ISO_DATE_FORMAT, d));
 				}
-			}if (EntityUtils.isEnumValue(object)) {
+			} else if (object != null && EntityUtils.isEnumValue(object)) {
 				json.value(PropertyUtils.getSimpleProperty(object, "name"));
-			}else {
+			} else {
 				json.value(object);
 			}
 		} else {
@@ -234,10 +234,8 @@ public class DataOutputter implements Outputter, PropertyOutputter {
 		JsonBuilder json = context.getJsonBuilder();
 		Stack<Object> dataObjectStack = context.getDataObjectStack();
 		if (dataObjectStack.contains(object)) {
-			throw new IllegalArgumentException(
-					resourceManager.getString(
-							"dorado.common/circuitReferenceError",
-							object.toString()));
+			throw new IllegalArgumentException(resourceManager.getString(
+					"dorado.common/circuitReferenceError", object.toString()));
 		}
 
 		dataObjectStack.push(object);
