@@ -442,7 +442,14 @@
         },
 
         doSetFocus: function () {
-            if (this._inputDom) this._inputDom.focus();
+            if (this._inputDom) {
+            	try {
+            		this._inputDom.focus();
+            	}
+            	catch (e) {
+            		// do nothing
+            	}
+            }
         },
 
         onMouseDown: function () {

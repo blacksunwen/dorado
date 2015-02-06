@@ -253,11 +253,7 @@
 			var dialog = this;
 			if (dialog._dom) {
 				//下面这句话有可能会导致IE8下无法bringToFront
-				try {
-					dialog._dom.focus();
-				}
-				catch(e) {
-				}
+				dialog._dom.focus();
 			}
 		},
 
