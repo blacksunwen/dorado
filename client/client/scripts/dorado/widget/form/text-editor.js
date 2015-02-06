@@ -396,7 +396,14 @@
 		},
 		
 		doSetFocus: function() {
-			if (!dorado.Browser.isTouch && this._textDom) this._textDom.focus();
+			if (!dorado.Browser.isTouch && this._textDom) {
+				try {
+					this._textDom.focus();
+            	}
+            	catch (e) {
+            		// do nothing
+            	}
+			}
 		},
 
 		doOnFocus: function() {

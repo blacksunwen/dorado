@@ -663,7 +663,10 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 			});
 			
 			if (!this._root._childrenPrepared || this._data != data ||
-				(this._data && this._data.pageNo != (this._pageNo || 0))) {
+				(this._data && this._data.pageNo != (this._pageNo || 0)) ||
+				this._shouldRebuildNodes) {
+				this._shouldRebuildNodes = false;
+				
 				this._data = data;
 				this._pageNo = (data ? data.pageNo : 0);
 				this._root._prepareChildren(dorado._NULL_FUNCTION);
@@ -671,6 +674,18 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 		}
 
 		$invokeSuper.call(this, [dom]);
+	},
+	
+	dataSetMessageReceived: function(messageCode, arg) {
+		$invokeSuper.call(this, [messageCode, arg]);
+		
+		if (this._disableBindingCounter == 0 && this._shouldRefreshOnVisible && !this._shouldRebuildNodes) {
+			this._shouldRebuildNodes = ([dorado.widget.DataSet.MESSAGE_REFRESH,
+			     dorado.widget.DataSet.MESSAGE_DATA_CHANGED,
+			     dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY,
+			     dorado.widget.DataSet.MESSAGE_DELETED,
+			     dorado.widget.DataSet.MESSAGE_INSERTED].indexOf(messageCode) >= 0);
+		}
 	},
 
 	filterDataSetMessage: function(messageCode, arg) {

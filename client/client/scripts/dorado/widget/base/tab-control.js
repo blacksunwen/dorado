@@ -371,14 +371,6 @@ dorado.widget.VerticalTabControl = $extend(dorado.widget.TabColumn, /** @scope d
 	setFocus: function() {
 		// 放置在IE容器滚动条的意外滚动
 		var dom = this._tabcolumnDom;
-		if (dom) {
-			//			setTimeout(function () {
-			try {
-				dom.focus();
-			}
-			catch(e) {
-			}
-			//			}, 0);
-		}
+		if (dom) dom.focus();
 	}
 });

@@ -210,6 +210,7 @@
 					}
 				}
 				
+				// TODO: 此段代码的作用？ 2015/02/06 Benny留
 				if (dorado.Browser.msie) {
 					var tbody = this._dataTBody;
 					try {
@@ -219,7 +220,12 @@
 						if (cell) ((cell.firstChild && cell.firstChild.nodeType == 1) ? cell.firstChild : cell).focus();
 					} 
 					catch (e) {
-						evt.target.focus();
+						try {
+							evt.target.focus();
+						}
+						catch(e) {
+							// do nothing
+						}
 					}
 				}
 			}

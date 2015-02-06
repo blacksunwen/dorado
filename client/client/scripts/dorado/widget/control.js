@@ -1404,18 +1404,18 @@
 					if (dorado._LAST_FOCUS_CONTROL === control && dorado.widget.focusedControl.peek() !== self) {
 						try {
 							control.doSetFocus();
-							dorado.widget.onControlGainedFocus(control);
 						}
 						catch(e) {
 							// do nothing
 						}
+						dorado.widget.onControlGainedFocus(control);
 					}
 					dorado._LAST_FOCUS_CONTROL = null;
 				}, 10);
 			},
 
 			doSetFocus: function() {
-				//if (this._dom) this._dom.focus();
+				if (this._dom) this._dom.focus();
 			},
 
 			/**
@@ -1682,7 +1682,14 @@
 			if (document.body) {
 				setTimeout(function() {
 					if (dorado._LAST_FOCUS_CONTROL === null) {
-						if (!ignorePhyscialFocus) document.body.focus();
+						if (!ignorePhyscialFocus) {
+							try {
+								document.body.focus();
+							}
+							catch(e) {
+								// do nothing
+							}
+						}
 						dorado.widget.onControlGainedFocus(null);
 					}
 				}, 0);

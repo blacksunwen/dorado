@@ -83,7 +83,7 @@ public class StandaloneRuleSetExporter {
 	private RuleSetXmlOutputter getRuleSetOutputter() throws Exception {
 		Context context = Context.getCurrent();
 		return (RuleSetXmlOutputter) context
-				.getServiceBean("idesupport.ruleSetOutputter");
+				.getServiceBean("idesupport.ruleSetXmlOutputter");
 	}
 
 	private String getRealResourcePath(String location) {
