@@ -914,6 +914,7 @@
 			this.pageCount = 1;
 			this.entityCount = 0;
 			this.current = null;
+			this.timestamp = dorado.Core.getTimestamp();
 			this.sendMessage(0);
 		},
 		
