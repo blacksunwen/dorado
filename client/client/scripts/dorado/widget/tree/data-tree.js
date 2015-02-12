@@ -214,6 +214,18 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			}
 		}
 	},
+	
+	getTimestamp: function() {
+		var timestamp = ((this._data) ? this._data.timestamp : 0) + this._timestamp;
+		var nodesDatas = this._nodesDatas;
+		if (nodesDatas) {
+			for (var i = 0; i < nodesDatas.length; i++) {
+				var nodesData = nodesDatas[i];
+				timestamp += nodesData.timestamp;
+			}
+		}
+		return timestamp;
+	},
 
 	_prepareChildren: function(callback) {
 
@@ -286,7 +298,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 				if (node._data) expandedNodes[node._data.entityId] = !!node._expanded;
 			}
 
-			this._nodesData = entity;
+			this._nodesDatas.push(entity);
 			if (entity instanceof dorado.EntityList) {
 				for (var it = entity.iterator({ currentPage: true }); it.hasNext();) {
 					var d = it.next();
@@ -409,6 +421,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 
 					if (tree) tree.disableAutoRefresh();
 					try {
+						self._nodesDatas = [];
 						for (var i = 0; i < infos.length; i++) {
 							var info = infos[i];
 							startIndex = processBindingConfig.call(self, info.bindingConfig, info.data, startIndex, !self._hasExpanded);
@@ -641,13 +654,40 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 	},
 
 	onNodeAttached: function(node) {
-		$invokeSuper.call(this, arguments);
+		$invokeSuper.call(this, [node]);
 		if (node._data) this._entityMap[node._data.entityId] = node;
 	},
 
 	onNodeDetached: function(node) {
-		$invokeSuper.call(this, arguments);
+		$invokeSuper.call(this, [node]);
 		if (node._data) delete this._entityMap[node._data.entityId];
+	},
+	
+	doRefreshItemDomData: function(row, node) {
+		// 判断子节点对应的EntityList是否已被Entity.reset
+		var nodesDatas = node._nodesDatas;
+		if (nodesDatas && nodesDatas.length) {
+			var reseted;
+			for (var i = 0; i < nodesDatas.length; i++) {
+				var nodesData = nodesDatas[i];
+				if (!nodesData._observer && !nodesData.isNull) {
+					reseted = true;
+					node.resetChildren();
+					if (node._expanded) {
+						node._expanded = false;
+						setTimeout(function() {
+							node.expandAsync();
+						}, 0);
+					}
+					break;
+				}
+			}
+			if (!reseted) {
+				node._prepareChildren(dorado._NULL_FUNCTION);
+			}
+		}
+		
+		$invokeSuper.call(this, [row, node]);
 	},
 
 	refreshDom: function(dom) {
