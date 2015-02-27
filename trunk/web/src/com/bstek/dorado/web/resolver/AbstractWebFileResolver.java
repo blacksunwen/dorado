@@ -84,7 +84,7 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 	}
 
 	protected String getUriSuffix(HttpServletRequest request) {
-		return getResourceExtName(request.getPathInfo());
+		return getResourceExtName(request.getRequestURI());
 	}
 
 	protected boolean shouldCompress(ResourcesWrapper resourcesWrapper) {
