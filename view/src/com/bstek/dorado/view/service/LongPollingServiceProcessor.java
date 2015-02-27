@@ -107,6 +107,7 @@ public class LongPollingServiceProcessor extends AbstractRemoteServiceProcessor 
 			DoradoContext context) throws Exception {
 		String serviceName = JsonUtils.getString(objectNode, "service");
 		Assert.notEmpty(serviceName);
+		context.setAttribute(SERVICE_NAME_ATTRIBUTE, serviceName);
 
 		String groupId = JsonUtils.getString(objectNode, "groupId");
 		long responseDelay = JsonUtils.getLong(objectNode, "responseDelay");
@@ -117,8 +118,6 @@ public class LongPollingServiceProcessor extends AbstractRemoteServiceProcessor 
 			throw new IllegalArgumentException("Unknown ExposedService ["
 					+ serviceName + "].");
 		}
-
-		context.setAttribute(SERVICE_NAME_ATTRIBUTE, exposedService.getName());
 
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
 				null, false);

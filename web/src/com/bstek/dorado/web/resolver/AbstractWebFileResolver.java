@@ -74,15 +74,17 @@ public abstract class AbstractWebFileResolver extends AbstractResolver
 	}
 
 	protected String getResourceExtName(String path) {
-		int i = path.lastIndexOf(".");
-		if (i > 0 && i < path.length() - 1) {
-			return path.substring(i).toLowerCase();
+		if (path != null) {
+			int i = path.lastIndexOf(".");
+			if (i > 0 && i < path.length() - 1) {
+				return path.substring(i).toLowerCase();
+			}
 		}
 		return "";
 	}
 
 	protected String getUriSuffix(HttpServletRequest request) {
-		return getResourceExtName(request.getRequestURI());
+		return getResourceExtName(request.getPathInfo());
 	}
 
 	protected boolean shouldCompress(ResourcesWrapper resourcesWrapper) {

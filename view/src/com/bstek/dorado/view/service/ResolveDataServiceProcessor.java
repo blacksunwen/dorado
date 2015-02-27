@@ -38,6 +38,7 @@ import com.bstek.dorado.data.resolver.DataItems;
 import com.bstek.dorado.data.resolver.DataResolver;
 import com.bstek.dorado.data.resolver.manager.DataResolverManager;
 import com.bstek.dorado.data.variant.MetaData;
+import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
@@ -52,6 +53,9 @@ import com.bstek.dorado.web.DoradoContext;
  * @since Apr 16, 2009
  */
 public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
+	public static final String RESOLVER_NAME_ATTRIBUTE = ResolveDataServiceProcessor.class
+			.getName() + ".resolverName";
+
 	private Outputter simplePropertyValueOnlyDataOutputter;
 	private DataResolverManager dataResolverManager;
 
@@ -86,6 +90,11 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 	@SuppressWarnings("rawtypes")
 	protected void doExecute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
+		String dataResolverName = JsonUtils.getString(objectNode,
+				"dataResolver");
+		Assert.notEmpty(dataResolverName);
+		context.setAttribute(RESOLVER_NAME_ATTRIBUTE, dataResolverName);
+
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,
 				null, false);
 		MetaData sysParameter = (MetaData) jsonToJavaObject(
@@ -95,8 +104,6 @@ public class ResolveDataServiceProcessor extends DataServiceProcessorSupport {
 			parameter = new ParameterWrapper(parameter, sysParameter);
 		}
 
-		String dataResolverName = JsonUtils.getString(objectNode,
-				"dataResolver");
 		DataResolver dataResolver = getDataResolver(dataResolverName);
 		if (dataResolver == null) {
 			throw new IllegalArgumentException("Unknown DataResolver ["

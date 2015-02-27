@@ -214,8 +214,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 			} else if (contentType != null && contentType.contains(XML_TOKEN)) {
 				Document document = getXmlDocumentBuilder(context)
 						.loadDocument(
-								new InputStreamResource(in, request
-										.getRequestURI()));
+								new InputStreamResource(in, request.getPathInfo()));
 
 				writer.append("<?xml version=\"1.0\" encoding=\""
 						+ Constants.DEFAULT_CHARSET + "\"?>\n");

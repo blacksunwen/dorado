@@ -39,6 +39,7 @@ import com.bstek.dorado.data.provider.filter.FilterCriterionParser;
 import com.bstek.dorado.data.provider.manager.DataProviderManager;
 import com.bstek.dorado.data.type.DataType;
 import com.bstek.dorado.data.variant.MetaData;
+import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.web.DoradoContext;
@@ -50,6 +51,9 @@ import com.bstek.dorado.web.DoradoContext;
  * @since Nov 7, 2008
  */
 public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
+	public static final String PROVIDER_NAME_ATTRIBUTE = ResolveDataServiceProcessor.class
+			.getName() + ".providerName";
+
 	private DataProviderManager dataProviderManager;
 	private FilterCriterionParser filterCriterionParser;
 
@@ -189,6 +193,9 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 			DoradoContext context) throws Exception {
 		String dataProviderName = JsonUtils.getString(objectNode,
 				"dataProvider");
+		Assert.notEmpty(dataProviderName);
+		context.setAttribute(PROVIDER_NAME_ATTRIBUTE, dataProviderName);
+
 		String resultDataTypeName = null;
 		if (objectNode.has("resultDataType")) {
 			resultDataTypeName = JsonUtils.getString(objectNode,
@@ -235,7 +242,6 @@ public class LoadDataServiceProcessor extends DataServiceProcessorSupport {
 			throw new IllegalArgumentException("Unknown DataProvider ["
 					+ dataProviderName + "].");
 		}
-
 
 		DataType resultDataType = null;
 		if (StringUtils.isNotEmpty(resultDataTypeName)) {

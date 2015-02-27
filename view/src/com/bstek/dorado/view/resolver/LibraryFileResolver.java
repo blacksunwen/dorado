@@ -25,7 +25,7 @@ import com.bstek.dorado.web.WebConfigure;
 
 public class LibraryFileResolver extends PackageFileResolver {
 	private static final String I18N_PREFIX = "resources/i18n/";
-	private static final String SKIN_URI_PREFIX = "/dorado/client/skins/";
+	private static final String SKIN_URI_PREFIX = "/client/skins/";
 
 	@Deprecated
 	private static final String INHERENT_SKIN = "inherent";
@@ -205,7 +205,7 @@ public class LibraryFileResolver extends PackageFileResolver {
 	protected Resource[] getStyleSheetResources(DoradoContext context,
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
-		String uri = context.getRequest().getRequestURI();
+		String uri = context.getRequest().getPathInfo();
 		int i = uri.indexOf(SKIN_URI_PREFIX);
 		if (i >= 0) {
 			String fileName = fileInfo.getFileName();
