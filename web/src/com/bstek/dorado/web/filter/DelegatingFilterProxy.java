@@ -24,6 +24,7 @@ import java.util.TreeSet;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -42,8 +43,10 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class DelegatingFilterProxy implements Filter {
 	private List<DelegatingFilter> targetFilters;
 	private PathMatcher pathMatcher;
+	private ServletContext servletContext;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
+		servletContext = filterConfig.getServletContext();
 	}
 
 	private WebApplicationContext getWebApplicationContext(
@@ -55,7 +58,8 @@ public class DelegatingFilterProxy implements Filter {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<DelegatingFilter> getTargetFilters(ServletRequest request) {
+	private List<DelegatingFilter> getTargetFilters(ServletRequest request)
+			throws ServletException {
 		if (targetFilters == null) {
 			WebApplicationContext wac = getWebApplicationContext(request);
 			Map<String, DelegatingFilter> targetFilterMap = BeanFactoryUtils
@@ -78,6 +82,15 @@ public class DelegatingFilterProxy implements Filter {
 
 				treeSet.addAll(targetFilterMap.values());
 				targetFilters = new ArrayList<DelegatingFilter>(treeSet);
+				for (DelegatingFilter targetFilter : targetFilters) {
+					if (targetFilter instanceof FilterProxy) {
+						FilterProxy filterProxy = (FilterProxy) targetFilter;
+						FilterConfig filterConfig = new MockFilterConfig(
+								filterProxy.getName(), servletContext,
+								filterProxy.getInitParameters());
+						targetFilter.init(filterConfig);
+					}
+				}
 			}
 		}
 		return targetFilters;

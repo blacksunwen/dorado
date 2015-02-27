@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,6 +69,9 @@ public abstract class DelegatingFilter {
 
 	public void setExcludeUrlPatterns(List<String> excludeUrlPatterns) {
 		this.excludeUrlPatterns = formatUrlPatterns(excludeUrlPatterns);
+	}
+
+	public void init(FilterConfig filterConfig) throws ServletException {
 	}
 
 	public abstract void doFilter(HttpServletRequest request,
