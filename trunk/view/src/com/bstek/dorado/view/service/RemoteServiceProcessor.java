@@ -24,6 +24,7 @@ import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.variant.MetaData;
 import com.bstek.dorado.util.Assert;
 import com.bstek.dorado.view.output.OutputContext;
+import com.bstek.dorado.view.resolver.ViewServiceResolver;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
@@ -31,12 +32,14 @@ import com.bstek.dorado.web.DoradoContext;
  * @since 2010-11-30
  */
 public class RemoteServiceProcessor extends AbstractRemoteServiceProcessor {
+	public static final String SERVICE_NAME_ATTRIBUTE = ViewServiceResolver.class
+			.getName() + ".serviceName";
+
 	@Override
 	protected void doExecute(Writer writer, ObjectNode objectNode,
 			DoradoContext context) throws Exception {
 		String serviceName = JsonUtils.getString(objectNode, "service");
 		Assert.notEmpty(serviceName);
-		
 		context.setAttribute(SERVICE_NAME_ATTRIBUTE, serviceName);
 
 		Object parameter = jsonToJavaObject(objectNode.get("parameter"), null,

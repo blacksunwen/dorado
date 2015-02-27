@@ -30,7 +30,6 @@ import com.bstek.dorado.data.ParameterWrapper;
 import com.bstek.dorado.data.method.MethodAutoMatchingException;
 import com.bstek.dorado.data.method.MethodAutoMatchingUtils;
 import com.bstek.dorado.data.method.MoreThanOneMethodsMatchsException;
-import com.bstek.dorado.view.resolver.ViewServiceResolver;
 import com.bstek.dorado.web.DoradoContext;
 
 /**
@@ -39,7 +38,7 @@ import com.bstek.dorado.web.DoradoContext;
  */
 public abstract class AbstractRemoteServiceProcessor extends
 		DataServiceProcessorSupport {
-	public static final String SERVICE_NAME_ATTRIBUTE = ViewServiceResolver.class
+	public static final String SERVICE_NAME_ATTRIBUTE = AbstractRemoteServiceProcessor.class
 			.getName() + ".serviceName";
 
 	private static final Log logger = LogFactory

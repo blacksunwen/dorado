@@ -12,6 +12,11 @@
 
 package com.bstek.dorado.data.type.property;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.bstek.dorado.annotation.IdeProperty;
 import com.bstek.dorado.annotation.XmlProperty;
 
@@ -48,5 +53,22 @@ public class Mapping {
 
 	public void setValueProperty(String valueProperty) {
 		this.valueProperty = valueProperty;
+	}
+
+	public static Mapping parseString(String s) {
+		if (s == null) {
+			return null;
+		}
+
+		Mapping mapping = new Mapping();
+		mapping.setKeyProperty("key");
+		mapping.setValueProperty("value");
+
+		List<Object> mapValues = new ArrayList<Object>();
+		mapping.setMapValues(mapValues);
+		for (String item : StringUtils.split(s, ";,\n\r")) {
+			mapValues.add(SimpleMapEntry.parseString(item));
+		}
+		return mapping;
 	}
 }
