@@ -936,11 +936,20 @@
 			$invokeSuper.call(this);
 			if (this._selectTextOnFocus && this._realEditable) {
 				if (this.get("focused") && this._editorFocused) {
-					try {
-						this._textDom.select();
-					}
-					catch(e) {
-						// do nothing
+					if (dorado.Browser.isTouch) {
+						//REF: http://stackoverflow.com/questions/15927118/mobile-safari-jquery-select-on-focus-input-doesn%C2%B4t-work
+						var input = this._textDom;
+						setTimeout(function () {
+							input.selectionStart = 0;
+							input.selectionEnd = $fly(input).val().length;
+						},100);
+					} else {
+						try {
+							this._textDom.select();
+						}
+						catch(e) {
+							// do nothing
+						}
 					}
 				}
 			}
