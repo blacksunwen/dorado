@@ -503,6 +503,8 @@
 						//do nothing
 					}
 				}, 0);
+			} else {
+				this._editorFocused = true;
 			}
 		},
 
