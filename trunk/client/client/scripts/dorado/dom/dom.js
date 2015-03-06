@@ -627,7 +627,7 @@
 			var finalLeft = left + offsetLeft /**+ $fly(element.offsetParent).scrollLeft()*/,
 				finalTop = top + offsetTop /**+ $fly(element.offsetParent).scrollTop() */;
 
-			$fly(element).offset({ left: finalLeft, top: finalTop });
+			$fly(element).css({ left: finalLeft, top: finalTop });
 
 			finalLeft = parseInt($fly(element).css("left"), 10);
 			finalTop = parseInt($fly(element).css("top"), 10);
