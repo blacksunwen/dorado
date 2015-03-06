@@ -299,10 +299,11 @@
 						$fly(frameWin.document.body).find("input").blur();
 					}
 
-					if (frameDom) {
-						$fly(frameDom).find("iframe").prop("src", BLANK_PATH);
-						frame._toReplaceUrl = frame._path;
-					}
+					//为了解决移动平台中的input在IFrame隐藏的时候不隐藏光标添加的代码，解决办法不完美。在子页面中的Button关闭就没问题。
+					//if (frameDom) {
+					//	$fly(frameDom).find("iframe").prop("src", BLANK_PATH);
+					//	frame._toReplaceUrl = frame._path;
+					//}
 				}
 			}
 
