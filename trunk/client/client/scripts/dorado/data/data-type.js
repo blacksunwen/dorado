@@ -1042,7 +1042,7 @@
 				if (data == '') return null;
 
 				if (data instanceof Date) return data;
-				if (isFinite(data)) {
+				if (typeof data == "number") {
 					var date = new Date(data);
 					if (!isNaN(date.getTime())) {
 						return date;
