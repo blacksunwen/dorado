@@ -237,7 +237,7 @@
 			rowList.set("items", items);
 			
 			var text = editor.doGetText();
-			if (text && text.length > 0 && this._filterOnOpen) {
+			if (this._filterOnOpen && (text.length > 0 || (this._lastFilterValue || "") != text)) {
 				this.onFilterItems(text);
 			}
 			
@@ -390,6 +390,7 @@
 			var rowList = this.get("box.control");
 			if (!rowList) return;
 			
+			this._lastFilterValue = filterValue;
 			var arg = {
 				filterOperator: "like*",
 				filterValue: filterValue,
