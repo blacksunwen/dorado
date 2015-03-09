@@ -220,9 +220,19 @@
 						dorado.MessageBox.updateText(dorado.MessageBox._lastText, dorado.MessageBox._lastIcon, dorado.MessageBox._lastEditor, dorado.MessageBox._lastValue);
 					}
 
-					dialog.bind("beforeShow", function(self) {
+					dialog.bind("beforeShow", function(self, arg) {
 						var dom = self._dom;
 						$fly(dom).width(dorado.MessageBox.maxWidth);
+
+						if (dorado.Browser.msie && dom.offsetWidth === 0) {
+							arg.processDefault = false;
+
+							setTimeout(function() {
+								self.show();
+							}, 100);
+
+							return;
+						}
 
 						var doms = self._doms, contentWidth = $fly(doms.msgText).outerWidth(true) + $fly(doms.msgContent).outerWidth() - $fly(doms.msgContent).width();
 
