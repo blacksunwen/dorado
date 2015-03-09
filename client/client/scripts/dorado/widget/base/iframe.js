@@ -47,10 +47,8 @@
 				skipRefresh: true,
 				setter: function(value) {
 					var frame = this, oldPath = frame._path, dom = frame._dom, doms = frame._doms;
-
-					frame._path = value;
-
 					if (oldPath == value) return;
+					frame._path = value;
 					if (dom) {
 						$fly(doms.loadingCover).css("display", "block");
 
@@ -116,7 +114,7 @@
 				var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
 				return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
 			}
-			return true;
+			return false;
 		},
 
 		releaseCurrentPage: function() {
