@@ -56,8 +56,10 @@ public class XmlViewConfigDefinitionFactory implements
 	private static String nameDelimBackLash = "backlash";
 	private static String nameDelimDotOrBackLash = "dotOrBacklash";
 
+	private static String DEFAULT_VIEW_ROOT = "classpath:";
+
 	private XmlDocumentBuilder xmlDocumentBuilder;
-	private String pathPrefix;
+	private String[] pathPrefixs;
 	private String pathSubfix;
 	private byte nameDelimMode = 0;
 	private char pathDelimChar = '.';
@@ -93,17 +95,42 @@ public class XmlViewConfigDefinitionFactory implements
 	 * 返回文件路径的前缀。
 	 */
 	public String getPathPrefix() {
-		return pathPrefix;
+		return StringUtils.join(pathPrefixs, ';');
 	}
 
 	/**
 	 * 设置文件路径的前缀。
 	 */
 	public void setPathPrefix(String pathPrefix) {
-		if (pathPrefix.endsWith("/")) {
-			pathPrefix = pathPrefix.substring(0, pathPrefix.length() - 1);
+		boolean defaultViewRootFound = false;
+		String[] paths = StringUtils.split(pathPrefix, ';');
+		if (paths != null) {
+			for (int i = 0; i < paths.length; i++) {
+				String path = paths[i];
+				if (path.endsWith("/")) {
+					path = path.substring(0, pathPrefix.length() - 1);
+					paths[i] = path;
+				}
+
+				if (!defaultViewRootFound && DEFAULT_VIEW_ROOT.equals(path)) {
+					defaultViewRootFound = true;
+				}
+			}
 		}
-		this.pathPrefix = pathPrefix;
+
+		if (!defaultViewRootFound) {
+			String[] newPath;
+			if (paths != null) {
+				newPath = new String[paths.length + 1];
+				System.arraycopy(paths, 0, newPath, 0, paths.length);
+				newPath[paths.length] = DEFAULT_VIEW_ROOT;
+			} else {
+				newPath = new String[] { DEFAULT_VIEW_ROOT };
+			}
+			this.pathPrefixs = newPath;
+		} else {
+			this.pathPrefixs = paths;
+		}
 	}
 
 	/**
@@ -156,20 +183,14 @@ public class XmlViewConfigDefinitionFactory implements
 
 	protected String getResourcePath(String viewName, String pathSubfix)
 			throws Exception {
-		String runMode = Configure.getString("core.runMode");
-		if ("debug".equals(runMode) && StringUtils.isNotEmpty(pathPrefix)
-				&& pathPrefix.indexOf(';') > 0) {
-			for (String prefix : StringUtils.split(pathPrefix, ';')) {
-				String path = getResourcePath(viewName, prefix, pathSubfix);
-				Resource resource = ResourceUtils.getResource(path);
-				if (null != resource && resource.exists()) {
-					return path;
-				}
+		for (String prefix : pathPrefixs) {
+			String path = getResourcePath(viewName, prefix, pathSubfix);
+			Resource resource = ResourceUtils.getResource(path);
+			if (null != resource && resource.exists()) {
+				return path;
 			}
-			return null;
-		} else {
-			return getResourcePath(viewName, pathPrefix, pathSubfix);
 		}
+		return null;
 	}
 
 	protected Resource getResource(String viewName, String pathSubfix)
