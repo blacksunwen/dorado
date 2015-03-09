@@ -166,6 +166,7 @@ public class DoradoLoader {
 				public JexlContext getJexlContext() {
 					JexlContext elContext = new MapContext();
 					elContext.set("env", System.getenv());
+					elContext.set("system", System.getProperties());
 					return elContext;
 				}
 			};
