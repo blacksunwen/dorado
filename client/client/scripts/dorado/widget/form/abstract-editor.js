@@ -335,24 +335,19 @@
 			}
 			
 			var info = {};
-			var entityDataType;
+			var entityDataType, propertyDef;
 			var entity = info.entity = this.getBindingData();
-			if (entity != null) {
-				entityDataType = entity.dataType;
-				info.timestamp = entity.timestamp;
-			}
-			if (!entityDataType) entityDataType = this.getBindingDataType();
-			info.entityDataType = entityDataType;
-			
-			if (entityDataType) {
-				info.propertyDef = entityDataType.getPropertyDef(this._property);
-				info.dataType = info.propertyDef ? info.propertyDef.get("dataType") : null;
-			}
+			if (entity != null) info.timestamp = entity.timestamp;
+
+			propertyDef = this.getBindingPropertyDef();
+			info.propertyDef = propertyDef;
+			info.entityDataType = propertyDef.parent;
+			info.dataType = propertyDef ? propertyDef.get("dataType") : null;
+
 			if (info.timestamp == null) info.timestamp = 0;
 			info.cacheTimestamp = new Date().getTime();
 			this._bindingInfoCache = info;
 			return info;
-			
 		},
 		
 		doPost: function() {
