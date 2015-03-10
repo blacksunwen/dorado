@@ -573,8 +573,7 @@
 			if (!items) {
 				if (!pd) {
 					if (dorado.Object.isInstanceOf(editor, dorado.widget.PropertyDataControl)) {
-						var dataType = editor.getBindingDataType();
-						if (dataType) pd = dataType.getPropertyDef(editor.get("property"));
+						pd = editor.getBindingPropertyDef();
 					}
 				}
 				if (!pd) {
