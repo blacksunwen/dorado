@@ -128,16 +128,16 @@
 			 */
 			resizeable: {
 				defaultValue: true,
-                setter: function(value) {
-                    this._resizeable = value;
-                    if (this._dom)
-                        if (this._resizeable) {
-                            $fly(this._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
-                        } else {
-                            $fly(this._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
-                        }
-                }
-            },
+				setter: function(value) {
+					this._resizeable = value;
+					if (this._dom)
+						if (this._resizeable) {
+							$fly(this._dom).addClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("enable");
+						} else {
+							$fly(this._dom).removeClass("i-dialog-resizeable d-dialog-resizeable").find(".dialog-resize-handle").draggable("disable");
+						}
+				}
+			},
 
 			/**
 			 * 默认为window对象，可以是dorado的组件、dom对象、dom对象的jQuery选择符。
@@ -618,6 +618,7 @@
 			}
 
 			if (dialog._draggable && showCaptionBar !== false) {
+				var bodyRect;
 				jQuery(dom).addClass("d-dialog-draggable").css("position", "absolute").draggable({
 					iframeFix: true,
 					addClasses: false,
@@ -665,6 +666,31 @@
 							var helper = ui.helper;
 							helper.css({ display: "", visibility: "" }).bringToFront();
 							$fly(dom).addClass("d-dialog-dragging").css("visibility", "hidden");
+						}
+						var bodyEl = $fly(document.body), width = bodyEl.outerWidth(true), height = bodyEl.outerHeight(true), offset = bodyEl.offset();
+						bodyRect = {
+							left: offset.left,
+							top: offset.top,
+							right: offset.left + width,
+							bottom: offset.top + height
+						};
+					},
+					drag: function(event, ui) {
+						var position = ui.position;
+
+						var helperRect = {
+							left: position.left,
+							top: position.top,
+							right: position.left + ui.helper.width(),
+							bottom: position.top + ui.helper.height()
+						};
+
+						if (helperRect.left < bodyRect.left) {
+							position.left = bodyRect.left;
+						}
+
+						if (helperRect.top < bodyRect.top) {
+							position.top = bodyRect.top;
 						}
 					},
 					stop: function(event, ui) {
