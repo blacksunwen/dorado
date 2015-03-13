@@ -592,11 +592,10 @@
 				this._displayProperty = "value";
 			}
 			if (this._useEmptyItem) {
-				items = new dorado.EntityList(items);
-				items.insert({
+				items = [{
 					key: null,
 					value: null
-				}, "begin");
+				}].concat(items);
 			}
 			return items;
 		}
