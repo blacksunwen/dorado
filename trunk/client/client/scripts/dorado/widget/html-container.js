@@ -105,10 +105,27 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 			this._xCreateContext = {};
 			var doms = [];
 			this.pushHtmlElement(doms, this._content);
-			$fly(dom).empty().append(doms);
+			if (dorado.Browser.isTouch) {
+				$fly(dom).find("> :not(.scroll-bar)").remove();
+				$fly(dom).prepend(doms);
+				var scroller = jQuery.data(dom, "modernScroller");
+				if (scroller && scroller._contentInited) {
+					scroller.content = dom.firstChild;
+				}
+			} else {
+				$fly(dom).empty().append(doms);
+			}
 		}
 		else {
-			$fly(dom).empty();
+			if (dorado.Browser.isTouch) {
+				$fly(dom).find(":not(.scroll-bar)").remove();
+				var scroller = jQuery.data(dom, "modernScroller");
+				if (scroller && scroller._contentInited) {
+					scroller.content = null;
+				}
+			} else {
+				$fly(dom).empty();
+			}
 		}
 
 		var container = dom;
