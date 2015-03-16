@@ -295,6 +295,15 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 		}
 	},
 
+	doOnAttachToDocument: function() {
+		$invokeSuper.call(this, arguments);
+		if (this._stretchMode == "none") {
+			this._modernScroller = $DomUtils.modernScroll(this.getDom(), {
+				autoDisable: true
+			});
+		}
+	},
+
 	createDom: function() {
 		var image = this, dom = $DomUtils.xCreate({
 			tagName: "DIV",
@@ -328,6 +337,7 @@ dorado.widget.Image = $extend([dorado.widget.Control, dorado.widget.PropertyData
 				height: "100%"
 			});
 		}
+
 		return dom;
 	},
 	
