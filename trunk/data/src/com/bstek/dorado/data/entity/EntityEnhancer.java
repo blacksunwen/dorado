@@ -13,9 +13,9 @@
 package com.bstek.dorado.data.entity;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -67,7 +67,7 @@ public abstract class EntityEnhancer {
 	private static long maxTimeStamp = 0;
 	private static GetterInterceptionInjector injector = new GetterInterceptionInjector();
 
-	private Set<String> propertiesHasRead;
+	private Map<String, Object> propertiesHasRead;
 
 	protected EntityDataType dataType;
 	private int entityId;
@@ -279,18 +279,18 @@ public abstract class EntityEnhancer {
 		}
 	}
 
-	protected synchronized void markPropertyHasRead(String property) {
+	protected void markPropertyHasRead(String property) {
 		if (propertiesHasRead == null) {
-			propertiesHasRead = new HashSet<String>();
-			propertiesHasRead.add(property);
-		} else if (!propertiesHasRead.contains(property)) {
-			propertiesHasRead.add(property);
+			propertiesHasRead = new ConcurrentHashMap<String, Object>();
+			propertiesHasRead.put(property, null);
+		} else if (!propertiesHasRead.containsKey(property)) {
+			propertiesHasRead.put(property, null);
 		}
 	}
 
-	protected synchronized boolean isPropertyHasRead(String property) {
+	protected boolean isPropertyHasRead(String property) {
 		return (propertiesHasRead == null) ? false : propertiesHasRead
-				.contains(property);
+				.containsKey(property);
 	}
 
 	protected abstract Object internalReadProperty(Object entity,
