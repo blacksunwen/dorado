@@ -367,11 +367,11 @@
 			var width = $container.css("width"), height = $container.css("height");
 			var xScroller, yScroller;
 
-			if (!(overflowX == "hidden" || overflowX != "scroll" && (width == "" || width == "auto"))) {
+			if (!(overflowX == "hidden" || !dorado.Browser.isTouch && overflowX != "scroll" && (width == "" || width == "auto"))) {
 				$container.css("overflowX", "hidden");
 				xScroller = new dorado.util.Dom.ThinScroller(container, "h", options);
 			}
-			if (!(overflowY == "hidden" || overflowY != "scroll" && (height == "" || height == "auto"))) {
+			if (!(overflowY == "hidden" || !dorado.Browser.isTouch && overflowY != "scroll" && (height == "" || height == "auto"))) {
 				$container.css("overflowY", "hidden");
 				yScroller = new dorado.util.Dom.ThinScroller(container, "v", options);
 			}
