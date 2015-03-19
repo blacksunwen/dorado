@@ -282,9 +282,9 @@ public abstract class EntityEnhancer {
 	protected void markPropertyHasRead(String property) {
 		if (propertiesHasRead == null) {
 			propertiesHasRead = new ConcurrentHashMap<String, Object>();
-			propertiesHasRead.put(property, null);
+			propertiesHasRead.put(property, Boolean.TRUE);
 		} else if (!propertiesHasRead.containsKey(property)) {
-			propertiesHasRead.put(property, null);
+			propertiesHasRead.put(property, Boolean.TRUE);
 		}
 	}
 
