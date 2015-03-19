@@ -539,16 +539,8 @@
 					(overflowX == "auto" || overflowY == "auto" || overflowX == "scroll" || overflowY == "scroll")) {
 					contentCt.style.overflowX = overflowX;
 					contentCt.style.overflowY = overflowY;
-					var direction = null;
-					if (overflowX = "hidden") {
-						direction = "vertical";
-					}
-					if (overflowY == "hidden") {
-						direction = "horizontal";
-					}
 					container._modernScroller = $DomUtils.modernScroll(contentCt, {
-						autoDisable: true,
-						direction: direction
+						autoDisable: true
 					});
 					$fly(contentCt).bind("modernScrolling", function() {
 						dorado.Toolkits.setDelayedAction(container, "$onScrollTimerId", function() {
