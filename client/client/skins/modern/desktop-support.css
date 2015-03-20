@@ -68,6 +68,9 @@
   float: right;
 }
 .d-task-group-panel.d-daemon-task-indicator {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   background-color: rgba(251, 251, 251, 0.8);
   padding: 4px;
@@ -79,6 +82,9 @@
   display: none;
 }
 .d-task-group-panel.d-main-task-indicator {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   background-color: rgba(255, 255, 255, 0.8);
   padding: 8px 8px 8px 46px;

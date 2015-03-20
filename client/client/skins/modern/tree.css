@@ -142,7 +142,15 @@
   margin-right: 4px;
 }
 .d-tree {
-  background-color: #ffffff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  color: #000000;
+}
+.d-tree > div {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 .d-tree .row {
   -webkit-transition-duration: 0.3s;
@@ -155,6 +163,9 @@
   -ms-transition-property: background-color, border-color, color, -ms-box-shadow, -ms-transform;
   -o-transition-property: background-color, border-color, color, -o-box-shadow, -o-transform;
   transition-property: background-color, border-color, color, box-shadow, transform;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   background-color: #ffffff;
 }

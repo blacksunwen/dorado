@@ -294,6 +294,9 @@
   top: 8px;
 }
 .d-tip {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #ffffff;
   background-color: #07c181;
 }
@@ -531,6 +534,9 @@
 }
 .d-progress-bar {
   height: 18px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   background-color: #f7f7f7;
 }
 .d-progress-bar .bar {

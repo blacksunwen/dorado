@@ -67,6 +67,9 @@
   transform: rotate(-45deg);
 }
 .d-text-box {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
   border: 1px #bfbfbf solid;
   background-color: #ffffff;
   -webkit-transition-duration: 0.3s;
@@ -180,6 +183,9 @@
   transform: rotate(-45deg);
 }
 .d-text-area {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
   border: 1px #bfbfbf solid;
   background-color: #ffffff;
   -webkit-transition-duration: 0.3s;
@@ -334,6 +340,7 @@
 }
 /* checkbox */
 .d-checkbox {
+  position: relative;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -384,9 +391,6 @@
 .d-checkbox-readonly .icon {
   border-color: #d6d6d6;
   background: #efefef;
-}
-.d-checkbox {
-  position: relative;
 }
 .d-checkbox:before {
   content: "";

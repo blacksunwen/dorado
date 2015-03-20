@@ -37,7 +37,15 @@
   height: 2px;
   background: #ff8040;
 }
+.d-block-view {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
 .d-block-view .block {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   background-color: #f7f7f7;
   -webkit-transition-duration: 0.3s;
   -moz-transition-duration: 0.3s;

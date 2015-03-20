@@ -72,6 +72,9 @@
   content: "\e601";
 }
 .d-button {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   border-color: #d7d7d7;
   background-color: rgba(0, 0, 0, 0);
@@ -125,6 +128,9 @@
   color: rgba(0, 0, 0, 0.7);
 }
 .d-button-highlight {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #ffffff;
   border-color: #15a4fa;
   background-color: #15a4fa;
@@ -142,19 +148,13 @@
 .d-button-highlight .d-icon {
   color: rgba(255, 255, 255, 0.7);
 }
-.d-button-highlight.d-button-hover {
-  color: #ffffff;
-  border-color: #0588d7;
-  background-color: #0588d7;
-}
-.d-button-highlight.d-button-hover .d-icon {
-  color: rgba(255, 255, 255, 0.7);
-}
+.d-button-highlight.d-button-hover,
 .d-button-highlight.d-button-focused {
   color: #ffffff;
   border-color: #0588d7;
   background-color: #0588d7;
 }
+.d-button-highlight.d-button-hover .d-icon,
 .d-button-highlight.d-button-focused .d-icon {
   color: rgba(255, 255, 255, 0.7);
 }
@@ -177,6 +177,9 @@
   color: rgba(255, 255, 255, 0.7);
 }
 .d-button-decline {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #ffffff;
   border-color: #ff4a4f;
   background-color: #ff4a4f;
@@ -194,19 +197,13 @@
 .d-button-decline .d-icon {
   color: rgba(255, 255, 255, 0.7);
 }
-.d-button-decline.d-button-hover {
-  color: #ffffff;
-  border-color: #ff171d;
-  background-color: #ff171d;
-}
-.d-button-decline.d-button-hover .d-icon {
-  color: rgba(255, 255, 255, 0.7);
-}
+.d-button-decline.d-button-hover,
 .d-button-decline.d-button-focused {
   color: #ffffff;
   border-color: #ff171d;
   background-color: #ff171d;
 }
+.d-button-decline.d-button-hover .d-icon,
 .d-button-decline.d-button-focused .d-icon {
   color: rgba(255, 255, 255, 0.7);
 }
@@ -352,6 +349,9 @@
   display: block;
 }
 .d-menu {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   background-color: #ffffff;
 }
 .d-menu .group-content .menu-item {
@@ -605,6 +605,8 @@
   top: 7px;
   box-sizing: border-box;
   color: #000000;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
   border-radius: 8px;
   border: 1px solid transparent;
   line-height: 14px;
@@ -752,6 +754,12 @@
   background-color: #d7d7d7;
 }
 .d-tabbar.d-tabbar-top .tab {
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  border-top-right-radius: 3px;
   border-right: 1px solid #d9d9d9;
 }
 .d-tabbar.d-tabbar-top .tab-hover {
@@ -765,6 +773,12 @@
   box-shadow: inset 0 3px 0 #15a4fa;
 }
 .d-tabbar.d-tabbar-bottom .tab {
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  border-bottom-left-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-bottomright: 3px;
+  border-bottom-right-radius: 3px;
   border-right: 1px solid #d9d9d9;
 }
 .d-tabbar.d-tabbar-bottom .tab-hover {
@@ -966,6 +980,8 @@
 .d-tabcolumn .tab .close {
   box-sizing: border-box;
   color: #000000;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
   border-radius: 8px;
   border: 1px solid transparent;
   line-height: 14px;
@@ -1075,6 +1091,12 @@
   background-color: #f7f7f7;
 }
 .d-tabcolumn.d-tabcolumn-left .tab {
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-left-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  border-bottom-left-radius: 3px;
   border-bottom: 1px solid #d9d9d9;
 }
 .d-tabcolumn.d-tabcolumn-left .tab-hover {
@@ -1088,6 +1110,12 @@
   box-shadow: inset 3px 0 0 #15a4fa;
 }
 .d-tabcolumn.d-tabcolumn-right .tab {
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-bottomright: 3px;
+  border-bottom-right-radius: 3px;
   border-bottom: 1px solid #d9d9d9;
 }
 .d-tabcolumn.d-tabcolumn-right .tab-hover {
@@ -1132,6 +1160,12 @@
   float: left;
 }
 .d-caption-bar {
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-left-radius: 3px;
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  border-top-right-radius: 3px;
   color: #000000;
   background-color: #ededed;
 }
@@ -1296,6 +1330,11 @@
 .d-panel-collapsed .panel-footer-left {
   display: none;
 }
+.d-panel {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
 .d-panel .panel-body {
   background-color: #f7f7f7;
 }
@@ -1419,9 +1458,9 @@
 }
 .d-toolbar .d-icon-button,
 .d-toolbar .d-button {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   border-color: transparent;
   background-color: transparent;
@@ -1438,11 +1477,6 @@
 }
 .d-toolbar .d-icon-button-hover,
 .d-toolbar .d-button-hover {
-  color: #000000;
-  background-color: #e6e6e6;
-}
-.d-toolbar .d-icon-button-focused,
-.d-toolbar .d-button-focused {
   color: #000000;
   background-color: #e6e6e6;
 }
@@ -1516,7 +1550,15 @@
   border: 0;
   background: transparent;
 }
+.d-accordion {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
 .d-accordion .d-section .d-section-caption-bar {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
   position: relative;
   color: #000000;
   background-color: #e3e3e3;
@@ -1943,6 +1985,9 @@
   border-style: solid none none;
 }
 .d-field-set {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   border: 1px solid rgba(1, 100, 158, 0.5);
 }
 .d-field-set .field-set-legend {
@@ -1951,6 +1996,8 @@
 }
 .d-field-set .field-set-legend .collapse-button {
   box-sizing: border-box;
+  -webkit-border-radius: 19px;
+  -moz-border-radius: 19px;
   border-radius: 19px;
   border-width: 1px;
   border-style: solid;
@@ -2268,6 +2315,11 @@
 .d-dialog-helper {
   left: -99999px;
   top: -99999px;
+}
+.d-dialog {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 .d-dialog .dialog-header-left,
 .d-dialog .dialog-footer-left,

@@ -110,11 +110,17 @@
 }
 /* drop-down */
 .d-drop-down-box {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   border: 4px #ffffff solid;
   background-color: #ffffff;
 }
 /* month-picker */
 .d-month-picker {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   table-layout: fixed;
   color: #000000;
   background-color: #ffffff;
@@ -145,6 +151,9 @@
 /* year-picker */
 .d-year-picker {
   table-layout: fixed;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   background-color: #ffffff;
 }
@@ -239,6 +248,9 @@
   margin: 4px 5px 4px 0;
 }
 .d-year-month-picker {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   color: #000000;
   background-color: #ffffff;
 }
@@ -392,6 +404,9 @@
   border: 0;
 }
 .d-date-picker {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   background-color: #ffffff;
 }
 .d-date-picker .year-month-block {
