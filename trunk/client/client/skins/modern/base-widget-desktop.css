@@ -1131,7 +1131,7 @@
 /* caption-bar */
 .d-caption-bar {
   overflow: hidden;
-  height: 28px;
+  height: 26px;
 }
 .d-caption-bar .caption-bar-icon {
   float: left;
@@ -1147,8 +1147,8 @@
 }
 .d-caption-bar .caption {
   padding-left: 6px;
-  line-height: 28px;
-  height: 28px;
+  line-height: 26px;
+  height: 26px;
 }
 .d-caption-bar .button-group {
   float: right;
