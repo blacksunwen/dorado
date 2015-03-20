@@ -79,10 +79,16 @@
   transform: rotate(-45deg);
 }
 .d-tag-editor {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   border: 1px #bfbfbf solid;
   background-color: #ffffff;
 }
 .d-tag-editor .tag-container .tag {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   background: #15a4fa;
   color: #ffffff;
 }

@@ -89,7 +89,7 @@
   background: #efefef;
 }
 .d-grid .data-table .group-header-row .cell {
-  font-size: 10pt;
+  font-size: 110%;
   font-weight: bold;
   line-height: 32px;
   padding-left: 6px;
@@ -328,7 +328,11 @@
   content: "\f0c9";
 }
 .d-grid {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
   background-color: #f7f7f7;
+  color: #000000;
 }
 .d-grid .header-table .header {
   color: #000000;
