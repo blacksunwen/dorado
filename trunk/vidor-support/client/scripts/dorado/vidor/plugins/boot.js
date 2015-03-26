@@ -1,13 +1,13 @@
 cloudo.onInit(function () {
-	var resUrlRoot = cloudo.isBrowser ? ">" : cloudo.getServiceLocation();
+	var resUrlRoot = cloudo.isBrowser ? ">" : cloudo.getServiceLocation()+"/";
 	var cloudoPackagesConfig = {
 		patterns: {
 			"cloudo-plugin-js": {
-				url: resUrlRoot + "/dorado/cloudo/plugin/res/${fileName}.js",
+				url: resUrlRoot + "dorado/cloudo/plugin/res/${fileName}.js",
 				contentType: "text/javascript", charset: "UTF-8", mergeRequests: false
 			},
 			"cloudo-plugin-css": {
-				url: resUrlRoot + "/dorado/cloudo/plugin/res/${fileName}.css",
+				url: resUrlRoot + "dorado/cloudo/plugin/res/${fileName}.css",
 				contentType: "text/css", charset: "UTF-8", mergeRequests: false
 			}
 		},
@@ -24,7 +24,7 @@ cloudo.onInit(function () {
 	}
 
 	function registerCloudoPackages() {
-		var url = resUrlRoot + "/dorado/cloudo/plugin/manager/packages",
+		var url = resUrlRoot + "dorado/cloudo/plugin/manager/packages",
 			$ajax = new dorado.util.AjaxEngine({
 				defaultOptions: {
 					headers: {
