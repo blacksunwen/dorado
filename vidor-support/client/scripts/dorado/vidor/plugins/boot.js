@@ -1,5 +1,5 @@
 cloudo.onInit(function () {
-	var resUrlRoot = cloudo.isBrowser ? ">" : cloudo.getServiceLocation()+"/";
+	var resUrlRoot = cloudo.getWebResourceRoot();
 	var cloudoPackagesConfig = {
 		patterns: {
 			"cloudo-plugin-js": {
