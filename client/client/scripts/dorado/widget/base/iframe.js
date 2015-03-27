@@ -236,7 +236,7 @@
 		},
 
 		cancelLoad: function() {
-			this.replaceUrl(BLANK_PATH);
+			this.replaceUrl(null);
 		},
 
 		doOnResize: function() {
@@ -255,8 +255,8 @@
 			var frame = this;
 			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				frame.releaseCurrentPage();
-				frame.replaceUrl(null);
 			}
+			frame.replaceUrl(null);
 			frame.replaceUrl(frame._path);
 		},
 		

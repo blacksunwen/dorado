@@ -293,7 +293,7 @@
 					}
 				}
 				
-				if (page.loaded) {
+				if (page && page.loaded) {
 					if (callback) {
 						$callback(callback, true, page);
 					}
@@ -1237,8 +1237,8 @@
 				var skiped = 0;
 				if (!this._fixedPageNo) {
 					var tempPage;
-					while (reverse ? it.hasPervious() : it.hasNext()) {
-						tempPage = reverse ? it.pervious() : it.next();
+					while (reverse ? it.hasPrevious() : it.hasNext()) {
+						tempPage = reverse ? it.previous() : it.next();
 						if (tempPage.loaded || this._includeUnloadPage) {
 							skiped += tempPage.entityCount;
 							if ((skiped + tempPage.entityCount) > this._nextIndex) {
@@ -1267,8 +1267,8 @@
 			} else {
 				if (!this._fixedPageNo) {
 					var tempPage;
-					while (reverse ? it.hasPervious() : it.hasNext()) {
-						tempPage = reverse ? it.pervious() : it.next();
+					while (reverse ? it.hasPrevious() : it.hasNext()) {
+						tempPage = reverse ? it.previous() : it.next();
 						if (tempPage.loaded || this._includeUnloadPage) {
 							page = tempPage;
 							pageNo = page.pageNo;
