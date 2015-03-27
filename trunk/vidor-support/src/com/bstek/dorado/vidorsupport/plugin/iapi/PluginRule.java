@@ -17,5 +17,5 @@ public class PluginRule {
 	public static final String DEFAULT_BASE_URI = 
 			">dorado/cloudo/plugin/res";
 	public static final String DEFAULT_PATH = 
-			"META-INF/cloudo.json";
+			"META-INF/studio.json";
 }
