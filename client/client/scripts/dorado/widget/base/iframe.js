@@ -123,10 +123,9 @@
 				try {
 					if (frame.isSameDomain()) {
 						if (doms.iframe.contentWindow.dorado) {
+							doms.iframe.contentWindow.dorado.cleanContentOnClose = true;
 							doms.iframe.contentWindow.dorado.Exception.IGNORE_ALL_EXCEPTIONS = true;
 						}
-						// 此句导致子页面中Dorado所有的destroy逻辑失效
-						// doms.iframe.contentWindow.document.write('');
 						if(dorado.Browser.msie){
 							doms.iframe.contentWindow.close();
 							CollectGarbage();
