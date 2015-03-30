@@ -86,6 +86,7 @@ public class ModelRuleTemplateInitializer implements RuleTemplateInitializer {
 			newRuleTemplate.setSortFactor(++sortFactor);
 			newRuleTemplate.setScope("public");
 			newRuleTemplate.setType(dataTypeTypeInfo.getClassType().getName());
+			newRuleTemplate.setReserve(dataTypeTypeInfo.getType());
 
 			if (isNew) {
 				ruleTemplateManager.addRuleTemplate(newRuleTemplate);
