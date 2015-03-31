@@ -12,6 +12,7 @@
 
 package com.bstek.dorado.core.pkgs;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,6 +41,7 @@ public final class PackageManager {
 	private static final Log logger = LogFactory.getLog(PackageManager.class);
 
 	private static final String PACKAGE_PROPERTIES_LOCATION = "META-INF/dorado-package.properties";
+	private static final String EXTRA_PACKAGE_PROPERTIES_LOCATIONS = "META-INF/console-package.properties;META-INF/vidor-support-package.properties";
 
 	private static final String AGPL = "AGPL";
 	private static final String BSDN_MEMBER = "BSDN-Member";
@@ -303,129 +305,14 @@ public final class PackageManager {
 						PACKAGE_PROPERTIES_LOCATION);
 		while (defaultContextFileResources.hasMoreElements()) {
 			URL url = defaultContextFileResources.nextElement();
-			InputStream in = null;
-			try {
-				URLConnection con = url.openConnection();
-				con.setUseCaches(false);
-				in = con.getInputStream();
-				Properties properties = new Properties();
-				properties.load(in);
+			walkthroughPackage(packageMap, url);
+		}
 
-				String packageName = properties.getProperty("name");
-				if (StringUtils.isEmpty(packageName)) {
-					throw new IllegalArgumentException(
-							"Package name undefined.");
-				}
-
-				PackageInfo packageInfo = new PackageInfo(packageName);
-
-				packageInfo.setAddonVersion(properties
-						.getProperty("addonVersion"));
-				packageInfo.setVersion(properties.getProperty("version"));
-
-				String dependsText = properties.getProperty("depends");
-				if (StringUtils.isNotBlank(dependsText)) {
-					List<Dependence> dependences = new ArrayList<Dependence>();
-					for (String depends : StringUtils.split(dependsText, "; ")) {
-						if (StringUtils.isNotEmpty(depends)) {
-							Dependence dependence = parseDependence(depends);
-							dependences.add(dependence);
-						}
-					}
-					if (!dependences.isEmpty()) {
-						packageInfo.setDepends(dependences
-								.toArray(new Dependence[0]));
-					}
-				}
-
-				String license = StringUtils.trim(properties
-						.getProperty("license"));
-				if (StringUtils.isNotEmpty(license)) {
-					if (INHERITED.equals(license)) {
-						packageInfo.setLicense(LICENSE_INHERITED);
-					} else {
-						String[] licenses = StringUtils.split(license);
-						licenses = StringUtils.stripAll(licenses);
-						packageInfo.setLicense(licenses);
-					}
-				}
-
-				packageInfo.setLoadUnlicensed(BooleanUtils.toBoolean(properties
-						.getProperty("loadUnlicensed")));
-
-				packageInfo.setClassifier(properties.getProperty("classifier"));
-				packageInfo.setHomePage(properties.getProperty("homePage"));
-				packageInfo.setDescription(properties
-						.getProperty("description"));
-
-				packageInfo.setPropertiesLocations(properties
-						.getProperty("propertiesConfigLocations"));
-				packageInfo.setContextLocations(properties
-						.getProperty("contextConfigLocations"));
-				packageInfo.setComponentLocations(properties
-						.getProperty("componentConfigLocations"));
-				packageInfo.setServletContextLocations(properties
-						.getProperty("servletContextConfigLocations"));
-
-				String configurerClass = properties.getProperty("configurer");
-				if (StringUtils.isNotBlank(configurerClass)) {
-					Class<?> type = ClassUtils.forName(configurerClass);
-					packageInfo.setConfigurer((PackageConfigurer) type
-							.newInstance());
-				}
-
-				String listenerClass = properties.getProperty("listener");
-				if (StringUtils.isNotBlank(listenerClass)) {
-					Class<?> type = ClassUtils.forName(listenerClass);
-					packageInfo.setListener((PackageListener) type
-							.newInstance());
-				}
-
-				String servletContextListenerClass = properties
-						.getProperty("servletContextListener");
-				if (StringUtils.isNotBlank(servletContextListenerClass)) {
-					Class<?> type = ClassUtils
-							.forName(servletContextListenerClass);
-					packageInfo
-							.setServletContextListener((ServletContextListener) type
-									.newInstance());
-				}
-
-				if (packageMap.containsKey(packageName)) {
-					PackageInfo conflictPackageInfo = packageMap
-							.get(packageName);
-					StringBuffer conflictInfo = new StringBuffer(20);
-					conflictInfo.append('[')
-							.append(conflictPackageInfo.getName())
-							.append(" - ")
-							.append(conflictPackageInfo.getVersion())
-							.append(']');
-					conflictInfo.append(" and ");
-					conflictInfo.append('[').append(packageInfo.getName())
-							.append(" - ").append(packageInfo.getVersion())
-							.append(']');
-
-					Exception e = new IllegalArgumentException(
-							"More than one package \"" + packageName
-									+ "\" found. They are "
-									+ conflictInfo.toString());
-					logger.warn(e, e);
-
-					if (comparePackages(conflictPackageInfo, packageInfo) > 0) {
-						packageMap.put(packageName, packageInfo);
-					}
-				} else {
-					packageMap.put(packageName, packageInfo);
-				}
-			} catch (Exception e) {
-				throw new IllegalArgumentException(
-						"Error occured during parsing \"" + url.getPath()
-								+ "\".", e);
-			} finally {
-				if (in != null) {
-					in.close();
-				}
-			}
+		for (String path : StringUtils.split(
+				EXTRA_PACKAGE_PROPERTIES_LOCATIONS, ';')) {
+			URL url = org.springframework.util.ClassUtils
+					.getDefaultClassLoader().getResource(path);
+			walkthroughPackage(packageMap, url);
 		}
 
 		List<PackageInfo> calculatedPackages = new ArrayList<PackageInfo>();
@@ -436,6 +323,125 @@ public final class PackageManager {
 		packageInfosMap.clear();
 		for (PackageInfo packageInfo : calculatedPackages) {
 			packageInfosMap.put(packageInfo.getName(), packageInfo);
+		}
+	}
+
+	private static void walkthroughPackage(Map<String, PackageInfo> packageMap,
+			URL url) throws IOException {
+		InputStream in = null;
+		try {
+			URLConnection con = url.openConnection();
+			con.setUseCaches(false);
+			in = con.getInputStream();
+			Properties properties = new Properties();
+			properties.load(in);
+
+			String packageName = properties.getProperty("name");
+			if (StringUtils.isEmpty(packageName)) {
+				throw new IllegalArgumentException("Package name undefined.");
+			}
+
+			PackageInfo packageInfo = new PackageInfo(packageName);
+
+			packageInfo.setAddonVersion(properties.getProperty("addonVersion"));
+			packageInfo.setVersion(properties.getProperty("version"));
+
+			String dependsText = properties.getProperty("depends");
+			if (StringUtils.isNotBlank(dependsText)) {
+				List<Dependence> dependences = new ArrayList<Dependence>();
+				for (String depends : StringUtils.split(dependsText, "; ")) {
+					if (StringUtils.isNotEmpty(depends)) {
+						Dependence dependence = parseDependence(depends);
+						dependences.add(dependence);
+					}
+				}
+				if (!dependences.isEmpty()) {
+					packageInfo.setDepends(dependences
+							.toArray(new Dependence[0]));
+				}
+			}
+
+			String license = StringUtils
+					.trim(properties.getProperty("license"));
+			if (StringUtils.isNotEmpty(license)) {
+				if (INHERITED.equals(license)) {
+					packageInfo.setLicense(LICENSE_INHERITED);
+				} else {
+					String[] licenses = StringUtils.split(license);
+					licenses = StringUtils.stripAll(licenses);
+					packageInfo.setLicense(licenses);
+				}
+			}
+
+			packageInfo.setLoadUnlicensed(BooleanUtils.toBoolean(properties
+					.getProperty("loadUnlicensed")));
+
+			packageInfo.setClassifier(properties.getProperty("classifier"));
+			packageInfo.setHomePage(properties.getProperty("homePage"));
+			packageInfo.setDescription(properties.getProperty("description"));
+
+			packageInfo.setPropertiesLocations(properties
+					.getProperty("propertiesConfigLocations"));
+			packageInfo.setContextLocations(properties
+					.getProperty("contextConfigLocations"));
+			packageInfo.setComponentLocations(properties
+					.getProperty("componentConfigLocations"));
+			packageInfo.setServletContextLocations(properties
+					.getProperty("servletContextConfigLocations"));
+
+			String configurerClass = properties.getProperty("configurer");
+			if (StringUtils.isNotBlank(configurerClass)) {
+				Class<?> type = ClassUtils.forName(configurerClass);
+				packageInfo.setConfigurer((PackageConfigurer) type
+						.newInstance());
+			}
+
+			String listenerClass = properties.getProperty("listener");
+			if (StringUtils.isNotBlank(listenerClass)) {
+				Class<?> type = ClassUtils.forName(listenerClass);
+				packageInfo.setListener((PackageListener) type.newInstance());
+			}
+
+			String servletContextListenerClass = properties
+					.getProperty("servletContextListener");
+			if (StringUtils.isNotBlank(servletContextListenerClass)) {
+				Class<?> type = ClassUtils.forName(servletContextListenerClass);
+				packageInfo
+						.setServletContextListener((ServletContextListener) type
+								.newInstance());
+			}
+
+			if (packageMap.containsKey(packageName)) {
+				PackageInfo conflictPackageInfo = packageMap.get(packageName);
+				StringBuffer conflictInfo = new StringBuffer(20);
+				conflictInfo.append('[').append(conflictPackageInfo.getName())
+						.append(" - ").append(conflictPackageInfo.getVersion())
+						.append(']');
+				conflictInfo.append(" and ");
+				conflictInfo.append('[').append(packageInfo.getName())
+						.append(" - ").append(packageInfo.getVersion())
+						.append(']');
+
+				Exception e = new IllegalArgumentException(
+						"More than one package \"" + packageName
+								+ "\" found. They are "
+								+ conflictInfo.toString());
+				logger.warn(e, e);
+
+				if (comparePackages(conflictPackageInfo, packageInfo) > 0) {
+					packageMap.put(packageName, packageInfo);
+				}
+			} else {
+				packageMap.put(packageName, packageInfo);
+			}
+		} catch (Exception e) {
+			throw new IllegalArgumentException(
+					"Error occured during parsing \"" + url.getPath() + "\".",
+					e);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
 		}
 	}
 
