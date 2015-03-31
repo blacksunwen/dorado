@@ -80,6 +80,9 @@ public class PluginManager implements IPluginManager {
 	}
 	
 	public static PluginManager getInstance() {
+		if(instance==null){
+			PluginManager.setDefaultInstance();
+		}
 		return instance;
 	}
 	
