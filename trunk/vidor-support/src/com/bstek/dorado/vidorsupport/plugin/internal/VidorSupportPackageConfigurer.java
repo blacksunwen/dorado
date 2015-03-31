@@ -1,27 +1,12 @@
-/*
- * This file is part of Dorado 7.x (http://dorado7.bsdn.org).
- * 
- * Copyright (c) 2002-2012 BSTEK Corp. All rights reserved.
- * 
- * This file is dual-licensed under the AGPLv3 (http://www.gnu.org/licenses/agpl-3.0.html) 
- * and BSDN commercial (http://www.bsdn.org/licenses) licenses.
- * 
- * If you are unsure which license is appropriate for your use, please contact the sales department
- * at http://www.bstek.com/contact.
- */
-
-package com.bstek.dorado.core;
+package com.bstek.dorado.vidorsupport.plugin.internal;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.io.ResourceLoader;
 import com.bstek.dorado.core.pkgs.AbstractPackageConfigurer;
 
-/**
- * @author Benny Bao (mailto:benny.bao@bstek.com)
- * @since 2013-6-9
- */
-public class CorePackageConfigurer extends AbstractPackageConfigurer {
+public class VidorSupportPackageConfigurer extends AbstractPackageConfigurer {
 
 	private boolean isVidorSupportEnabled() {
 		String vidorSupportEnabledConfig = Configure.getString(
@@ -40,14 +25,14 @@ public class CorePackageConfigurer extends AbstractPackageConfigurer {
 
 	public String[] getPropertiesConfigLocations(ResourceLoader resourceLoader)
 			throws Exception {
+		if (isVidorSupportEnabled()) {
+			return new String[] { "classpath:com/bstek/dorado/vidorsupport/configure.properties" };
+		}
 		return null;
 	}
 
 	public String[] getContextConfigLocations(ResourceLoader resourceLoader)
 			throws Exception {
-		if (Configure.getBoolean("console.enabled", false)) {
-			return new String[] { "classpath:com/bstek/dorado/console/context.xml" };
-		}
 		if (isVidorSupportEnabled()) {
 			return new String[] { "classpath:com/bstek/dorado/vidorsupport/context.xml" };
 		}
@@ -61,9 +46,6 @@ public class CorePackageConfigurer extends AbstractPackageConfigurer {
 
 	public String[] getServletContextConfigLocations(
 			ResourceLoader resourceLoader) throws Exception {
-		if (Configure.getBoolean("console.enabled", false)) {
-			return new String[] { "classpath:com/bstek/dorado/console/servlet-context.xml" };
-		}
 		if (isVidorSupportEnabled()) {
 			return new String[] { "classpath:com/bstek/dorado/vidorsupport/servlet-context.xml" };
 		}
