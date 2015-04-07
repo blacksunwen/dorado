@@ -340,9 +340,11 @@
 			if (entity != null) info.timestamp = entity.timestamp;
 
 			propertyDef = this.getBindingPropertyDef();
-			info.propertyDef = propertyDef;
-			info.entityDataType = propertyDef.parent;
-			info.dataType = propertyDef ? propertyDef.get("dataType") : null;
+			if (propertyDef) {
+				info.propertyDef = propertyDef;
+				info.entityDataType = propertyDef.parent;
+				info.dataType = propertyDef ? propertyDef.get("dataType") : null;
+			}
 
 			if (info.timestamp == null) info.timestamp = 0;
 			info.cacheTimestamp = new Date().getTime();

@@ -918,9 +918,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
-				if (dorado.cleanContentOnClose) {
-					doms.iframe.contentWindow.document.write('');
-				}
+				if (dorado.cleanContentOnClose) document.write('');
 			});
 
 			var oldResize = window.onresize, keyboardVisible;
