@@ -15,7 +15,6 @@
 
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
-	 * @component Base
 	 * @class IFrame组件。
 	 * @extends dorado.widget.Control
 	 */
@@ -110,11 +109,11 @@
 
 		isSameDomain: function() {
 			var iframeSrc = $url(this._path);
-			if (/^(http[s]?):/ig.test(iframeSrc)) {
+			if (/^(http[s]?|file):/ig.test(iframeSrc)) {
 				var localDomain = this.getDomainInfo(location.href), frameDomain = this.getDomainInfo(iframeSrc);
 				return localDomain.protocol == frameDomain.protocol && localDomain.domain == frameDomain.domain && localDomain.port == frameDomain.port;
 			}
-			return false;
+			return true;
 		},
 
 		releaseCurrentPage: function() {
@@ -254,8 +253,8 @@
 			var frame = this;
 			if (dorado.Browser.msie && dorado.Browser.version < 8) {
 				frame.releaseCurrentPage();
+				frame.replaceUrl(null);
 			}
-			frame.replaceUrl(null);
 			frame.replaceUrl(frame._path);
 		},
 		
