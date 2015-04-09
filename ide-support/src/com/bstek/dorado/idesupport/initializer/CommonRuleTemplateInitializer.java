@@ -272,7 +272,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 			if (tryCount > 0) {
 				name += ('_' + tryCount);
 			}
-			tryCount ++;
+			tryCount++;
 		}
 
 		RuleTemplate newRuleTemplate = new AutoRuleTemplate(name,
@@ -770,35 +770,36 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 
 		Set<Class<?>> implTypes = ClassUtils.findClassTypes(
 				xmlSubNode.implTypes(), propertyType);
-		for (Class<?> implType : implTypes) {
-			if (implType.equals(typeInfo.getType())) {
-				continue;
-			}
-
-			boolean isPublic = true;
-			XmlNode implXmlNode = implType.getAnnotation(XmlNode.class);
-			if (implXmlNode != null
-					&& ArrayUtils.indexOf(implType.getDeclaredAnnotations(),
-							implXmlNode) >= 0 && !implXmlNode.isPublic()) {
-				if (ArrayUtils.indexOf(xmlSubNode.implTypes(),
-						implType.getName()) < 0) {
+		if (!implTypes.isEmpty()) {
+			for (Class<?> implType : implTypes) {
+				if (implType.equals(typeInfo.getType())) {
 					continue;
-				} else {
-					isPublic = false;
+				}
+
+				boolean isPublic = true;
+				XmlNode implXmlNode = implType.getAnnotation(XmlNode.class);
+				if (implXmlNode != null
+						&& ArrayUtils.indexOf(
+								implType.getDeclaredAnnotations(), implXmlNode) >= 0
+						&& !implXmlNode.isPublic()) {
+					if (ArrayUtils.indexOf(xmlSubNode.implTypes(),
+							implType.getName()) < 0) {
+						continue;
+					} else {
+						isPublic = false;
+					}
+				}
+
+				AutoChildTemplate childTemplate = getChildNodeByBeanType(null,
+						xmlSubNode, aggregated, implType, "protected",
+						initializerContext);
+				if (childTemplate != null) {
+					childTemplate.setProperty(propertyName);
+					childTemplate.setPublic(isPublic);
+					childTemplates.add(childTemplate);
 				}
 			}
-
-			AutoChildTemplate childTemplate = getChildNodeByBeanType(null,
-					xmlSubNode, aggregated, implType, "protected",
-					initializerContext);
-			if (childTemplate != null) {
-				childTemplate.setProperty(propertyName);
-				childTemplate.setPublic(isPublic);
-				childTemplates.add(childTemplate);
-			}
-		}
-
-		if (propertyType != null) {
+		} else if (propertyType != null) {
 			XmlNode implXmlNode = propertyType.getAnnotation(XmlNode.class);
 			if (implXmlNode == null || implXmlNode.isPublic()) {
 				AutoChildTemplate childTemplate = getChildNodeByBeanType(
