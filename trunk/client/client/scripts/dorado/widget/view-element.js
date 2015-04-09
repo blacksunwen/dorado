@@ -209,7 +209,7 @@
 		},
 		
 		_constructor: function(config) {
-			if (config) this.set(config, { skipUnknownAttribute: true });
+			if (config) this.set(config, { tryNextOnError: true });
 
 			if (!this._ignoreOnCreateListeners) {
 				if (this.getListenerCount("onCreate")) {
