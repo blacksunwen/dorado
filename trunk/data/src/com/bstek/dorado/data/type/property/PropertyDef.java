@@ -43,8 +43,6 @@ import com.bstek.dorado.data.type.validator.Validator;
  */
 @XmlNode(
 		definitionType = "com.bstek.dorado.data.config.definition.PropertyDefDefinition",
-		implTypes = { "com.bstek.dorado.data.type.property.BasePropertyDef",
-				"com.bstek.dorado.data.type.property.Reference" },
 		properties = @XmlProperty(propertyName = "name",
 				parser = "spring:dorado.staticPropertyParser",
 				attributeOnly = true))
