@@ -97,7 +97,7 @@
 				} else if (config) {
 					name = config.name;
 					delete config.name;
-					this.set(config, { tryNextOnError: true });
+					this.set(config, { tryNextOnError: true, skipUnknownAttribute: true });
 				}
 				this._name = name ? name : dorado.Core.newId();
 				if (!this._id) this._id = this._name;

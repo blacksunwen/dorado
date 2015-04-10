@@ -187,7 +187,7 @@
 //								if (dataType && dataType._config) {
 //									var config =  dataType._config;
 //									delete dataType._config;
-//									dataType.set(config, { tryNextOnError: true });
+//									dataType.set(config, { tryNextOnError: true, skipUnknownAttribute: true });
 //								}
 								$callback(callback, true, dataType, {
 									scope: this
@@ -214,7 +214,7 @@
 //					if (dataType && dataType._config) {
 //						var config =  dataType._config;
 //						delete dataType._config;
-//						dataType.set(config, { tryNextOnError: true });
+//						dataType.set(config, { tryNextOnError: true, skipUnknownAttribute: true });
 //					}
 				}
 				if (!dataType) {
@@ -314,7 +314,7 @@
 				dataType.loadFromServer = true;
 				dataType._dataTypeRepository = this;
 				//dataType._config = jsonData;
-				dataType.set(jsonData, { tryNextOnError: true });
+				dataType.set(jsonData, { tryNextOnError: true, skipUnknownAttribute: true });
 			}
 			return dataType;
 		},
@@ -379,7 +379,7 @@
 			if (dataType && dataType._config) {
 				var config =  dataType._config;
 				delete dataType._config;
-				dataType.set(config, { tryNextOnError: true });
+				dataType.set(config, { tryNextOnError: true, skipUnknownAttribute: true });
 			}
 			if (!dataType && this.parent) {
 				dataType = this.parent._get(name);
