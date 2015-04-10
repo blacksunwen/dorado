@@ -21,6 +21,7 @@ import com.bstek.dorado.annotation.XmlSubNode;
  * @author Benny Bao (mailto:benny.bao@bstek.com)
  * @since Apr 11, 2008
  */
-@XmlNode(label = "DataType")
+@XmlNode(label = "DataType", subNodes = { @XmlSubNode(
+		propertyType = "com.bstek.dorado.data.type.property.PropertyDef[]") })
 public class DefaultEntityDataType extends EntityDataTypeSupport {
 }

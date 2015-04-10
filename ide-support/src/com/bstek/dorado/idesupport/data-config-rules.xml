@@ -12,7 +12,7 @@
 	<Rule name="AbstractDataProvider" type="com.bstek.dorado.data.provider.AbstractDataProvider" />
 	<Rule name="AbstractDataResolver" type="com.bstek.dorado.data.resolver.AbstractDataResolver" />
 	
-	
+	<!-- 
 	<Rule name="DataType" type="com.bstek.dorado.data.type.DefaultEntityDataType" >
 		<Children>
 			<Child name="PropertyDef" rule="BasePropertyDef" aggregated="true" />
@@ -21,4 +21,5 @@
 	</Rule>
 	<Rule name="BasePropertyDef" type="com.bstek.dorado.data.type.property.BasePropertyDef"/>
 	<Rule name="Reference" type="com.bstek.dorado.data.type.property.Reference"/>
+	 -->
 </RuleSet>
