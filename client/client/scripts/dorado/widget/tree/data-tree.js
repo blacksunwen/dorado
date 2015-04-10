@@ -65,7 +65,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			getter: function() {
 
 				function ifHasChild(entity, property) {
-					debugger;
+			
 					if (!property) return false;
 					var hasChild = false, value;
 					if (entity instanceof dorado.Entity) {
