@@ -43,7 +43,7 @@ public class RuleTemplate {
 	private String category;
 	private String[] robots;
 	private int sortFactor;
-	private String scope = "public";
+	private String scope;
 	private String icon;
 	private String labelProperty;
 	private boolean autoGenerateId;
