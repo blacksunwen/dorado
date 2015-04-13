@@ -937,14 +937,7 @@
 
 			entityMessageReceived: function(messageCode, args) {
 				this._dataPathCache = {};
-				if (this._ready) {
-					if (messageCode === dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED){
-						if (args.entityList === this._data) {
-							this._pageNo = this._data.pageNo;
-						}
-					}					
-					this.sendMessage(messageCode, args);
-				}
+				if (this._ready) this.sendMessage(messageCode, args);
 			},
 
 			/**
