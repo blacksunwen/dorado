@@ -922,16 +922,13 @@
 		 * 清空集合中的所有数据并重新装载当前页中的数据。
 		 */
 		flush: function(callback) {
-			if (!this.dataProvider) throw new dorado.ResourceException("dorado.data.NoDataPipe");
-			
-			this._disableObserversCounter++;
-			try {
-				this.clear();
-				this.getPage(this.pageNo, false).loaded = false;
+			function clear() {
+				this._keyMap = {};				
+				this._pages.clear();				
+				this.timestamp = dorado.Core.getTimestamp();
 			}
-			finally {
-				this._disableObserversCounter--;
-			}
+
+			clear.call(this);
 			
 			if (callback) {
 				var self = this;
