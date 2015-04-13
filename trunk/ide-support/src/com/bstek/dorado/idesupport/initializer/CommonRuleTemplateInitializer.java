@@ -799,7 +799,11 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 					childTemplates.add(childTemplate);
 				}
 			}
-		} else if (propertyType != null) {
+		} 
+		
+		// 硬编码规则
+		if (propertyType != null && !com.bstek.dorado.data.type.property.PropertyDef.class.equals(propertyType)) {
+//		if (propertyType != null) {
 			XmlNode implXmlNode = propertyType.getAnnotation(XmlNode.class);
 			if (implXmlNode == null || implXmlNode.isPublic()) {
 				AutoChildTemplate childTemplate = getChildNodeByBeanType(
