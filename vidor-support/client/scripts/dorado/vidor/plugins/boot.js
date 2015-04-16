@@ -47,6 +47,8 @@ cloudo.onInit(function () {
 		if (bootPackages) {
 			$import(bootPackages, function () {
 				console.log("boot plugin packages: " + bootPackages);
+				cloudo.outlineManager && cloudo.outlineManager.reloadBaseOutline();
+				cloudo.nodeEditorManager && cloudo.nodeEditorManager.reloadTreeEditor();
 			});
 		}
 	}
