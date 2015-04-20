@@ -596,6 +596,7 @@
 			listenTimerId = setInterval(function() {
 				listenModernScrollers.each(function(modernScroller) {
 					var container = modernScroller.container, shouldUpdate = false;
+					if (!container) return;
 					if (modernScroller.options.listenSize || modernScroller.options.listenContainerSize) {
 						if (modernScroller.currentClientWidth != container.clientWidth ||
 							modernScroller.currentClientHeight != container.clientHeight) {
