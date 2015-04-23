@@ -1,7 +1,5 @@
-/**
- * @author Alex tong (mailto:alex.tong@bstek.com)
- * @since 2012-11-22
- */
+/** @Controller */
+
 var userDate, systemInfo, runtime;
 
 // @Bind view.onReady

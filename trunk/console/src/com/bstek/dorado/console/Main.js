@@ -1,7 +1,4 @@
-/**
- * @author Alex Tong (mailto:alex.tong@bstek.com)
- * @since Nov 20,2012
- */
+/** @Controller */
 // @Bind view.onReady
 !function(self, arg) {
 	userData = view.get("userData");

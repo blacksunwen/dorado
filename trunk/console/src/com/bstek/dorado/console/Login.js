@@ -1,3 +1,4 @@
+/** @Controller */
 var homePage = './dorado/console';
 // @Bind view.onReady
 !function(self, arg) {

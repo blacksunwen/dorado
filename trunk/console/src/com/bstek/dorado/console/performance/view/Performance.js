@@ -1,3 +1,4 @@
+/** @Controller */
 var current_process, maxSpendTime = 0, category, maxLength = 0;
 var DefaultCellRenderer = $extend(
 		dorado.widget.grid.DefaultCellRenderer,

@@ -1,4 +1,4 @@
-
+/** @Controller */
 var logArray = new Array(), logArrayMaxLength = 1000, isAutoFlush = false;
 
 // @Bind view.onReady
