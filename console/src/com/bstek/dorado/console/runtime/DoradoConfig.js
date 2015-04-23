@@ -1,3 +1,4 @@
+/** @Controller */
 var userData;
 // @Bind view.onReady
 !function(self, arg) {

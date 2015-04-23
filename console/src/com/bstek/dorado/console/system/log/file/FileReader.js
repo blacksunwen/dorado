@@ -1,3 +1,4 @@
+/** @Controller */
 var log = '', logCount = 0, isNext = true, uuid;
 // @Bind view.onReady
 !function(self, arg) {

@@ -46,7 +46,11 @@ public class ShortPathResolver extends SimpleUrlResolver {
 			boolean isLogin = authentication.isAuthenticated(request);
 			url = isLogin ? mainUrl : loginUrl;
 		}
-		return new ModelAndView("forward:" + url);
+		
+		request.getRequestDispatcher(url).forward(request, response);
+		
+		
+		return null;
 	}
 
 }

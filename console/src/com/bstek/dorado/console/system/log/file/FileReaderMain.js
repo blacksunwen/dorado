@@ -1,3 +1,4 @@
+/** @Controller */
 /** @Global */
 function setTabName(name) {
 	view.get('#fileReaderTab').get('currentTab').set({
