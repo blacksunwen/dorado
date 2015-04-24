@@ -15,6 +15,7 @@
 
 	/**
 	 * @author Frank Zhang (mailto:frank.zhang@bstek.com)
+	 * @component Base
 	 * @class IFrame组件。
 	 * @extends dorado.widget.Control
 	 */
@@ -223,7 +224,7 @@
 		doLoad: function() {
 			var frame = this, doms = frame._doms;
 			$fly(doms.loadingCover).css("display", "");
-			this.replaceUrl(frame._path);
+			if (frame._path) this.replaceUrl(frame._path);
 		},
 
 		reloadIfNotLoaded: function() {
@@ -341,11 +342,14 @@
 		 * @return {window} iframe的contentWindow对象
 		 */
 		getIFrameWindow: function() {
-			var frame = this, doms = frame._doms || {};
-			if (frame._parent != null && doms.iframe) {
-				return doms.iframe.contentWindow;
+			var frame = this, doms = frame._doms || {}, contentWindow = null;
+			try {
+				if (doms.iframe) contentWindow = doms.iframe.contentWindow;
 			}
-			return null;
+			catch(e) {
+				// do nothing
+			}
+			return contentWindow;
 		}
 	});
 })();

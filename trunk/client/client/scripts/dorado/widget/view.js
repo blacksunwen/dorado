@@ -918,7 +918,8 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			$fly(window).unload(function() {
 				dorado.windowClosed = true;
 				if (!topView._destroyed) topView.destroy();
-				if (dorado.cleanContentOnClose) document.write('');
+				// 20150423 可能引起了ie8部分情况下出现白屏
+				// if (dorado.cleanContentOnClose) document.write('');
 			});
 
 			var oldResize = window.onresize, keyboardVisible;

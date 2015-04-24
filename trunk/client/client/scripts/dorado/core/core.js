@@ -10,8 +10,6 @@
  * at http://www.bstek.com/contact.
  */
 
-window._beforeDoradoInit = new Date();
-
 /**
  * @namespace dorado的根命名空间。
  */

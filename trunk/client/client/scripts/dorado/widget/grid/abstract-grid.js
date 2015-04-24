@@ -1620,6 +1620,7 @@
 				}
 				else {
 					with(innerGridWrapper.style) {
+						overflowX = "hidden";
 						width = (divScroll.clientWidth - scrollLeft) + "px";
 					}
 					innerGridWrapper.style.left = scrollLeft + "px";
@@ -1629,6 +1630,7 @@
 				if (innerGridWrapper) {
 					with(innerGridWrapper.style) {
 						left = 0;
+						overflowX = "hidden";
 						width = divScroll.clientWidth + "px";
 					}
 				}
