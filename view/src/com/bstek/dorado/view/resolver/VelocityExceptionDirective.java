@@ -49,7 +49,7 @@ public class VelocityExceptionDirective extends Directive {
 			while (throwable.getCause() != null) {
 				throwable = throwable.getCause();
 			}
-			PageOutputUtils.outputException(writer, throwable);
+			PageOutputUtils.outputException(writer, e.getMessage(), throwable);
 		}
 		return true;
 	}

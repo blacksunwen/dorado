@@ -98,11 +98,7 @@ public class ErrorPageView extends AbstractUrlBasedView {
 				throwable = throwable.getCause();
 			}
 
-			String message = null;
-			if (throwable != null) {
-				message = throwable.getMessage();
-			}
-			message = StringUtils.defaultString(message, throwable.getClass()
+			String message = StringUtils.defaultString(e.getMessage(), throwable.getClass()
 					.getName());
 
 			velocityContext.put("message", message);

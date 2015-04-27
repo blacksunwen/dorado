@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -157,12 +158,12 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 	 * @param e
 	 */
 	protected void outputException(JsonBuilder jsonBuilder, Throwable throwable) {
+		String message = throwable.getMessage();
 		while (throwable.getCause() != null) {
 			throwable = throwable.getCause();
 		}
 
-		String message = throwable.getMessage();
-		if (message == null) {
+		if (StringUtils.isEmpty(message)) {
 			message = throwable.getClass().getSimpleName();
 		}
 
@@ -214,7 +215,8 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 			} else if (contentType != null && contentType.contains(XML_TOKEN)) {
 				Document document = getXmlDocumentBuilder(context)
 						.loadDocument(
-								new InputStreamResource(in, request.getPathInfo()));
+								new InputStreamResource(in, request
+										.getPathInfo()));
 
 				writer.append("<?xml version=\"1.0\" encoding=\""
 						+ Constants.DEFAULT_CHARSET + "\"?>\n");
@@ -240,6 +242,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						Throwable t = e;
 						while (t.getCause() != null) {
 							t = t.getCause();
+							if (!(t instanceof InvocationTargetException)) {
+								break;
+							}
 						}
 						writer.setEscapeEnabled(false);
 
@@ -273,6 +278,9 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 			Throwable t = e;
 			while (t.getCause() != null) {
 				t = t.getCause();
+				if (!(t instanceof InvocationTargetException)) {
+					break;
+				}
 			}
 
 			if (t instanceof ClientRunnableException) {
@@ -286,7 +294,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 			}
 
 			if (!(t instanceof AbortException)) {
-				logger.error(e, e);
+				logger.error(t, t);
 			}
 		} finally {
 			writer.flush();
