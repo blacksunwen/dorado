@@ -2606,7 +2606,7 @@
 					var $cell = $fly(cell);
 					$cell.addClass("row-selector");
 					if (!$cell.data("selectionMenuBinded")) {
-						$cell.data("selectionMenuBinded", true).mousedown(function() {
+						$cell.data("selectionMenuBinded", true).click(function() {
 							if (grid._selectionMode == "multiRows") {
 								var menu = getMenu(column);
 								menu.show({

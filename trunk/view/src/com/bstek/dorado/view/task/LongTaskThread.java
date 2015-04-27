@@ -15,6 +15,7 @@ package com.bstek.dorado.view.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -180,12 +181,13 @@ class ExceptionInfo {
 
 	public ExceptionInfo(Exception e) {
 		Throwable throwable = e;
-		// while (throwable.getCause() != null) {
-		// throwable = throwable.getCause();
-		// }
-
 		message = throwable.getMessage();
-		if (message == null) {
+
+		while (throwable.getCause() != null) {
+			throwable = throwable.getCause();
+		}
+
+		if (StringUtils.isEmpty(message)) {
 			message = throwable.getClass().getSimpleName();
 		}
 

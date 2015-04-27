@@ -75,11 +75,11 @@ public abstract class PageOutputUtils {
 				response), outputContext);
 	}
 
-	public static void outputException(Writer writer, Throwable throwable)
+	public static void outputException(Writer writer, String message, Throwable throwable)
 			throws IOException {
 		writer.append("<h1 style=\"font-size:12pt; color:red\">");
 		OutputUtils.outputString(writer, StringUtils.defaultString(
-				throwable.getMessage(), throwable.getClass().getName()));
+				message, throwable.getClass().getName()));
 		writer.append("</h1>\n");
 		writer.append("<ul>\n");
 		StackTraceElement[] stes = throwable.getStackTrace();

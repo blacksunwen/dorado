@@ -2358,7 +2358,7 @@
 		},
 
 		hideHeaderOptionButton: function(column) {
-			if (!column || !column._supportsOptionMenu || column._property == "none") return;
+			if (!column) return;
 			$fly(column.headerCell).removeClass("menu-open-header");
 			var button = this.getHeaderOptionButton(column);
 			if (button) button.style.display = "none";
