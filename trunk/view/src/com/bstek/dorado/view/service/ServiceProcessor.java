@@ -14,6 +14,8 @@ package com.bstek.dorado.view.service;
 
 import java.io.Writer;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.bstek.dorado.web.DoradoContext;
@@ -36,6 +38,6 @@ public interface ServiceProcessor {
 	 *            Dorado上下文对象。
 	 * @throws Exception
 	 */
-	void execute(Writer writer, ObjectNode objectNode, DoradoContext context)
+	void execute(Writer writer, ObjectNode objectNode, DoradoContext context, HttpServletResponse response)
 			throws Exception;
 }

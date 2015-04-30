@@ -183,10 +183,12 @@ dorado.widget.SubViewHolder = $extend(dorado.widget.Control, /** @scope dorado.w
 		var ajax = subViewHolder.getAjaxEngine();
 		subViewHolder._loading = true;
 		ajax.request({
-			jsonData: {
-				action: "load-view",
-				viewName: subViewHolder._subViewName,
-				context: subViewHolder._context
+			parameter: {
+				q: dorado.JSON.stringify({
+					action: "load-view",
+					viewName: subViewHolder._subViewName,
+					context: subViewHolder._context
+				})
 			}
 		}, {
 			callback: function(success, result) {
@@ -198,7 +200,7 @@ dorado.widget.SubViewHolder = $extend(dorado.widget.Control, /** @scope dorado.w
 					if (jsonResult.packages) {
 						$import(jsonResult.packages, function() {
 							subViewHolder._subView = jsonResult.createView();
-							this.registerInnerControl(subViewHolder._subView);
+							subViewHolder.registerInnerControl(subViewHolder._subView);
 							subViewHolder._subView.render(subViewHolder._dom);
 							subViewHolder.fireEvent("onLoad");
 							$callback(callback, true);
@@ -206,7 +208,7 @@ dorado.widget.SubViewHolder = $extend(dorado.widget.Control, /** @scope dorado.w
 					}
 					else {
 						subViewHolder._subView = jsonResult.createView();
-						this.registerInnerControl(subViewHolder._subView);
+						subViewHolder.registerInnerControl(subViewHolder._subView);
 						subViewHolder._subView.render(subViewHolder._dom);
 						subViewHolder.fireEvent("onLoad");
 						$callback(callback, true);

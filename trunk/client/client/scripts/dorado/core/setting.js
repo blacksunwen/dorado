@@ -81,7 +81,7 @@
 		},
 		"ajax.loadViewOptions": {
 			url: doradoServierURI,
-			method: "POST",
+			method: "GET",
 			batchable: true
 		},
 		"dom.useCssShadow": true,

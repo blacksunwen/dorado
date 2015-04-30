@@ -644,9 +644,14 @@ dorado.util.AjaxEngine = $extend([dorado.AttributeSupport, dorado.EventSupport],
 
 			var parameter = options.parameter;
 			if (parameter && (method == "GET" || options.xmlData || options.jsonData)) {
-				for(var p in parameter) {
-					if (parameter.hasOwnProperty(p)) {
-						url = urlAppend(url, p, parameter[p]);
+				if (typeof parameter == "string") {
+					url += (url.indexOf('?') === -1 ? '?' : '&') + encodeURI(parameter);
+				}
+				else {
+					for(var p in parameter) {
+						if (parameter.hasOwnProperty(p)) {
+							url = urlAppend(url, p, parameter[p]);
+						}
 					}
 				}
 			}
@@ -1070,7 +1075,7 @@ dorado.util.AjaxEngine.getInstance = function(options) {
 		defaultOptions = dorado.Object.apply({}, defaultOptions);
 		options = dorado.Object.apply(defaultOptions, options);
 	}
-	var key = (options.url || "#EMPTY") + '|' + (options.batchable || false);
+	var key = (options.url || "#EMPTY") + '|' + (options.batchable || false) + '|' + (options.method);
 	var ajax = dorado.util.AjaxEngine.SHARED_INSTANCES[key];
 	if (ajax === undefined) {
 		ajax = new dorado.util.AjaxEngine({

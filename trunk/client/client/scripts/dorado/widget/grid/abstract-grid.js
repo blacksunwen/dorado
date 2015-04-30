@@ -1896,12 +1896,14 @@
 				if (this._rowHeightInfos) this.syncroRowHeights(innerGrid._container);
 				this.updateScroller(innerGrid._container);
 			}
+			/* 鍙兘瀵艰嚧鍦ㄩ儴鍒嗘儏鍐典笅婊氬姩鏉℃寔缁粴鍔ㄧ殑BUG
 			else if (this._scrollMode == "viewport") {
 				dorado.Toolkits.setDelayedAction(this, "$scrollTimerId", function() {
 					if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll(this._fixedInnerGrid._container);
 					this._innerGrid.doOnYScroll(this._innerGrid._container);
 				}, 300);
 			}
+			*/
 		},
 
 		doOnKeyDown: function(evt) {

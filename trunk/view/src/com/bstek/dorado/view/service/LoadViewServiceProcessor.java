@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -26,6 +28,8 @@ import org.codehaus.jackson.node.ObjectNode;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.data.JsonUtils;
 import com.bstek.dorado.view.View;
+import com.bstek.dorado.view.ViewCache;
+import com.bstek.dorado.view.ViewCacheMode;
 import com.bstek.dorado.view.ViewOutputter;
 import com.bstek.dorado.view.manager.ViewConfig;
 import com.bstek.dorado.view.manager.ViewConfigManager;
@@ -33,6 +37,7 @@ import com.bstek.dorado.view.output.ClientOutputHelper;
 import com.bstek.dorado.view.output.JsonBuilder;
 import com.bstek.dorado.view.output.OutputContext;
 import com.bstek.dorado.web.DoradoContext;
+import com.bstek.dorado.web.resolver.HttpConstants;
 
 /**
  * @author Benny Bao (mailto:benny.bao@bstek.com)
@@ -76,7 +81,8 @@ public class LoadViewServiceProcessor implements ServiceProcessor {
 	}
 
 	public void execute(Writer writer, ObjectNode objectNode,
-			DoradoContext context) throws Exception {
+			DoradoContext context, HttpServletResponse response)
+			throws Exception {
 		String viewName = JsonUtils.getString(objectNode, "viewName");
 
 		Map<String, Object> viewContext = new HashMap<String, Object>();
@@ -97,6 +103,29 @@ public class LoadViewServiceProcessor implements ServiceProcessor {
 
 		ViewConfig viewConfig = getViewConfig(context, viewName, viewContext);
 
+		View view = viewConfig.getView();
+		if (view != null) {
+			ViewCacheMode cacheMode = ViewCacheMode.none;
+			ViewCache cache = view.getCache();
+			if (cache != null && cache.getMode() != null) {
+				cacheMode = cache.getMode();
+			}
+			if (ViewCacheMode.clientSide.equals(cacheMode)) {
+				long maxAge = cache.getMaxAge();
+				if (maxAge <= 0) {
+					maxAge = Configure.getLong(
+							"view.clientSideCache.defaultMaxAge", 300);
+				}
+				response.addHeader(HttpConstants.CACHE_CONTROL,
+						HttpConstants.MAX_AGE + maxAge);
+			} else {
+				response.addHeader(HttpConstants.CACHE_CONTROL,
+						HttpConstants.NO_CACHE);
+				response.addHeader("Pragma", "no-cache");
+				response.addHeader("Expires", "0");
+			}
+		}
+
 		OutputContext outputContext = new OutputContext(writer);
 		outputContext.setUsePrettyJson(Configure
 				.getBoolean("view.outputPrettyJson"));
@@ -106,7 +135,6 @@ public class LoadViewServiceProcessor implements ServiceProcessor {
 		jsonBuilder.object();
 		jsonBuilder.key("createView");
 		jsonBuilder.beginValue();
-		View view = viewConfig.getView();
 		if (view != null) {
 			writer.append("(function(){\n");
 

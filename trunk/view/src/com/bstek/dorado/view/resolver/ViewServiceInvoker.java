@@ -14,6 +14,8 @@ package com.bstek.dorado.view.resolver;
 
 import java.io.Writer;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.node.ObjectNode;
 
 import com.bstek.dorado.view.service.ServiceProcessor;
@@ -25,8 +27,8 @@ import com.bstek.dorado.web.DoradoContext;
  */
 public class ViewServiceInvoker {
 	public void invoke(String action, ServiceProcessor serviceProcessor,
-			Writer writer, ObjectNode objectNode, DoradoContext context)
+			Writer writer, ObjectNode objectNode, DoradoContext context, HttpServletResponse response)
 			throws Exception {
-		serviceProcessor.execute(writer, objectNode, context);
+		serviceProcessor.execute(writer, objectNode, context, response);
 	}
 }
