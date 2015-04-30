@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 
@@ -105,7 +107,7 @@ public abstract class DataServiceProcessorSupport implements ServiceProcessor,
 	}
 
 	public final void execute(Writer writer, ObjectNode objectNode,
-			DoradoContext context) throws Exception {
+			DoradoContext context, HttpServletResponse response) throws Exception {
 		ViewState originViewState = (ViewState) context
 				.getAttribute(VIEW_STATE_ATTRIBUTE_KEY);
 		context.setAttribute(VIEW_STATE_ATTRIBUTE_KEY, ViewState.servicing);

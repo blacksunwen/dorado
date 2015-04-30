@@ -256,7 +256,7 @@
 				}
 				else {
 					if (dorado.Browser.msie && dorado.Browser.version == 9 && container.offsetWidth > 0) {
-						// IE9下有时无法在初始化是取到正确的clientWidth
+						// IE9下有时无法在初始化时取到正确的clientWidth
 						setTimeout(function() {
 							scroller.update();
 						}, 0);
@@ -300,7 +300,7 @@
 				}
 				else {
 					if (dorado.Browser.msie && dorado.Browser.version == 9 && container.offsetHeight > 0) {
-						// IE9下有时无法在初始化是取到正确的clientWidth
+						// IE9下有时无法在初始化时取到正确的clientWidth
 						setTimeout(function() {
 							scroller.update();
 						}, 0);

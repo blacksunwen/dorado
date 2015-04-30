@@ -12,7 +12,9 @@
 
 package com.bstek.dorado.view.resolver;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
@@ -20,15 +22,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.node.ObjectNode;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -139,7 +140,8 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 	 * @throws Exception
 	 */
 	protected void processTask(Writer writer, ObjectNode objectNode,
-			DoradoContext context) throws Exception {
+			DoradoContext context, HttpServletResponse response)
+			throws Exception {
 		String action = JsonUtils.getString(objectNode, "action");
 
 		ServiceProcessor processor = serviceProcessors.get(action);
@@ -150,7 +152,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 		context.setAttribute(ACTION_ATTRIBUTE, action);
 		getViewServiceInvoker().invoke(action, processor, writer, objectNode,
-				context);
+				context, response);
 	}
 
 	/**
@@ -195,11 +197,16 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				response));
 
 		JsonBuilder jsonBuilder = new JsonBuilder(writer);
-		ServletInputStream in = request.getInputStream();
+		InputStream in;
+		if (StringUtils.endsWithIgnoreCase(request.getMethod(), "POST")) {
+			in = request.getInputStream();
+		} else {
+			in = new ByteArrayInputStream(request.getParameter("q").getBytes());
+		}
 		DoradoContext context = DoradoContext.getCurrent();
 		try {
 			String contentType = request.getContentType();
-			if (contentType != null && contentType.contains(JAVASCRIPT_TOKEN)) {
+			if (contentType == null || contentType.contains(JAVASCRIPT_TOKEN)) {
 				Reader reader = new InputStreamReader(in,
 						Constants.DEFAULT_CHARSET);
 				StringBuffer buf = new StringBuffer();
@@ -211,7 +218,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 				ObjectNode objectNode = (ObjectNode) JsonUtils
 						.getObjectMapper().readTree(buf.toString());
 
-				processTask(writer, objectNode, context);
+				processTask(writer, objectNode, context, response);
 			} else if (contentType != null && contentType.contains(XML_TOKEN)) {
 				Document document = getXmlDocumentBuilder(context)
 						.loadDocument(
@@ -234,7 +241,7 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 					ObjectNode objectNode = (ObjectNode) JsonUtils
 							.getObjectMapper().readTree(textContent);
 					try {
-						processTask(escapeWriter, objectNode, context);
+						processTask(escapeWriter, objectNode, context, response);
 						writer.setEscapeEnabled(false);
 
 						writer.append("\n]]></response>\n");
