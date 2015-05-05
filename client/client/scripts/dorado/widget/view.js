@@ -767,10 +767,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					switch(evt.keyCode || evt.which) {
 						case 8:
 							var doPrevent = false;
-							var d = evt.srcElement || evt.target;
-							if ((d.tagName.toLowerCase() === 'input' && (d.type.toLowerCase() === 'text' || d.type.toLowerCase() === 'password' || d.type.toLowerCase() === 'file'))
-								|| d.tagName.toLowerCase() === 'textarea') {
-								doPrevent = d.readOnly || d.disabled;
+							var target = evt.srcElement || evt.target;
+							if ((target.tagName.toLowerCase() === 'input' && (target.type.toLowerCase() === 'text' || target.type.toLowerCase() === 'password' || target.type.toLowerCase() === 'file'))
+								|| target.tagName.toLowerCase() === 'textarea') {
+								doPrevent = target.readOnly || target.disabled;
 							}
 							else {
 								doPrevent = true;
@@ -789,9 +789,10 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 					switch(evt.keyCode || evt.which) {
 						case 8:
 						{	// Backspace
-							if (evt.srcElement) {
-								var nodeName = evt.srcElement.nodeName.toLowerCase();
-								if (!((nodeName == 'input' || nodeName == "textarea") && !evt.srcElement.readOnly && !evt.srcElement.disabled)) {
+							var target = evt.srcElement || evt.target;
+							if (target) {
+								var nodeName = target.nodeName.toLowerCase();
+								if (!((nodeName == 'input' || nodeName == "textarea") && !target.readOnly && !target.disabled)) {
 									return false;
 								}
 							}

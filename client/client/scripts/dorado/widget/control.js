@@ -1009,9 +1009,10 @@
 								});
 						}
 
-						if (evt.srcElement != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
+						var target = evt.srcElement || evt.target;
+						if (target != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
 							if (dorado.Browser.msie) {
-								var nodeName = evt.srcElement && evt.srcElement.nodeName.toLowerCase();
+								var nodeName = target && target.nodeName.toLowerCase();
 								if (nodeName != "input" && nodeName != "textarea" && nodeName != "select") {
 									dorado.widget.setFocusedControl(self);
 								}
@@ -1019,7 +1020,7 @@
 							else {
 								dorado.widget.setFocusedControl(self);
 							}
-							lastMouseDownTarget = evt.srcElement;
+							lastMouseDownTarget = target;
 							lastMouseDownTimestamp = new Date();
 						}
 						if (!self.processDefaultMouseListener()) return;
