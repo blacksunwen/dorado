@@ -85,8 +85,6 @@ public class ErrorPageView extends AbstractUrlBasedView {
 		Exception e = (Exception) request
 				.getAttribute(JAVAX_EXCEPTION_ATTRIBUTE);
 		if (e != null) {
-			logger.error(e, e);
-
 			if (e instanceof PageNotFoundException) {
 				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			} else if (e instanceof PageAccessDeniedException) {
@@ -98,11 +96,13 @@ public class ErrorPageView extends AbstractUrlBasedView {
 				throwable = throwable.getCause();
 			}
 
-			String message = StringUtils.defaultString(e.getMessage(), throwable.getClass()
-					.getName());
+			String message = StringUtils.defaultString(e.getMessage(),
+					throwable.getClass().getName());
 
 			velocityContext.put("message", message);
 			velocityContext.put(VELOCITY_EXCEPTION_ATTRIBUTE, throwable);
+
+			logger.error(message, throwable);
 		} else {
 			velocityContext.put("message",
 					"Can not gain exception information!");
@@ -127,9 +127,18 @@ public class ErrorPageView extends AbstractUrlBasedView {
 			throws Exception {
 		try {
 			doRender(request, response);
-		} catch (Throwable t) {
+		} catch (Throwable e) {
 			// 确保不会因再次抛出异常而进入死锁状态
-			logger.error(t, t);
+
+			Throwable throwable = e;
+			while (throwable.getCause() != null) {
+				throwable = throwable.getCause();
+			}
+
+			String message = StringUtils.defaultString(e.getMessage(),
+					throwable.getClass().getName());
+
+			logger.error(message, throwable);
 		}
 	}
 }

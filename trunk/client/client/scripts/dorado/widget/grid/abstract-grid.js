@@ -3654,7 +3654,7 @@
 					}
 
 					grid._currentCell = cell;
-					$fly(cell).addClass("current-cell");
+					if (grid._highlightCurrentRow) $fly(cell).addClass("current-cell");
 					if (grid._focused && !(column._renderer && column._renderer.preventCellEditing) && grid._editing && grid.shouldEditing(column)) {
 						var currentItem = this.getCurrentItem(), cellEditor;
 						if (currentItem) cellEditor = grid._currentCellEditor = grid.getCellEditor(column, currentItem);

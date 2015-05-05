@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -159,8 +158,8 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 	 * @param jsonBuilder
 	 * @param e
 	 */
-	protected void outputException(JsonBuilder jsonBuilder, Throwable throwable) {
-		String message = throwable.getMessage();
+	protected void outputException(JsonBuilder jsonBuilder, String message,
+			Throwable throwable) {
 		while (throwable.getCause() != null) {
 			throwable = throwable.getCause();
 		}
@@ -246,12 +245,10 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 						writer.append("\n]]></response>\n");
 					} catch (Exception e) {
+						String message = e.getMessage();
 						Throwable t = e;
 						while (t.getCause() != null) {
 							t = t.getCause();
-							if (!(t instanceof InvocationTargetException)) {
-								break;
-							}
 						}
 						writer.setEscapeEnabled(false);
 
@@ -265,13 +262,13 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						} else {
 							writer.append("<exception><![CDATA[\n");
 							writer.setEscapeEnabled(true);
-							outputException(jsonBuilder, t);
+							outputException(jsonBuilder, message, t);
 						}
 						writer.setEscapeEnabled(false);
 						writer.append("\n]]></exception>\n");
 
 						if (!(t instanceof AbortException)) {
-							logger.error(t, t);
+							logger.error(message, t);
 						}
 					}
 					writer.append("</request>\n");
@@ -282,12 +279,11 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 		} catch (Exception e) {
 			in.close();
 
+			String messsage = e.getMessage();
+
 			Throwable t = e;
 			while (t.getCause() != null) {
 				t = t.getCause();
-				if (!(t instanceof InvocationTargetException)) {
-					break;
-				}
 			}
 
 			if (t instanceof ClientRunnableException) {
@@ -297,11 +293,11 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 						.append("});");
 			} else {
 				response.setContentType("text/dorado-exception");
-				outputException(jsonBuilder, t);
+				outputException(jsonBuilder, messsage, t);
 			}
 
 			if (!(t instanceof AbortException)) {
-				logger.error(t, t);
+				logger.error(messsage, t);
 			}
 		} finally {
 			writer.flush();
