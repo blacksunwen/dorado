@@ -14,6 +14,7 @@ package com.bstek.dorado.view.resolver;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -45,11 +46,18 @@ public class VelocityExceptionDirective extends Directive {
 			ParseErrorException, MethodInvocationException {
 		Exception e = (Exception) contextAdapter.get(EXCEPTION_ATTRIBUTE);
 		if (e != null) {
-			Throwable throwable = e;
-			while (throwable.getCause() != null) {
-				throwable = throwable.getCause();
+			Throwable t = e;
+			while (t instanceof InvocationTargetException
+					&& t.getCause() != null) {
+				t = t.getCause();
 			}
-			PageOutputUtils.outputException(writer, e.getMessage(), throwable);
+
+			String message = e.getMessage();
+
+			while (t.getCause() != null) {
+				t = t.getCause();
+			}
+			PageOutputUtils.outputException(writer, message, t);
 		}
 		return true;
 	}

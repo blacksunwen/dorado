@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -91,18 +92,26 @@ public class ErrorPageView extends AbstractUrlBasedView {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			}
 
-			Throwable throwable = e;
-			while (throwable.getCause() != null) {
-				throwable = throwable.getCause();
+			Throwable t = e;
+			while (t instanceof InvocationTargetException
+					&& t.getCause() != null) {
+				t = t.getCause();
 			}
 
-			String message = StringUtils.defaultString(e.getMessage(),
-					throwable.getClass().getName());
+			String message = t.getMessage();
+
+			while (t.getCause() != null) {
+				t = t.getCause();
+			}
+
+			if (StringUtils.isEmpty(message)) {
+				message = t.getClass().getSimpleName();
+			}
 
 			velocityContext.put("message", message);
-			velocityContext.put(VELOCITY_EXCEPTION_ATTRIBUTE, throwable);
+			velocityContext.put(VELOCITY_EXCEPTION_ATTRIBUTE, t);
 
-			logger.error(message, throwable);
+			logger.error(message, t);
 		} else {
 			velocityContext.put("message",
 					"Can not gain exception information!");
@@ -130,15 +139,23 @@ public class ErrorPageView extends AbstractUrlBasedView {
 		} catch (Throwable e) {
 			// 确保不会因再次抛出异常而进入死锁状态
 
-			Throwable throwable = e;
-			while (throwable.getCause() != null) {
-				throwable = throwable.getCause();
+			Throwable t = e;
+			while (t instanceof InvocationTargetException
+					&& t.getCause() != null) {
+				t = t.getCause();
 			}
 
-			String message = StringUtils.defaultString(e.getMessage(),
-					throwable.getClass().getName());
+			String message = t.getMessage();
 
-			logger.error(message, throwable);
+			while (t.getCause() != null) {
+				t = t.getCause();
+			}
+
+			if (StringUtils.isEmpty(message)) {
+				message = t.getClass().getSimpleName();
+			}
+
+			logger.error(message, t);
 		}
 	}
 }

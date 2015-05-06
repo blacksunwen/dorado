@@ -12,6 +12,7 @@
 
 package com.bstek.dorado.view.task;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,18 +181,22 @@ class ExceptionInfo {
 	private String[] stackTrace;
 
 	public ExceptionInfo(Exception e) {
-		Throwable throwable = e;
-		message = throwable.getMessage();
+		Throwable t = e;
+		while (t instanceof InvocationTargetException && t.getCause() != null) {
+			t = t.getCause();
+		}
 
-		while (throwable.getCause() != null) {
-			throwable = throwable.getCause();
+		message = t.getMessage();
+
+		while (t.getCause() != null) {
+			t = t.getCause();
 		}
 
 		if (StringUtils.isEmpty(message)) {
-			message = throwable.getClass().getSimpleName();
+			message = t.getClass().getSimpleName();
 		}
 
-		StackTraceElement[] stackTraceElements = throwable.getStackTrace();
+		StackTraceElement[] stackTraceElements = t.getStackTrace();
 		stackTrace = new String[stackTraceElements.length];
 		int i = 0;
 		for (StackTraceElement stackTraceElement : stackTraceElements) {
