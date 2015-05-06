@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -245,8 +246,13 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 						writer.append("\n]]></response>\n");
 					} catch (Exception e) {
-						String message = e.getMessage();
 						Throwable t = e;
+						while (t instanceof InvocationTargetException
+								&& t.getCause() != null) {
+							t = t.getCause();
+						}
+
+						String message = t.getMessage();
 						while (t.getCause() != null) {
 							t = t.getCause();
 						}
@@ -279,9 +285,14 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 		} catch (Exception e) {
 			in.close();
 
-			String messsage = e.getMessage();
-
 			Throwable t = e;
+			while (t instanceof InvocationTargetException
+					&& t.getCause() != null) {
+				t = t.getCause();
+			}
+			
+			String messsage = t.getMessage();
+
 			while (t.getCause() != null) {
 				t = t.getCause();
 			}
