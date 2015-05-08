@@ -554,6 +554,12 @@ public class DoradoLoader {
 		Timer timer = new Timer();
 		timer.schedule(new ConsoleMessageTimerTask(buffer.toString()), 500L);
 	}
+
+	public synchronized void destroy() {
+		if (SingletonHolder.instance == this) {
+			SingletonHolder.instance = null;
+		}
+	}
 }
 
 class ConsoleMessageTimerTask extends TimerTask {
