@@ -86,8 +86,11 @@ public class DoradoLoader {
 	private static final String HOME_SERVLET_CONTEXT_XML = HOME_SERVLET_CONTEXT_PREFIX
 			+ CONTEXT_FILE_EXT;
 
+	private static DoradoLoader instance;
+
 	private boolean preloaded;
 	private boolean loaded;
+	private boolean closed;
 	private String doradoHome;
 	private List<String> contextLocations = new ArrayList<String>();
 	private List<String> servletContextLocations = new ArrayList<String>();
@@ -95,12 +98,11 @@ public class DoradoLoader {
 	private DoradoLoader() {
 	}
 
-	private static class SingletonHolder {
-		public static DoradoLoader instance = new DoradoLoader();
-	}
-
-	public static DoradoLoader getInstance() {
-		return SingletonHolder.instance;
+	public synchronized static DoradoLoader getInstance() {
+		if (instance == null) {
+			instance = new DoradoLoader();
+		}
+		return instance;
 	}
 
 	public String[] getRealResourcesPath(List<String> locations)
@@ -207,6 +209,10 @@ public class DoradoLoader {
 
 	public synchronized void preload(ServletContext servletContext,
 			boolean processOriginContextConfigLocation) throws Exception {
+		if (closed) {
+			return;
+		}
+
 		if (preloaded) {
 			throw new IllegalStateException(
 					"Dorado base configurations already loaded.");
@@ -527,14 +533,17 @@ public class DoradoLoader {
 
 	public synchronized void load(ServletContext servletContext)
 			throws Exception {
-		if (!preloaded) {
-			throw new IllegalStateException(
-					"Can not load dorado services before base configurations loaded.");
+		if (!closed) {
+			if (!preloaded) {
+				throw new IllegalStateException(
+						"Can not load dorado services before base configurations loaded.");
+			}
+			if (loaded) {
+				throw new IllegalStateException(
+						"Dorado services already loaded.");
+			}
 		}
-
-		if (loaded) {
-			throw new IllegalStateException("Dorado services already loaded.");
-		}
+		closed = false;
 		loaded = true;
 
 		EngineStartupListenerManager.notifyStartup();
@@ -556,9 +565,7 @@ public class DoradoLoader {
 	}
 
 	public synchronized void destroy() {
-		if (SingletonHolder.instance == this) {
-			SingletonHolder.instance = null;
-		}
+		closed = true;
 	}
 }
 
