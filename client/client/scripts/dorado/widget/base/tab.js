@@ -175,7 +175,6 @@
 			var tab = this, closeable = tab._closeable, disabled = tab._disabled, visible = tab._visible, doms = tab._doms,
 				captionDom = doms.caption, closeEl = doms.close, width = tab._width, tabbar = tab._parent, tabMinWidth;
 
-			$DomUtils.disableUserSelection(dom);
 			$fly(captionDom).text(tab._caption);
 
 			if (closeable) {
@@ -313,6 +312,7 @@
 				]
 			}, null, doms);
 
+			$DomUtils.disableUserSelection(dom);
 			tab._doms = doms;
 
 			$fly(dom).click(function() {
