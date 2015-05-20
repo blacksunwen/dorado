@@ -1402,7 +1402,7 @@
 				var control = this;
 				dorado._LAST_FOCUS_CONTROL = control;
 				dorado.Toolkits.setDelayedAction(window, "$setFocusTimerId", function() {
-					if (dorado._LAST_FOCUS_CONTROL === control && dorado.widget.focusedControl.peek() !== self) {
+					if (dorado._LAST_FOCUS_CONTROL === control && dorado.widget.focusedControl.peek() === self) {
 						try {
 							control.doSetFocus();
 						}
