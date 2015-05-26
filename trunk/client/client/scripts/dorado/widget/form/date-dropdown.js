@@ -587,9 +587,10 @@
 										cell.className = CELL_UNSELECTABLE_CLASS;
 									}
 								} else {
-									$fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
+									$fly(cell).removeClass(CELL_SELECTED_CLASS);
 								}
 							}
+							$fly(cell).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
 						} else {
 							cell.innerHTML = lastMonthDay - (day - j % 7) + 1;
 							
@@ -608,9 +609,10 @@
 										cell.className = CELL_UNSELECTABLE_CLASS;
 									}
 								} else {
-									$fly(cell).removeClass(CELL_SELECTED_CLASS).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
+									$fly(cell).removeClass(CELL_SELECTED_CLASS);
 								}
 							}
+							$fly(cell).removeClass(NEXT_MONTH_CLASS).removeClass(PREV_MONTH_CLASS);
 						} else {
 							cell.innerHTML = count++ - maxDay;
 							cell.className = NEXT_MONTH_CLASS;
