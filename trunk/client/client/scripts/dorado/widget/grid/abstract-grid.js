@@ -1222,6 +1222,8 @@
 			this._columns.destroy();
 			$invokeSuper.call(this);
 		},
+		
+		doSetFocus: dorado._NULL_FUNCTION,
 
 		doGet: function(attr) {
 			var c = attr.charAt(0);
