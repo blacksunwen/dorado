@@ -67,6 +67,11 @@
   color: #ffffff;
   background-color: #15a4fa;
 }
+.d-block-view .selected-block {
+    border: 0;
+    color: #ffffff;
+    background-color: #15a4fa;
+}
 .d-block-view .block-drag-over {
   border: 0;
   background-color: #c5e8fe;

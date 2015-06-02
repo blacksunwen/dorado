@@ -59,6 +59,11 @@
   color: #ffffff;
   background-color: #45b2c2;
 }
+.d-block-view .selected-block {
+    border: 0;
+    margin: 1px;
+    background-color: #45b2c2;
+}
 .d-block-view .block-drag-over {
   border: 0;
   background-color: #5c7d90;
