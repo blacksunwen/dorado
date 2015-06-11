@@ -33,4 +33,19 @@ public interface IViewReader {
 	 */
 	public String read(InputStream input, String encoding, RuleSet ruleSet)
 			throws Exception;
+	
+	/**
+	 * 
+	 * @param input
+	 *            View文件输入流
+	 * @param encoding
+	 *            文件编码
+	 * @param ruleSet
+	 * 			  Dorado规则(class:com.bstek.dorado.idesupport.model.RuleSet)
+	 * @param clientType 客户端类型
+	 * @return Json字符串
+	 * @throws Exception
+	 */
+	public String read(InputStream input, String encoding, RuleSet ruleSet,String clientType)
+			throws Exception;
 }

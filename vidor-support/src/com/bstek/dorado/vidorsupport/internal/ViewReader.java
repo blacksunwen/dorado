@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.vidorsupport.Vidor;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
@@ -29,21 +30,19 @@ public class ViewReader implements IViewReader {
 		return this.read(input, encoding, null);
 	}
 
-	protected String toJSON(XmlNode xmlNode) {
-		OutputContext context = new OutputContext();
-		xmlNode.output(context);
-		String json =  context.getWriter().toString();
-		Log log = Vidor.LOG.getLog("viewReader");
-		if (log.isDebugEnabled()) {
-			log.debug("View JSON ->\n" + json);
-		}
-		return json;
-	}
-
-	
 	public String read(InputStream input, String encoding, RuleSet ruleSet)
 			throws Exception {
-		// TODO Auto-generated method stub
+		return this.read(input, encoding, ruleSet,null);
+	}
+
+	@Override
+	public String read(InputStream input, String encoding, RuleSet ruleSet,
+			String clientType) throws Exception {
+		
+		if (clientType == null){
+			clientType=ClientType.DESKTOP_NAME;
+		}
+				
 		com.bstek.dorado.vidorsupport.rule.RuleSet ruleSET;
 		if (ruleSet == null) {
 			ruleSET = this.getRuleSetFactory().get();
@@ -52,22 +51,42 @@ public class ViewReader implements IViewReader {
 		}
 		XMLReader xmlReader = new XMLReader();
 
-		XmlNode xmlNode = xmlReader.parse(input, encoding, ruleSET);
+		XmlNode xmlNode = xmlReader.parse(input, encoding, ruleSET,clientType);
 		return toJSON(xmlNode);
 	}
+	
+	
+	protected String toJSON(XmlNode xmlNode) {
+		OutputContext context = new OutputContext();
+		xmlNode.output(context);
+		String json = context.getWriter().toString();
+		Log log = Vidor.LOG.getLog("viewReader");
+		if (log.isDebugEnabled()) {
+			log.debug("View JSON ->\n" + json);
+		}
+		return json;
+	}
+	
 }
 
 class XMLReader extends XmlReader {
-	public XmlNode parse(InputStream input, String encoding, com.bstek.dorado.vidorsupport.rule.RuleSet ruleSet)
+	public XmlNode parse(InputStream input, String encoding,
+			com.bstek.dorado.vidorsupport.rule.RuleSet ruleSet)
 			throws Exception {
+		return this.parse(input, encoding, ruleSet, ClientType.DESKTOP_NAME);
+	}
+
+	public XmlNode parse(InputStream input, String encoding,
+			com.bstek.dorado.vidorsupport.rule.RuleSet ruleSet,
+			String clientType) throws Exception {
 		SAXReader saxReader = new SAXReader();
 		saxReader.setEncoding(encoding);
 		Document document = saxReader.read(input);
 		XmlReader.ParseParameter parseParameter = new XmlReader.ParseParameter();
+		parseParameter.setClientType(clientType);
 		parseParameter.setRuleSet(ruleSet);
 		XmlNode result = this.parse(document, parseParameter);
 
 		return result;
 	}
-
 }
