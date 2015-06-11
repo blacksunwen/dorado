@@ -40,8 +40,26 @@ public interface IViewWriter {
 	 */
 	public void write(String json, OutputStream output, String encoding,
 			RuleSet ruleSet) throws Exception;
+	
+	/**
+	 * 基于规则解析输出View
+	 * 
+	 * @param json
+	 *            Json字符串
+	 * @param output
+	 *            View文件输出流
+	 * @param encoding
+	 *            文件编码
+	 * @param ruleSet
+	 *            Dorado规则(class:com.bstek.dorado.idesupport.model.RuleSet)
+	 * @param clientType 客户端类型
+	 * @throws Exception
+	 */
+	public void write(String json, OutputStream output, String encoding,
+			RuleSet ruleSet,String clientType) throws Exception;
 
 	public String toXML(String json) throws Exception;
 
 	public String toXML(String json, RuleSet ruleSet) throws Exception;
+	public String toXML(String json, RuleSet ruleSet,String clientType) throws Exception;
 }

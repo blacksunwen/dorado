@@ -10,6 +10,7 @@ import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
+import com.bstek.dorado.common.ClientType;
 import com.bstek.dorado.idesupport.model.RuleSet;
 import com.bstek.dorado.vidorsupport.Vidor;
 import com.bstek.dorado.vidorsupport.iapi.IRuleSetFactory;
@@ -32,11 +33,23 @@ public class ViewWriter implements IViewWriter {
 		this.write(json, output, encoding, null);
 	}
 
-	
 	public void write(String json, OutputStream output, String encoding,
 			RuleSet ruleSet) throws Exception {
+		this.write(json, output, encoding, null, null);
+	};
+
+	public String toXML(String json, RuleSet ruleSet) throws Exception {
+		return this.toXML(json, ruleSet, null);
+	}
+
+	public String toXML(String json) throws Exception {
+		return this.toXML(json, null);
+	}
+
+	public void write(String json, OutputStream output, String encoding,
+			RuleSet ruleSet, String clientType) throws Exception {
 		OutputStreamWriter writer = new OutputStreamWriter(output, encoding);
-		String xml = this.toXML(json, ruleSet);
+		String xml = this.toXML(json, ruleSet, clientType);
 		try {
 			writer.write(xml);
 		} catch (IOException e) {
@@ -48,10 +61,17 @@ public class ViewWriter implements IViewWriter {
 
 			}
 		}
-	};
 
-	public String toXML(String json, RuleSet ruleSet) throws Exception {
+	}
+
+	public String toXML(String json, RuleSet ruleSet, String clientType)
+			throws Exception {
 		com.bstek.dorado.vidorsupport.rule.RuleSet ruleSET;
+
+		if (clientType == null) {
+			clientType = ClientType.DESKTOP_NAME;
+		}
+
 		if (ruleSet == null) {
 			ruleSET = this.getRuleSetFactory().get();
 		} else {
@@ -82,10 +102,4 @@ public class ViewWriter implements IViewWriter {
 		return xml;
 	}
 
-
-	public String toXML(String json) throws Exception {
-		return this.toXML(json, null);
-	}
-	
-	
 }
