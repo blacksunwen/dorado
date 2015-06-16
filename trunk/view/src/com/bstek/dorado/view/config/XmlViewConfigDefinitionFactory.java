@@ -108,7 +108,7 @@ public class XmlViewConfigDefinitionFactory implements
 			for (int i = 0; i < paths.length; i++) {
 				String path = paths[i];
 				if (path.endsWith("/")) {
-					path = path.substring(0, pathPrefix.length() - 1);
+					path = path.substring(0, path.length() - 1);
 					paths[i] = path;
 				}
 
