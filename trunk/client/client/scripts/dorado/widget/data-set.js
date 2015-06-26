@@ -283,6 +283,9 @@
 						if (!(data instanceof dorado.EntityList || data instanceof dorado.Entity)) {
 							var state = data.$state;
 							data = dorado.DataUtil.convert(data, this.getDataTypeRepository(), dataType);
+							if (data instanceof dorado.EntityList){
+								data.pageSize = this._pageSize;
+							}
 							data.dataProvider = this._dataProvider;
 							if (data instanceof dorado.Entity && state == null) data.setState(dorado.Entity.STATE_NEW);
 						}
