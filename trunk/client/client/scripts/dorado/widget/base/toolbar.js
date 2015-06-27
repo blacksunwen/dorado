@@ -28,25 +28,25 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		className: {
 			defaultValue: "d-toolbar"
 		},
-		
+
 		height: {
 			independent: true,
 			readOnly: true
 		},
-		
+
 		/**
 		 * 工具栏中的子组件集合。可以使用Array、dorado.util.KeyedArray类型的数据来设置，但是取得的值是dorado.util.KeyedArray类型的。
 		 * @attribute
 		 * @type dorado.util.KeyedArray
 		 */
 		items: {
-			setter: function(value) {
+			setter: function (value) {
 				var toolbar = this, items = toolbar._items, rendered = toolbar._rendered, i, l, item;
 				if (items) {
 					toolbar.clearItems();
 				}
 				if (!items) {
-					toolbar._items = items = new dorado.util.KeyedArray(function(value) {
+					toolbar._items = items = new dorado.util.KeyedArray(function (value) {
 						return value._id;
 					});
 				}
@@ -73,7 +73,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			}
 		},
-		
+
 		/**
 		 * 当内容超出以后，固定在右侧的内容是始终显示还是隐藏。
 		 * @attribute
@@ -82,7 +82,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		fixRight: {
 			defaultValue: false
 		},
-		
+
 		/**
 		 * 绑定了Menu的dorado.widget.toolbar.Button的元素，是否在鼠标移上去以后就显示菜单。
 		 * @type boolean
@@ -90,8 +90,8 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		 */
 		showMenuOnHover: {}
 	},
-	
-	createDom: function() {
+
+	createDom: function () {
 		var toolbar = this, doms = {}, dom = $DomUtils.xCreate({
 			tagName: "div",
 			className: toolbar._className,
@@ -113,21 +113,21 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				}
 			}]
 		}, null, doms);
-		
+
 		toolbar._doms = doms;
-		
+
 		toolbar.doRenderItems();
-		
+
 		return dom;
 	},
-	
+
 	/**
 	 * 创建工具栏中的子组件。
 	 * @param {Object} config 子组件的配置信息。
 	 * @return {dorado.widget.Control} 创建好的Control。
 	 * @protected
 	 */
-	createItem: function(config) {
+	createItem: function (config) {
 		if (!config) return null;
 		var item;
 		if (typeof config == "string" || config.constructor == Object.prototype.constructor) {
@@ -135,43 +135,43 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		} else if (config instanceof dorado.widget.Control) {
 			item = config;
 		}
-        if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-            var oldRefreshItems = item.refreshItems;
-            item.refreshItems = function() {
-                oldRefreshItems.apply(this, arguments);
+		if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+			var oldRefreshItems = item.refreshItems;
+			item.refreshItems = function () {
+				oldRefreshItems.apply(this, arguments);
 
-                if (item._visibleByOverflow == false) {
-                    var menuItems = item._bindMenuItems || [];
-                    for (var i = 0, j = menuItems.length; i < j; i++) {
-                        var menuItem = menuItems[i], control = item._itemObjects[menuItem.itemCode.key];
-                        if (control) {
-                            menuItem.set({
-                                visible: control._visible,
-                                icon: control._icon,
-                                action: control._action,
-                                disabled: control._disabled,
-                                iconClass: control._iconClass
-                            });
-                        }
-                    }
-                }
-            };
-        }
+				if (item._visibleByOverflow == false) {
+					var menuItems = item._bindMenuItems || [];
+					for (var i = 0, j = menuItems.length; i < j; i++) {
+						var menuItem = menuItems[i], control = item._itemObjects[menuItem.itemCode.key];
+						if (control) {
+							menuItem.set({
+								visible: control._visible,
+								icon: control._icon,
+								action: control._action,
+								disabled: control._disabled,
+								iconClass: control._iconClass
+							});
+						}
+					}
+				}
+			};
+		}
 		if (item) this.registerInnerControl(item);
 		return item;
 	},
-	
+
 	/**
 	 * 为toolbar插入子组件。
 	 * @param {Object|dorado.widget.Control} item 要插入的子组件。
 	 * @param {int} [index] 要插入的子组件的index，如果不指定，默认会附加到最后。
 	 * @return {dorado.widget.Control} 插入成功的Item，如果不成功，返回null。
 	 */
-	addItem: function(item, index) {
+	addItem: function (item, index) {
 		var toolbar = this, items = toolbar._items;
 		if (!item) return null;
 		if (!items) {
-			items = toolbar._items = new dorado.util.KeyedArray(function(value) {
+			items = toolbar._items = new dorado.util.KeyedArray(function (value) {
 				return value._id;
 			});
 		}
@@ -183,20 +183,38 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				refDom = refItem ? refItem._dom : null;
 			}
 			items.insert(item, index);
-			item.render(doms.toolbarLeft, refDom);
+			if (toolbar._fixRight) {
+				var fillIndex = -1;
+				for (var i = 0, j = items.size; i < j; i++) {
+					if (items.get(i) instanceof dorado.widget.toolbar.Fill) {
+						fillIndex = i;
+						break;
+					}
+				}
+				if (index == undefined && fillIndex > -1) {
+					item.render(doms.toolbarRight, refDom);
+				} else if (index != undefined && index > fillIndex) {
+					item.render(doms.toolbarRight, refDom);
+				} else {
+					item.render(doms.toolbarLeft, refDom);
+				}
+			} else {
+				item.render(doms.toolbarLeft, refDom);
+			}
 			$fly(item._dom).addClass("d-toolbar-item");
+			toolbar.refresh(300);
 		} else {
 			items.insert(item, index);
 		}
-		
+
 		return item;
 	},
-	
+
 	/**
 	 * 移除工具栏中的子组件。
 	 * @param {dorado.widget.Control|int} item 要移除的子组件或者子组件的索引。
 	 */
-	removeItem: function(item) {
+	removeItem: function (item) {
 		var toolbar = this, items = toolbar._items;
 		if (items && item !== undefined) {
 			var realItem = item;
@@ -210,11 +228,11 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			toolbar.unregisterInnerControl(realItem);
 		}
 	},
-	
+
 	/**
 	 * 清除工具栏中所有的子组件。
 	 */
-	clearItems: function() {
+	clearItems: function () {
 		var toolbar = this, items = toolbar._items, afterFill = false;
 		for (var i = 0, j = items.size; i < j; i++) {
 			var item = items.get(i);
@@ -225,8 +243,8 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		}
 		items.clear();
 	},
-	
-	doRenderItems: function() {
+
+	doRenderItems: function () {
 		var toolbar = this, doms = toolbar._doms, items = toolbar._items || {}, afterFill = false;
 		for (var i = 0, j = items.size; i < j; i++) {
 			var item = items.get(i);
@@ -243,64 +261,66 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			}
 		}
 	},
-	
-	hideOverflowItem: function(item, overflowMenu, dataPilotItemCode, dataPilot) {
+
+	hideOverflowItem: function (item, overflowMenu, dataPilotItemCode, dataPilot) {
 		var menuItem;
-        if (dataPilotItemCode) {
-            var map = {
-                "|<": $resource("dorado.baseWidget.DataPilotFirstPage"),
-                "<": $resource("dorado.baseWidget.DataPilotPreviousPage"),
-                ">": $resource("dorado.baseWidget.DataPilotNextPage"),
-                ">|": $resource("dorado.baseWidget.DataPilotLastPage"),
-                "+": $resource("dorado.baseWidget.DataPilotInsert"),
-                "-": $resource("dorado.baseWidget.DataPilotDelete"),
-                "x": $resource("dorado.baseWidget.DataPilotCancel")
-            };
-            function addItem(itemCode, innerControl) {
-                var menuItem = overflowMenu.addItem({
-                    caption: map[itemCode.code],
-                    visible: innerControl._visible,
-                    icon: innerControl._icon,
-                    action: innerControl._action,
-                    disabled: innerControl._disabled,
-                    iconClass: innerControl._iconClass,
-                    listener: {
-                        onClick: function() {
-                            innerControl.fireEvent("onClick", item);
-                        }
-                    }
-                });
-                menuItem.itemCode = itemCode;
-                dataPilot._bindMenuItems.push(menuItem);
-            }
-            switch (dataPilotItemCode.code) {
-                case "|<":
-                case "<":
-                case ">":
-                case ">|":
-                case "+":
-                case "-":
-                case "x":
-                    addItem(dataPilotItemCode, item);
-                    break;
-                case "goto":
-                case "info":
-                    break;
-                case "|":
-                    //overflowMenu.addItem("-");
-                    break;
-            }
-        } else if (item instanceof dorado.widget.Button) {
+		if (dataPilotItemCode) {
+			var map = {
+				"|<": $resource("dorado.baseWidget.DataPilotFirstPage"),
+				"<": $resource("dorado.baseWidget.DataPilotPreviousPage"),
+				">": $resource("dorado.baseWidget.DataPilotNextPage"),
+				">|": $resource("dorado.baseWidget.DataPilotLastPage"),
+				"+": $resource("dorado.baseWidget.DataPilotInsert"),
+				"-": $resource("dorado.baseWidget.DataPilotDelete"),
+				"x": $resource("dorado.baseWidget.DataPilotCancel")
+			};
+
+			function addItem(itemCode, innerControl) {
+				var menuItem = overflowMenu.addItem({
+					caption: map[itemCode.code],
+					visible: innerControl._visible,
+					icon: innerControl._icon,
+					action: innerControl._action,
+					disabled: innerControl._disabled,
+					iconClass: innerControl._iconClass,
+					listener: {
+						onClick: function () {
+							innerControl.fireEvent("onClick", item);
+						}
+					}
+				});
+				menuItem.itemCode = itemCode;
+				dataPilot._bindMenuItems.push(menuItem);
+			}
+
+			switch (dataPilotItemCode.code) {
+				case "|<":
+				case "<":
+				case ">":
+				case ">|":
+				case "+":
+				case "-":
+				case "x":
+					addItem(dataPilotItemCode, item);
+					break;
+				case "goto":
+				case "info":
+					break;
+				case "|":
+					//overflowMenu.addItem("-");
+					break;
+			}
+		} else if (item instanceof dorado.widget.Button) {
 			menuItem = overflowMenu.addItem({
 				caption: item._caption,
 				visible: item._visible,
 				submenu: item._menu,
-                action: item._action,
+				action: item._action,
 				disabled: item._disabled,
 				icon: item._icon,
 				iconClass: item._iconClass,
 				listener: {
-					onClick: function() {
+					onClick: function () {
 						item.fireEvent("onClick", item);
 					}
 				}
@@ -309,7 +329,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			overflowMenu.addItem("-");
 		} else if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
 			var compiledItemCodes = item._compiledItemCodes || [], bindMenuItems = [];
-            item._bindMenuItems = bindMenuItems;
+			item._bindMenuItems = bindMenuItems;
 
 			for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
 				var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
@@ -336,27 +356,27 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		item._bindingMenuItem = menuItem;
 		if (dataPilotItemCode || item._hideMode == "visibility") {
 			$fly(item._dom).css({
-                visibility: "hidden"
+				visibility: "hidden"
 			});
 		} else {
 			$fly(item._dom).css({
-                display: "none"
+				display: "none"
 			});
 		}
 	},
-	
-	showUnoverflowItem: function(item, dataPilotItem) {
+
+	showUnoverflowItem: function (item, dataPilotItem) {
 		item._visibleByOverflow = true;
-        if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-            item._bindMenuItems = [];
-        }
+		if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+			item._bindMenuItems = [];
+		}
 		var visible = item._visible;
 		item._bindingMenuItem = null;
-        if (dataPilotItem) {
-            $fly(item._dom).css({
-                visibility: ""
-            });
-        } else if (item._hideMode == "display") {
+		if (dataPilotItem) {
+			$fly(item._dom).css({
+				visibility: ""
+			});
+		} else if (item._hideMode == "display") {
 			$fly(item._dom).css({
 				display: visible ? "" : "none"
 			});
@@ -366,8 +386,8 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			});
 		}
 	},
-	
-	refreshDom: function(dom) {
+
+	refreshDom: function (dom) {
 		$invokeSuper.call(this, arguments);
 		var toolbar = this;
 		if (toolbar._fixRight) {
@@ -377,54 +397,54 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		}
 	},
 
-    /**
-     * @private
-     * 用来显示DataPilot中所有子组件。
-     * @param {dorado.widget.DataPilot} item 要显示子组件的DataPilot。
-     */
-    showDataPilot: function (item) {
-        var compiledItemCodes = item._compiledItemCodes || [];
-        item._visibleByOverflow = true;
-        for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
-            var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
-            this.showUnoverflowItem(innerControl, true);
-        }
-    },
+	/**
+	 * @private
+	 * 用来显示DataPilot中所有子组件。
+	 * @param {dorado.widget.DataPilot} item 要显示子组件的DataPilot。
+	 */
+	showDataPilot: function (item) {
+		var compiledItemCodes = item._compiledItemCodes || [];
+		item._visibleByOverflow = true;
+		for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
+			var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
+			this.showUnoverflowItem(innerControl, true);
+		}
+	},
 
-    /**
-     * @private
-     * 用来隐藏DataPilot中不可见的子组件。
-     * @param {dorado.widget.DataPilot} item 要隐藏不可见子组件的DataPilot。
-     * @param {dorado.widget.Menu} overflowMenu 右侧菜单。
-     * @param {int} currentLeft DataPilot的起始left。
-     * @param {int} leftVisibleWidth 左侧可见部分的宽度。
-     */
-    hideDataPilot: function (item, overflowMenu, currentLeft, leftVisibleWidth) {
-        var toolbar = this, compiledItemCodes = item._compiledItemCodes || [], startHide = false, bindMenuItems = [];
-        item._bindMenuItems = bindMenuItems;
-        item._visibleByOverflow = false;
-        for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
-            var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
-            toolbar.showUnoverflowItem(innerControl, true);
-            if (startHide) {
-                toolbar.hideOverflowItem(innerControl, overflowMenu, itemCode, item);
-                continue;
-            }
-            currentLeft += $fly(innerControl._dom).outerWidth(true);
-            if (currentLeft >= leftVisibleWidth) {
-                startHide = true;
-                toolbar.hideOverflowItem(innerControl, overflowMenu, itemCode, item);
-            }
-        }
-    },
+	/**
+	 * @private
+	 * 用来隐藏DataPilot中不可见的子组件。
+	 * @param {dorado.widget.DataPilot} item 要隐藏不可见子组件的DataPilot。
+	 * @param {dorado.widget.Menu} overflowMenu 右侧菜单。
+	 * @param {int} currentLeft DataPilot的起始left。
+	 * @param {int} leftVisibleWidth 左侧可见部分的宽度。
+	 */
+	hideDataPilot: function (item, overflowMenu, currentLeft, leftVisibleWidth) {
+		var toolbar = this, compiledItemCodes = item._compiledItemCodes || [], startHide = false, bindMenuItems = [];
+		item._bindMenuItems = bindMenuItems;
+		item._visibleByOverflow = false;
+		for (var i = 0, j = compiledItemCodes.length; i < j; i++) {
+			var itemCode = compiledItemCodes[i], innerControl = item._itemObjects[itemCode.key];
+			toolbar.showUnoverflowItem(innerControl, true);
+			if (startHide) {
+				toolbar.hideOverflowItem(innerControl, overflowMenu, itemCode, item);
+				continue;
+			}
+			currentLeft += $fly(innerControl._dom).outerWidth(true);
+			if (currentLeft >= leftVisibleWidth) {
+				startHide = true;
+				toolbar.hideOverflowItem(innerControl, overflowMenu, itemCode, item);
+			}
+		}
+	},
 
-    doOnResize: function() {
-        $invokeSuper.call(this, arguments);
-		
+	doOnResize: function () {
+		$invokeSuper.call(this, arguments);
+
 		var toolbar = this, dom = toolbar._dom, doms = toolbar._doms, overflowMenu = toolbar._overflowMenu, overflowButton = toolbar._overflowButton, items = toolbar._items, lastChild = doms.toolbarLeft.lastChild, overflow = false;
-		
+
 		if (dorado.Browser.msie && items) {
-			items.each(function(item) {
+			items.each(function (item) {
 				if (item instanceof dorado.widget.TextEditor) {
 					item.resetDimension();
 				}
@@ -433,7 +453,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 
 		if (items && lastChild) {
 			var leftRealWidth = lastChild.offsetWidth + lastChild.offsetLeft, leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
-			
+
 			overflow = leftRealWidth > leftVisibleWidth;
 		}
 
@@ -442,9 +462,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 		if (overflow) {
 			$fly(dom).addClass(toolbar._className + "-overflow");
 
-            if (!overflowMenu) {
-                overflowMenu = toolbar._overflowMenu = new dorado.widget.Menu();
-				
+			if (!overflowMenu) {
+				overflowMenu = toolbar._overflowMenu = new dorado.widget.Menu();
+
 				overflowButton = toolbar._overflowButton = new dorado.widget.SimpleButton({
 					className: "overflow-button",
 					menu: overflowMenu
@@ -454,9 +474,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			} else {
 				overflowMenu.clearItems();
 			}
-			
+
 			var leftWidthSum = 0, startHideIndex = -1, item, i, j, afterFill;
-			
+
 			if (toolbar._fixRight) {
 				leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
 				for (i = 0, j = items.size; i < j; i++) {
@@ -465,30 +485,30 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 						break;
 					}
 
-                    toolbar.showUnoverflowItem(item);
-                    leftWidthSum += $fly(item._dom).outerWidth(true);
-                    if (leftWidthSum >= leftVisibleWidth) {
-                        startHideIndex = i;
-                        break;
-                    }
+					toolbar.showUnoverflowItem(item);
+					leftWidthSum += $fly(item._dom).outerWidth(true);
+					if (leftWidthSum >= leftVisibleWidth) {
+						startHideIndex = i;
+						break;
+					}
 
-                    if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-                        toolbar.showDataPilot(item);
-                    }
+					if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+						toolbar.showDataPilot(item);
+					}
 				}
-				
+
 				if (startHideIndex > -1) {
 					for (i = startHideIndex, j = items.size; i < j; i++) {
 						item = items.get(i);
 						if (item instanceof dorado.widget.toolbar.Fill) {
 							break;
 						}
-                        if (i == startHideIndex && dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-                            var currentLeft = leftWidthSum - $fly(item._dom).outerWidth(true);
-                            toolbar.hideDataPilot(item, overflowMenu, currentLeft, leftVisibleWidth);
-                        } else {
-                            toolbar.hideOverflowItem(item, overflowMenu);
-                        }
+						if (i == startHideIndex && dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+							var currentLeft = leftWidthSum - $fly(item._dom).outerWidth(true);
+							toolbar.hideDataPilot(item, overflowMenu, currentLeft, leftVisibleWidth);
+						} else {
+							toolbar.hideOverflowItem(item, overflowMenu);
+						}
 					}
 				}
 			} else {
@@ -504,9 +524,9 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 						afterFill = true;
 					}
 				}
-				
+
 				leftVisibleWidth = dom.offsetWidth - doms.toolbarRight.offsetWidth;
-				
+
 				for (i = 0, j = items.size; i < j; i++) {
 					item = items.get(i);
 					toolbar.showUnoverflowItem(item);
@@ -519,21 +539,21 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 						break;
 					}
 
-                    if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-                        toolbar.showDataPilot(item);
-                    }
+					if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+						toolbar.showDataPilot(item);
+					}
 				}
-				
+
 				if (startHideIndex > -1) {
 					for (i = startHideIndex, j = items.size; i < j; i++) {
 						item = items.get(i);
 						if (item instanceof dorado.widget.toolbar.Fill) continue;
-                        if (i == startHideIndex && dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-                            var currentLeft = leftWidthSum - $fly(item._dom).outerWidth(true);
-                            toolbar.hideDataPilot(item, overflowMenu, currentLeft, leftVisibleWidth);
-                        } else {
-                            toolbar.hideOverflowItem(item, overflowMenu);
-                        }
+						if (i == startHideIndex && dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+							var currentLeft = leftWidthSum - $fly(item._dom).outerWidth(true);
+							toolbar.hideDataPilot(item, overflowMenu, currentLeft, leftVisibleWidth);
+						} else {
+							toolbar.hideOverflowItem(item, overflowMenu);
+						}
 					}
 				}
 			}
@@ -556,19 +576,19 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			}
 			for (i = 0, j = items.size; i < j; i++) {
 				item = items.get(i);
-                if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
-                    toolbar.showDataPilot(item);
-                } else {
-                    toolbar.showUnoverflowItem(item);
-                }
+				if (dorado.widget.DataPilot && item instanceof dorado.widget.DataPilot) {
+					toolbar.showDataPilot(item);
+				} else {
+					toolbar.showUnoverflowItem(item);
+				}
 			}
 		}
 	},
-	
-	getFocusableSubControls: function() {
+
+	getFocusableSubControls: function () {
 		return this._items.toArray();
 	}
-	
+
 });
 
 /**
@@ -580,14 +600,14 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
  */
 dorado.widget.toolbar.Separator = $extend(dorado.widget.Control, {
 	$className: "dorado.widget.toolbar.Separator",
-	
+
 	ATTRIBUTES: {
 		className: {
 			defaultValue: "d-toolbar-sep"
 		}
 	},
-	
-	createDom: function() {
+
+	createDom: function () {
 		var separator = this, dom;
 		dom = document.createElement("span");
 		dom.className = separator._className;
@@ -605,7 +625,7 @@ dorado.widget.toolbar.Separator = $extend(dorado.widget.Control, {
 dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 	$className: "dorado.widget.toolbar.Button",
 
-	_constructor: function(config) {
+	_constructor: function (config) {
 		var items = config && config.items;
 		if (items) delete config.items;
 		$invokeSuper.call(this, arguments);
@@ -619,13 +639,13 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		 * @attribute
 		 */
 		items: {
-			getter: function() {
+			getter: function () {
 				if (this._menu) {
 					return this._menu.get("items");
 				}
 				return null;
 			},
-			setter: function(value) {
+			setter: function (value) {
 				if (value.constructor == Array.prototype.constructor) {
 					this._menu = new dorado.widget.Menu({
 						items: value
@@ -634,7 +654,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 				}
 			}
 		},
-		
+
 		/**
 		 * 绑定了Menu的dorado.widget.toolbar.Button的元素，是否在鼠标移上去以后就显示菜单。
 		 * @type boolean
@@ -659,7 +679,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		}
 	},
 
-	doGet: function(attr) {
+	doGet: function (attr) {
 		var c = attr.charAt(0);
 		if ((c == '#' || c == '&') && this._menu) {
 			return this._menu.get(attr);
@@ -668,7 +688,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		}
 	},
 
-	doSet: function(attr, value, skipUnknownAttribute, lockWritingTimes) {
+	doSet: function (attr, value, skipUnknownAttribute, lockWritingTimes) {
 		$invokeSuper.call(this, [attr, value, skipUnknownAttribute, lockWritingTimes]);
 
 		if (this._parent instanceof dorado.widget.ToolBar) {
@@ -687,14 +707,14 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		}
 	},
 
-	doCancelHideMenuOnMouseEnter: function() {
+	doCancelHideMenuOnMouseEnter: function () {
 		if (this._hideMenuOnMouseLeaveTimer) {
 			clearTimeout(this._hideMenuOnMouseLeaveTimer);
 			this._hideMenuOnMouseLeaveTimer = null;
 		}
 	},
 
-	doHideMenuOnMouseLeave: function() {
+	doHideMenuOnMouseLeave: function () {
 		var button = this;
 
 		if (this._hideMenuOnMouseLeaveTimer) {
@@ -702,7 +722,7 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 			this._hideMenuOnMouseLeaveTimer = null;
 		}
 
-		button._hideMenuOnMouseLeaveTimer = setTimeout(function() {
+		button._hideMenuOnMouseLeaveTimer = setTimeout(function () {
 			if (button._hideMenuOnMouseLeave && button._menu) {
 				button._menu.hide(true);
 			}
@@ -710,9 +730,9 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 		}, button._hideMenuOnMouseLeaveDelay || 300);
 	},
 
-	createDom: function() {
+	createDom: function () {
 		var button = this, dom = $invokeSuper.call(button, arguments);
-		$fly(dom).mouseenter(function() {
+		$fly(dom).mouseenter(function () {
 			var menu = button._menu, toolbar = button._parent;
 			if (button._hideMenuOnMouseLeave) button.doCancelHideMenuOnMouseEnter();
 			if (menu && toolbar && !button._disabled) {
@@ -731,21 +751,21 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 					}
 				}
 			}
-		}).mouseleave(function() {
+		}).mouseleave(function () {
 			if (button._hideMenuOnMouseLeave) button.doHideMenuOnMouseLeave();
 		});
 		return dom;
 	},
 
-	willShowMenuOnHover: function() {
+	willShowMenuOnHover: function () {
 		var button = this, toolbar = button._parent, menu = button._menu;
 		if (menu && toolbar && !button._disabled) {
 			return button._showMenuOnHover !== undefined ? button._showMenuOnHover : (toolbar._showMenuOnHover !== undefined ? toolbar._showMenuOnHover : undefined);
 		}
 		return false;
 	},
-	
-	doShowMenu: function() {
+
+	doShowMenu: function () {
 		$invokeSuper.call(this, arguments);
 		var button = this, menu = button._menu;
 		if (menu) {
@@ -753,8 +773,8 @@ dorado.widget.toolbar.Button = $extend(dorado.widget.Button, {
 			toolbar._activeMenuButton = button;
 		}
 	},
-	
-	doBeforeMenuHide: function() {
+
+	doBeforeMenuHide: function () {
 		var button = this, toolbar = button._parent;
 		if (toolbar) {
 			toolbar._activeMenuButton = null;
@@ -785,22 +805,22 @@ dorado.widget.toolbar.Fill = $extend(dorado.widget.Control, {
  */
 dorado.widget.toolbar.Label = $extend(dorado.widget.Control, {
 	$className: "dorado.widget.toolbar.Label",
-	
+
 	ATTRIBUTES: {
 		className: {
 			defaultValue: "d-toolbar-label"
 		},
 		text: {}
 	},
-	
-	createDom: function() {
+
+	createDom: function () {
 		var label = this, dom = document.createElement("div");
 		dom.className = label._className;
 		$fly(dom).text(label._text ? label._text : "");
 		return dom;
 	},
-	
-	refreshDom: function(dom) {
+
+	refreshDom: function (dom) {
 		$invokeSuper.call(this, arguments);
 		var label = this;
 		$fly(dom).text(label._text ? label._text : "");
