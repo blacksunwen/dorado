@@ -233,8 +233,9 @@
 				}
 			}
 			
-			if (!this._entities) {
-				this._entities = this.getBindingData();
+			var entityList = this.getBindingData();
+			if (!this._entities || this._entities != entityList) {
+				this._entities = entityList;
 			}
 			this.refreshItems();
 		},
