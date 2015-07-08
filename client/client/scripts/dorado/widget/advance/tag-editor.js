@@ -29,7 +29,7 @@
 	            if (value) value = [value];
 	            editor.addTags(value, true);
         	}
-        }
+        },
 
         open: function (editor) {
             var items = this._items = this.getAvailableTags();
