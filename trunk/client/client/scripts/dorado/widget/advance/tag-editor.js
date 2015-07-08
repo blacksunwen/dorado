@@ -23,10 +23,13 @@
         },
 
         assignValue: function (editor, entityForAssignment, eventArg) {
-            var value = eventArg.selectedValue;
-            if (value) value = [value];
-            editor.addTags(value, true);
-        },
+        	evt = window.event
+        	if (!evt || !evt.keyCode || evt.keyCode == 13) {
+	            var value = eventArg.selectedValue;
+	            if (value) value = [value];
+	            editor.addTags(value, true);
+        	}
+        }
 
         open: function (editor) {
             var items = this._items = this.getAvailableTags();
