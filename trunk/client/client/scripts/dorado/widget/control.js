@@ -1011,7 +1011,7 @@
 
 						var target = evt.srcElement || evt.target;
 						if (target != lastMouseDownTarget || (new Date() - lastMouseDownTimestamp) > 500) {
-							if (dorado.Browser.msie) {
+							if (dorado.Browser.msie && dorado.Browser.version < 10) {
 								var nodeName = target && target.nodeName.toLowerCase();
 								if (nodeName != "input" && nodeName != "textarea" && nodeName != "select") {
 									dorado.widget.setFocusedControl(self);
@@ -1616,14 +1616,14 @@
 			do {
 				try {
 					var parent = win.parent;
-					if (parent == null || parent == win) break; // IE8下使用===判断会失败
+					if (parent == null || parent == win) break; // IE下使用===判断会失败
 					windowStack.push(parent);
 					
 					try {
 						parentFrames = parent.jQuery("iframe,frame");
 						if (parentFrames) {
 							parentFrames.each(function() {
-								if (this.contentWindow == win) {		// IE8下使用===判断会失败
+								if (this.contentWindow == win) {		// IE下使用===判断会失败
 									var frameControl =  parent.dorado.widget.Control.findParentControl(this);
 									parent.dorado.widget.setFocusedControl(frameControl, false, true);
 									return false;
@@ -1645,7 +1645,7 @@
 
 			function setFrameBlur(win) {
 				try {
-					if (win !== window && win.dorado.widget.Control && windowStack.indexOf(win) < 0) {
+					if (win != window && win.dorado.widget.Control && windowStack.indexOf(win) < 0) {	// IE下使用===判断会失败
 						win.dorado.widget.setFocusedControl(null, false, true);
 					}
 				}
