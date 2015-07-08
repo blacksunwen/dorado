@@ -23,7 +23,7 @@
         },
 
         assignValue: function (editor, entityForAssignment, eventArg) {
-        	evt = window.event
+        	var evt = window.event
         	if (!evt || !evt.keyCode || evt.keyCode == 13) {
 	            var value = eventArg.selectedValue;
 	            if (value) value = [value];
