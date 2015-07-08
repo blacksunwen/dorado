@@ -1816,7 +1816,7 @@
 
 		_watchScroll: function() {
 			delete this._watchScrollTimerId;
-			if (this._scrollMode == "simple") return;
+			if (this._scrollMode != "viewport") return;
 
 			var divScroll = this._divScroll;
 			if (divScroll.scrollLeft == 0 && divScroll.scrollTop == 0 && divScroll.offsetWidth > 0) {
@@ -1864,7 +1864,7 @@
 				clearTimeout(this._watchScrollTimerId);
 				delete this._watchScrollTimerId;
 			}
-			if (arg.scrollTop && this._scrollMode != "simple") {
+			if (arg.scrollTop && this._scrollMode == "viewport") {
 				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
 			}
 			this._scrollLeft = arg.scrollLeft;
@@ -1898,14 +1898,12 @@
 				if (this._rowHeightInfos) this.syncroRowHeights(innerGrid._container);
 				this.updateScroller(innerGrid._container);
 			}
-			/* 鍙兘瀵艰嚧鍦ㄩ儴鍒嗘儏鍐典笅婊氬姩鏉℃寔缁粴鍔ㄧ殑BUG
 			else if (this._scrollMode == "viewport") {
 				dorado.Toolkits.setDelayedAction(this, "$scrollTimerId", function() {
 					if (this._domMode == 2) this._fixedInnerGrid.doOnYScroll(this._fixedInnerGrid._container);
 					this._innerGrid.doOnYScroll(this._innerGrid._container);
 				}, 300);
 			}
-			*/
 		},
 
 		doOnKeyDown: function(evt) {

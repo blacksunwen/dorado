@@ -555,7 +555,7 @@
 
 		_watchScroll: function(arg) {
 			delete this._watchScrollTimerId;
-			if (this._scrollMode == "simple") return;
+			if (this._scrollMode != "viewport") return;
 
 			var container = this._container;
 			if (container.scrollLeft == 0 && container.scrollTop == 0 && container.offsetWidth > 0) {
@@ -569,7 +569,7 @@
 
 		onScroll: function(event, arg) {
 			var rowList = this;
-			if (rowList._scrollMode == "simple") return;
+			if (rowList._scrollMode != "viewport") return;
 
 			var container = rowList._container;
 			if ((rowList._scrollLeft || 0) != arg.scrollLeft) {

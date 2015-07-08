@@ -539,9 +539,9 @@
 					break;
 				}
 				case 45:{ /* insert */
-					if (!this._readOnly) {
-						items.insert();
-					}
+//					if (!this._readOnly) {
+//						items.insert();
+//					}
 					break;
 				}
 				case 46:{ /* delete */
