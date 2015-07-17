@@ -12,6 +12,8 @@
 
 package com.bstek.dorado.web.resolver;
 
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.util.PathUtils;
 
 /**
@@ -60,6 +63,14 @@ public abstract class AbstractControllerResolver extends
 	@Override
 	protected ModelAndView doHandleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
+		String referer = request.getHeader("referer");
+		if (StringUtils.isNotEmpty(referer)) {
+			String refererPattern = Configure.getString("security.refererPattern");
+			if (!Pattern.matches(refererPattern, referer)) {
+				throw new PageAccessDeniedException("Cross-Site request forbidden.");
+			}
+		}
+		
 		String uri = getRequestPath(request);
 		if (!PathUtils.isSafePath(uri)) {
 			throw new PageAccessDeniedException("[" + request.getRequestURI()

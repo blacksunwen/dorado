@@ -176,8 +176,7 @@ public class CommonRuleTemplateInitializer implements RuleTemplateInitializer {
 				.getClientTypes());
 		if (clientTypes > 0) {
 			ruleTemplate.setClientTypes(clientTypes);
-		} else if (Control.class.isAssignableFrom(type)
-				&& "public".equals(ruleTemplate.getScope())) {
+		} else if (Control.class.isAssignableFrom(type)) {
 			ruleTemplate.setClientTypes(ClientType.DESKTOP);
 		}
 
