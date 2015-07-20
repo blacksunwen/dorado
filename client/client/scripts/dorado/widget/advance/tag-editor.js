@@ -676,14 +676,22 @@
         textEdited: function () {
             var tagEditor = this;
             tagEditor._inputDom.size = tagEditor._inputDom.value.length + 1;
-
-            if (tagEditor._inputDom.value && tagEditor._defaultTrigger && !tagEditor._defaultTrigger.get("opened")) {
-                dorado.Toolkits.setDelayedAction(tagEditor, "$autoOpenDropDownOnEditTimerId", function () {
-                    tagEditor._defaultTrigger.open(tagEditor);
-                }, 300);
-            } else {
-                dorado.Toolkits.cancelDelayedAction(tagEditor, "$autoOpenDropDownOnEditTimerId");
+            
+//            if (tagEditor._inputDom.value && tagEditor._defaultTrigger && !tagEditor._defaultTrigger.get("opened")) {
+            // TODO FIX #dorado7-8974
+            if (tagEditor._defaultTrigger){
+	            if (!tagEditor._defaultTrigger.get("opened")) {
+	                dorado.Toolkits.setDelayedAction(tagEditor, "$autoOpenDropDownOnEditTimerId", function () {
+	                    tagEditor._defaultTrigger.open(tagEditor);
+	                }, 300);
+	            } else {
+	                dorado.Toolkits.cancelDelayedAction(tagEditor, "$autoOpenDropDownOnEditTimerId");
+	                dorado.Toolkits.setDelayedAction(tagEditor, "$dropDownOnFilterItemsTimerId", function () {
+	                    tagEditor._defaultTrigger.onFilterItems(tagEditor._inputDom.value);
+	                }, 300);   
+	            }
             }
+            
 
             $invokeSuper.call(tagEditor);
         },
