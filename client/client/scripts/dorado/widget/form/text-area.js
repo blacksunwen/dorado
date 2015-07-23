@@ -176,11 +176,13 @@
 			if (this._triggerPanel) {
 				w -= this._triggerPanel.offsetWidth;
 			}
-			this._textDomWrapper.style.width = (w < 0 ? 0 : w) + "px";
-			this._textDomWrapper.style.height = h + "px";
 			
-			if (dorado.Browser.msie && dorado.Browser.version < 8) {
-				this._textDom.style.height = h + "px";
+			if (w > 0 && h > 0) {
+				this._textDomWrapper.style.width = w + "px";
+				this._textDomWrapper.style.height = h + "px";
+				if (dorado.Browser.msie && dorado.Browser.version < 8) {
+					this._textDom.style.height = h + "px";
+				}
 			}
 		},
 		

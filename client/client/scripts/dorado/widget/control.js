@@ -1171,6 +1171,7 @@
 					var view = this._view;
 					if (view && view != $topView && !view._ready && !view._rendering) {
 						view.onReady();
+						view._templateMode = true
 					}
 
 					var dom = this.getDom();

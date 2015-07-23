@@ -422,6 +422,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		}
 		box._dropDown = dropdown;
 		box._editor = editor;
+		box._focusParent = editor;
 		dropdown._box = box;
 
 		editor.bind("onBlur._closeDropDown", function() {

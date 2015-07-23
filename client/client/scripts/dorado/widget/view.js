@@ -526,6 +526,21 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 			}
 			return this;
 		},
+		
+		doOnResize: function() {
+			if (this._templateMode) {
+				var children = this._children;
+				for (var i = 0; i < children.length; i++) {
+					var child = children[i];
+					if (child.onResize && (child._renderTo || child._renderOn)) {
+						child.onResize();
+					}
+				}
+			}
+			else {
+				$invokeSuper.call(this, arguments);
+			}
+		},
 
 		render: function(containerElement) {
 			$fly(document.body).addClass("d-rendering");
@@ -896,7 +911,7 @@ var AUTO_APPEND_TO_TOPVIEW = true;
 				rootViewport.updateBodySize();
 				delete topView.onResizeTimerId;
 				topView._children.each(function(child) {
-					if (child.resetDimension && child._rendered && child._visible) child.resetDimension();
+					if (child.resetDimension && (child._rendered && child._visible || child._templateMode)) child.resetDimension();
 				});
 			}, 100);
 		};

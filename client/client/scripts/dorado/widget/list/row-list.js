@@ -458,7 +458,7 @@
 				if (endBlankRow) endBlankRow.parentNode.style.display = "none";
 				this._itemModel.setScrollPos(0);
 			}
-			
+
 			var fn;
 			if (this._scrollMode == "lazyRender" && container.clientHeight > 0) {
 				var count = parseInt(container.clientHeight / this._rowHeight), i = 0;
@@ -501,7 +501,6 @@
 			var itemModel = this._itemModel, itemCount = itemModel.getItemCount();
 			var clientHeight = (container.scrollWidth > container.clientWidth) ? container.offsetHeight : container.clientHeight;
 			var viewPortHeight, itemDomCount, self = this;
-			
 			if (clientHeight) {
 				viewPortHeight = TABLE_HEIGHT_ADJUST;
 				itemDomCount = this.refreshItemDoms(tbody, itemModel.isReverse(), function(row) {
@@ -553,23 +552,9 @@
 			}
 		},
 
-		_watchScroll: function(arg) {
-			delete this._watchScrollTimerId;
-			if (this._scrollMode != "viewport") return;
-
-			var container = this._container;
-			if (container.scrollLeft == 0 && container.scrollTop == 0 && container.offsetWidth > 0) {
-				container.scrollLeft = this._scrollLeft || 0;
-				container.scrollTop = this._scrollTop || 0;
-			}
-			if (this._scrollTop) {
-				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
-			}
-		},
-
 		onScroll: function(event, arg) {
 			var rowList = this;
-			if (rowList._scrollMode != "viewport") return;
+			if (rowList._scrollMode == "simple") return;
 
 			var container = rowList._container;
 			if ((rowList._scrollLeft || 0) != arg.scrollLeft) {
@@ -577,17 +562,6 @@
 			}
 			if ((rowList._scrollTop || 0) != arg.scrollTop) {
 				rowList.onYScroll(arg);
-			}
-
-			if (rowList._watchScrollTimerId) {
-				clearTimeout(rowList._watchScrollTimerId);
-				delete rowList._watchScrollTimerId;
-			}
-
-			if (arg.scrollTop) {
-				rowList._watchScrollTimerId = setTimeout(function() {
-					rowList._watchScroll(arg);
-				}, 300);
 			}
 
 			rowList._scrollLeft = arg.scrollLeft;
