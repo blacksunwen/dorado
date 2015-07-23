@@ -1811,32 +1811,7 @@
 
 		doOnResize: function() {
 			if (!this._ready) return;
-			if (this._domMode != 0) this.refresh(true);
-		},
-
-		_watchScroll: function() {
-			delete this._watchScrollTimerId;
-			if (this._scrollMode != "viewport") return;
-
-			var divScroll = this._divScroll;
-			if (divScroll.scrollLeft == 0 && divScroll.scrollTop == 0 && divScroll.offsetWidth > 0) {
-				divScroll.scrollLeft = this._scrollLeft || 0;
-				divScroll.scrollTop = this._scrollTop || 0;
-
-				var innerGrid = this._innerGrid;
-				var container = innerGrid._container;
-				container.scrollTop = innerGrid._scrollTop;
-				container.scrollLeft = innerGrid._scrollLeft;
-				if (this._domMode == 2) {
-					innerGrid = this._fixedInnerGrid;
-					container = innerGrid._container;
-					container.scrollTop = innerGrid._scrollTop;
-					container.scrollLeft = innerGrid._scrollLeft;
-				}
-			}
-			if (this._scrollTop) {
-				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
-			}
+			this.refresh(true);
 		},
 
 		onScroll: function(event, arg) {
@@ -1860,13 +1835,6 @@
 				if (this.onYScroll) this.onYScroll(arg);
 			}
 
-			if (this._watchScrollTimerId) {
-				clearTimeout(this._watchScrollTimerId);
-				delete this._watchScrollTimerId;
-			}
-			if (arg.scrollTop && this._scrollMode == "viewport") {
-				this._watchScrollTimerId = $setTimeout(this, this._watchScroll, 300);
-			}
 			this._scrollLeft = arg.scrollLeft;
 			this._scrollTop = arg.scrollTop;
 		},
