@@ -169,7 +169,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 
 		if (this._useDataBinding && this._filterOnOpen) {
 			var filterValue = editor.get("text");
-            if ((this._lastFilterValue || "") != filterValue){
+            if ((editor._lastFilterValue || "") != filterValue){
                 this.onFilterItems(filterValue, function() {
                     doOpen(false);
                 });
@@ -179,9 +179,9 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 		} else {
 			var lastFilterValue;
 			if (this._filterOnOpen) {
-				lastFilterValue = this._lastFilterValue;
+				lastFilterValue = editor._lastFilterValue;
 			} else {
-				delete this._lastFilterValue;
+				delete editor._lastFilterValue;
 				dataSet && dataSet._sysParameter && dataSet._sysParameter.remove("filterValue");
 			}
 			doOpen(this._reloadDataOnOpen || lastFilterValue != null);
@@ -254,7 +254,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 			if (arg.processDefault) {
 				if (this._filterMode == "clientSide") {
 					$invokeSuper.call(this, [filterValue, callback]);
-					this._lastFilterValue = filterValue;
+					this._editor._lastFilterValue = filterValue;
 				} else {
 					arg = {
 						dataSet: dataSet,
@@ -276,14 +276,16 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 					dataSet.clear();
 					var dropdown = this;
 					dataSet.flushAsync(function() {
-						dropdown._lastFilterValue = filterValue;
+						if (dropdown._editor) {
+							dropdown._editor._lastFilterValue = filterValue;
+						}
 						$callback(callback);
 					});
 				}
 			}
 		} else {
 			$invokeSuper.call(this, [filterValue, callback]);
-			this._lastFilterValue = filterValue;
+			this._editor._lastFilterValue = filterValue;
 		}
 	},
 	
@@ -301,7 +303,7 @@ dorado.widget.DataSetDropDown = $extend(dorado.widget.ListDropDown,/** @scope do
 	doOnEditorKeyDown: function(editor, evt) {
 		if (evt.keyCode == 13 && this.get("dynaFilter")) {
 			var filterValue = editor.get("text");
-			if (!this._rowSelected && (this._lastFilterValue || "") != filterValue) {
+			if (!this._rowSelected && (editor._lastFilterValue || "") != filterValue) {
 				this.onFilterItems(filterValue);
 				return false;
 			}

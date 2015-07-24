@@ -402,13 +402,24 @@
             jQuery(tagDom.lastChild).mousedown(function () {
                 if (tagEditor._value) {
                       //TODO 修复#dorado-tag-editor-addon-17
+                    var tagDom = this.parentNode;
                       var tag=$(this).prev().text();
                       setTimeout(function () {
-                          tagEditor.removeTags([tag]);
+                          if (!tagEditor.doRemoveTag(tag)) {
+                        	  if (tagDom) {
+                            	  jQuery(tagDom).animate({
+                                      opacity: "toggle",
+                                      width: "toggle",
+                                      marginLeft: "toggle",
+                                      marginRight: "toggle",
+                                      paddingLeft: "toggle",
+                                      paddingRight: "toggle"
+                                  }, function () {
+                                      $fly(tagDom).remove();
+                                  });
+                              }      
+                          }                 
                       }, 0);
-                      //setTimeout(function () {
-                      //    tagEditor.removeTags([tagDom.firstChild.innerText]);
-                      // }, 0);
                 }
             }).addClassOnHover("close-hover");
 
@@ -663,8 +674,8 @@
                     tagEditor.doSetValue(value);
                 });
                 tagEditor.fireEvent("onTagRemove", tagEditor, eventArg);
+                return true;
             }
-
         },
         removeTags: function (deleteTags) {
             for (var i = 0; i < deleteTags.length; i++) {
