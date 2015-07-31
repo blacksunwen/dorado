@@ -137,7 +137,7 @@
 				dorado.MessageBox.defaultTitle = $resource("dorado.baseWidget.MessageBoxDefaultTitle");
 				dorado.MessageBox._dialog = new dorado.widget.Dialog({
 					focusAfterShow: false,
-					anchorTarget: window,
+					//anchorTarget: window,
 					align: "center",
 					vAlign: "center",
 					width: dorado.MessageBox.maxWidth,
