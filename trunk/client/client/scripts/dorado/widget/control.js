@@ -1170,7 +1170,19 @@
 					
 					var view = this._view;
 					if (view && view != $topView && !view._ready && !view._rendering) {
-						view.onReady();
+						var parents = [];
+						var parent = this._parent;
+						while (parent && parent != $topView) {
+							if (!parent._ready && !parent._rendering) {
+								parents.push(parent);
+							}
+							parent = parent._parent;
+						}
+						
+						for (var i = parents.length - 1; i >=0 ; i--) {
+							parent = parents[i];
+							if (!parent._ready) parent.onReady();
+						}
 						view._templateMode = true
 					}
 
