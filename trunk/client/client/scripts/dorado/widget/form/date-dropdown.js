@@ -877,6 +877,9 @@
 							return;
 						}
 						var selectDate = new Date(date.getFullYear(), date.getMonth(), parseInt(element.innerHTML, 10));
+						picker.fireEvent("onPick", picker, {
+							date: selectDate
+						});
 						if (className.indexOf(CELL_SELECTED_CLASS) != -1) {
 							picker.removeSelection(selectDate);
 							$fly(element).removeClass(CELL_SELECTED_CLASS);
@@ -1236,7 +1239,7 @@
 				showTimeSpinner: this._showTimeSpinner,
 				listener: {
 					onPick: function(self, arg) {
-						if (!dropDown._showTimeSpinner)
+						if (!dropDown._showTimeSpinner && ("multiDate" != this._selectionMode))
 							dropDown.close(arg.date);
 					},
 					onClear: function(self) {
