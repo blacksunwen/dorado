@@ -1169,7 +1169,9 @@
 					this._waitingAttach = false;
 					
 					var view = this._view;
-					if (view && view != $topView && !view._ready && !view._rendering) {
+					if (view && view != $topView && (!view._ready || view._templateMode) && !view._rendering) {
+						view._templateMode = true
+						
 						var parents = [];
 						var parent = this._parent;
 						while (parent && parent != $topView) {
@@ -1183,7 +1185,6 @@
 							parent = parents[i];
 							if (!parent._ready) parent.onReady();
 						}
-						view._templateMode = true
 					}
 
 					var dom = this.getDom();
