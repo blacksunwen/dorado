@@ -58,7 +58,13 @@ var SHOULD_PROCESS_DEFAULT_VALUE = true;
 		var getter = function () {
 			var value;
 			if (this._textMode) {
-				value = this._entity.getText(property);
+				value = this._entity._data[property];
+				if (value && typeof value == "object" && !(value instanceof Date)) {
+					value = this._entity.get(property);
+				}
+				else {
+					value = this._entity.getText(property);
+				}
 			}
 			else {
 				value = this._entity.get(property);
