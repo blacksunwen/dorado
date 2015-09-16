@@ -3539,7 +3539,7 @@
 				container.scrollTop = scrollTop;
 
 				// 防止Grid的onScroll中的某些逻辑被触发导致死锁
-				this.onYScroll(container);
+				this.onYScroll(container, true);
 
 				dorado.Toolkits.cancelDelayedAction(this._container, "$scrollTimerId");
 				this._container.$scrollTimerId = 1; // 加一个假的timerId以避免row-list.js的onYScroll方法中判断出错
