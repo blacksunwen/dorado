@@ -568,7 +568,7 @@
 			rowList._scrollTop = arg.scrollTop;
 		},
 
-		onYScroll: function(arg) {
+		onYScroll: function(arg, fixedBug) {
 			var container = this._container;
 			if (arg.scrollTop == (container._scrollTop || 0)) return;
 
@@ -582,13 +582,15 @@
 				} else {
 					container._scrollTop = arg.scrollTop;
 				}
-				var self = this;
-				dorado.Toolkits.setDelayedAction(container, "$scrollTimerId", function() {
-					self.doOnYScroll(arg);
-				}, 300);
+				if (!fixedBug) {
+					var self = this;
+					dorado.Toolkits.setDelayedAction(container, "$scrollTimerId", function() {
+						self.doOnYScroll(arg);
+					}, 300);
+				}
 			} else {
 				container._scrollTop = arg.scrollTop;
-				this.doOnYScroll(arg);
+				if (!fixedBug) this.doOnYScroll(arg);
 			}
 		},
 
