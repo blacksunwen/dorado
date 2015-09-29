@@ -726,7 +726,13 @@
 					var getter = function () {
 						var value;
 						if (this._textMode) {
-							value = this._entity.getText(name);
+							value = this._entity._data[name];
+							if (value && typeof value == "object" && !(value instanceof Date)) {
+								value = this._entity.get(name);
+							}
+							else {
+								value = this._entity.getText(name);
+							}
 						}
 						else {
 							value = this._entity.get(name);
