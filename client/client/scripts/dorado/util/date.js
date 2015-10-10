@@ -318,7 +318,7 @@
 				return {
 					g: 1,
 					c: "y = parseInt(results[" + currentGroup + "], 10);\n",
-					s: "(\\d{4})"
+					s: "(\\d{1,4})"
 				};
 			case "y":
 				return {

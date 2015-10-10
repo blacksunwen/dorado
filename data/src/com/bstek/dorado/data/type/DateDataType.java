@@ -76,6 +76,14 @@ public class DateDataType extends SimpleDataType {
 		} else {
 			try {
 				Date date = null;
+				
+				int di = text.indexOf('-');
+				if (di > 0 && di < 4) {
+					for (int i = 4; i > di; i--) {
+						text = '0' + text;
+					}
+				}
+				
 				int len = text.length();
 				try {
 					if (len == DATE_FORMAT_1_LEN) {
