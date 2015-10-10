@@ -199,6 +199,7 @@
 			var dropDown = this, box = $invokeSuper.call(this, arguments), rowList;
 			var config = {
 				style: "border: none",
+				allowNoCurrent: true,
 				onDataRowClick: function(self) {
 					self.set("highlightCurrentRow", dropDown._rowSelected = true);
 					dropDown.close(dropDown.getSelectedValue());
@@ -377,6 +378,11 @@
 			
 			if (editor instanceof dorado.widget.AbstractTextBox) {
 				editor.unbind("onTextEdit._filter");
+			}
+			
+			if (editor._lastFilterValue) {
+				delete editor._lastFilterValue;
+				this.onFilterItems("");
 			}
 			$invokeSuper.call(this, arguments);
 		},
