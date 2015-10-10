@@ -523,6 +523,8 @@
 	}
 	
 	root.register(dorado.$String);
+	root.register("UUID", cloneDataType(dorado.$String, "UUID"));
+	
 	root.register(dorado.$char);
 	root.register(dorado.$Character);
 	
