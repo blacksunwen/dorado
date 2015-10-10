@@ -393,11 +393,11 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 			if (!tree._autoChecking) tree._autoCheckingParent = true;
 			if (tree._autoCheckingParent && node && node.get("checkable")) {
 				tree._autoCheckingChildren = false;
-				var checkedCount = 0, checkableCount = 0, halfCheck = false, self = this;
+				var checkedCount = 0, checkableCount = 0, halfCheck = false;
 				node._nodes.each(function(child) {
 					if (child.get("checkable")) {
 						checkableCount++;
-						var c = (child == self) ? checked : child.get("checked");
+						var c = child.get("checked");
 						if (c === true) checkedCount++;
 						else if (c == null) halfCheck = true;
 					}
@@ -418,7 +418,6 @@ dorado.widget.tree.BaseNode = $extend(dorado.widget.ViewElement, /** @scope dora
 	_nodeCheckedChanged: function(checked, processChildren, processParent) {
 		var tree = this._tree;
 		if (!tree) return;
-		
 		if (processChildren && this.get("autoCheckChildren")) {
 			if (!tree._autoChecking) tree._autoCheckingChildren = true;
 			if (tree._autoCheckingChildren) {

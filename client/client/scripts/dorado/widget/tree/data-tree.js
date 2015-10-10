@@ -182,7 +182,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 		checked: {
 			getter: function() {
 				var bg = this._bindingConfig;
-                if (this._duringSetChecked && this._checked != undefined){
+                if (this._duringSetChecked && this._checked !== undefined){
                     return this._checked;
                 }
 				if (bg.checkedProperty && this._data) {
@@ -292,7 +292,7 @@ dorado.widget.tree.DataBindingNode = $extend(dorado.widget.tree.DataNode, /** @s
 			}
 
 			var tree = this._tree, nodes = this._nodes, expandedNodes = {}, currentNode = tree.get("currentNode");
-			if (currentNode && currentNode._parent == this) tree.set("currentNode", (this == tree._root) ? null : this);
+			if (!currentNode || currentNode._parent != this) tree.set("currentNode", (this == tree._root) ? null : this);
 			
 			for (var it = nodes.iterator(); it.hasNext();) {
 				var node = it.next();
@@ -827,7 +827,7 @@ dorado.widget.DataTree = $extend([dorado.widget.Tree, dorado.widget.DataControl]
 						parentNode._resetNodeAutoCheckedState();
 					}
 					this.enableAutoRefresh();
-					this.refresh(true);
+					this.refresh();
 				}
 				break;
 			}
