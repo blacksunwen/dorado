@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import net.sf.cglib.beans.BeanMap;
 
@@ -103,7 +104,7 @@ public abstract class EntityUtils {
 		boolean b = (data == null || data instanceof String
 				|| data.getClass().isPrimitive() || data instanceof Boolean
 				|| data instanceof Number || isEnumValue(data)
-				|| data instanceof Date || data instanceof Character);
+				|| data instanceof Date || data instanceof Character || data instanceof UUID);
 		if (!b && data.getClass().isArray()) {
 			b = isSimpleType(data.getClass().getComponentType());
 		}
@@ -117,7 +118,7 @@ public abstract class EntityUtils {
 		boolean b = (String.class.equals(cl) || cl.isPrimitive()
 				|| Boolean.class.equals(cl)
 				|| Number.class.isAssignableFrom(cl) || isEnumType(cl)
-				|| Date.class.isAssignableFrom(cl) || Character.class
+				|| Date.class.isAssignableFrom(cl) || UUID.class.equals(cl) || Character.class
 				.isAssignableFrom(cl));
 		if (!b && cl.isArray()) {
 			b = isSimpleType(cl.getComponentType());

@@ -25,6 +25,7 @@
 	<DataType name="Time" parent="Date" />
 	<DataType name="DateTime" parent="Date" />
 	<DataType name="Calendar" matchType="java.util.Calendar" impl="com.bstek.dorado.data.type.CalendarDataType" />
+	<DataType name="UUID" matchType="java.util.UUID" impl="com.bstek.dorado.data.type.UUIDDataType" />
 
 	<!-- AggregationDataTypes -->
 	<DataType name="Aggregation" impl="com.bstek.dorado.data.type.AggregationDataType" />
