@@ -35,7 +35,6 @@ public class ViewReader implements IViewReader {
 		return this.read(input, encoding, ruleSet,null);
 	}
 
-	@Override
 	public String read(InputStream input, String encoding, RuleSet ruleSet,
 			String clientType) throws Exception {
 		
