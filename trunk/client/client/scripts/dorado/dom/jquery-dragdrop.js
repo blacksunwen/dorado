@@ -300,7 +300,7 @@
 			$("<div class='ui-draggable-iframeFix' style='background: #fff;'></div>")
 				.css({
 					width: this.offsetWidth+"px", height: this.offsetHeight+"px",
-					position: "absolute", opacity: "0.001", zIndex: 1000000
+					position: "absolute", opacity: "0.001", zIndex: 9999
 				})
 				.css($(this).offset())
 				.appendTo("body");
