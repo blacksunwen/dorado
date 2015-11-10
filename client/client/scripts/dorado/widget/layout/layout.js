@@ -584,7 +584,7 @@ dorado.widget.layout.NativeLayout = $extend(dorado.widget.layout.Layout, /** @sc
 			else if (!control._rendered) {
 				if (!fakeDom) {
 					if (containerDom && this._lazyRenderChild &&
-							(overflowed || containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight))) {
+							(overflowed || containerDom.scrollHeight - (containerDom.scrollTop + containerDom.clientHeight) > 5)) {
 						region.fakeDom = fakeDom = document.createElement("DIV");
 
 						var properHeight = control.getRealHeight();

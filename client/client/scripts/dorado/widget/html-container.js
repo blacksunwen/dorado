@@ -185,6 +185,10 @@ dorado.widget.HtmlContainer = $extend(dorado.widget.Container, /** @scope dorado
 //		if (this.getRealHeight() || this._children.size) dom.style.display = "inline-block";
 //		$invokeSuper.call(this, [dom]);
 //	},
+	
+	doOnFocus: function() {
+		// do nothing
+	},
 
 	/**
 	 * 根据contextKey返回一个内部的子DOM元素。

@@ -407,7 +407,7 @@
 				if (!control._rendered) {
 					if (!fakeDom) {
 						if (containerDom && this._lazyRenderChild &&
-								(overflowed || containerDom.scrollHeight > (containerDom.scrollTop + containerDom.clientHeight))) {
+								(overflowed || containerDom.scrollHeight - (containerDom.scrollTop + containerDom.clientHeight) > 5)) {
 							region.fakeDom = fakeDom = document.createElement("DIV");
 
 							var properHeight = control.getRealHeight();
@@ -461,7 +461,7 @@
 										tagName: "DIV",
 										className: "d-fix-text-align",
 										// 用于防止TD.align=center的设置传染到内部子控件
-										style: !dorado.Browser.webkit ? "display:inline-block;zoom:1" : "display:table-cell"
+										style: !dorado.Browser.webkit ? "zoom:1" : "display:table-cell"
 									};
 								}
 							})()
