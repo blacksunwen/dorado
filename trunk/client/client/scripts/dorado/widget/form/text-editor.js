@@ -388,6 +388,11 @@
 		},
 		
 		doSetFocus: function() {
+		},
+
+		doOnFocus: function() {
+			if (this._realReadOnly) return;
+			
 			if (!dorado.Browser.isTouch && this._textDom) {
 				try {
 					this._textDom.focus();
@@ -396,10 +401,6 @@
             		// do nothing
             	}
 			}
-		},
-
-		doOnFocus: function() {
-			if (this._realReadOnly) return;
 			
 			// 尝试修正在IE8下快速切换焦点并录入信息时偶尔内容无法被编辑框确认的BUG
 			this._lastPost = this._lastEdit = this.get("text");

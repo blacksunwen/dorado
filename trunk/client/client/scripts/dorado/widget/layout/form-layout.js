@@ -440,6 +440,7 @@
 			var table = this.getDom(), padding = parseInt(this._padding) || 0, colPadding = this._colPadding || 0;
 			var containerWidth = (table.parentNode) ? (jQuery(table.parentNode).width() - padding * 2) : 0;
 			if (!(containerWidth >= 0) || containerWidth > 10000) containerWidth = 0;
+			if (!containerWidth) return;
 
 			if (this._stretchWidth || this.dynaColCount > 0) {
 				table.style.width = (containerWidth - $fly(table).edgeWidth()) + "px";

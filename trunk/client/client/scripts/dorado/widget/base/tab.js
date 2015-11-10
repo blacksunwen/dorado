@@ -31,6 +31,8 @@
 			className: {
 				defaultValue: "tab"
 			},
+			
+			exClassName: {},
 
 			/**
 			 * Tab的Name，用来唯一表示TabBar或者TabColumn里面的一个Tab。
@@ -291,7 +293,7 @@
 		createDom: function() {
 			var tab = this, doms = {}, dom = $DomUtils.xCreate({
 				tagName: "li",
-				className: tab._className,
+				className: tab._className + (tab._exClassName ? (" " + tab._exClassName) : ""),
 				content: [
 					{
 						tagName: "span",

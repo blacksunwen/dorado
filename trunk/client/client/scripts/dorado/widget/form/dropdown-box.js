@@ -31,10 +31,6 @@ dorado.widget.DropDownBox = $extend(dorado.widget.FloatContainer, /** @scope dor
 			defaultValue: false
 		},
 
-		continuedFocus: {
-			defaultValue: true
-		},
-
 		editor: {},
 
 		dropDown: {},

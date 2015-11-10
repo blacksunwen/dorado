@@ -1637,9 +1637,9 @@
 						parentFrames = parent.jQuery("iframe,frame");
 						if (parentFrames) {
 							parentFrames.each(function() {
-								if (this.contentWindow == win) {		// IE下使用===判断会失败
-									var frameControl =  parent.dorado.widget.Control.findParentControl(this);
-									parent.dorado.widget.setFocusedControl(frameControl, false, true);
+								if (this.contentWindow == win) {	// IE下使用===判断会失败
+									var frameControl = win.parent.dorado.widget.Control.findParentControl(this);
+									win.parent.dorado.widget.setFocusedControl(frameControl, true, true);
 									return false;
 								}
 							});
@@ -1660,7 +1660,7 @@
 			function setFrameBlur(win) {
 				try {
 					if (win != window && win.dorado.widget.Control && windowStack.indexOf(win) < 0) {	// IE下使用===判断会失败
-						win.dorado.widget.setFocusedControl(null, false, true);
+						win.dorado.widget.setFocusedControl(null, true, true);
 					}
 				}
 				catch(e) {

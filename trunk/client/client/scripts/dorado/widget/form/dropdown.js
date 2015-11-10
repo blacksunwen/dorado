@@ -435,6 +435,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			dropdown.locate();
 		}
 		else {
+			box._focusParent = editor;
 			box.show();
 		}
 		
