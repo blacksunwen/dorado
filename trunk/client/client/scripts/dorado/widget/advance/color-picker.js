@@ -135,7 +135,7 @@
 				getter: function () {
 					if (this._spectrum) {
 						var rudeColor = this._spectrum.spectrum("get");
-						return rudeColor.toString(this._preferredFormat);
+						return rudeColor?rudeColor.toString(this._preferredFormat):null;
 					}
 					else {
 						return this._color;
