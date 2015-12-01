@@ -205,10 +205,10 @@
 					}, 0);
 				},
 				move: function (rudeColor) {
-					colorPicker.onCursorMove(rudeColor.toString(colorPicker._preferredFormat));
+					colorPicker.onCursorMove(rudeColor?rudeColor.toString(colorPicker._preferredFormat):null);
 				},
 				change: function (rudeColor) {
-					colorPicker.onColorChange(rudeColor.toString(colorPicker._preferredFormat));
+					colorPicker.onColorChange(rudeColor?rudeColor.toString(colorPicker._preferredFormat):null);
 				}
 			})).spectrum("container");
 			
