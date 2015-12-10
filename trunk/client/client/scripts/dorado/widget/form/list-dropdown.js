@@ -382,7 +382,6 @@
 			
 			if (editor._lastFilterValue) {
 				delete editor._lastFilterValue;
-				this.onFilterItems("");
 			}
 			$invokeSuper.call(this, arguments);
 		},
