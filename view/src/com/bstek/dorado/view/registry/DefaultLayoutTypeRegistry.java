@@ -38,23 +38,23 @@ public class DefaultLayoutTypeRegistry implements LayoutTypeRegistry {
 		this.defaultType = defaultType;
 	}
 
-	public void registerType(LayoutTypeRegisterInfo registerInfo) {
+	public synchronized void registerType(LayoutTypeRegisterInfo registerInfo) {
 		registerInfoMap.put(registerInfo.getType().toLowerCase(), registerInfo);
 		classTypeRegistry.registerType(registerInfo.getClassType(),
 				registerInfo);
 	}
 
-	public LayoutTypeRegisterInfo getRegisterInfo(String type) {
+	public synchronized LayoutTypeRegisterInfo getRegisterInfo(String type) {
 		return registerInfoMap.get(type.toLowerCase());
 	}
 
-	public LayoutTypeRegisterInfo getRegisterInfo(
+	public synchronized LayoutTypeRegisterInfo getRegisterInfo(
 			Class<? extends Layout> classType) {
 		return classTypeRegistry
 				.getMatchingValue(classType);
 	}
 
-	public Collection<LayoutTypeRegisterInfo> getRegisterInfos() {
+	public synchronized Collection<LayoutTypeRegisterInfo> getRegisterInfos() {
 		return registerInfoMap.values();
 	}
 

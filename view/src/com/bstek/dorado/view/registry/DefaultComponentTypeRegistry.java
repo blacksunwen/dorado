@@ -39,7 +39,7 @@ public class DefaultComponentTypeRegistry implements ComponentTypeRegistry {
 	private Map<String, ComponentTypeRegisterInfo> registerInfoMap = new HashMap<String, ComponentTypeRegisterInfo>();
 	private Set<ComponentTypeRegisterInfo> registerInfoSet = new LinkedHashSet<ComponentTypeRegisterInfo>();
 
-	public void registerType(ComponentTypeRegisterInfo registerInfo) {
+	public synchronized void registerType(ComponentTypeRegisterInfo registerInfo) {
 		registerInfoMap.put(registerInfo.getName(), registerInfo);
 		Class<? extends Component> classType = registerInfo.getClassType();
 		if (classType != null) {
@@ -64,20 +64,20 @@ public class DefaultComponentTypeRegistry implements ComponentTypeRegistry {
 		}
 	}
 
-	public ComponentTypeRegisterInfo getRegisterInfo(String componentName) {
+	public synchronized ComponentTypeRegisterInfo getRegisterInfo(String componentName) {
 		ComponentTypeRegisterInfo registerInfo = registerInfoMap
 				.get(componentName);
 		return initializeRefisterInfo(registerInfo);
 	}
 
-	public ComponentTypeRegisterInfo getRegisterInfo(Class<?> componentType) {
+	public synchronized ComponentTypeRegisterInfo getRegisterInfo(Class<?> componentType) {
 		ComponentTypeRegisterInfo registerInfo = classTypeRegistry
 				.getMatchingValue(componentType);
 		return initializeRefisterInfo(registerInfo);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Collection<ComponentTypeRegisterInfo> getRegisterInfos() {
+	public synchronized Collection<ComponentTypeRegisterInfo> getRegisterInfos() {
 		for (ComponentTypeRegisterInfo registerInfo : registerInfoSet) {
 			initializeRefisterInfo(registerInfo);
 		}

@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -106,5 +107,12 @@ public class DoradoServlet extends DispatcherServlet {
 		} else {
 			return request;
 		}
+	}
+
+	@Override
+	protected void doService(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+		super.doService(request, response);
 	}
 }
