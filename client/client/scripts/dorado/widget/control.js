@@ -1414,9 +1414,11 @@
 			 */
 			setFocus: function() {
 				var control = this;
+				if (control._destroyed) return;
+				
 				dorado._LAST_FOCUS_CONTROL = control;
 				dorado.Toolkits.setDelayedAction(window, "$setFocusTimerId", function() {
-					if (dorado._LAST_FOCUS_CONTROL === control) {
+					if (dorado._LAST_FOCUS_CONTROL === control && !control._destroyed) {
 						try {
 							control.doSetFocus();
 						}
