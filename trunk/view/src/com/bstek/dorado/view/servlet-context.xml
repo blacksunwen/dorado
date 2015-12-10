@@ -155,7 +155,7 @@
 		<property name="resolver" ref="dorado.htmlViewResolver" />
 	</bean>
 
-	<!-- Desprecated -->
+	<!-- Deprecated -->
 	<bean parent="dorado.resolverRegister">
 		<property name="order" value="30" />
 		<property name="url" value="/dorado/client/skins/*/common/icons.gif" />
