@@ -189,10 +189,6 @@
 		Date.parseFunctions[format] = funcName;
 
 		var code = "Date." + funcName + " = function(input){\n" + "var y = -1, m = -1, d = -1, h = -1, i = -1, s = -1;\n" +
-			"var d = new Date();\n" +
-			"y = d.getFullYear();\n" +
-			"m = d.getMonth();\n" +
-			"d = d.getDate();\n" +
 			"var results = input.match(Date.parseRegexes[" +
 			regexNum +
 			"]);\n" +
@@ -221,7 +217,13 @@
 			}
 		}
 
-		code += "var retval = null;" +
+		code += "if ((h >= 0 || i >= 0 || s >= 0) && (y < 0 || m < 0 || d < 0)) {" +
+			"var now = new Date();\n" +
+			"if (y < 0) y = now.getFullYear();\n" +
+			"if (m < 0) m = now.getMonth();\n" +
+			"if (d < 0) d = now.getDate();\n" + 
+			"}" +
+			"var retval = null;" +
 			"if (y > 0 && m >= 0 && d > 0 && h >= 0 && i >= 0 && s >= 0)\n" + 
 			"{retval = new Date(y, m, d, h, i, s);}\n" +
 			"else if (y > 0 && m >= 0 && d > 0 && h >= 0 && i >= 0)\n" +
