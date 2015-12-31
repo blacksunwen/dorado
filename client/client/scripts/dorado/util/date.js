@@ -221,18 +221,26 @@
 			}
 		}
 
-		code += "if (y > 0 && m >= 0 && d > 0 && h >= 0 && i >= 0 && s >= 0)\n" + "{return new Date(y, m, d, h, i, s);}\n" +
+		code += "var retval = null;" +
+			"if (y > 0 && m >= 0 && d > 0 && h >= 0 && i >= 0 && s >= 0)\n" + 
+			"{retval = new Date(y, m, d, h, i, s);}\n" +
 			"else if (y > 0 && m >= 0 && d > 0 && h >= 0 && i >= 0)\n" +
-			"{return new Date(y, m, d, h, i);}\n" +
+			"{retval = new Date(y, m, d, h, i);}\n" +
 			"else if (y > 0 && m >= 0 && d > 0 && h >= 0)\n" +
-			"{return new Date(y, m, d, h);}\n" +
+			"{retval = new Date(y, m, d, h);}\n" +
 			"else if (y > 0 && m >= 0 && d > 0)\n" +
-			"{return new Date(y, m, d);}\n" +
+			"{retval = new Date(y, m, d);}\n" +
 			"else if (y > 0 && m >= 0)\n" +
-			"{return new Date(y, m);}\n" +
+			"{retval = new Date(y, m);}\n" +
 			"else if (y > 0)\n" +
-			"{return new Date(y);}\n" +
-			"}return null;}";
+			"{retval = new Date(y);}\n" +
+			"}" +
+			"if (retval) {" +
+			"if (s >= 0 && s != retval.getSeconds() || i >= 0 && i != retval.getMinutes() || h >= 0 && h != retval.getHours() || d >= 0 && d != retval.getDate() || m >= 0 && m != retval.getMonth()) {" +
+			"retval = null;" + 
+			"}" + 
+			"}" + 
+			"return retval;}";
 
 		Date.parseRegexes[regexNum] = new RegExp("^" + regex + "$");
 		eval(code);
