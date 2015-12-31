@@ -1071,7 +1071,7 @@
 									var format = $setting["common.defaultDateTimeFormat"];
 									if (format) {
 										date = Date.parseDate(data, format);
-										if (date == null) data = new Date(data);
+//										if (date == null) date = new Date(data);
 									}
 								}
 							}
