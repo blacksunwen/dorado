@@ -1048,7 +1048,7 @@
 				if (data == '') return null;
 
 				if (data instanceof Date) return data;
-				if (isFinite(data)) {
+				if (typeof data == "number") {
 					var date = new Date(data);
 					if (!isNaN(date.getTime())) {
 						return date;
@@ -1059,10 +1059,10 @@
 				}
 
 				if (typeof data == "string") {
-					var date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
+					var format = argument || $setting["common.defaultDateFormat"];
+					var date = Date.parseDate(data, format);
 					if (date == null) {
-						var format = argument || $setting["common.defaultDateFormat"];
-						var date = Date.parseDate(data, format);
+						date = Date.parseDate(data, "Y-m-d\\TH:i:s\\Z");
 						if (date == null) {
 							format = $setting["common.defaultTimeFormat"];
 							if (format) {
