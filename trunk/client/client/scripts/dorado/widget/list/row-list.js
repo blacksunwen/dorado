@@ -69,7 +69,14 @@
 			 */
 			highlightSelectedRow: {
 				defaultValue: true
-			}
+			},
+			
+			/**
+			 * 是否使用原生的滚动条。
+			 * @type boolean
+			 * @attribute
+			 */
+			useNativeScrollbars: {}
 		},
 		
 		EVENTS: /** @scope dorado.widget.RowList.prototype */ {
@@ -628,7 +635,12 @@
 		createDom: function() {
 			var dom = $invokeSuper.call(this, arguments);
 			if (dorado.Browser.msie && dorado.Browser.version >= 8) dom.hideFocus = true;
-			$fly(this._container).bind("modernScrolled", $scopify(this, this.onScroll));
+			if (this._useNativeScrollbars) {
+				$fly(this._container).css("overflow", "auto");
+			}
+			else {
+				$fly(this._container).bind("modernScrolled", $scopify(this, this.onScroll));
+			}
 			return dom;
 		},
 		

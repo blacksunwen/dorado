@@ -1058,7 +1058,14 @@
 			 */
 			stretchColumnsMode: {
 				defaultValue: "auto"
-			}
+			},
+			
+			/**
+			 * 是否使用原生的滚动条。
+			 * @type boolean
+			 * @attribute
+			 */
+			useNativeScrollbars: {}
 		},
 
 		EVENTS: /** @scope dorado.widget.AbstractGrid.prototype */ {
@@ -1315,8 +1322,23 @@
 				this._divViewPort = div.firstChild;
 				dom.appendChild(div);
 
-				this._modernScroller = $DomUtils.modernScroll(div);
-				$fly(div).bind("modernScrolled", $scopify(this, this.onScroll));
+				if (this._useNativeScrollbars) {
+					var grid = this;
+					$fly(div).bind("scroll", function(event) {
+						grid.onScroll(event, {
+							scrollLeft: div.scrollLeft,
+							scrollTop: div.scrollTop,
+							scrollWidth: div.scrollWidth,
+							scrollHeight: div.scrollHeight,
+							clientWidth: div.clientWidth,
+							clientHeight: div.clientHeight
+						});
+					});
+				}
+				else {
+					this._modernScroller = $DomUtils.modernScroll(div);
+					$fly(div).bind("modernScrolled", $scopify(this, this.onScroll));
+				}
 				return div;
 			}
 
@@ -1540,7 +1562,7 @@
 						with(dom.style) {
 							overflowX = "hidden";
 							// 即使overflow，只要height=100%，也会产生visible的效果，这样设计的目的是为了避免当height为空时，最右侧出现滚动条宽度的白边
-							overflowY = "hidden";	//yScroll ? "hidden" : "visible";
+							overflowY = yScroll ? "hidden" : "visible";
 						}
 						divScroll = getDivScroll.call(this);
 						$fly(divScroll).show();
@@ -1570,10 +1592,7 @@
 			if (!this.hasRealHeight()) this._scrollMode = "simple";
 			this._currentScrollMode = this._scrollMode;
 
-			var shouldProcessScrollerMargin = (this._modernScroller instanceof dorado.util.Dom.DesktopModernScroller);
-			if (this._modernScroller instanceof dorado.util.Dom.DesktopModernScroller) {
-				
-			}
+			var shouldProcessScrollerMargin = (this._modernScroller && this._modernScroller instanceof dorado.util.Dom.DesktopModernScroller);
 			
 			if (this.stretchColumnsToFit() && shouldProcessScrollerMargin) {
 				var scrollerSize = $setting["widget.scrollerSize"] || 4;
@@ -2920,6 +2939,10 @@
 						}
 					}
 				}
+			},
+			
+			useNativeScrollbars: {
+				readOnly: true
 			}
 		},
 

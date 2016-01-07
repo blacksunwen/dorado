@@ -653,7 +653,9 @@
 			});
 			
 			var container = this._container = dom.firstChild;
-			this._modernScroller = $DomUtils.modernScroll(container);
+			if (!this._useNativeScrollbars) {
+				this._modernScroller = $DomUtils.modernScroll(container);
+			}
 			return dom;
 		},
 		
