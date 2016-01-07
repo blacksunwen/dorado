@@ -32,6 +32,7 @@ public abstract class AbstractList extends Control {
 	private boolean allowNoCurrent;
 	private DragMode dragMode = DragMode.item;
 	private DropMode dropMode = DropMode.insertItems;
+	private boolean useNativeScrollbars;
 
 	@ClientProperty(escapeValue = "lazyRender")
 	public ScrollMode getScrollMode() {
@@ -75,6 +76,14 @@ public abstract class AbstractList extends Control {
 
 	public void setDropMode(DropMode dropMode) {
 		this.dropMode = dropMode;
+	}
+
+	public boolean isUseNativeScrollbars() {
+		return useNativeScrollbars;
+	}
+
+	public void setUseNativeScrollbars(boolean useNativeScrollbars) {
+		this.useNativeScrollbars = useNativeScrollbars;
 	}
 
 }

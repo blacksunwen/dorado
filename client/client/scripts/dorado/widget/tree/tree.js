@@ -99,7 +99,7 @@
 		
 			function invokeCallback(refRow, callback, node) {
 				this._refreshRearRows(refRow);
-				this.updateModernScroller();
+				if (!this._useNativeScrollbars) this.updateModernScroller();
 				this.notifySizeChange();
 				if (callback) $callback(callback, true, node);
 			}
@@ -153,7 +153,7 @@
 					var row = this._itemDomMap[node._uniqueId];
 					if (row) this._refreshRearRows(row);
 				}
-				this.updateModernScroller();
+				if (!this._useNativeScrollbars) this.updateModernScroller();
 				this.notifySizeChange();
 				if (callback) $callback(callback, true, node);
 			}
