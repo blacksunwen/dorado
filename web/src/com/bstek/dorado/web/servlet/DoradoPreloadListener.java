@@ -40,8 +40,10 @@ public class DoradoPreloadListener implements ServletContextListener,
 					.fireContextInitialized(event);
 
 			DoradoLoader doradoLoader = DoradoLoader.getInstance();
-			ServletContext servletContext = event.getServletContext();
-			doradoLoader.preload(servletContext, false);
+			if (!doradoLoader.isPreloaded()) {
+				ServletContext servletContext = event.getServletContext();
+				doradoLoader.preload(servletContext, false);
+			}
 		} catch (Exception e) {
 			logger.error(e, e);
 		}

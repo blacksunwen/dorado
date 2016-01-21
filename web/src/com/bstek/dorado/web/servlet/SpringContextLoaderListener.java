@@ -47,7 +47,10 @@ public class SpringContextLoaderListener extends ContextLoaderListener
 	protected void customizeContext(ServletContext servletContext,
 			ConfigurableWebApplicationContext applicationContext) {
 		try {
-			doradoLoader.preload(servletContext, true);
+			if (!doradoLoader.isPreloaded()) {
+				doradoLoader.preload(servletContext, true);
+			}
+
 			List<String> doradoContextLocations = doradoLoader
 					.getContextLocations(false);
 			String[] realResourcesPath = doradoLoader
