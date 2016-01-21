@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.util.WebUtils;
 
+import com.bstek.dorado.core.CommonContext;
 import com.bstek.dorado.core.Configure;
 import com.bstek.dorado.core.ConfigureStore;
 import com.bstek.dorado.core.Context;
@@ -43,6 +44,7 @@ import com.bstek.dorado.core.EngineStartupListenerManager;
 import com.bstek.dorado.core.el.DefaultExpressionHandler;
 import com.bstek.dorado.core.el.Expression;
 import com.bstek.dorado.core.el.ExpressionHandler;
+import com.bstek.dorado.core.io.BaseResourceLoader;
 import com.bstek.dorado.core.io.LocationTransformerHolder;
 import com.bstek.dorado.core.io.Resource;
 import com.bstek.dorado.core.io.ResourceLoader;
@@ -227,10 +229,15 @@ public class DoradoLoader {
 
 		ConfigureStore configureStore = Configure.getStore();
 		doradoHome = System.getenv("DORADO_HOME");
+		if (StringUtils.isEmpty(doradoHome)) {
+			doradoHome = System.getProperty("doradoHome");
+		}
 
 		// 处理DoradoHome
-		String intParam;
-		intParam = servletContext.getInitParameter("doradoHome");
+		String intParam = null;
+		if (servletContext != null) {
+			intParam = servletContext.getInitParameter("doradoHome");
+		}
 		if (intParam != null) {
 			doradoHome = intParam;
 		}
@@ -245,19 +252,36 @@ public class DoradoLoader {
 								"<not assigned>") + "]");
 
 		// 创建一个临时的ResourceLoader
-		ResourceLoader resourceLoader = new ServletContextResourceLoader(
-				servletContext) {
-			@Override
-			public Resource getResource(String resourceLocation) {
-				if (resourceLocation != null
-						&& resourceLocation.startsWith(HOME_LOCATION_PREFIX)) {
-					resourceLocation = ResourceUtils.concatPath(doradoHome,
-							resourceLocation
-									.substring(HOME_LOCATION_PREFIX_LEN));
+		ResourceLoader resourceLoader;
+		if (servletContext != null) {
+			resourceLoader = new ServletContextResourceLoader(
+					servletContext) {
+				@Override
+				public Resource getResource(String resourceLocation) {
+					if (resourceLocation != null
+							&& resourceLocation.startsWith(HOME_LOCATION_PREFIX)) {
+						resourceLocation = ResourceUtils.concatPath(doradoHome,
+								resourceLocation
+										.substring(HOME_LOCATION_PREFIX_LEN));
+					}
+					return super.getResource(resourceLocation);
 				}
-				return super.getResource(resourceLocation);
-			}
-		};
+			};
+		}
+		else {
+			resourceLoader = new BaseResourceLoader(){
+				@Override
+				public Resource getResource(String resourceLocation) {
+					if (resourceLocation != null
+							&& resourceLocation.startsWith(HOME_LOCATION_PREFIX)) {
+						resourceLocation = ResourceUtils.concatPath(doradoHome,
+								resourceLocation
+										.substring(HOME_LOCATION_PREFIX_LEN));
+					}
+					return super.getResource(resourceLocation);
+				}
+			};
+		}
 
 		String runMode = null;
 		if (StringUtils.isNotEmpty(doradoHome)) {
@@ -288,8 +312,11 @@ public class DoradoLoader {
 		String tempDirPath = configureStore.getString("core.tempDir");
 		if (StringUtils.isNotBlank(tempDirPath)) {
 			tempDir = new File(tempDirPath);
-		} else {
+		} else if (servletContext != null) {
 			tempDir = new File(WebUtils.getTempDir(servletContext), ".dorado");
+		}
+		else {
+			tempDir = new File(System.getProperty("java.io.tmpdir"), ".dorado");
 		}
 
 		boolean supportsTempFile = configureStore
@@ -453,14 +480,16 @@ public class DoradoLoader {
 		Resource resource;
 
 		boolean ignoreOriginContextConfigs = false;
-		intParam = servletContext
-				.getInitParameter(IGNORE_ORIGIN_CONTEXT_CONFIGS);
-		if (intParam != null) {
-			ignoreOriginContextConfigs = Boolean.parseBoolean(intParam);
+		if (servletContext != null) {
+			intParam = servletContext
+					.getInitParameter(IGNORE_ORIGIN_CONTEXT_CONFIGS);
+			if (intParam != null) {
+				ignoreOriginContextConfigs = Boolean.parseBoolean(intParam);
+			}
 		}
 
 		// context
-		if (processOriginContextConfigLocation && !ignoreOriginContextConfigs) {
+		if (servletContext != null && processOriginContextConfigLocation && !ignoreOriginContextConfigs) {
 			intParam = servletContext.getInitParameter(CONTEXT_CONFIG_LOCATION);
 			if (intParam != null) {
 				pushLocations(contextLocations, intParam);
@@ -482,7 +511,7 @@ public class DoradoLoader {
 		}
 
 		// servlet-context
-		if (processOriginContextConfigLocation && !ignoreOriginContextConfigs) {
+		if (servletContext != null && processOriginContextConfigLocation && !ignoreOriginContextConfigs) {
 			intParam = servletContext
 					.getInitParameter(SERVLET_CONTEXT_CONFIG_LOCATION);
 			if (intParam != null) {
@@ -527,7 +556,13 @@ public class DoradoLoader {
 		ConsoleUtils.outputConfigureItem(SERVLET_CONTEXT_CONFIG_PROPERTY);
 
 		// 初始化WebContext
-		DoradoContext context = DoradoContext.init(servletContext, false);
+		Context context;
+		if (servletContext != null) {
+			context = DoradoContext.init(servletContext);
+		}
+		else {
+			context = CommonContext.init();
+		}
 		Context.setFailSafeContext(context);
 	}
 
@@ -548,7 +583,7 @@ public class DoradoLoader {
 
 		EngineStartupListenerManager.notifyStartup();
 
-		DoradoContext context = DoradoContext.getCurrent();
+		Context context = Context.getCurrent();
 		ConsoleStartedMessagesOutputter consoleStartedMessagesOutputter = (ConsoleStartedMessagesOutputter) context
 				.getServiceBean("consoleStartedMessagesOutputter");
 		StringWriter buffer = new StringWriter();
@@ -558,7 +593,9 @@ public class DoradoLoader {
 		} finally {
 			buffer.close();
 		}
-		DoradoContext.dispose();
+		if (context instanceof DoradoContext) {
+			DoradoContext.dispose();
+		}
 
 		Timer timer = new Timer();
 		timer.schedule(new ConsoleMessageTimerTask(buffer.toString()), 500L);

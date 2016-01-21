@@ -61,8 +61,12 @@ public class DefaultDoradoAppContextImporter implements
 
 	public void importDoradoAppContext(Element element,
 			ParserContext parserContext) throws Exception {
-		List<String> doradoContextLocations = DoradoLoader.getInstance()
-				.getContextLocations(false);
+		DoradoLoader doradoLoader = DoradoLoader.getInstance();
+		if (!doradoLoader.isPreloaded()) {
+			doradoLoader.preload(null, false);
+		}
+		
+		List<String> doradoContextLocations = doradoLoader.getContextLocations(false);
 		Assert.notNull("Can not get [doradoContextLocations], the DoradoPreloadListener may not configured or configured in wrong order. "
 				+ "Please check your web.xml.");
 
