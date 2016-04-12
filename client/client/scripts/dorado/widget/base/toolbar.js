@@ -263,6 +263,24 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 	},
 
 	hideOverflowItem: function (item, overflowMenu, dataPilotItemCode, dataPilot) {
+		function addItem(itemCode, innerControl, dataPilot) {
+			var menuItem = overflowMenu.addItem({
+				caption: map[itemCode.code],
+				visible: innerControl._visible,
+				icon: innerControl._icon,
+				action: innerControl._action,
+				disabled: innerControl._disabled,
+				iconClass: innerControl._iconClass,
+				listener: {
+					onClick: function () {
+						innerControl.fireEvent("onClick", item);
+					}
+				}
+			});
+			menuItem.itemCode = itemCode;
+			dataPilot._bindMenuItems.push(menuItem);
+		}
+
 		var menuItem;
 		if (dataPilotItemCode) {
 			var map = {
@@ -275,24 +293,6 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				"x": $resource("dorado.baseWidget.DataPilotCancel")
 			};
 
-			function addItem(itemCode, innerControl) {
-				var menuItem = overflowMenu.addItem({
-					caption: map[itemCode.code],
-					visible: innerControl._visible,
-					icon: innerControl._icon,
-					action: innerControl._action,
-					disabled: innerControl._disabled,
-					iconClass: innerControl._iconClass,
-					listener: {
-						onClick: function () {
-							innerControl.fireEvent("onClick", item);
-						}
-					}
-				});
-				menuItem.itemCode = itemCode;
-				dataPilot._bindMenuItems.push(menuItem);
-			}
-
 			switch (dataPilotItemCode.code) {
 				case "|<":
 				case "<":
@@ -301,7 +301,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				case "+":
 				case "-":
 				case "x":
-					addItem(dataPilotItemCode, item);
+					addItem(dataPilotItemCode, item, item);
 					break;
 				case "goto":
 				case "info":
@@ -341,7 +341,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 					case "+":
 					case "-":
 					case "x":
-						addItem(itemCode, innerControl);
+						addItem(itemCode, innerControl, item);
 						break;
 					case "goto":
 					case "info":
