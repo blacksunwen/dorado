@@ -66,7 +66,7 @@ public abstract class AbstractControllerResolver extends
 		String referer = request.getHeader("referer");
 		if (StringUtils.isNotEmpty(referer)) {
 			String refererPattern = Configure.getString("security.refererPattern");
-			if (!Pattern.matches(refererPattern, referer)) {
+			if (StringUtils.isNotEmpty(refererPattern) && !Pattern.matches(refererPattern, referer)) {
 				throw new PageAccessDeniedException("Cross-Site request forbidden.");
 			}
 		}
