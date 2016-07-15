@@ -235,6 +235,10 @@
 			if (rowList instanceof dorado.widget.AbstractListBox) {
 				rowList.set("property", this._displayProperty || this._property);
 			}
+			if (editor._editable==false){
+				delete rowList._itemModel._originItems;
+				delete rowList._itemModel._filterParams;
+			}
 			rowList.set("items", items);
 			
 			var text = editor.doGetText();
