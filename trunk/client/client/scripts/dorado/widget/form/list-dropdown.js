@@ -235,14 +235,15 @@
 			if (rowList instanceof dorado.widget.AbstractListBox) {
 				rowList.set("property", this._displayProperty || this._property);
 			}
-			if (editor._editable == false){
-				delete rowList._itemModel._filterParams;
-			}
-			rowList.set("items", items);
 			
 			var text = editor.doGetText();
 			if (this._filterOnOpen && (text.length > 0 || (editor._lastFilterValue || "") != text)) {
+				rowList.set("items", items);
 				this.onFilterItems(text);
+			}
+			else {
+				if (editor._editable == false) delete rowList._itemModel._filterParams;
+				rowList.set("items", items);
 			}
 			
 			var value = editor.get("value"), currentIndex = -1;
