@@ -356,7 +356,7 @@
 			if (this._validationState == state) return;
 			this._validationState = state;
 			this._validationMessages = dorado.Toolkits.trimMessages(messages, "error");
-			if (this._rendered) {
+			if (this._dom) {
 				var dom = this._dom, warnCls = this._className + "-warn", errorCls = this._className + "-error";
 				$fly(dom).toggleClass(warnCls, state == "warn").toggleClass(errorCls, state == "error");
 
