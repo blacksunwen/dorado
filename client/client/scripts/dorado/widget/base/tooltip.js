@@ -394,7 +394,7 @@
 				if (!element) return;
 			}
 			var tip = dorado.TipManager.getTip(element);
-			tip.set(options, options);
+			tip.set(options, { tryNextOnError: true });
 		},
 		
 		/**
