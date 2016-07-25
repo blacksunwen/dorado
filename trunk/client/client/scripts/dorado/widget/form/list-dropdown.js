@@ -242,7 +242,7 @@
 				this.onFilterItems(text);
 			}
 			else {
-				if (editor._editable == false) delete rowList._itemModel._filterParams;
+				if (editor._editable != false) delete rowList._itemModel._filterParams;
 				rowList.set("items", items);
 			}
 			
