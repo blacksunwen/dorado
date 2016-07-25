@@ -476,7 +476,13 @@
 							}, {
 								once: true
 							});
-							retValue = rowList.onKeyDown(evt);
+							dorado.widget.disableKeyBubble = true;
+							try {
+								retValue = rowList.onKeyDown(evt);
+							}
+							finally {
+								dorado.widget.disableKeyBubble = false;
+							}
 						}
 						break;
 					}
@@ -493,7 +499,12 @@
 							rowList = dropdown.get("box.control");
 							rowList.set("highlightCurrentRow", dropdown._rowSelected = false);
 						}
-						retValue = rowList.onKeyDown(evt);
+						try {
+							retValue = rowList.onKeyDown(evt);
+						}
+						finally {
+							dorado.widget.disableKeyBubble = false;
+						}
 				}
 			}
 			if (retValue) retValue = $invokeSuper.call(this, arguments);
