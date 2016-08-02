@@ -118,6 +118,7 @@
 		 */
 		setItems: function(items) {
 			this._items = items;
+			delete this._originItems;
 			if (this._filterParams) this.filter(this._filterParams);
 		},
 		
