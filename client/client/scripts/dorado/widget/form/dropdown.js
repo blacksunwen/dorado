@@ -287,6 +287,8 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 	},
 
 	onEditorKeyDown: function(editor, evt) {
+		if (editor != this._editor) return true;
+		
 		dorado.widget.disableKeyBubble = this._editor;
 		try {
 			return this.doOnEditorKeyDown ? this.doOnEditorKeyDown(editor, evt) : true;
