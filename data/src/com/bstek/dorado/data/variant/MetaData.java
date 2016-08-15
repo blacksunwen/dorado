@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import com.bstek.dorado.data.entity.EnhanceableEntity;
 import com.bstek.dorado.data.entity.EntityEnhancer;
 import com.bstek.dorado.data.type.EntityDataType;
+import com.bstek.dorado.data.type.property.PropertyDef;
 
 /**
  * 元数据对象。
@@ -166,7 +167,14 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 				exProperties.remove(key);
 				return result;
 			} else {
-				throw new UnsupportedOperationException();
+				Object result = null;
+				try {
+					result = entityEnhancer.readProperty(this, (String) key, false);
+				} catch (Throwable e) {
+					logger.warn(e, e);
+				}
+				this.put((String) key, null);
+				return result;
 			}
 		} else {
 			return super.remove(key);
@@ -178,7 +186,9 @@ public class MetaData extends HashMap<String, Object> implements VariantSet,
 		if (entityEnhancer != null) {
 			EntityDataType dataType = entityEnhancer.getDataType();
 			if (dataType != null && !dataType.getPropertyDefs().isEmpty()) {
-				throw new UnsupportedOperationException();
+				for (String property : dataType.getPropertyDefs().keySet()) {
+					remove(property);
+				}
 			}
 
 			Map<String, Object> exProperties = entityEnhancer.getExProperties();
