@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.bstek.dorado.annotation.ClientProperty;
 import com.bstek.dorado.annotation.IdeProperty;
@@ -138,6 +139,9 @@ public abstract class EntityDataTypeSupport extends NonAggregationDataType
 
 	public PropertyDef addPropertyDef(PropertyDef propertyDef) {
 		String name = propertyDef.getName();
+		if (StringUtils.isEmpty(name)) {
+			throw new IllegalArgumentException("The name of PropertyDef can not be empty.");
+		}
 		if (propertyDefs.containsKey(name)) {
 			throw new IllegalArgumentException("PropertyDef [" + name
 					+ "] already exists in DataType [" + getName() + "].");
