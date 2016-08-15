@@ -121,7 +121,7 @@ http://www.bstek.com/dorado/schema http://www.bstek.com/dorado/schema/spring-dor
 					com.bstek.dorado.view.resolver.VelocityViewTemplateResourceLoader
 				</prop>
 				<prop key="view.resource.loader.cache">${view.templateCachingOn}</prop>
-				<prop key="view.resource.loader.modificationCheckIntervale">${view.templateModificationCheckInterval}</prop>
+				<prop key="view.resource.loader.modificationCheckInterval">${view.templateModificationCheckInterval}</prop>
 				<prop key="userdirective">
 					com.bstek.dorado.view.resolver.VelocityPageHeaderDirective,
 					com.bstek.dorado.view.resolver.VelocityPageFooterDirective,
