@@ -471,14 +471,13 @@
 							assignValue(dropdown, rowList);
 							retValue = false;
 						} else {
-							rowList.addListener("onCurrentChange", function() {
-								assignValue(dropdown, rowList);
-							}, {
-								once: true
-							});
 							dorado.widget.disableKeyBubble = true;
 							try {
+								var oldCurrentItem = rowList.getCurrentItem();
 								retValue = rowList.onKeyDown(evt);
+								if (rowList.getCurrentItem() != oldCurrentItem) {
+									assignValue(dropdown, rowList);
+								}
 							}
 							finally {
 								dorado.widget.disableKeyBubble = false;
