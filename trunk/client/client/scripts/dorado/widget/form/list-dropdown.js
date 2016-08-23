@@ -242,7 +242,7 @@
 				this.onFilterItems(text);
 			}
 			else {
-				if (editor._editable != false) delete rowList._itemModel._filterParams;
+				delete rowList._itemModel._filterParams;
 				rowList.set("items", items);
 			}
 			
@@ -338,7 +338,7 @@
 				editor.bind("onTextEdit._filter", function() {
 					if (dropDown._filterOnTyping && dropDown.get("opened")) {
 						dorado.Toolkits.setDelayedAction(dropDown, "$filterTimeId", function() {
-							if (!dropDown._rowSelected) dropDown.onFilterItems(editor.doGetText());
+							if (!dropDown._rowSelected && editor == dropDown._editor) dropDown.onFilterItems(editor.doGetText());
 						}, dropDown._minFilterInterval);
 					}
 				});
