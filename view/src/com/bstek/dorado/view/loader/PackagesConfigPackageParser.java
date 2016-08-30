@@ -66,7 +66,9 @@ public class PackagesConfigPackageParser extends
 		fileNamesText = StringUtils.defaultIfEmpty(fileNamesText, NONE_FILE);
 		String[] oldFileNames = pkg.getFileNames();
 		String[] newFileNames = fileNamesText.split(",");
-		if (oldFileNames != null && oldFileNames.length > 0) {
+		
+		boolean append = Boolean.parseBoolean((String)properties.remove("append"));
+		if (append && oldFileNames != null && oldFileNames.length > 0) {
 			newFileNames = (String[]) ArrayUtils.addAll(oldFileNames,
 					newFileNames);
 		}
