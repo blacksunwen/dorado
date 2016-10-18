@@ -301,7 +301,7 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 				case "+":
 				case "-":
 				case "x":
-					addItem(dataPilotItemCode, item, item);
+					addItem(dataPilotItemCode, item, dataPilot);
 					break;
 				case "goto":
 				case "info":
