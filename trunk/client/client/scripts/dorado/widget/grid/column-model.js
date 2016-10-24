@@ -2372,6 +2372,7 @@
 							}
 						}
 					}
+					dom.style.height = "auto";
 					dom.innerHTML = '';
 					dom.className = "cell indicator " + className;
 				}
@@ -2419,6 +2420,7 @@
 				dontEvalDefaultValue: true,
 				defaultValue: function(dom, arg) {
 					var row = dom.parentNode.parentNode;
+					dom.style.height = "auto";
 					dom.innerHTML = arg.grid._groupProperty ? '' : row.itemIndex + 1;
 				}
 			}
