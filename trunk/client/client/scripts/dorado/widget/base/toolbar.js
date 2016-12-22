@@ -281,18 +281,18 @@ dorado.widget.ToolBar = $extend(dorado.widget.Control, /** @scope dorado.widget.
 			dataPilot._bindMenuItems.push(menuItem);
 		}
 
+		var map = {
+			"|<": $resource("dorado.baseWidget.DataPilotFirstPage"),
+			"<": $resource("dorado.baseWidget.DataPilotPreviousPage"),
+			">": $resource("dorado.baseWidget.DataPilotNextPage"),
+			">|": $resource("dorado.baseWidget.DataPilotLastPage"),
+			"+": $resource("dorado.baseWidget.DataPilotInsert"),
+			"-": $resource("dorado.baseWidget.DataPilotDelete"),
+			"x": $resource("dorado.baseWidget.DataPilotCancel")
+		};
+		
 		var menuItem;
 		if (dataPilotItemCode) {
-			var map = {
-				"|<": $resource("dorado.baseWidget.DataPilotFirstPage"),
-				"<": $resource("dorado.baseWidget.DataPilotPreviousPage"),
-				">": $resource("dorado.baseWidget.DataPilotNextPage"),
-				">|": $resource("dorado.baseWidget.DataPilotLastPage"),
-				"+": $resource("dorado.baseWidget.DataPilotInsert"),
-				"-": $resource("dorado.baseWidget.DataPilotDelete"),
-				"x": $resource("dorado.baseWidget.DataPilotCancel")
-			};
-
 			switch (dataPilotItemCode.code) {
 				case "|<":
 				case "<":
