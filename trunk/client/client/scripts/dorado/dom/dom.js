@@ -509,9 +509,15 @@
 			var align = options.align || "innerleft", vAlign = options.vAlign || "innertop",
 				offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0,
 				autoAdjustPosition = options.autoAdjustPosition, handleOverflow = options.handleOverflow,
-				offsetParentEl = $fly(element.offsetParent), offsetParentWidth = offsetParentEl.width(),
-				offsetParentHeight = offsetParentEl.height(), offsetParentBottom, offsetParentRight, overflowTrigger = false,
-				offsetParentOffset = offsetParentEl.offset() || { left: 0, top: 0 }, maxWidth, maxHeight, adjustLeft, adjustTop;
+				maxWidth, maxHeight, adjustLeft, adjustTop, offsetParentBottom, offsetParentRight, overflowTrigger = false;
+			
+			var offsetParentWidth = 0, offsetParentHeight = 0, offsetParentOffset;
+			if (element.offsetParent) {
+				var offsetParentEl = $fly(element.offsetParent);
+				offsetParentWidth = offsetParentEl.width();
+				offsetParentHeight = offsetParentEl.height();
+				offsetParentOffset = offsetParentEl.offset() || { left: 0, top: 0 };
+			}
 
 			offsetParentRight = Math.floor(offsetParentWidth + offsetParentOffset.left);
 			offsetParentBottom = Math.floor(offsetParentHeight + offsetParentOffset.top);
@@ -672,10 +678,16 @@
 		locateIn: function(element, options) {
 			options = options || {};
 			var offsetLeft = options.offsetLeft || 0, offsetTop = options.offsetTop || 0, handleOverflow = options.handleOverflow,
-				parent = options.parent, offsetParentEl = $fly(element.offsetParent), offsetParentWidth = offsetParentEl.width(),
-				offsetParentHeight = offsetParentEl.height(), adjustLeft, adjustTop, overflowTrigger = false, maxWidth, maxHeight,
+				parent = options.parent, adjustLeft, adjustTop, overflowTrigger = false, maxWidth, maxHeight,
 				position = options.position, left = position ? position.left : 0, top = position ? position.top : 0,
 				autoAdjustPosition = options.autoAdjustPosition;
+			
+			var offsetParentWidth = 0, offsetParentHeight = 0;
+			if (element.offsetParent) {
+				var offsetParentEl = $fly(element.offsetParent);
+				offsetParentWidth = offsetParentEl.width();
+				offsetParentHeight = offsetParentEl.height();
+			}
 
 			if (parent) {
 				var parentPos = $fly(parent).offset();
