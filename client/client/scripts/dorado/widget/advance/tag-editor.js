@@ -52,7 +52,13 @@
         },
 
         getDropDownItems: function () {
-            return this._items;
+            return this.getAvailableTags();
+        },
+        
+        refreshItems: function() {
+        	if (this._box && this._editor) {
+        		this.initDropDownBox(this._box, this._editor, true);
+        	}
         }
     });
 
@@ -624,7 +630,7 @@
 
                 if (!eventArg.processDefault) continue;
 
-                delete  eventArg['processDefault'];
+                eventArg.processDefault = false;
                 var index = value.indexOf(tag);
                 if (index < 0) {
                     indexs.push(value.length);
@@ -674,6 +680,10 @@
                     tagEditor.doSetValue(value);
                 });
                 tagEditor.fireEvent("onTagRemove", tagEditor, eventArg);
+                
+                if (tagEditor._defaultTrigger && tagEditor._defaultTrigger.get("opened")) {
+                	tagEditor._defaultTrigger.refreshItems();
+                }
                 return true;
             }
         },
@@ -688,9 +698,9 @@
             var tagEditor = this;
             tagEditor._inputDom.size = tagEditor._inputDom.value.length + 1;
             
-//            if (tagEditor._inputDom.value && tagEditor._defaultTrigger && !tagEditor._defaultTrigger.get("opened")) {
+            // if (tagEditor._inputDom.value && tagEditor._defaultTrigger && !tagEditor._defaultTrigger.get("opened")) {
             // TODO FIX #dorado7-8974
-            if (tagEditor._defaultTrigger){
+            if (tagEditor._defaultTrigger) {
 	            if (!tagEditor._defaultTrigger.get("opened")) {
 	                dorado.Toolkits.setDelayedAction(tagEditor, "$autoOpenDropDownOnEditTimerId", function () {
 	                    tagEditor._defaultTrigger.open(tagEditor);
@@ -702,7 +712,6 @@
 	                }, 300);   
 	            }
             }
-            
 
             $invokeSuper.call(tagEditor);
         },

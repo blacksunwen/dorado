@@ -492,7 +492,7 @@
 					list = entity.parent;
 				} else if (control.ATTRIBUTES.itemModel) {
 					var itemModel = control.get("itemModel");
-					if (itemModel) list = itemModel.getItems();
+					if (itemModel) list = itemModel.getOriginItems();
 				}
 				return list;
 			}

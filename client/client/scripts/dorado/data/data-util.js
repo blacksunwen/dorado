@@ -208,11 +208,29 @@
 						value1 = item1;
 						value2 = item2;
 					}
-					if (value1 > value2) {
-						return (sortParam.desc) ? -1 : 1;
-					} else if (value1 < value2) {
-						return (sortParam.desc) ? 1 : -1;
+					
+					var factor = 0;
+					if (value1 == null) {
+						factor = -1;
 					}
+					else if (value2 == null) {
+						factor = 1;
+					}
+					else if (typeof value1 == "string" && typeof value2 == "string" && value1.localeCompare) {
+						var isSimpleChar1 = (value1.charCodeAt(0) > 255), isSimpleChar2 = (value2.charCodeAt(0) > 255);
+						if (isSimpleChar1 != isSimpleChar2) {
+							factor = (value1 == value2) ? 0 : ((value1 > value2) ? 1 : -1);
+						}
+						else {
+							factor = value1.localeCompare(value2);
+						}
+					}
+					else {
+						factor = value1 - value2;
+					}
+					
+					if (sortParam.desc) factor = factor * (-1);
+					return factor;
 				}
 				return 0;
 			});

@@ -120,5 +120,6 @@ dorado.widget.AbstractButton = $extend([dorado.widget.Control, dorado.widget.Act
 	 */
 	click: function() {
 		this.onClick();
+		this.fireEvent("onClick", self, {});
 	}
 });

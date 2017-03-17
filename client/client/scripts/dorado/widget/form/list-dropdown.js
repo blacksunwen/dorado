@@ -273,11 +273,11 @@
 			rowList.set("currentIndex", currentIndex);
 		},
 		
-		initDropDownBox: function(box, editor) {
+		initDropDownBox: function(box, editor, forceInitData) {
 			$invokeSuper.call(this, arguments);
 			
 			var rowList = box.get("control");
-			if (!this._boxVisible && this.initDropDownData) {
+			if (!this._boxVisible && this.initDropDownData || forceInitData) {
 				rowList._ignoreRefresh++;
 				this.initDropDownData(box, editor);
 				rowList._ignoreRefresh--;

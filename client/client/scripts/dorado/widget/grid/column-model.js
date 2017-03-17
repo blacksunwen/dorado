@@ -365,7 +365,7 @@
 				}
 				readOnly = readOnly && grid.get("readOnly");
 				
-				$fly(label).toggleClass("caption-required", !!column.get("required") && !readOnly);
+				$fly(label).toggleClass("caption-required", !!column.get("required"));
 
 				var sortState = column.get("sortState"), sortIndicator;
 				if (sortState) {

@@ -1086,9 +1086,6 @@
 			
 			if (labelEl) {
 				var required = !!this.isRequired();
-				if (required && editor) {
-					required = !editor._readOnly;
-				}
 				$fly(labelEl).toggleClass("form-label-required", required);
 			}
 		},

@@ -340,7 +340,10 @@
 				top: 0
 			});
 			
-			position = self.position();
+			position = {
+				left: self.prop("offsetLeft"),
+				top: self.prop("offsetTop"),
+			}
 			
 			left = -1 * (poffset.left + position.left);
 			top = -1 * (poffset.top + position.top);

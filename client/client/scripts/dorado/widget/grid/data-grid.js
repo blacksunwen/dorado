@@ -369,7 +369,7 @@
 					});
 				}
 				
-				var oldItems = this._itemModel.getItems();
+				var oldItems = this._itemModel.getOriginItems();
 				if (oldItems != entityList ||
 					(entityList && (entityList.pageNo != this._selectionPageNo || entityList.pageSize != this._selectionPageSize))) {
 					this._selectionPageNo = entityList ? entityList.pageNo : 0;
@@ -458,7 +458,12 @@
 			switch (evt.keyCode) {
 				case 36:{ /* home */
 					if (evt.ctrlKey) {
-						items.first(this._supportsPaging);
+						if (items instanceof dorado.widget.list.ItemModel) {
+							items.first(this._supportsPaging);
+						}
+						else {
+							this.setCurrentEntity(items[0]);
+						}
 					} else {
 						this.setCurrentColumn(this._columnsInfo.dataColumns[0]);
 					}
@@ -466,7 +471,12 @@
 				}
 				case 35:{ /* end */
 					if (evt.ctrlKey) {
-						items.last(this._supportsPaging);
+						if (items instanceof dorado.widget.list.ItemModel) {
+							items.last(this._supportsPaging);
+						}
+						else {
+							this.setCurrentEntity(items[items.length - 1]);
+						}
 					} else {
 						var columns = this._columnsInfo.dataColumns;
 						this.setCurrentColumn(columns[columns.length - 1]);
@@ -474,12 +484,26 @@
 					break;
 				}
 				case 38:{ /* up */
-					items.previous(this._supportsPaging);
+					if (items instanceof dorado.widget.list.ItemModel) {
+						items.previous(this._supportsPaging);
+					}
+					else {
+						var currentItem = this.getCurrentItem();
+						var index = items.indexOf(currentItem) - 1;
+						this.setCurrentEntity(items[(index < 0) ? 0 : index]);
+					}
 					retValue = false;
 					break;
 				}
 				case 40:{ /* down */
-					items.next(this._supportsPaging);
+					if (items instanceof dorado.widget.list.ItemModel) {
+						items.next(this._supportsPaging);
+					}
+					else {
+						var currentItem = this.getCurrentItem();
+						var index = items.indexOf(currentItem) + 1;
+						this.setCurrentEntity(items[(index > (items.length - 1)) ? (items.length - 1) : index]);
+					}
 					retValue = false;
 					break;
 				}
@@ -556,7 +580,7 @@
 		
 		filterDataSetMessage: function(messageCode, arg) {
 			var itemModel = this._itemModel;
-			var items = itemModel.getItems();
+			var items = itemModel.getOriginItems();
 			switch (messageCode) {
 				case dorado.widget.DataSet.MESSAGE_REFRESH:{
 					return true;
@@ -640,7 +664,7 @@
 				}
 				case dorado.widget.DataSet.MESSAGE_CURRENT_CHANGED:{
 					this.hideCellEditor();
-					if (arg.entityList == this._itemModel.getItems()) {
+					if (arg.entityList == this._itemModel.getOriginItems()) {
 						var oldCurrentEntity = this.getCurrentEntity();
 						if (!this._supportsPaging &&
 							(!oldCurrentEntity || oldCurrentEntity.page && oldCurrentEntity.page.pageNo != arg.entityList.pageNo)) {
@@ -662,7 +686,7 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:{
-					var items = this._itemModel.getItems();
+					var items = this._itemModel.getOriginItems();
 					if (!items || items._observer != this._dataSet || arg.entity.parent !== items) {
 						this.refresh(true);
 					} else {
@@ -701,7 +725,7 @@
 					break;
 				}
 				case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:{
-					var items = this._itemModel.getItems();
+					var items = this._itemModel.getOriginItems();
 					if (!items || items._observer != this._dataSet || arg.entity.parent !== items) {
 						this.refresh(true);
 					} else {
@@ -726,7 +750,7 @@
 						}
 						this.refresh(true);
 					} else {
-						var items = this._itemModel.getItems();
+						var items = this._itemModel.getOriginItems();
 						if (items == arg.entityList) {
 							this.onEntityDeleted(arg);
 							this.refreshSummary();
@@ -776,7 +800,7 @@
 				this._loadingPages = requiredPages;
 				delete this._requiredPages;
 				
-				var items = this._itemModel.getItems();
+				var items = this._itemModel.getOriginItems();
 				for (var i = 0; i < requiredPages.length; i++) {
 					items.getPage(requiredPages[i], true, dorado._NULL_FUNCTION);
 				}
@@ -1102,7 +1126,7 @@
 			if (!this._itemDomMap) return;
 			var row = (itemId == null) ? null : this._itemDomMap[itemId];
 			var item = row ? $fly(row).data("item") : null;
-			var entityList = this._itemModel.getItems();
+			var entityList = this._itemModel.getOriginItems();
 			entityList.setCurrent(item);
 			if (entityList.current == item) {
 				this.setCurrentEntity(item);

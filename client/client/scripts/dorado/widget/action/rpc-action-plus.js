@@ -109,6 +109,9 @@
 					}
 
 					dialog.doOnResize();
+				},
+				onHide: function(options) {
+					getDetailLink().unrender();
 				}
 			});
 
@@ -247,7 +250,7 @@
 				},
 				children: [
 					{
-						$type: "ToolTip",
+						$type: "Tip",
 						text: $resource("dorado.baseWidget.SubmitValidationDetailTip"),
 						floating: false,
 						arrowDirection: "bottom",

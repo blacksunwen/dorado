@@ -545,7 +545,7 @@
 					}
 				} else if (position == "br") {
 					left = parseInt($fly(refTip._dom).css("left"), 10);
-					top = parseInt($fly(refTip._dom).css("top"), 10) - $fly(refTip._dom).outerHeight() - this.padding;
+					top = parseInt($fly(refTip._dom).css("top"), 10) - $fly(tip._dom).outerHeight() - this.padding;
 					
 					if (top < 0) {
 						left = left - this.notifyWidth - this.padding;
@@ -561,7 +561,7 @@
 					}
 				} else if (position == "bl") {
 					left = parseInt($fly(refTip._dom).css("left"), 10);
-					top = parseInt($fly(refTip._dom).css("top"), 10) - $fly(refTip._dom).outerHeight() - this.padding;
+					top = parseInt($fly(refTip._dom).css("top"), 10) - $fly(tip._dom).outerHeight() - this.padding;
 					
 					if (top < 0) {
 						left = left + this.notifyWidth + this.padding;

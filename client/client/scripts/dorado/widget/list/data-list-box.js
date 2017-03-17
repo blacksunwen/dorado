@@ -39,14 +39,14 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	},
 	
 	getRealCurrentItemId: function() {
-		var current = this._itemModel.getItems() ? this._itemModel.getItems().current : null;
+		var current = this._itemModel.getOriginItems() ? this._itemModel.getOriginItems().current : null;
 		return current ? this._itemModel.getItemId(current) : null;
 	},
 	
 	setCurrentItemDom: function(row) {
 		var item = (row ? $fly(row).data("item") : null);
 		if (item) {
-			var entityList = this._itemModel.getItems();
+			var entityList = this._itemModel.getOriginItems();
 			entityList.setCurrent(item);
 			if (entityList.current == item) {
 				this.setCurrentEntity(item);
@@ -74,7 +74,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 			throw new dorado.ResourceException(dorado.list.BindingTypeMismatch);
 		}
 		
-		var oldItems = this._itemModel.getItems();
+		var oldItems = this._itemModel.getOriginItems();
 		if (oldItems != entityList) {
 			this._itemModel.setItems(entityList);
 			this.set("selection", null);
@@ -103,17 +103,41 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 		var items = this._itemModel.getItems();
 		switch (evt.keyCode) {
 			case 36: // home
-				items.first();
+				if (items instanceof dorado.widget.list.ItemModel) {
+					items.first();
+				}
+				else {
+					this.setCurrentEntity(items[0]);
+				}
 				break;
 			case 35: // end
-				items.last();
+				if (items instanceof dorado.widget.list.ItemModel) {
+					items.last();
+				}
+				else {
+					this.setCurrentEntity(items[items.length - 1]);
+				}
 				break;
 			case 38: // up
-				items.previous();
+				if (items instanceof dorado.widget.list.ItemModel) {
+					items.previous();
+				}
+				else {
+					var currentItem = this.getCurrentItem();
+					var index = items.indexOf(currentItem) - 1;
+					this.setCurrentEntity(items[(index < 0) ? 0 : index]);
+				}
 				retValue = false;
 				break;
 			case 40: // down
-				items.next();
+				if (items instanceof dorado.widget.list.ItemModel) {
+					items.next();
+				}
+				else {
+					var currentItem = this.getCurrentItem();
+					var index = items.indexOf(currentItem) + 1;
+					this.setCurrentEntity(items[(index > (items.length - 1)) ? (items.length - 1) : index]);
+				}
 				retValue = false;
 				break;
 		}
@@ -311,7 +335,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 	
 	filterDataSetMessage: function(messageCode, arg) {
 		var itemModel = this._itemModel;
-		var items = itemModel.getItems();
+		var items = itemModel.getOriginItems();
 		switch (messageCode) {
 			case dorado.widget.DataSet.MESSAGE_REFRESH:
 				return true;
@@ -372,7 +396,7 @@ dorado.widget.DataListBox = $extend([dorado.widget.AbstractListBox, dorado.widge
 				
 			case dorado.widget.DataSet.MESSAGE_DATA_CHANGED:
 			case dorado.widget.DataSet.MESSAGE_REFRESH_ENTITY:
-				var items = this._itemModel.getItems();
+				var items = this._itemModel.getOriginItems();
 				if (!items || items._observer != this._dataSet || arg.entity.parent == items || dorado.DataUtil.isOwnerOf(items, arg.newValue)) {
 					this.refresh(true);
 				} else {
