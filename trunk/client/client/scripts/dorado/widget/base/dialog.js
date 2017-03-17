@@ -349,7 +349,7 @@
 				if (captionBar) {
 					var button = captionBar.getButton(dialog._uniqueId + "_maximize");
 					if (button) {
-						$fly(button._dom).removeClass("d-restore-button").addClass("d-maximize-button")
+						$fly(button._dom).removeClass("d-maximize-button").addClass("d-restore-button")
 						button._className = "d-restore-button";
 					}
 				}

@@ -966,47 +966,47 @@
 								self.fireEvent("onClick", self, arg);
 								return arg.returnValue;
 							}).bind("dblclick",function(evt) {
-									if (!self.processDefaultMouseListener()) return;
-									var defaultReturnValue;
-									if (self.onDoubleClick) {
-										defaultReturnValue = self.onDoubleClick(evt);
-									}
-									var arg = {
-										button: evt.button,
-										event: evt,
-										returnValue: defaultReturnValue
-									}
-									self.fireEvent("onDoubleClick", self, arg);
-									return arg.returnValue;
-								}).mouseup(function(evt) {
-									if (!self.processDefaultMouseListener()) return;
-									var defaultReturnValue;
-									if (self.onMouseUp) {
-										defaultReturnValue = self.onMouseUp(evt);
-									}
-									var arg = {
-										button: evt.button,
-										event: evt,
-										returnValue: defaultReturnValue
-									}
-									self.fireEvent("onMouseUp", self, arg);
-									return arg.returnValue;
-								}).bind("contextmenu", function(evt) {
-									evt = jQuery.event.fix(evt || window.event);
-									var eventArg = {
-										event: evt,
-										processDefault: true
-									};
-									if (self.getListenerCount("onContextMenu")) {
-										eventArg.processDefault = false;
-										self.fireEvent("onContextMenu", self, eventArg);
-									}
-									if (!eventArg.processDefault) {
-										evt.preventDefault();
-										evt.returnValue = false;
-										return false;
-									}
-								});
+								if (!self.processDefaultMouseListener()) return;
+								var defaultReturnValue;
+								if (self.onDoubleClick) {
+									defaultReturnValue = self.onDoubleClick(evt);
+								}
+								var arg = {
+									button: evt.button,
+									event: evt,
+									returnValue: defaultReturnValue
+								}
+								self.fireEvent("onDoubleClick", self, arg);
+								return arg.returnValue;
+							}).mouseup(function(evt) {
+								if (!self.processDefaultMouseListener()) return;
+								var defaultReturnValue;
+								if (self.onMouseUp) {
+									defaultReturnValue = self.onMouseUp(evt);
+								}
+								var arg = {
+									button: evt.button,
+									event: evt,
+									returnValue: defaultReturnValue
+								}
+								self.fireEvent("onMouseUp", self, arg);
+								return arg.returnValue;
+							}).bind("contextmenu", function(evt) {
+								evt = jQuery.event.fix(evt || window.event);
+								var eventArg = {
+									event: evt,
+									processDefault: true
+								};
+								if (self.getListenerCount("onContextMenu")) {
+									eventArg.processDefault = false;
+									self.fireEvent("onContextMenu", self, eventArg);
+								}
+								if (!eventArg.processDefault) {
+									evt.preventDefault();
+									evt.returnValue = false;
+									return false;
+								}
+							});
 						}
 
 						var target = evt.srcElement || evt.target;

@@ -607,7 +607,7 @@
 			
 			var spinner = this._spinner = new dorado.widget.NumberSpinner({
 				min: 1,
-				max: 1,
+				max: 1000,
 				value: 1,
 				showSpinTrigger: false,
 				onPost:function (self, arg) {
@@ -692,8 +692,11 @@
 			var spinner = this._spinner = new dorado.widget.NumberSpinner({
 				min: 1,
 				onPost: function(self, arg) {
+					var pageSize = spinner.get("value");
+					if (pageSize > 1000) pageSize = 1000;
+					if (pageSize < 1) pageSize = 1;
 					pageSizeControl.fireEvent("onAction", pageSizeControl, {
-						pageSize: spinner.get("value")
+						pageSize: pageSize
 					});
 				},
 				onKeyDown: function(self, arg) {

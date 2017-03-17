@@ -109,6 +109,10 @@
 		 * @return {Object[]|dorado.EntityList} data 数据。
 		 */
 		getItems: function() {
+			return this._items || this._originItems;
+		},
+		
+		getOriginItems: function() {
 			return this._originItems || this._items;
 		},
 		
