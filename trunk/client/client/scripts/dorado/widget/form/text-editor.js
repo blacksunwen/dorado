@@ -250,8 +250,8 @@
 			jQuery(dom).addClassOnHover(this._className + "-hover", null,function() {
 				return !self._realReadOnly;
 			}).mousedown(function(evt) {
-					evt.stopPropagation();
-				});
+				evt.stopPropagation();
+			});
 
 			if (this._text) this.doSetText(this._text);
 			return dom;
