@@ -103,7 +103,7 @@
 			skins/~current/layout
 		</Package>
 		<Package name="widget-support" pattern="dorado-js"
-			depends="touch-patch,data,widget-support-skin">
+			depends="data,widget-support-skin">
 			scripts/dorado/widget-support,
 			skins/~current/support,
 			scripts/dorado/layout,
