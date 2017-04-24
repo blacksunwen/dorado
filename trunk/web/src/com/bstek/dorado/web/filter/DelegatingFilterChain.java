@@ -43,8 +43,8 @@ public class DelegatingFilterChain implements FilterChain {
 
 	private String getRequestPath(HttpServletRequest request) {
 		String url = request.getServletPath();
-		if (request.getPathInfo() != null) {
-			url += request.getPathInfo();
+		if (request.getServletPath() != null) {
+			url += request.getServletPath();
 		}
 		return url;
 	}
