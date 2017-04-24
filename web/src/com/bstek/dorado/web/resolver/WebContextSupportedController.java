@@ -43,8 +43,8 @@ public abstract class WebContextSupportedController extends AbstractController {
 		String uri = (String) request.getAttribute("originalUrlPath");
 		if (uri == null) {
 			uri = request.getServletPath();
-			if (request.getPathInfo() != null) {
-				uri += request.getPathInfo();
+			if (request.getServletPath() != null) {
+				uri += request.getServletPath();
 			}
 		}
 		uri = StringUtils

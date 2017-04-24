@@ -205,7 +205,7 @@ public class LibraryFileResolver extends PackageFileResolver {
 	protected Resource[] getStyleSheetResources(DoradoContext context,
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
-		String uri = context.getRequest().getPathInfo();
+		String uri = context.getRequest().getServletPath();
 		int i = uri.indexOf(SKIN_URI_PREFIX);
 		if (i >= 0) {
 			String fileName = fileInfo.getFileName();
