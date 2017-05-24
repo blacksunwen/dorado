@@ -206,6 +206,10 @@ public class LibraryFileResolver extends PackageFileResolver {
 			FileInfo fileInfo, String resourcePrefix, String resourceSuffix)
 			throws Exception {
 		String uri = context.getRequest().getServletPath();
+		String pathInfo = context.getRequest().getPathInfo();
+		if (pathInfo != null && pathInfo.length() > 0) {
+		    uri = uri + pathInfo;
+		}
 		int i = uri.indexOf(SKIN_URI_PREFIX);
 		if (i >= 0) {
 			String fileName = fileInfo.getFileName();
