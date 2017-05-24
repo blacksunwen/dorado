@@ -220,9 +220,14 @@ public class ViewServiceResolver extends AbstractTextualResolver {
 
 				processTask(writer, objectNode, context, response);
 			} else if (contentType != null && contentType.contains(XML_TOKEN)) {
+				String uri = request.getServletPath();
+				String pathInfo = request.getPathInfo();
+				if (pathInfo != null && pathInfo.length() > 0) {
+				    uri = uri + pathInfo;
+				}
 				Document document = getXmlDocumentBuilder(context)
 						.loadDocument(
-								new InputStreamResource(in, request.getServletPath()));
+								new InputStreamResource(in, uri));
 
 				writer.append("<?xml version=\"1.0\" encoding=\""
 						+ Constants.DEFAULT_CHARSET + "\"?>\n");
