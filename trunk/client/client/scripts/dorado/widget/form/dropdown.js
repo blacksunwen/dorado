@@ -365,6 +365,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 		var box = boxCache ? boxCache[dorado.id + '$' + dropdown._uniqueId] : null;
 		if (!box) {
 			box = dropdown.createDropDownBox();
+			if (!box._id) box._id = dropdown._id;
 			dropdown._duringShowAnimation = true;	
 			if (dorado.Object.isInstanceOf(box, dorado.widget.DropDownBox)) {
 				box.bind("onDropDownBoxShow", function() {
