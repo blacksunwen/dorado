@@ -149,6 +149,7 @@
 					self.setHoverRow(null);
 				}, 50);
 			});
+			
 			return table;
 		},
 		
@@ -453,10 +454,33 @@
 			}
 		},
 		
+		appendTouchMoveEvent: function(container) {
+			if (dorado.Browser.isTouch) {
+				container.addEventListener("touchstart", function(event) {
+					this._scrollStartPosX = this.scrollLeft+event.touches[0].pageX;
+					this._scrollStartPosY = this.scrollTop+event.touches[0].pageY;
+					event.preventDefault();
+				});
+				var rowList = this;
+				container.addEventListener("touchmove", function(event) {
+					this.scrollLeft = this._scrollStartPosX-event.touches[0].pageX;
+					this.scrollTop = this._scrollStartPosY-event.touches[0].pageY;
+					if ((rowList._scrollLeft || 0) != this.scrollLeft) {
+						if (rowList.onXScroll) rowList.onXScroll(this);
+					}
+					if ((rowList._scrollTop || 0) != this.scrollTop) {
+						rowList.onYScroll(this);
+					}
+					event.preventDefault();
+				});
+			}
+		},
+		
 		refreshContent: function(container) {
 			if (!this._dataTable) {
 				var table = this.createDataTable();
 				container.appendChild(table);
+				this.appendTouchMoveEvent(container);
 			}
 			if (this._currentScrollMode == "viewport") {
 				var beginBlankRow = this._beginBlankRow;
@@ -482,7 +506,11 @@
 			var beginBlankRow = this._beginBlankRow;
 			var endBlankRow = this._endBlankRow;
 			
-			if (!this._dataTable) container.appendChild(this.createDataTable());
+			if (!this._dataTable) {
+				var table = this.createDataTable();
+				container.appendChild(table);
+				this.appendTouchMoveEvent(container);
+			}
 			if (!beginBlankRow) {
 				this._beginBlankRow = beginBlankRow = $DomUtils.xCreate({
 					tagName: "TR",

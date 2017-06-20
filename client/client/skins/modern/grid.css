@@ -81,6 +81,9 @@
 .d-grid .filter-bar .filter-bar-cell .d-text-box {
   border-width: 0;
 }
+.d-grid .frame-table >tbody >tr>td>div {
+	overflow: auto !important;
+}
 .d-grid .data-table {
   line-height: 24px;
   width: 100%;
