@@ -410,6 +410,7 @@ dorado.widget.DropDown = $extend(dorado.widget.Trigger, /** @scope dorado.widget
 			}
 			(dropdown._view || $topView).registerInnerControl(box);
 
+			box._dropDown = dropdown;
 			box.render(box._renderTo || win.document.body);
 			if (box instanceof dorado.widget.Container) {
 				var boxDom = box.getDom(), containerDom = box.get("containerDom");

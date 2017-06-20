@@ -58,6 +58,11 @@ dorado.widget.DropDownBox = $extend(dorado.widget.FloatContainer, /** @scope dor
 		}
 	},
 
+	createDom: function() {
+		var dom = $invokeSuper.call(this);
+		dom.id = "d_" + (this._dropDown._id || this._uniqueId);
+		return dom;
+	},
 	doAfterShow: function(editor) {
 		if (this._dropDown._editor){
 			$invokeSuper.call(this, arguments);
