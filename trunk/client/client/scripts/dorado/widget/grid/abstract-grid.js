@@ -3339,6 +3339,22 @@
 			}
 		},
 
+		appendTouchMoveEvent: function(container) {
+			var grid = this.grid;
+			if (dorado.Browser.isTouch) {
+				container.addEventListener("touchstart", function(event) {
+					this._scrollStartPosX = this.scrollLeft+event.touches[0].pageX;
+					this._scrollStartPosY = this.scrollTop+event.touches[0].pageY;
+				});
+				var rowList = this;
+				container.addEventListener("touchmove", function(event) {
+					this.scrollLeft = this._scrollStartPosX-event.touches[0].pageX;
+					this.scrollTop = this._scrollStartPosY-event.touches[0].pageY;
+					grid.onScroll(null, this);
+				});
+			}
+		},
+		
 		refreshFrameBody: function(container) {
 			this._cols = this._columnsInfo.dataColumns.length;
 			if (this._scrollMode == "viewport") {
@@ -3417,6 +3433,20 @@
 			if (this._scrollMode == "lazyRender" && this._shouldSkipRender) {
 				row._lazyRender = true;
 				row.style.height = grid._rowHeight + "px";
+			}
+			if (dorado.Browser.isTouch){
+				row.addEventListener("touchstart", function(event) {
+					this._touchmove=false;
+				});
+				row.addEventListener("touchmove", function(event) {
+					this._touchmove=true;
+				});
+				var rowList = this;
+				row.addEventListener("touchend", function(event) {
+					if (!this._touchmove) {
+						rowList.setCurrentRow(this);
+					}
+				});
 			}
 			return row;
 		},

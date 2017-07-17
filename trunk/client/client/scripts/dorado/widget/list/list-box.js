@@ -121,6 +121,20 @@ dorado.widget.AbstractListBox = $extend(dorado.widget.RowList, /** @scope dorado
 		} else {
 			this.createItemDomDetail(row, item);
 		}
+		if (dorado.Browser.isTouch){
+			row.addEventListener("touchstart", function(event) {
+				this._touchmove=false;
+			});
+			row.addEventListener("touchmove", function(event) {
+				this._touchmove=true;
+			});
+			var rowList = this;
+			row.addEventListener("touchend", function(event) {
+				if (!this._touchmove) {
+					rowList.setCurrentRow(this);
+				}
+			});
+		}
 		return row;
 	},
 	

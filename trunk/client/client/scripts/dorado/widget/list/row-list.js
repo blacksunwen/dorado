@@ -459,7 +459,6 @@
 				container.addEventListener("touchstart", function(event) {
 					this._scrollStartPosX = this.scrollLeft+event.touches[0].pageX;
 					this._scrollStartPosY = this.scrollTop+event.touches[0].pageY;
-					event.preventDefault();
 				});
 				var rowList = this;
 				container.addEventListener("touchmove", function(event) {
@@ -471,7 +470,6 @@
 					if ((rowList._scrollTop || 0) != this.scrollTop) {
 						rowList.onYScroll(this);
 					}
-					event.preventDefault();
 				});
 			}
 		},
@@ -480,7 +478,7 @@
 			if (!this._dataTable) {
 				var table = this.createDataTable();
 				container.appendChild(table);
-				this.appendTouchMoveEvent(container);
+				//this.appendTouchMoveEvent(container);
 			}
 			if (this._currentScrollMode == "viewport") {
 				var beginBlankRow = this._beginBlankRow;
@@ -509,7 +507,7 @@
 			if (!this._dataTable) {
 				var table = this.createDataTable();
 				container.appendChild(table);
-				this.appendTouchMoveEvent(container);
+				//this.appendTouchMoveEvent(container);
 			}
 			if (!beginBlankRow) {
 				this._beginBlankRow = beginBlankRow = $DomUtils.xCreate({
