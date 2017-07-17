@@ -1058,7 +1058,7 @@
 					if (this._duringRefreshDom || grid._duringRefreshDom) return;
 
 					var retval = superFire(self, arg);
-					if (!self.fixed && grid._rowSelectionProperty && !grid._processingSelectionChange) {
+					if (grid._rowSelectionProperty && !grid._processingSelectionChange) {
 						grid._processingSelectionChange = true;
 						try {
 							var property = grid._rowSelectionProperty, removed = arg.removed, added = arg.added;
