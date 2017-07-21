@@ -99,7 +99,10 @@ dorado.widget.DataTreeGrid = $extend([dorado.widget.TreeGrid, dorado.widget.Data
 				(this._data && this._data.pageNo != (this._pageNo || 0))) {
 				this._data = data;
 				this._pageNo = (data ? data.pageNo : 0);
-				this._root._prepareChildren(dorado._NULL_FUNCTION);
+				var treeGrid = this;
+				this._root._prepareChildren(function(){
+					treeGrid.set("currentEntity", data.current);
+				});
 			}
 		}
 		if (!columnsInited) this.initColumns();
