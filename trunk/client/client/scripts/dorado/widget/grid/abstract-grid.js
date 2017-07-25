@@ -1607,10 +1607,18 @@
 			}
 			else {
 				if (this._innerGridWrapper) {
-					this._innerGridWrapper.style.height = "100%";
+	                if (this._useNativeScrollbars){
+	                    this._innerGridWrapper.style.height = divScroll.clientHeight+ "px";
+	                 }else{
+	                     this._innerGridWrapper.style.height = "100%";
+	                 }
 				}
 				if (this._fixedInnerGridWrapper) {
-					this._fixedInnerGridWrapper.style.height = "100%";
+	                if (this._useNativeScrollbars){
+	                    this._fixedInnerGridWrapper.style.height = divScroll.clientHeight+ "px";
+	                 }else{
+	                     this._fixedInnerGridWrapper.style.height = "100%";
+	                 }
 				}
 			}
 			
