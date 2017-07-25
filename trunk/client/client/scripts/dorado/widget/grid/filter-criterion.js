@@ -381,6 +381,7 @@
 		
 		createDropDownBox: function() {
 			var dropdown = this, box = $invokeSuper.call(dropdown, arguments);
+			box._dropDown = dropdown;
 			
 			var containerElement = box.get("containerDom"), doms = {};
 			$fly(containerElement).xCreate({
